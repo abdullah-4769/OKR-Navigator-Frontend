@@ -10,6 +10,7 @@ import '../../presentation/views/splash/splash_screen0.dart';
 import '../../presentation/views/language/language_screen.dart';
 
 // Use aliases to avoid naming conflicts
+import '../views/SuggestionInitiatives/ai_analysis_screen.dart';
 import '../views/authintication/login_screen.dart' as auth_login;
 import '../views/authintication/register_screen.dart' as auth_register;
 import '../views/gameModes/game_mode_screen.dart';
@@ -35,7 +36,9 @@ class AppRoutes {
   static const String selectStrategy = '/select-strategy';
   static const String keyResultsScreen = '/keyresults-screen';
   static const String keyObjectiveScreen = '/key-objective-screen';
-  static const String suggestionInitiativeScreen = '/suggestion-initiative-creen';
+  static const String suggestionInitiativeScreen = '/suggestion-initiative-Screen';
+  static const String aiAnalysisShowScreen = '/Ai-Analysis-Screen';
+
 
   static final List<GetPage> pages = [
     GetPage(name: splash0, page: () => const SplashScreen()),
@@ -48,6 +51,7 @@ class AppRoutes {
     GetPage(name: home, page: () => HomeScreen()),
     GetPage(name: gameMode, page: () => const GameModeScreen()),
     GetPage(name: pricingScreen, page: () => PricingScreen()),
+    GetPage(name: aiAnalysisShowScreen, page: () => AIAnalysisScreen()),
 
     // ✅ chooseIndustry uses a builder that reads Get.arguments safely
     GetPage(

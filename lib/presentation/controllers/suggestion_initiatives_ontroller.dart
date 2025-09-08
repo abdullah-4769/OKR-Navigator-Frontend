@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../routes/app_routes.dart';
 
 class SuggestionInitiativesController extends GetxController {
   final List<Map<String, dynamic>> keyResults;
@@ -12,8 +13,10 @@ class SuggestionInitiativesController extends GetxController {
   final secondInitiativeDesc = TextEditingController();
 
   var aiFeedback = "".obs;
+  var isSubmitting = false.obs;
 
-  void submitForAIAnalysis() {
+  /// ✅ Submit initiatives for AI analysis
+  Future<void> submitInitiatives() async {
     if (firstInitiativeTitle.text.isEmpty ||
         firstInitiativeDesc.text.isEmpty ||
         secondInitiativeTitle.text.isEmpty ||
@@ -22,16 +25,40 @@ class SuggestionInitiativesController extends GetxController {
         "Error",
         "Please fill both initiatives before submitting.",
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
       );
       return;
     }
-    aiFeedback.value =
-    "✅ AI analysis submitted successfully. Redirecting to results...";
+
+    try {
+      isSubmitting.value = true;
+
+      // 🔹 Future: Send data to backend / AI API
+      // For now, just simulate processing delay
+      await Future.delayed(const Duration(seconds: 2));
+
+      aiFeedback.value = "✅ Initiatives submitted for AI analysis.";
+
+      // ✅ Navigate to next screen after success
+      Get.toNamed(AppRoutes.aiAnalysisShowScreen, arguments: {
+        "keyResults": keyResults,
+        "initiatives": [
+          {
+            "title": firstInitiativeTitle.text,
+            "description": firstInitiativeDesc.text,
+          },
+          {
+            "title": secondInitiativeTitle.text,
+            "description": secondInitiativeDesc.text,
+          }
+        ]
+      });
+    } finally {
+      isSubmitting.value = false;
+    }
   }
 }
-
-
-
 
 
 

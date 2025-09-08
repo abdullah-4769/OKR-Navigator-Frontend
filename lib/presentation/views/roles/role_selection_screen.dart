@@ -340,47 +340,55 @@ class _RoleCard extends StatelessWidget {
                           ? AppColors.primaryRed.withOpacity(0.06)
                           : Colors.grey.shade50,
                     ),
-                    child: CustomSvg(
-                      assetPath: role['asset'],
-                      semanticsLabel: role['title'],
-                      width: screenWidth * 0.18,
-                      height: screenWidth * 0.16,
+                    child: Center(
+                      child: CustomSvg(
+                        assetPath: role['asset'],
+                        semanticsLabel: role['title'],
+                        width: screenWidth * 0.18,
+                        height: screenWidth * 0.16,
+                      ),
                     ),
                   ),
                   SizedBox(height: AppDimensions.d12.h),
-                  Text(
-                    role['title'],
-                    style: TextStyle(
-                      fontSize: (screenWidth * 0.045).sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryRed,
-                      fontFamily: 'Gotham',
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: AppDimensions.d4.h),
-                  Text(
-                    role['subtitle'],
-                    style: TextStyle(
-                      fontSize: (screenWidth * 0.035).sp,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Gotham',
-                      height: 1.2,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  if (role['extra'] != null &&
-                      role['extra'].toString().isNotEmpty)
-                    Text(
-                      role['extra'],
+                  Center(
+                    child: Text(
+                      role['title'],
                       style: TextStyle(
-                        fontSize: (screenWidth * 0.03).sp,
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.w600,
+                        fontSize: (screenWidth * 0.045).sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryRed,
                         fontFamily: 'Gotham',
                       ),
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: AppDimensions.d4.h),
+                  Center(
+                    child: Text(
+                      role['subtitle'],
+                      style: TextStyle(
+                        fontSize: (screenWidth * 0.035).sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Gotham',
+                        height: 1.2,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (role['extra'] != null &&
+                      role['extra'].toString().isNotEmpty)
+                    Center(
+                      child: Text(
+                        role['extra'],
+                        style: TextStyle(
+                          fontSize: (screenWidth * 0.03).sp,
+                          color: AppColors.grey,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Gotham',
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                 ],
               ),

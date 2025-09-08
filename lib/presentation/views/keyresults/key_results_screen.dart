@@ -167,38 +167,41 @@ class KeyResultsScreen extends StatelessWidget {
                           SizedBox(height: AppDimensions.d20.h),
 
                           // 🔹 Key Results List
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: keyResultsController.keyResults.length,
-                            itemBuilder: (context, index) {
-                              final item = keyResultsController.keyResults[index];
-                              return Obx(
-                                    () => CustomIndustryContainer(
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: keyResultsController.keyResults.length,
+                              itemBuilder: (context, index) {
+                                final item = keyResultsController.keyResults[index];
+                                return Obx(
+                                      () => CustomIndustryContainer(
 
-                                  title: item["title"],
-                                  description: item["description"],
-                                      icon: Icons.rocket,
-                                      isSelected: keyResultsController.isSelected(index),
-                                  onTap: () {
-                                    keyResultsController.toggleSelection(index);
+                                    title: item["title"],
+                                    description: item["description"],
+                                        icon: Icons.rocket,
+                                        isSelected: keyResultsController.isSelected(index),
+                                    onTap: () {
+                                      keyResultsController.toggleSelection(index);
 
-                                    final icon = item["icon"];
-                                    if (keyResultsController.isSelected(index)) {
-                                      constellationController.addIcon(icon);
-                                    } else {
-                                      constellationController.removeIcon(icon);
-                                    }
-                                  },
-                                  showTag1: true,
-                                  tag1Icon: Icons.trending_up,
-                                  tag1Text: item["tag1"],
-                                  showTag2: true,
-                                  tag2Icon: Icons.access_time,
-                                  tag2Text: item["tag2"],
-                                ),
-                              );
-                            },
+                                      final icon = item["icon"];
+                                      if (keyResultsController.isSelected(index)) {
+                                        constellationController.addIcon(icon);
+                                      } else {
+                                        constellationController.removeIcon(icon);
+                                      }
+                                    },
+                                    showTag1: true,
+                                    tag1Icon: Icons.trending_up,
+                                    tag1Text: item["tag1"],
+                                    showTag2: true,
+                                    tag2Icon: Icons.access_time,
+                                    tag2Text: item["tag2"],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
 
                           SizedBox(height: AppDimensions.d24.h),
@@ -228,7 +231,7 @@ class KeyResultsScreen extends StatelessWidget {
                                 onPressed: keyResultsController.selectedCount.value ==
                                     keyResultsController.requiredCount.value
                                     ? () {
-                                  journeyController.completeStep(1);
+                                  journeyController.completeStep(2);
                                   Get.offAllNamed(AppRoutes.suggestionInitiativeScreen);
                                 }
                                     : null,

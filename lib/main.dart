@@ -31,7 +31,7 @@ Future<void> main() async {
   Get.put(RegisterController());
   Get.put(JourneyController(), permanent: true);
   Get.put(StrategySelectionController(), permanent: true);
-  Get.put(AIStrategyController());
+  //Get.put(AIStrategyController());
 
   runApp(const MyApp());
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
+import '../../../core/app_dimensions.dart';
 import '../../controllers/journey_controller.dart';
 import '../../controllers/suggestion_initiatives_ontroller.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_AIstrategycontainer.dart';
+import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/custom_journey_map.dart';
 import '../../widgets/custom_initiative_input.dart';
@@ -145,7 +148,7 @@ class SuggestionInitiativesScreen extends StatelessWidget {
                     SizedBox(height: height * 0.03),
 
                     /// 🔹 AI Strategy Container (No Submit Button)
-                    const CustomAIStrategyContainer(),
+                     CustomAIStrategyContainer(),
 
                     SizedBox(height: height * 0.03),
 
@@ -158,6 +161,28 @@ class SuggestionInitiativesScreen extends StatelessWidget {
                       showDetails: journeyController.showDetails.value,
                     )),
 
+                    SizedBox(height: height * 0.03),
+                    // 🔹 Complete Button
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.d40.w),
+                      child:
+                      /// 🔹 Submit for Analysis Button
+                      Obx(() {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: AppDimensions.d40.w),
+                          child: CustomButton2(
+                            text: controller.isSubmitting.value
+                                ? "Submitting..."
+                                : "Submit for Analysis",
+                            onPressed: controller.isSubmitting.value
+                                ? null
+                                : () => controller.submitInitiatives(),
+                          ),
+                        );
+                      }),
+
+
+                    ),
                     SizedBox(height: height * 0.03),
                   ],
                 ),

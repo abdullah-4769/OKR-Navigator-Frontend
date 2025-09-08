@@ -1,37 +1,34 @@
 import 'dart:async';
-
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-
 import '../routes/app_routes.dart';
 
 class HomeNavBarController extends GetxController {
   var isExpanded = false.obs;
   Timer? _hideTimer;
 
-  void toggleNavBar() {
-    if (isExpanded.value) {
-      hideNavBar();
-    } else {
-      isExpanded.value = true;
-      _startAutoHideTimer();
-    }
+  /// Show the navbar and start auto-hide timer
+  void showNavBar() {
+    isExpanded.value = true;
+    startAutoHideTimer();
   }
 
-  void _startAutoHideTimer() {
+  /// Hide the navbar immediately
+  void hideNavBar() {
     _hideTimer?.cancel();
-    _hideTimer = Timer(const Duration(seconds: 5), () {
+    isExpanded.value = false;
+  }
+
+  /// Starts 3-second auto-hide timer
+  void startAutoHideTimer() {
+    _hideTimer?.cancel();
+    _hideTimer = Timer(const Duration(seconds: 3), () {
       if (isExpanded.value) {
         hideNavBar();
       }
     });
   }
 
-  void hideNavBar() {
-    _hideTimer?.cancel();
-    isExpanded.value = false;
-  }
-
+  /// Navigate home if expanded
   void navigateHome() {
     hideNavBar();
     Get.offAllNamed(AppRoutes.home);
@@ -46,20 +43,16 @@ class HomeNavBarController extends GetxController {
 
 
 
+//
 // import 'dart:async';
 // import 'package:get/get.dart';
+// import 'package:get/get_core/src/get_main.dart';
+//
 // import '../routes/app_routes.dart';
 //
 // class HomeNavBarController extends GetxController {
 //   var isExpanded = false.obs;
 //   Timer? _hideTimer;
-//
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // ✅ Always start hidden on app launch
-//     isExpanded.value = false;
-//   }
 //
 //   void toggleNavBar() {
 //     if (isExpanded.value) {
@@ -74,7 +67,7 @@ class HomeNavBarController extends GetxController {
 //     _hideTimer?.cancel();
 //     _hideTimer = Timer(const Duration(seconds: 5), () {
 //       if (isExpanded.value) {
-//         isExpanded.value = false;
+//         hideNavBar();
 //       }
 //     });
 //   }
@@ -85,8 +78,7 @@ class HomeNavBarController extends GetxController {
 //   }
 //
 //   void navigateHome() {
-//     _hideTimer?.cancel();
-//     isExpanded.value = false;
+//     hideNavBar();
 //     Get.offAllNamed(AppRoutes.home);
 //   }
 //
@@ -96,3 +88,4 @@ class HomeNavBarController extends GetxController {
 //     super.onClose();
 //   }
 // }
+//
