@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../controllers/role_selection_controller.dart';
+import '../../routes/app_routes.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_curved_arrow.dart';
 import '../../widgets/custom_home_navbar.dart';
@@ -61,7 +62,7 @@ class RoleSelectionScreen extends StatelessWidget {
                               onTap: () => Get.back(),
                               child: CustomCurvedArrow(
                                 isLeft: true,
-                                onTap: () => Get.back(),
+                                onTap: () => Get.offAllNamed(AppRoutes.pricingScreen),
                                 width: AppDimensions.d55.w,
                                 height: AppDimensions.d130.h,
                               ),

@@ -1,3 +1,8 @@
+
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -74,7 +79,7 @@ class KeyResultsScreen extends StatelessWidget {
                               children: [
                                 CustomCurvedArrow(
                                   isLeft: true,
-                                  onTap: () => Get.back(),
+                                  onTap: () => Get.offAllNamed(AppRoutes.keyObjectiveScreen),
                                   width: AppDimensions.d55.w,
                                   height: AppDimensions.d130.h,
                                 ),
@@ -170,10 +175,11 @@ class KeyResultsScreen extends StatelessWidget {
                               final item = keyResultsController.keyResults[index];
                               return Obx(
                                     () => CustomIndustryContainer(
+
                                   title: item["title"],
                                   description: item["description"],
-                                  icon: item["icon"],
-                                  isSelected: keyResultsController.isSelected(index),
+                                      icon: Icons.rocket,
+                                      isSelected: keyResultsController.isSelected(index),
                                   onTap: () {
                                     keyResultsController.toggleSelection(index);
 

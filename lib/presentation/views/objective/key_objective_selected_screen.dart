@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,6 +12,7 @@ import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/custom_journey_map.dart';
 import '../../widgets/custom_curved_arrow.dart';
+import '../../widgets/custom_objective_container.dart';
 import '../../widgets/custom_svg.dart';
 import '../../widgets/custom_industry_container.dart'; // ✅ reuse here
 
@@ -63,7 +66,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                           children: [
                             CustomCurvedArrow(
                               isLeft: true,
-                              onTap: () => Get.back(),
+                              onTap: () => Get.offAllNamed(AppRoutes.selectStrategy),
                               width: AppDimensions.d55.w,
                               height: AppDimensions.d130.h,
                             ),
@@ -73,7 +76,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'Select ',
+                                      text: 'Choose ',
                                       style: TextStyle(
                                         fontFamily: 'Gotham-Bold',
                                         fontSize: AppDimensions.d40.sp,
@@ -110,28 +113,56 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+                      // 🔹 Selected Objective
+                      const CustomObjectiveContainer(
+                        title: "Selected Strategy",
+                        subtitle: "Development of New Markets",
+                        description: "''Focus on expanding into untapped markets to drive sustainable growth and increase market share.''",
+                        icon: Icons.emoji_objects,
+                      ),
 
                       SizedBox(height: AppDimensions.d20.h),
-
+                      // 🔹 Instructions
+                      Text(
+                        "Choose Your Objective",
+                        style: TextStyle(
+                          fontSize: AppDimensions.d20.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryRed,
+                          fontFamily: 'Gotham-Bold',
+                        ),
+                      ),
+                      Text(
+                        "Select one strategic objective to focus on\nBased on your market development strategy",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: AppDimensions.d15.sp,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(height: AppDimensions.d10.h),
                       // 🔹 Objectives List (✅ reused CustomIndustryContainer)
                       Obx(() {
                         return Column(
                           children: List.generate(controller.objectives.length, (index) {
                             final obj = controller.objectives[index];
-                            return CustomIndustryContainer(
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: CustomIndustryContainer(
 
-                              title: obj["title"],
-                              description: obj["description"],
-                              icon: obj["icon"],
-                              isSelected: controller.isSelected(index),
-                              onTap: () {
-                                controller.selectObjective(index);
-                                journeyController.completeStep(0);
-                                journeyController.progress.value = 40;
-                              },
-                              showTag1: false,
-                              showTag2: false,
-                              showTag3: false,
+                                title: obj["title"],
+                                description: obj["description"],
+                                icon: obj["icon"],
+                                isSelected: controller.isSelected(index),
+                                onTap: () {
+                                  controller.selectObjective(index);
+                                  journeyController.completeStep(0);
+                                  journeyController.progress.value = 40;
+                                },
+                                showTag1: false,
+                                showTag2: false,
+                                showTag3: false,
+                              ),
                             );
                           }),
                         );

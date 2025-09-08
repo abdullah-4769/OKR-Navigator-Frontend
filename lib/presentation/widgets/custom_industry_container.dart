@@ -50,10 +50,10 @@ class CustomIndustryContainer extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        margin: EdgeInsets.only(bottom: AppDimensions.d16.h),
+        margin: EdgeInsets.only(bottom: AppDimensions.d6.h),
         padding: EdgeInsets.symmetric(
           horizontal: AppDimensions.d16.w,
-          vertical: AppDimensions.d20.h,
+          vertical: AppDimensions.d26.h,
         ),
         decoration: BoxDecoration(
           color: AppColors.lightGrey,

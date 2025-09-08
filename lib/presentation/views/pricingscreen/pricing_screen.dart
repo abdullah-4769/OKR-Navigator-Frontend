@@ -14,7 +14,8 @@ class PricingScreen extends StatelessWidget {
   PricingScreen({super.key});
 
   final PricingController controller = Get.put(PricingController());
-  final PageController pageController = PageController(viewportFraction: 0.85); // ✅ Increased width
+  final PageController pageController =
+  PageController(viewportFraction: 0.85); // ✅ Increased width
 
   @override
   Widget build(BuildContext context) {
@@ -24,133 +25,147 @@ class PricingScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            /// Top Bar: Curved Arrow + OKR Logo
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppDimensions.d0.w,
-                vertical: AppDimensions.d16.h,
-              ),
-              child: Row(
-                children: [
-                  /// Curved Back Arrow
-                  GestureDetector(
-                    onTap: () => Get.offAllNamed('/splash0'),
-                    child: CustomCurvedArrow(
-                      isLeft: true,
-                      width: AppDimensions.d60.w,
-                      height: AppDimensions.d150.h,
-                      onTap: () {
-                        Get.offAllNamed(AppRoutes.gameMode);
-                      },
-                    ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                /// Top Bar: Curved Arrow + OKR Logo
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimensions.d0.w,
+                    vertical: AppDimensions.d16.h,
                   ),
-
-                  const Spacer(),
-
-                  /// Centered OKR Logo
-                  SizedBox(
-                    height: 130.h,
-                    width: AppDimensions.d150.w,
-                    child: CustomSvg(
-                      assetPath: 'assets/images/okrnev.svg',
-                      semanticsLabel: 'OKR',
-                      height: 90.h,
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  /// Empty space to balance the layout
-                  SizedBox(width: AppDimensions.d60.w),
-                ],
-              ),
-            ),
-
-            SizedBox(height: AppDimensions.d10.h),
-
-            /// PageView for Pricing Cards
-            Expanded(
-              child: PageView.builder(
-                controller: pageController,
-                itemCount: controller.pricingPlans.length,
-                onPageChanged: controller.onPageChanged,
-                itemBuilder: (context, index) {
-                  final plan = controller.pricingPlans[index];
-                  return Obx(() {
-                    bool isSelected = controller.currentPageIndex.value == index;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: EdgeInsets.symmetric(
-                        horizontal: isSelected ? 20.w : 24.w, // ✅ Increased width & spacing balance
-                        vertical: isSelected ? 110.h : 110.h, // ✅ Better top/bottom alignment
+                  child: Row(
+                    children: [
+                      /// Curved Back Arrow
+                      GestureDetector(
+                        onTap: () => Get.offAllNamed('/splash0'),
+                        child: CustomCurvedArrow(
+                          isLeft: true,
+                          width: AppDimensions.d60.w,
+                          height: AppDimensions.d150.h,
+                          onTap: () {
+                            Get.offAllNamed(AppRoutes.gameMode);
+                          },
+                        ),
                       ),
-                      width: screenWidth * 0.80, // ✅ More responsive card width
-                      child: _buildPricingCard(plan),
-                    );
-                  });
-                },
-              ),
-            ),
 
-            SizedBox(height: AppDimensions.d20.h),
+                      const Spacer(),
 
-            /// Navigation Controls
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDimensions.d20.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  /// Left Arrow
-                  Obx(() {
-                    return _buildArrowButton(
-                      icon: Icons.arrow_back,
-                      isDisabled: controller.currentPageIndex.value == 0,
-                      onTap: () => controller.previousCard(pageController),
-                    );
-                  }),
+                      /// Centered OKR Logo
+                      SizedBox(
+                        height: 130.h,
+                        width: AppDimensions.d150.w,
+                        child: CustomSvg(
+                          assetPath: 'assets/images/okrnev.svg',
+                          semanticsLabel: 'OKR',
+                          height: 90.h,
+                        ),
+                      ),
 
-                  /// Select Button
-                  SizedBox(
-                    width: 180.w,
-                    child: CustomButton2(
-                      text: "Select & Continue",
-                      onPressed: () {
-                        controller.selectPlan(controller.currentPageIndex.value);
-                      },
-                    ),
+                      const Spacer(),
+
+                      /// Empty space to balance the layout
+                      SizedBox(width: AppDimensions.d60.w),
+                    ],
                   ),
+                ),
 
-                  /// Right Arrow
-                  Obx(() {
-                    return _buildArrowButton(
-                      icon: Icons.arrow_forward,
-                      isDisabled: controller.currentPageIndex.value ==
-                          controller.pricingPlans.length - 1,
-                      onTap: () => controller.nextCard(pageController),
-                    );
-                  }),
-                ],
-              ),
-            ),
+                SizedBox(height: AppDimensions.d10.h),
 
-            SizedBox(height: AppDimensions.d30.h),
-          ],
+                /// PageView for Pricing Cards
+                Expanded(
+                  child: PageView.builder(
+                    controller: pageController,
+                    itemCount: controller.pricingPlans.length,
+                    onPageChanged: controller.onPageChanged,
+                    itemBuilder: (context, index) {
+                      final plan = controller.pricingPlans[index];
+                      return Obx(() {
+                        bool isSelected =
+                            controller.currentPageIndex.value == index;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: EdgeInsets.symmetric(
+                            horizontal: isSelected ? 20.w : 24.w,
+                            vertical: isSelected ? 110.h : 110.h,
+                          ),
+                          width: screenWidth * 0.80,
+                          child: _buildPricingCard(plan, isSelected),
+                        );
+                      });
+                    },
+                  ),
+                ),
+
+                SizedBox(height: AppDimensions.d20.h),
+
+                /// Navigation Controls
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppDimensions.d20.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      /// Left Arrow
+                      Obx(() {
+                        return _buildArrowButton(
+                          icon: Icons.arrow_back,
+                          isDisabled: controller.currentPageIndex.value == 0,
+                          onTap: () =>
+                              controller.previousCard(pageController),
+                        );
+                      }),
+
+                      /// Select Button
+                      SizedBox(
+                        width: constraints.maxWidth * 0.45,
+                        child: CustomButton2(
+                          text: "Select & Continue",
+                          onPressed: () {
+                            controller.selectPlan(
+                                controller.currentPageIndex.value);
+                          },
+                        ),
+                      ),
+
+                      /// Right Arrow
+                      Obx(() {
+                        return _buildArrowButton(
+                          icon: Icons.arrow_forward,
+                          isDisabled:
+                          controller.currentPageIndex.value ==
+                              controller.pricingPlans.length - 1,
+                          onTap: () => controller.nextCard(pageController),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: AppDimensions.d30.h),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
   /// Build individual pricing card
-  Widget _buildPricingCard(Map<String, dynamic> plan) {
+  Widget _buildPricingCard(Map<String, dynamic> plan, bool isSelected) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
         Card(
-          elevation: 6,
+          elevation: isSelected ? 10 : 5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.d16.r),
+            side: BorderSide(
+              color: isSelected
+                  ? AppColors.primaryRed // ✅ Highlight border for selected
+                  : AppColors.primaryRed,
+              width: 1,
+            ),
           ),
           child: Container(
             width: double.infinity,
@@ -216,11 +231,13 @@ class PricingScreen extends StatelessWidget {
             ),
           ),
         ),
-SizedBox(height: 30.h,),
-        /// Solo SVG (Avi) → ✅ Now properly positioned, no overflow
+
+        SizedBox(height: 30.h),
+
+        /// Solo SVG Positioned Correctly
         Positioned(
           top: -105.h,
-          right: 130.w, // ✅ Adjusted position inside card boundary
+          right: 150.w,
           child: CustomSvg(
             assetPath: 'assets/images/solo.svg',
             semanticsLabel: 'Solo',
@@ -244,9 +261,8 @@ SizedBox(height: 30.h,),
         padding: EdgeInsets.all(12.r),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isDisabled
-              ? AppColors.grey.withOpacity(0.3)
-              : AppColors.primaryRed,
+          color:
+          isDisabled ? AppColors.grey.withOpacity(0.3) : AppColors.primaryRed,
         ),
         child: Icon(
           icon,

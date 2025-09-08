@@ -1,21 +1,22 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_dimensions.dart';
 
 class CustomObjectiveContainer extends StatelessWidget {
-  final String title;       // Selected Objective text
-  final String subtitle;    // (optional subtitle)
-  final String description; // Description of objective
-  final Color titleColor;   // For dynamic control of title color
+  final String title;          // Selected Objective text
+  final String subtitle;       // Optional subtitle
+  final String description;    // Description of objective
+  final Color titleColor;      // For dynamic control of title color
+  final IconData? icon;        // ✅ New: Pass Flutter Icon instead of image
 
   const CustomObjectiveContainer({
     Key? key,
     required this.title,
     required this.subtitle,
     required this.description,
-    this.titleColor = AppColors.primaryRed, // default red
+    this.titleColor = AppColors.primaryRed, // Default red
+    this.icon,                              // ✅ Optional icon
   }) : super(key: key);
 
   @override
@@ -40,7 +41,7 @@ class CustomObjectiveContainer extends StatelessWidget {
               child: CustomPaint(
                 painter: _GradientBorderPainter(
                   borderRadius: AppDimensions.d12.r,
-                  strokeWidth: 4, // 🔥 thicker border
+                  strokeWidth: 4,
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -61,29 +62,43 @@ class CustomObjectiveContainer extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // // 🔥 Title in Red
-                // Text(
-                //   "Selected Objective",
-                //   style: TextStyle(
-                //     fontSize: AppDimensions.d16.sp,
-                //     fontWeight: FontWeight.w700,
-                //     color: AppColors.primaryRed,
-                //     fontFamily: 'Gotham',
-                //   ),
-                // ),
-                SizedBox(height: AppDimensions.d8.h),
+                // ✅ Icon displayed only if provided
+                if (icon != null) ...[
+                  Container(
+                    padding: EdgeInsets.all(AppDimensions.d10.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryRed, // 🔴 Background always reddish
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      icon,
+                      color: Colors.white, // ✅ Icon color always white
+                      size: AppDimensions.d28.sp,
+                    ),
+                  ),
+                  SizedBox(height: AppDimensions.d10.h),
+                ],
 
-                // Selected Objective text (passed from card page)
+                // Title
                 Text(
                   title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: AppDimensions.d18.sp,
-                    color: titleColor, // default = red
+                    color: titleColor,
                     fontFamily: 'Gotham',
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+
+                // Subtitle
                 Text(
                   subtitle,
                   textAlign: TextAlign.center,
@@ -142,21 +157,3 @@ class _GradientBorderPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

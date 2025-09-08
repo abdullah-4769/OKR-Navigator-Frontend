@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
 import '../../controllers/journey_controller.dart';
 import '../../controllers/suggestion_initiatives_ontroller.dart';
+import '../../routes/app_routes.dart';
 import '../../widgets/custom_AIstrategycontainer.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/custom_journey_map.dart';
@@ -66,7 +67,7 @@ class SuggestionInitiativesScreen extends StatelessWidget {
                         children: [
                           CustomCurvedArrow(
                             isLeft: true,
-                            onTap: () => Get.back(),
+                            onTap: () => Get.offAllNamed(AppRoutes.keyResultsScreen),
                             width: width * 0.15,
                             height: height * 0.18,
                           ),
@@ -78,7 +79,7 @@ class SuggestionInitiativesScreen extends StatelessWidget {
                                   text: TextSpan(
                                     children: [
                                       TextSpan(
-                                        text: 'Add ',
+                                        text: 'Suggestion',
                                         style: TextStyle(
                                           fontFamily: 'Gotham-Bold',
                                           fontSize: width * 0.09,
@@ -87,7 +88,7 @@ class SuggestionInitiativesScreen extends StatelessWidget {
                                         ),
                                       ),
                                       TextSpan(
-                                        text: '\nSuggestion Initiatives',
+                                        text: '\nof Initiatives ',
                                         style: TextStyle(
                                           fontFamily: 'Gotham-Bold',
                                           fontSize: width * 0.06,
