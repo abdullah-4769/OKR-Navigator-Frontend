@@ -119,6 +119,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                           children: List.generate(controller.objectives.length, (index) {
                             final obj = controller.objectives[index];
                             return CustomIndustryContainer(
+
                               title: obj["title"],
                               description: obj["description"],
                               icon: obj["icon"],

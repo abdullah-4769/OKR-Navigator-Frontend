@@ -1,0 +1,61 @@
+name: game_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.8.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_screenutil: ^5.9.3
+  bloc: ^9.0.0
+  build_runner: ^2.7.0
+  connectivity_plus: ^5.0.2
+  flutter_bloc: ^9.1.1
+  firebase_core: ^2.10.0
+  cloud_firestore: ^4.7.1
+  dio: ^5.8.0+1
+  path_provider: ^2.0.15
+  google_fonts: ^6.3.1
+  shared_preferences: ^2.5.3
+  intl: ^0.20.2
+  get: ^4.7.2
+  get_storage: ^2.1.1
+  flutter_svg: ^1.1.6
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  generate: true
+
+  # Assets section - simplified for now
+  assets:
+    - assets/images/
+
+  # COMMENT OUT fonts temporarily to get the app running
+  # fonts:
+  #   - family: Gotham
+  #     fonts:
+  #       - asset: assets/fonts/Gotham-Black.otf
+  #         weight: 900
+  #       - asset: assets/fonts/Gotham-Bold.otf
+  #         weight: 700
+  #       - asset: assets/fonts/Gotham-Medium.otf
+  #         weight: 500
+  #       - asset: assets/fonts/Gotham-Book.otf
+  #         weight: 400
+  #       - asset: assets/fonts/Gotham-Light.otf
+  #         weight: 300
+  #       - asset: assets/fonts/Gotham-Thin.otf
+  #         weight: 100
+
+  uses-material-design: true

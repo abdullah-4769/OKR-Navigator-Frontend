@@ -86,7 +86,7 @@ class ChooseIndustryScreen extends StatelessWidget {
                             ),
                           ),
 
-                          SizedBox(height: screenHeight * 0.015),
+                          SizedBox(height: screenHeight * 0.0001),
 
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
