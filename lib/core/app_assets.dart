@@ -13,13 +13,12 @@ class AppAssets {
 
   static const String imagesOkrnev = 'assets/images/okrnev.svg';
   static const String imagesPersondash = 'assets/images/persondash.svg';
-  static const String imagesPersondashboard = 'assets/images/persondashboard.svg';
+  static const String imagesPersondashboard =
+      'assets/images/persondashboard.svg';
   static const String imagesRight = 'assets/images/right.svg';
   static const String imagesRobot = 'assets/images/robot.svg';
   static const String imagesSecondmaskgrp = 'assets/images/secondmaskgrp.svg';
   static const String imagesSolo = 'assets/images/solo.svg';
   static const String imagesTeam = 'assets/images/team.svg';
-  // PNGs (if any later)
-  // static const String background = 'assets/images/bg.png';
-  // static const String splashBg = 'assets/images/splash_bg.png';
+
 }

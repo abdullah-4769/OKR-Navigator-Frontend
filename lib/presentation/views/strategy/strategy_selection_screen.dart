@@ -1,13 +1,13 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../controllers/journey_controller.dart';
+import '../../../controllers/strategy_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-import '../../controllers/journey_controller.dart';
-import '../../controllers/strategy_selection_controller.dart';
+
+import '../../routes/app_routes.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_cards_pagebuilder.dart';
 import '../../widgets/custom_curved_arrow.dart';
@@ -19,11 +19,11 @@ class StrategySelectionScreen extends StatelessWidget {
   StrategySelectionScreen({super.key});
 
   final journeyController = Get.find<JourneyController>();
-  final controller = Get.put(StrategySelectionController());
+  final controller = Get.find<StrategySelectionController>();
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size; // 🔹 MediaQuery for responsiveness
+    final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
 
@@ -32,7 +32,7 @@ class StrategySelectionScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // 🔹 Background Gradient
+            // Background Gradient
             Positioned.fill(
               child: Container(
                 decoration: const BoxDecoration(
@@ -48,18 +48,17 @@ class StrategySelectionScreen extends StatelessWidget {
               ),
             ),
 
-            // 🔹 Scrollable Content
+            // Scrollable Content
             Positioned.fill(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.only(bottom: AppDimensions.d90.h),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(height: height * 0.02),
 
-                      // 🔹 Main Heading - "Draw Your Strategy"
+                      // Main Heading
                       Padding(
                         padding: EdgeInsets.only(bottom: height * 0.10),
                         child: Column(
@@ -76,14 +75,15 @@ class StrategySelectionScreen extends StatelessWidget {
                                     onTap: () => Get.back(),
                                     child: CustomCurvedArrow(
                                       isLeft: true,
-                                      onTap: () => Get.back(),
+                                      onTap: () => Get.offAllNamed(
+                                        AppRoutes.chooseIndustry,
+                                      ),
                                       width: width * 0.15,
                                       height: height * 0.18,
                                     ),
                                   ),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(height: height * 0.005),
                                         RichText(
@@ -91,7 +91,7 @@ class StrategySelectionScreen extends StatelessWidget {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                text: 'Select',
+                                                text: 'select'.tr,
                                                 style: TextStyle(
                                                   fontFamily: 'Gotham-Bold',
                                                   fontSize: (width * 0.09).sp,
@@ -100,7 +100,7 @@ class StrategySelectionScreen extends StatelessWidget {
                                                 ),
                                               ),
                                               TextSpan(
-                                                text: '\nStrategy',
+                                                text: '\nstrategy'.tr,
                                                 style: TextStyle(
                                                   fontFamily: 'Gotham-Bold',
                                                   fontSize: (width * 0.06).sp,
@@ -123,7 +123,7 @@ class StrategySelectionScreen extends StatelessWidget {
                                         padding: EdgeInsets.all(width * 0.01),
                                         child: CustomSvg(
                                           assetPath: 'assets/images/solo.svg',
-                                          semanticsLabel: 'profile',
+                                          semanticsLabel: 'profile'.tr,
                                           height: height * 0.06,
                                           width: width * 0.06,
                                         ),
@@ -137,11 +137,13 @@ class StrategySelectionScreen extends StatelessWidget {
 
                             // Welcome Text
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: width * 0.08,
+                              ),
                               child: Column(
                                 children: [
                                   Text(
-                                    'Draw Your Strategy',
+                                    'draw_strategy'.tr,
                                     style: TextStyle(
                                       fontFamily: 'Gotham-Bold',
                                       fontSize: (width * 0.055).sp,
@@ -152,7 +154,7 @@ class StrategySelectionScreen extends StatelessWidget {
                                   ),
                                   SizedBox(height: height * 0.01),
                                   Text(
-                                    "Draw your strategy card and take the first step\nin reshaping the company’s future.",
+                                    'draw_strategy_subtitle'.tr,
                                     style: TextStyle(
                                       fontSize: (width * 0.035).sp,
                                       color: AppColors.textSecondary,
@@ -167,35 +169,41 @@ class StrategySelectionScreen extends StatelessWidget {
 
                             SizedBox(height: height * 0.03),
 
-                            // 🔹 Cards Section
+                            // Cards Section
                             CustomCardPagerBuilder(),
 
                             SizedBox(height: height * 0.03),
 
-                            // 🔹 Journey Map
-                            Obx(() => CustomJourneyMap(
-                              progress: journeyController.progress.value,
-                              steps: journeyController.steps,
-                              completedSteps: journeyController.completedSteps,
-                              onToggle: journeyController.toggleJourneyDetails,
-                              showDetails: journeyController.showDetails.value,
-                            )),
+                            // Journey Map
+                            Obx(
+                                  () => CustomJourneyMap(
+                                progress: journeyController.progress.value,
+                                steps: journeyController.steps,
+                                completedSteps: journeyController.completedSteps,
+                                onToggle: journeyController.toggleJourneyDetails,
+                                showDetails: journeyController.showDetails.value,
+                              ),
+                            ),
 
                             SizedBox(height: height * 0.03),
 
-                            // 🔹 Begin Mission Button
-                            Obx(() => Padding(
-                              padding: EdgeInsets.symmetric(horizontal: width * 0.12),
-                              child: CustomButton2(
-                                text: 'Begin Mission',
-                                onPressed: controller.isCardRevealed.value
-                                    ? () {
-                                  journeyController.setStep(0, true);
-                                  controller.beginMission();
-                                }
-                                    : null,
+                            // Begin Mission Button
+                            Obx(
+                                  () => Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.12,
+                                ),
+                                child: CustomButton2(
+                                  text: 'begin_mission'.tr,
+                                  onPressed: controller.isCardRevealed.value
+                                      ? () {
+                                    journeyController.setStep(0, true);
+                                    controller.beginMission();
+                                  }
+                                      : null,
+                                ),
                               ),
-                            )),
+                            ),
 
                             SizedBox(height: height * 0.03),
                           ],
@@ -208,16 +216,10 @@ class StrategySelectionScreen extends StatelessWidget {
             ),
 
             Positioned(
-              right:   width * -0.07000001, // small margin inside -25.w,
+              right: width * -0.07000001,
               top: height * 0.50,
-              child: CustomHomeNavBar(),
+              child: const CustomHomeNavBar(),
             ),
-            // 🔹 Floating Home Button
-            // Positioned(
-            //   right: width * 0.0000009,
-            //   top: height * 0.50,
-            //   child: CustomHomeNavBar(),
-            // ),
           ],
         ),
       ),

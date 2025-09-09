@@ -39,11 +39,14 @@ final ThemeData appTheme = ThemeData(
     fillColor: AppColors.surface,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppDimensions.d12.r),
-      borderSide: BorderSide(color: AppColors.borderGrey),
+      borderSide: const BorderSide(color: AppColors.borderGrey),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppDimensions.d12.r),
-      borderSide: BorderSide(color: AppColors.primary, width: AppDimensions.d2.w),
+      borderSide: BorderSide(
+        color: AppColors.primary,
+        width: AppDimensions.d2.w,
+      ),
     ),
     hintStyle: TextStyle(
       color: AppColors.textSecondary,
@@ -69,5 +72,4 @@ final ThemeData appTheme = ThemeData(
       ),
     ),
   ),
-
 );

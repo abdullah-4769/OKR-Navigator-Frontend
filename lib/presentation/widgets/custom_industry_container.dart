@@ -25,7 +25,7 @@ class CustomIndustryContainer extends StatelessWidget {
   final String? tag3Text;
 
   const CustomIndustryContainer({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     this.icon = Icons.auto_graph_sharp, // Default icon if none provided
@@ -40,11 +40,13 @@ class CustomIndustryContainer extends StatelessWidget {
     this.showTag3 = false,
     this.tag3Icon,
     this.tag3Text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final Color activeColor = isSelected ? AppColors.primaryRed : AppColors.textSecondary;
+    final Color activeColor = isSelected
+        ? AppColors.primaryRed
+        : AppColors.textSecondary;
 
     return GestureDetector(
       onTap: onTap,
@@ -59,14 +61,16 @@ class CustomIndustryContainer extends StatelessWidget {
           color: AppColors.lightGrey,
           borderRadius: BorderRadius.circular(AppDimensions.d16.r),
           border: Border.all(
-            color: isSelected ? AppColors.primaryRed : AppColors.grey.withOpacity(0.3),
+            color: isSelected
+                ? AppColors.primaryRed
+                : AppColors.grey.withValues(alpha:  0.3),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
               color: isSelected
-                  ? AppColors.primaryRed.withOpacity(0.12)
-                  : Colors.black.withOpacity(0.03),
+                  ? AppColors.primaryRed.withValues(alpha: 0.12)
+                  : Colors.black.withValues(alpha: 0.03),
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),
@@ -87,7 +91,7 @@ class CustomIndustryContainer extends StatelessWidget {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -122,11 +126,10 @@ class CustomIndustryContainer extends StatelessWidget {
                   width: AppDimensions.d18.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? AppColors.primaryRed : Colors.transparent,
-                    border: Border.all(
-                      color: AppColors.primaryRed,
-                      width: 2,
-                    ),
+                    color: isSelected
+                        ? AppColors.primaryRed
+                        : Colors.transparent,
+                    border: Border.all(color: AppColors.primaryRed, width: 2),
                   ),
                 ),
               ],
@@ -165,23 +168,21 @@ class CustomIndustryContainer extends StatelessWidget {
   }
 
   // 🔹 Helper Method for Small Tags
-  Widget _buildTag(IconData icon, String text, Color color) {
-    return Padding(
-      padding: EdgeInsets.only(right: AppDimensions.d16.w),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: AppDimensions.d16.w),
-          SizedBox(width: 4.w),
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: AppDimensions.d12.sp,
-              fontWeight: FontWeight.w500,
-              color: color,
-            ),
+  Widget _buildTag(IconData icon, String text, Color color) => Padding(
+    padding: EdgeInsets.only(right: AppDimensions.d16.w),
+    child: Row(
+      children: [
+        Icon(icon, color: color, size: AppDimensions.d16.w),
+        SizedBox(width: 4.w),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: AppDimensions.d12.sp,
+            fontWeight: FontWeight.w500,
+            color: color,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

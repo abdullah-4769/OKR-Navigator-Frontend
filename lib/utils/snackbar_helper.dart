@@ -38,7 +38,7 @@ class SnackbarHelper {
   }
 
   /// Success Snackbar
-  static void success(String message, {String title = "Success"}) {
+  static void success(String message, {String title = 'Success'}) {
     _showSnackbar(
       title: title,
       message: message,
@@ -48,7 +48,7 @@ class SnackbarHelper {
   }
 
   /// Error Snackbar
-  static void error(String message, {String title = "Error"}) {
+  static void error(String message, {String title = 'Error'}) {
     _showSnackbar(
       title: title,
       message: message,
@@ -58,7 +58,7 @@ class SnackbarHelper {
   }
 
   /// Info Snackbar
-  static void info(String message, {String title = "Info"}) {
+  static void info(String message, {String title = 'Info'}) {
     _showSnackbar(
       title: title,
       message: message,
@@ -68,7 +68,7 @@ class SnackbarHelper {
   }
 
   /// Warning Snackbar
-  static void warning(String message, {String title = "Warning"}) {
+  static void warning(String message, {String title = 'Warning'}) {
     _showSnackbar(
       title: title,
       message: message,

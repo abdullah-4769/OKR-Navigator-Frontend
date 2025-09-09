@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
@@ -35,7 +34,6 @@ class _SplashScreen2State extends State<SplashScreen2> {
         child: SafeArea(
           child: Stack(
             children: [
-              // Main content
               SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -44,7 +42,7 @@ class _SplashScreen2State extends State<SplashScreen2> {
 
                     // Top Logo
                     CustomSvg(
-                      semanticsLabel: 'OKR Logo',
+                      semanticsLabel: 'okr_logo'.tr,
                       assetPath: 'assets/images/okrnev.svg',
                       height: AppDimensions.d70.h,
                       width: AppDimensions.d90.w,
@@ -54,7 +52,7 @@ class _SplashScreen2State extends State<SplashScreen2> {
 
                     // Mask Image
                     CustomSvg(
-                      semanticsLabel: 'Mask Group',
+                      semanticsLabel: 'mask_group'.tr,
                       assetPath: 'assets/images/maskgroup.svg',
                       height: 170.h,
                       width: 200.w,
@@ -64,10 +62,12 @@ class _SplashScreen2State extends State<SplashScreen2> {
 
                     // Title
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppDimensions.d16.w,
+                      ),
                       child: Center(
                         child: Text(
-                          "The Company is in Trouble",
+                          'splash2_title'.tr,
                           style: TextStyle(
                             fontSize: AppDimensions.d24.sp,
                             fontWeight: FontWeight.bold,
@@ -83,12 +83,12 @@ class _SplashScreen2State extends State<SplashScreen2> {
 
                     // Subtitle
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.d12.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppDimensions.d12.w,
+                      ),
                       child: Center(
                         child: Text(
-                          "Productivity is declining. Goals are misaligned. "
-                              "The team is losing focus. You are the only one "
-                              "with the skills to bring clarity, direction, and results.",
+                          'splash2_subtitle'.tr,
                           style: TextStyle(
                             fontSize: AppDimensions.d16.sp,
                             color: AppColors.black,
@@ -103,14 +103,15 @@ class _SplashScreen2State extends State<SplashScreen2> {
 
                     SizedBox(height: screenHeight * 0.25),
 
-                  // Bottom Logo
-                  Center(
-                    child: CustomSvg(
-                      assetPath: 'assets/images/logo.svg',
-                      width: AppDimensions.d30.w,
-                      height: AppDimensions.d30.h, semanticsLabel: '',
+                    // Bottom Logo
+                    Center(
+                      child: CustomSvg(
+                        assetPath: 'assets/images/logo.svg',
+                        width: AppDimensions.d30.w,
+                        height: AppDimensions.d30.h,
+                        semanticsLabel: '',
+                      ),
                     ),
-                  ),
                     SizedBox(height: AppDimensions.d20.h),
                   ],
                 ),
@@ -121,7 +122,9 @@ class _SplashScreen2State extends State<SplashScreen2> {
                 alignment: Alignment.bottomLeft,
                 child: Padding(
                   padding: EdgeInsets.only(
-                      left: screenWidth * 0.00, bottom: screenHeight * 0.15),
+                    left: screenWidth * 0.00,
+                    bottom: screenHeight * 0.15,
+                  ),
                   child: CustomCurvedArrow(
                     isLeft: true,
                     onTap: () => Get.offAllNamed(AppRoutes.splash1),
@@ -136,7 +139,9 @@ class _SplashScreen2State extends State<SplashScreen2> {
                 alignment: Alignment.bottomRight,
                 child: Padding(
                   padding: EdgeInsets.only(
-                      right: screenWidth * 0.00, bottom: screenHeight * 0.15),
+                    right: screenWidth * 0.00,
+                    bottom: screenHeight * 0.15,
+                  ),
                   child: CustomCurvedArrow(
                     isLeft: false,
                     onTap: () => Get.offAllNamed(AppRoutes.home),

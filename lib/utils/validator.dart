@@ -10,7 +10,7 @@ class Validators {
 
   static String? email(String? value) {
     if (value == null || value.isEmpty) return AppStrings.emailRequired;
-    final regex = RegExp(r"^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$");
+    final regex = RegExp(r'^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$');
     return regex.hasMatch(value) ? null : AppStrings.invalidEmail;
   }
 
@@ -46,11 +46,11 @@ class Validators {
 
     // Optional: Add more password strength requirements
     if (!value.contains(RegExp(r'[A-Z]'))) {
-      return "Password must contain at least one uppercase letter";
+      return 'Password must contain at least one uppercase letter';
     }
 
     if (!value.contains(RegExp(r'[0-9]'))) {
-      return "Password must contain at least one number";
+      return 'Password must contain at least one number';
     }
 
     return null;

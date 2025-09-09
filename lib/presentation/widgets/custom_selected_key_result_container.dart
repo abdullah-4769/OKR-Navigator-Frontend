@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../controllers/key_results_controller.dart';
+import '../../controllers/key_results_controller.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_dimensions.dart';
 
@@ -13,16 +13,19 @@ class CustomSelectedKeyResultsContainer extends StatelessWidget {
     final KeyResultsController controller = Get.find<KeyResultsController>();
 
     return Obx(() {
-      final int remaining = controller.requiredCount.value - controller.selectedCount.value;
+      final int remaining =
+          controller.requiredCount.value - controller.selectedCount.value;
       final String remainingText = remaining <= 0
-          ? "All key results selected!"
+          ? 'All key results selected!'
           : remaining == 1
-          ? "1 more needed"
-          : "$remaining more needed";
+          ? '1 more needed'
+          : '$remaining more needed';
 
       return Container(
         margin: EdgeInsets.symmetric(
-            horizontal: AppDimensions.d18.w, vertical: AppDimensions.d16.h),
+          horizontal: AppDimensions.d18.w,
+          vertical: AppDimensions.d16.h,
+        ),
         padding: EdgeInsets.all(AppDimensions.d16.w),
         decoration: BoxDecoration(
           color: AppColors.primaryBlue,
@@ -72,7 +75,7 @@ class CustomSelectedKeyResultsContainer extends StatelessWidget {
                     remainingText,
                     style: TextStyle(
                       fontSize: AppDimensions.d14.sp,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha:0.9),
                       fontFamily: 'Gotham',
                     ),
                   ),

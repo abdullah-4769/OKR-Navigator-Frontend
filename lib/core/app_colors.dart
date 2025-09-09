@@ -5,14 +5,18 @@ class AppColors {
   static const Color sucessColor = Colors.green;
 
   static const Color primary = Color(
-      0xFF0052CC); // Deep blue for buttons and accents
+    0xFF0052CC,
+  ); // Deep blue for buttons and accents
   static const Color secondary = Color(
-      0xFF36B37E); // Vibrant green for highlights
+    0xFF36B37E,
+  ); // Vibrant green for highlights
   static const Color surface = Color(
-      0xFFFFFFFF); // White for cards and input fields
+    0xFFFFFFFF,
+  ); // White for cards and input fields
   static const Color textPrimary = Color(0xFF172B4D); // Dark gray for main text
   static const Color textSecondary = Color(
-      0xFF6B778C); // Muted gray for subtext
+    0xFF6B778C,
+  ); // Muted gray for subtext
   static const Color border = Color(0xFFDDE1E6); // Soft gray for borders
   static const Color error = Color(0xFFFF5630); // Red for error messages
   static const Color cardBackground = surface;
@@ -30,9 +34,6 @@ class AppColors {
   static const Color reddish = Color(0xFFD32F2F);
   static const Color lightGrey = Color(0xFFF7F7F7);
 
-
-
-
   // New Gradient Colors for Splash Screen Background
   static const Color backgroundTop = Color(0xFFFFFFFF);
   static const Color backgroundBottom = Color(0xFFFFE6E5);
@@ -43,10 +44,6 @@ class AppColors {
 
   static const Color lightSkyBlue = Color(0xFF87CEFA);
 
-
   static const Color primaryGreen = Color(0xFF4ECDC4);
   static const Color primaryPurple = Color(0xFF6C63FF);
-
-
-
 }

@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../controllers/okr_constellation_controller.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_dimensions.dart';
-import '../controllers/okr_constellation_controller.dart';
 
 class CustomOKRConstellation extends StatelessWidget {
   const CustomOKRConstellation({super.key});
@@ -23,7 +23,7 @@ class CustomOKRConstellation extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppDimensions.d18.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha:0.08),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -51,15 +51,13 @@ class CustomOKRConstellation extends StatelessWidget {
                   color: Colors.white,
                   size: 36.sp,
                 ),
-
               ),
               // SizedBox(height: 8.h),
               /// 🔵 Text below rocket, above plus
               Positioned(
-
                 bottom: 40.h, // place between rocket and plus
                 child: Text(
-                  "Launch product",
+                  'launch_product'.tr,
                   style: TextStyle(
                     fontSize: AppDimensions.d16.sp,
                     fontFamily: 'Gotham-Bold',
@@ -70,7 +68,7 @@ class CustomOKRConstellation extends StatelessWidget {
               ),
 
               /// 1st icon - top-left
-              if (icons.length > 0)
+              if (icons.isNotEmpty)
                 Positioned(
                   top: 15.h,
                   left: 30.w,
@@ -124,19 +122,13 @@ class CustomOKRConstellation extends StatelessWidget {
   }
 
   /// 🔵 Reusable circle icon widget
-  Widget _buildIconCircle(IconData icon) {
-    return Container(
-      width: 60.w,
-      height: 60.w,
-      decoration: const BoxDecoration(
-        color: AppColors.primaryBlue,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        icon,
-        color: Colors.white,
-        size: 28.sp,
-      ),
-    );
-  }
+  Widget _buildIconCircle(IconData icon) => Container(
+    width: 60.w,
+    height: 60.w,
+    decoration: const BoxDecoration(
+      color: AppColors.primaryBlue,
+      shape: BoxShape.circle,
+    ),
+    child: Icon(icon, color: Colors.white, size: 28.sp),
+  );
 }

@@ -22,62 +22,60 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    await Future.delayed(Duration(seconds: AppConstants.splashDuration));
+    await Future.delayed(const Duration(seconds: AppConstants.splashDuration));
     if (!mounted) return;
 
-    Get.offAllNamed(AppRoutes.language);
+    await Get.offAllNamed(AppRoutes.language);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: OrientationBuilder(
-        builder: (context, orientation) {
-          final isPortrait = orientation == Orientation.portrait;
+  Widget build(BuildContext context) => Scaffold(
+    body: OrientationBuilder(
+      builder: (context, orientation) {
+        final isPortrait = orientation == Orientation.portrait;
 
-          return Center(
-            child: Container(
-              width: double.infinity.w,
-              height: double.infinity.h,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-                ),
+        return Center(
+          child: Container(
+            width: double.infinity.w,
+            height: double.infinity.h,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
               ),
-              child: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: AppDimensions.d300.h),
+            ),
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: AppDimensions.d300.h),
 
-                      CustomSvg(
-                        semanticsLabel: 'OKR Logo',
-                        assetPath: 'assets/images/okrnev.svg',
-                        height: AppDimensions.d80.h,
-                        width: AppDimensions.d90.w,
-                      ),
+                    CustomSvg(
+                      semanticsLabel: 'OKR Logo',
+                      assetPath: 'assets/images/okrnev.svg',
+                      height: AppDimensions.d80.h,
+                      width: AppDimensions.d90.w,
+                    ),
 
-                      SizedBox(height: isPortrait ? 30.h : AppDimensions.d20.h),
-                      SizedBox(height: 270.h),
+                    SizedBox(height: isPortrait ? 30.h : AppDimensions.d20.h),
+                    SizedBox(height: 270.h),
 
-                      CustomSvg(
-                        semanticsLabel: 'Company Logo',
-                        assetPath: 'assets/images/logo.svg',
-                      ),
+                    const CustomSvg(
+                      semanticsLabel: 'Company Logo',
+                      assetPath: 'assets/images/logo.svg',
+                    ),
 
-                      SizedBox(height: AppDimensions.d30.h),
-                    ],
-                  ),
+                    SizedBox(height: AppDimensions.d30.h),
+                  ],
                 ),
               ),
             ),
-          );
-        },
-      ),
-    );
-  }
+          ),
+        );
+      },
+    ),
+  );
 }

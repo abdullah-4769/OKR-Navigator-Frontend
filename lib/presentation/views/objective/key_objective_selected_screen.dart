@@ -1,12 +1,11 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../../controllers/journey_controller.dart';
+import '../../../controllers/key_objective_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-import '../../controllers/journey_controller.dart';
-import '../../controllers/key_objective_controller.dart';
+
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_home_navbar.dart';
@@ -14,7 +13,7 @@ import '../../widgets/custom_journey_map.dart';
 import '../../widgets/custom_curved_arrow.dart';
 import '../../widgets/custom_objective_container.dart';
 import '../../widgets/custom_svg.dart';
-import '../../widgets/custom_industry_container.dart'; // ✅ reuse here
+import '../../widgets/custom_industry_container.dart';
 
 class KeyObjectiveSelectedScreen extends StatelessWidget {
   KeyObjectiveSelectedScreen({super.key});
@@ -22,10 +21,8 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
   final KeyObjectiveController controller = Get.put(KeyObjectiveController());
   final JourneyController journeyController = Get.find<JourneyController>();
 
-
   @override
   Widget build(BuildContext context) {
-    // ✅ mark step
     journeyController.setStep(0, true);
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -35,39 +32,39 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // ✅ Background
             Positioned.fill(
               child: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
+                    colors: [
+                      AppColors.backgroundTop,
+                      AppColors.backgroundBottom,
+                    ],
                   ),
                 ),
               ),
             ),
-
-            // ✅ Scrollable Content
             Positioned.fill(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.only(bottom: AppDimensions.d90.h),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(height: AppDimensions.d16.h),
-
-                      // 🔹 Header
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: AppDimensions.d0.w),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppDimensions.d0.w,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomCurvedArrow(
                               isLeft: true,
-                              onTap: () => Get.offAllNamed(AppRoutes.selectStrategy),
+                              onTap: () =>
+                                  Get.offAllNamed(AppRoutes.selectStrategy),
                               width: AppDimensions.d55.w,
                               height: AppDimensions.d130.h,
                             ),
@@ -77,7 +74,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'Choose ',
+                                      text: 'choose'.tr + ' ',
                                       style: TextStyle(
                                         fontFamily: 'Gotham-Bold',
                                         fontSize: AppDimensions.d40.sp,
@@ -86,7 +83,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: '\nObjective',
+                                      text: '\n${'objective'.tr}',
                                       style: TextStyle(
                                         fontFamily: 'Gotham-Bold',
                                         fontSize: AppDimensions.d26.sp,
@@ -114,18 +111,15 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // 🔹 Selected Objective
-                      const CustomObjectiveContainer(
-                        title: "Selected Strategy",
-                        subtitle: "Development of New Markets",
-                        description: "''Focus on expanding into untapped markets to drive sustainable growth and increase market share.''",
+                       CustomObjectiveContainer(
+                        title: 'selected_strategy'.tr,
+                        subtitle: 'development_new_markets'.tr,
+                        description: 'objective_description'.tr,
                         icon: Icons.emoji_objects,
                       ),
-
                       SizedBox(height: AppDimensions.d20.h),
-                      // 🔹 Instructions
                       Text(
-                        "Choose Your Objective",
+                        'choose_your_objective'.tr,
                         style: TextStyle(
                           fontSize: AppDimensions.d20.sp,
                           fontWeight: FontWeight.bold,
@@ -134,7 +128,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Select one strategic objective to focus on\nBased on your market development strategy",
+                        'select_one_objective'.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: AppDimensions.d15.sp,
@@ -142,71 +136,66 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: AppDimensions.d10.h),
-                      // 🔹 Objectives List (✅ reused CustomIndustryContainer)
-                      Obx(() {
-                        return Column(
-                          children: List.generate(controller.objectives.length, (index) {
-                            final obj = controller.objectives[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: CustomIndustryContainer(
-
-                                title: obj["title"],
-                                description: obj["description"],
-                                icon: obj["icon"],
-                                isSelected: controller.isSelected(index),
-                                onTap: () {
-                                  controller.selectObjective(index);
-                                  journeyController.completeStep(0);
-                                  journeyController.progress.value = 40;
-                                },
-                                showTag1: false,
-                                showTag2: false,
-                                showTag3: false,
-                              ),
-                            );
-                          }),
-                        );
-                      }),
-
+                      Obx(
+                            () => Column(
+                          children: List.generate(
+                            controller.objectives.length,
+                                (index) {
+                              final obj = controller.objectives[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: CustomIndustryContainer(
+                                  title: obj['title']?.tr,
+                                  description: obj['description']?.tr,
+                                  icon: obj['icon'],
+                                  isSelected: controller.isSelected(index),
+                                  onTap: () {
+                                    controller.selectObjective(index);
+                                    journeyController.completeStep(0);
+                                    journeyController.progress.value = 40;
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                       SizedBox(height: AppDimensions.d24.h),
-
-                      // 🔹 Journey Map
-                      Obx(() => CustomJourneyMap(
-                        progress: journeyController.progress.value,
-                        steps: journeyController.steps,
-                        completedSteps: journeyController.completedSteps,
-                        onToggle: journeyController.toggleJourneyDetails,
-                        showDetails: journeyController.showDetails.value,
-                      )),
-
+                      Obx(
+                            () => CustomJourneyMap(
+                          progress: journeyController.progress.value,
+                          steps: journeyController.steps,
+                          completedSteps: journeyController.completedSteps,
+                          onToggle: journeyController.toggleJourneyDetails,
+                          showDetails: journeyController.showDetails.value,
+                        ),
+                      ),
                       SizedBox(height: AppDimensions.d24.h),
-
-                      // 🔹 Complete Button
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: AppDimensions.d40.w),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppDimensions.d40.w,
+                        ),
                         child: Obx(
                               () => CustomButton2(
-                            text: 'Complete Your Selection',
+                            text: 'complete_selection'.tr,
                             onPressed: controller.isButtonEnabled
-                                ? () => Get.offAllNamed(AppRoutes.keyResultsScreen)
+                                ? () => Get.offAllNamed(
+                              AppRoutes.keyResultsScreen,
+                            )
                                 : null,
                           ),
                         ),
                       ),
-
                       SizedBox(height: AppDimensions.d20.h),
                     ],
                   ),
                 ),
               ),
             ),
-
-            // 🔹 Floating Home Button (✅ moved inside to avoid overflow)
             Positioned(
-              right: screenWidth * -0.07000001, // small margin inside
+              right: screenWidth * -0.07000001,
               top: MediaQuery.of(context).size.height * 0.50,
-              child: CustomHomeNavBar(),
+              child: const CustomHomeNavBar(),
             ),
           ],
         ),

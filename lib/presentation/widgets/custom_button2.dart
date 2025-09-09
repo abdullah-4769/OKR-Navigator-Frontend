@@ -17,7 +17,7 @@ class CustomButton2 extends StatelessWidget {
   final Color? borderColor;
 
   const CustomButton2({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.isLoading = false,
@@ -29,7 +29,7 @@ class CustomButton2 extends StatelessWidget {
     this.borderRadius = AppDimensions.d30,
     this.hasShadow = true,
     this.borderColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,8 @@ class CustomButton2 extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           // ✅ Always use gray when disabled
           backgroundColor: isDisabled
-              ? AppColors.grey // <-- Change here
+              ? AppColors
+                    .grey // <-- Change here
               : backgroundColor ?? AppColors.primaryRed,
           disabledBackgroundColor: AppColors.grey, // ✅ Ensures gray background
           shape: RoundedRectangleBorder(
@@ -54,37 +55,37 @@ class CustomButton2 extends StatelessWidget {
           ),
           elevation: hasShadow ? 4 : 0,
           shadowColor: hasShadow
-              ? Colors.black.withOpacity(0.25)
+              ? Colors.black.withValues(alpha: 0.25)
               : Colors.transparent,
         ),
         child: isLoading
             ? SizedBox(
-          width: AppDimensions.d22.w,
-          height: AppDimensions.d22.w,
-          child: CircularProgressIndicator(
-            color: textColor ?? AppColors.white,
-            strokeWidth: 2,
-          ),
-        )
+                width: AppDimensions.d22.w,
+                height: AppDimensions.d22.w,
+                child: CircularProgressIndicator(
+                  color: textColor ?? AppColors.white,
+                  strokeWidth: 2,
+                ),
+              )
             : Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (leading != null) ...[
-              leading!,
-              SizedBox(width: AppDimensions.d8.w),
-            ],
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor ?? AppColors.white,
-                fontSize: AppDimensions.d16.sp,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Gotham',
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (leading != null) ...[
+                    leading!,
+                    SizedBox(width: AppDimensions.d8.w),
+                  ],
+                  Text(
+                    text,
+                    style: TextStyle(
+                      color: textColor ?? AppColors.white,
+                      fontSize: AppDimensions.d16.sp,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Gotham',
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -9,22 +9,21 @@ class CustomSvg extends StatelessWidget {
   final BoxFit fit;
 
   const CustomSvg({
-    Key? key,
+    super.key,
     required this.assetPath,
     this.width,
     this.height,
     this.color,
-    this.fit = BoxFit.contain, required String semanticsLabel,
-  }) : super(key: key);
+    this.fit = BoxFit.contain,
+    required String semanticsLabel,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      assetPath,
-      width: width,
-      height: height,
-      color: color,
-      fit: fit,
-    );
-  }
+  Widget build(BuildContext context) => SvgPicture.asset(
+    assetPath,
+    width: width,
+    height: height,
+    color: color,
+    fit: fit,
+  );
 }

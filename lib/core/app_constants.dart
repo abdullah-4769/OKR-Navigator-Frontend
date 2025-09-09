@@ -1,9 +1,6 @@
-
 class AppConstants {
-
   //delays
   static const int delay = 3; // seconds
-
 
   // Durations
   static const int splashDuration = 3; // seconds

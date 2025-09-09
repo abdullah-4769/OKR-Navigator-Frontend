@@ -12,100 +12,97 @@ class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Stack(
-        children: [
-          // Background gradient
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-              ),
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: AppColors.white,
+    body: Stack(
+      children: [
+        // Background gradient
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
             ),
           ),
+        ),
 
-          SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Logo and Title
-                  Column(
-                    children: [
-                      CustomSvg(
-                        assetPath: AppAssets.okrLogo,
-                        width: AppDimensions.d90.w,
-                        height: AppDimensions.d80.h,
-                        semanticsLabel: '',
-                      ),
-                      SizedBox(height: AppDimensions.d16.h),
-                    ],
-                  ),
-
-                  SizedBox(height: AppDimensions.d20.h),
-
-                  // MaskGroup SVG in the middle
-                  CustomSvg(
-                    assetPath: 'assets/images/maskgroup.svg',
-                    width: AppDimensions.d180.w,
-                    height: AppDimensions.d200.h,
-                    fit: BoxFit.contain,
-                    semanticsLabel: '',
-                  ),
-
-                  SizedBox(height: AppDimensions.d40.h),
-
-                  // Welcome Text
-                  Text(
-                    'Welcome to OKR Navigator',
-                    style: TextStyle(
-                      fontSize: AppDimensions.d28.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryBlue,
-                      fontFamily: 'Gothic',
+        SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo and Title
+                Column(
+                  children: [
+                    CustomSvg(
+                      assetPath: AppAssets.okrLogo,
+                      width: AppDimensions.d90.w,
+                      height: AppDimensions.d80.h,
+                      semanticsLabel: '',
                     ),
-                    textAlign: TextAlign.center,
+                    SizedBox(height: AppDimensions.d16.h),
+                  ],
+                ),
+
+                SizedBox(height: AppDimensions.d20.h),
+
+                // MaskGroup SVG in the middle
+                CustomSvg(
+                  assetPath: 'assets/images/maskgroup.svg',
+                  width: AppDimensions.d180.w,
+                  height: AppDimensions.d200.h,
+                  semanticsLabel: '',
+                ),
+
+                SizedBox(height: AppDimensions.d40.h),
+
+                // Welcome Text
+                Text(
+                  'welcome_to_okr_navigator'.tr,
+                  style: TextStyle(
+                    fontSize: AppDimensions.d28.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryBlue,
+                    fontFamily: 'Gothic',
                   ),
+                  textAlign: TextAlign.center,
+                ),
 
-                  SizedBox(height: AppDimensions.d16.h),
+                SizedBox(height: AppDimensions.d16.h),
 
-                  // Description
-                  Text(
-                    'Step into the role of a strategic leader. Whether you\'re flying solo, teaming up, or pursuing certification, every choice you make will shape the path to organizational success.',
-                    style: TextStyle(
-                      fontSize: AppDimensions.d16.sp,
-                      color: AppColors.textSecondary,
-                      fontFamily: 'Gothic',
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
+                // Description
+                Text(
+                  'start_screen_description'.tr,
+                  style: TextStyle(
+                    fontSize: AppDimensions.d16.sp,
+                    color: AppColors.textSecondary,
+                    fontFamily: 'Gothic',
+                    height: 1.5,
                   ),
+                  textAlign: TextAlign.center,
+                ),
 
-                  SizedBox(height: AppDimensions.d40.h),
+                SizedBox(height: AppDimensions.d40.h),
 
-                  // ✅ Swipe to Start Container
-                  SwipeToStart(
-                    onSwipeComplete: () {
-                      Get.offAllNamed(AppRoutes.splash1);
-                    },
-                  ),
+                // Swipe to Start Container
+                SwipeToStart(
+                  onSwipeComplete: () {
+                    Get.offAllNamed(AppRoutes.splash1);
+                  },
+                ),
 
-                  SizedBox(height: AppDimensions.d40.h),
-                ],
-              ),
+                SizedBox(height: AppDimensions.d40.h),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 // ---------------- SwipeToStart Widget ----------------
@@ -122,7 +119,8 @@ class _SwipeToStartState extends State<SwipeToStart> {
 
   @override
   Widget build(BuildContext context) {
-    final double containerWidth = MediaQuery.of(context).size.width - 48.w; // Padding accounted
+    final double containerWidth =
+        MediaQuery.of(context).size.width - 48.w; // Padding accounted
     final double arrowSize = 50.w;
 
     return GestureDetector(
@@ -157,11 +155,11 @@ class _SwipeToStartState extends State<SwipeToStart> {
             ),
           ),
 
-          // **Base Text** (Black)
+          // Base Text (Black)
           Positioned.fill(
             child: Center(
               child: Text(
-                "Swipe to Start",
+                'swipe_to_start'.tr,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: AppDimensions.d16.sp,
@@ -185,13 +183,13 @@ class _SwipeToStartState extends State<SwipeToStart> {
             ),
           ),
 
-          // **Overlay Text** (White) — shows only where progress fill is
+          // Overlay Text (White)
           Positioned.fill(
             child: ClipRect(
               clipper: _TextClipper(width: _dragPosition + arrowSize),
               child: Center(
                 child: Text(
-                  "Swipe to Start",
+                  'swipe_to_start'.tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: AppDimensions.d16.sp,
@@ -214,7 +212,7 @@ class _SwipeToStartState extends State<SwipeToStart> {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.primaryRed, width: 2.w),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.arrow_forward_rounded,
                 color: AppColors.white,
               ),
@@ -226,18 +224,14 @@ class _SwipeToStartState extends State<SwipeToStart> {
   }
 }
 
-// **Custom Clipper for Overlay Text**
+// Custom Clipper for Overlay Text
 class _TextClipper extends CustomClipper<Rect> {
   final double width;
   _TextClipper({required this.width});
 
   @override
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(0, 0, width, size.height);
-  }
+  Rect getClip(Size size) => Rect.fromLTWH(0, 0, width, size.height);
 
   @override
-  bool shouldReclip(_TextClipper oldClipper) {
-    return oldClipper.width != width;
-  }
+  bool shouldReclip(_TextClipper oldClipper) => oldClipper.width != width;
 }

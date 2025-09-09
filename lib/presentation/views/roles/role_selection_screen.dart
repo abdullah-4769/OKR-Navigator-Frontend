@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../controllers/role_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-import '../../controllers/role_selection_controller.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_curved_arrow.dart';
@@ -26,7 +26,6 @@ class RoleSelectionScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            // 🌈 Background Gradient
             Positioned.fill(
               child: Container(
                 decoration: const BoxDecoration(
@@ -41,8 +40,6 @@ class RoleSelectionScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // 📜 Scrollable Content
             Positioned.fill(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -50,7 +47,6 @@ class RoleSelectionScreen extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: AppDimensions.d90.h),
                   child: Column(
                     children: [
-                      // 🔹 Header Row
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: AppDimensions.d0.w,
@@ -62,14 +58,14 @@ class RoleSelectionScreen extends StatelessWidget {
                               onTap: () => Get.back(),
                               child: CustomCurvedArrow(
                                 isLeft: true,
-                                onTap: () => Get.offAllNamed(AppRoutes.pricingScreen),
+                                onTap: () =>
+                                    Get.offAllNamed(AppRoutes.pricingScreen),
                                 width: AppDimensions.d55.w,
                                 height: AppDimensions.d130.h,
                               ),
                             ),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(height: AppDimensions.d2.h),
                                   RichText(
@@ -77,7 +73,7 @@ class RoleSelectionScreen extends StatelessWidget {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'Select',
+                                          text: 'select'.tr,
                                           style: TextStyle(
                                             fontFamily: 'Gotham-Bold',
                                             fontSize: (screenWidth * 0.12).sp,
@@ -86,7 +82,7 @@ class RoleSelectionScreen extends StatelessWidget {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: '\nYour Role',
+                                          text: '\nrole'.tr,
                                           style: TextStyle(
                                             fontFamily: 'Gotham-Bold',
                                             fontSize: (screenWidth * 0.07).sp,
@@ -110,7 +106,7 @@ class RoleSelectionScreen extends StatelessWidget {
                                   child: CustomSvg(
                                     assetPath:
                                     'assets/images/persondashboard.svg',
-                                    semanticsLabel: 'profile',
+                                    semanticsLabel: 'profile'.tr,
                                     height: AppDimensions.d60.h,
                                     width: AppDimensions.d60.w,
                                   ),
@@ -120,8 +116,6 @@ class RoleSelectionScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      // 🔹 Welcome Text
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: AppDimensions.d20.w,
@@ -129,7 +123,7 @@ class RoleSelectionScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'Welcome, Navigator!',
+                              'welcome_navigator'.tr,
                               style: TextStyle(
                                 fontFamily: 'Gotham-Bold',
                                 fontSize: (screenWidth * 0.05).sp,
@@ -140,7 +134,7 @@ class RoleSelectionScreen extends StatelessWidget {
                             ),
                             SizedBox(height: AppDimensions.d8.h),
                             Text(
-                              "You've just entered a company in crisis. Every decision you make could change its future.",
+                              'company_crisis_description'.tr,
                               style: TextStyle(
                                 fontSize: (screenWidth * 0.04).sp,
                                 color: AppColors.textSecondary,
@@ -152,18 +146,14 @@ class RoleSelectionScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       SizedBox(height: AppDimensions.d10.h),
-
-                      // 🔹 Instruction Text
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: AppDimensions.d24.w,
                         ),
                         child: Align(
-                          alignment: Alignment.center,
                           child: Text(
-                            'Choose your role to\nbegin the mission',
+                            'choose_role_instruction'.tr,
                             style: TextStyle(
                               fontSize: (screenWidth * 0.05).sp,
                               color: AppColors.textPrimary,
@@ -174,10 +164,7 @@ class RoleSelectionScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       SizedBox(height: AppDimensions.d14.h),
-
-                      // 🔹 Role Cards Grid
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: AppDimensions.d24.w,
@@ -213,10 +200,7 @@ class RoleSelectionScreen extends StatelessWidget {
                           },
                         ),
                       ),
-
                       SizedBox(height: AppDimensions.d20.h),
-
-                      // 🔹 Footer Section
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: AppDimensions.d40.w,
@@ -224,7 +208,7 @@ class RoleSelectionScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             CustomButton2(
-                              text: 'Select & Continue',
+                              text: 'select_continue'.tr,
                               onPressed: controller.continueWithSelection,
                             ),
                             SizedBox(height: AppDimensions.d12.h),
@@ -232,7 +216,7 @@ class RoleSelectionScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "First Time Playing? ",
+                                  'first_time_playing'.tr,
                                   style: TextStyle(
                                     fontSize: (screenWidth * 0.035).sp,
                                     color: Colors.black,
@@ -242,7 +226,7 @@ class RoleSelectionScreen extends StatelessWidget {
                                 GestureDetector(
                                   onTap: controller.openTutorial,
                                   child: Text(
-                                    "Watch Tutorial Video",
+                                    'watch_tutorial'.tr,
                                     style: TextStyle(
                                       fontSize: (screenWidth * 0.035).sp,
                                       color: AppColors.primaryRed,
@@ -263,12 +247,10 @@ class RoleSelectionScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // 🏠 Floating Home Button
             Positioned(
-              right:  screenWidth * -0.07000001, // small margin inside,
+              right: screenWidth * -0.07000001,
               top: screenHeight * 0.50,
-              child: CustomHomeNavBar(),
+              child: const CustomHomeNavBar(),
             ),
           ],
         ),
@@ -283,11 +265,10 @@ class _RoleCard extends StatelessWidget {
   final RoleSelectionController controller;
 
   const _RoleCard({
-    Key? key,
     required this.index,
     required this.role,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -306,23 +287,23 @@ class _RoleCard extends StatelessWidget {
             border: Border.all(
               color: selected
                   ? AppColors.primaryRed
-                  : AppColors.grey.withOpacity(0.2),
+                  : AppColors.grey.withValues(alpha: 0.2),
               width: selected ? 2.2 : 1,
             ),
             boxShadow: selected
                 ? [
               BoxShadow(
-                color: AppColors.primaryRed.withOpacity(0.12),
+                color: AppColors.primaryRed.withValues(alpha: 0.12),
                 blurRadius: 12,
                 offset: const Offset(0, 6),
-              )
+              ),
             ]
                 : [
               BoxShadow(
-                color: Colors.black.withOpacity(0.03),
+                color: Colors.black.withValues(alpha: 0.03),
                 blurRadius: 6,
                 offset: const Offset(0, 3),
-              )
+              ),
             ],
           ),
           child: Stack(
@@ -337,13 +318,13 @@ class _RoleCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: selected
-                          ? AppColors.primaryRed.withOpacity(0.06)
+                          ? AppColors.primaryRed.withValues(alpha: 0.06)
                           : Colors.grey.shade50,
                     ),
                     child: Center(
                       child: CustomSvg(
                         assetPath: role['asset'],
-                        semanticsLabel: role['title'],
+                        semanticsLabel: role['title'].tr,
                         width: screenWidth * 0.18,
                         height: screenWidth * 0.16,
                       ),
@@ -352,7 +333,7 @@ class _RoleCard extends StatelessWidget {
                   SizedBox(height: AppDimensions.d12.h),
                   Center(
                     child: Text(
-                      role['title'],
+                      role['title'].tr,
                       style: TextStyle(
                         fontSize: (screenWidth * 0.045).sp,
                         fontWeight: FontWeight.bold,
@@ -365,7 +346,7 @@ class _RoleCard extends StatelessWidget {
                   SizedBox(height: AppDimensions.d4.h),
                   Center(
                     child: Text(
-                      role['subtitle'],
+                      role['subtitle'].tr,
                       style: TextStyle(
                         fontSize: (screenWidth * 0.035).sp,
                         color: Colors.black,
@@ -376,11 +357,10 @@ class _RoleCard extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  if (role['extra'] != null &&
-                      role['extra'].toString().isNotEmpty)
+                  if (role['extra'] != null && role['extra'].toString().isNotEmpty)
                     Center(
                       child: Text(
-                        role['extra'],
+                        role['extra'].tr,
                         style: TextStyle(
                           fontSize: (screenWidth * 0.03).sp,
                           color: AppColors.grey,
@@ -392,8 +372,6 @@ class _RoleCard extends StatelessWidget {
                     ),
                 ],
               ),
-
-              // 🔹 Top-right Icon
               Positioned(
                 top: 4,
                 right: 4,
@@ -404,7 +382,7 @@ class _RoleCard extends StatelessWidget {
                     color: role['iconBg'],
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
+                        color: Colors.black.withValues(alpha: 0.15),
                         blurRadius: 4,
                         offset: const Offset(1, 2),
                       ),
