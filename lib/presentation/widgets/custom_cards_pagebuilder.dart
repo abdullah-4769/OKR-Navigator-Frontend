@@ -4,12 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-import '../../controllers/strategy_selection_controller.dart';
 
 class CustomCardPagerBuilder extends StatelessWidget {
-  final StrategySelectionController controller = Get.find();
+  final dynamic controller; // Accept ANY Getx controller that has the same API
 
-  CustomCardPagerBuilder({super.key});
+  const CustomCardPagerBuilder({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) => Obx(
@@ -22,7 +21,7 @@ class CustomCardPagerBuilder extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
           padding: EdgeInsets.all(AppDimensions.d16.w),
           decoration: BoxDecoration(
-            color: AppColors.primaryRed.withValues(alpha:0.08),
+            color: AppColors.primaryRed.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(AppDimensions.d20.r),
             boxShadow: [
               BoxShadow(

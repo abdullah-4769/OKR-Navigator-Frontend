@@ -6,7 +6,7 @@ import '../presentation/routes/app_routes.dart';
 class RoleSelectionController extends GetxController {
   final RxInt selectedIndex = (-1).obs;
 
-  // List of roles
+  // Roles with translated strings
   final List<Map<String, dynamic>> roles = [
     {
       'id': 0,
@@ -58,9 +58,9 @@ class RoleSelectionController extends GetxController {
   void selectRole(int index) {
     if (index >= 0 && index < roles.length) {
       if (selectedIndex.value == index) {
-        selectedIndex.value = -1; // Deselect if already selected
+        selectedIndex.value = -1; // Deselect
       } else {
-        selectedIndex.value = index; // Select role
+        selectedIndex.value = index; // Select
       }
     }
   }
@@ -69,10 +69,10 @@ class RoleSelectionController extends GetxController {
   void continueWithSelection() {
     if (selectedIndex.value == -1) {
       Get.snackbar(
-        'select_role'.tr,
         'please_select_role'.tr,
+        ''.tr,
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent.withValues(alpha: 0.1),
+        backgroundColor: Colors.redAccent.withOpacity(0.1),
         colorText: Colors.black,
       );
       return;
@@ -80,7 +80,6 @@ class RoleSelectionController extends GetxController {
 
     final selectedRole = roles[selectedIndex.value];
 
-    // Pass the selected role to the next screen
     Get.toNamed(
       AppRoutes.chooseIndustry,
       arguments: {'selectedRole': selectedRole},

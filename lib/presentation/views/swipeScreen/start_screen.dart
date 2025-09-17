@@ -5,104 +5,122 @@ import '../../../core/app_assets.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
-
 import '../../widgets/custom_svg.dart';
 
 class StartScreen extends StatelessWidget {
   const StartScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: AppColors.white,
-    body: Stack(
-      children: [
-        // Background gradient
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) {
+    // Screen Size
+    final screenWidth = MediaQuery.of(context).size.width;
 
-        SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Logo and Title
-                Column(
-                  children: [
-                    CustomSvg(
-                      assetPath: AppAssets.okrLogo,
-                      width: AppDimensions.d90.w,
-                      height: AppDimensions.d80.h,
-                      semanticsLabel: '',
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return Scaffold(
+          backgroundColor: AppColors.white,
+          body: Stack(
+            children: [
+              // Background gradient
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
+                  ),
+                ),
+              ),
+
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height -
+                            MediaQuery.of(context).padding.top -
+                            MediaQuery.of(context).padding.bottom,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Logo
+                            Column(
+                              children: [
+                                CustomSvg(
+                                  assetPath: AppAssets.okrLogo,
+                                  width: AppDimensions.d90.w,
+                                  height: AppDimensions.d80.h,
+                                  semanticsLabel: '',
+                                ),
+                                SizedBox(height: AppDimensions.d16.h),
+                              ],
+                            ),
+                            SizedBox(height: AppDimensions.d20.h),
+
+                            // MaskGroup SVG
+                            CustomSvg(
+                              assetPath: 'assets/images/maskgroup.svg',
+                              width: AppDimensions.d180.w,
+                              height: AppDimensions.d200.h,
+                              semanticsLabel: '',
+                            ),
+
+                            SizedBox(height: AppDimensions.d40.h),
+
+                            // Welcome Title → Using Theme
+                            Text(
+                              'welcome_to_okr_navigator'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge
+                                  ?.copyWith(color: AppColors.primaryBlue),
+                              textAlign: TextAlign.center,
+                            ),
+
+                            SizedBox(height: AppDimensions.d16.h),
+
+                            // Description → Using Theme
+                            Text(
+                              'start_screen_description'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(
+                                color: AppColors.textSecondary,
+                                height: 1.5,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+
+                            SizedBox(height: AppDimensions.d40.h),
+
+                            // Swipe to Start Button
+                            SwipeToStart(
+                              onSwipeComplete: () {
+                                Get.offAllNamed(AppRoutes.splash1);
+                              },
+                            ),
+
+                            SizedBox(height: AppDimensions.d40.h),
+                          ],
+                        ),
+                      ),
                     ),
-                    SizedBox(height: AppDimensions.d16.h),
-                  ],
-                ),
-
-                SizedBox(height: AppDimensions.d20.h),
-
-                // MaskGroup SVG in the middle
-                CustomSvg(
-                  assetPath: 'assets/images/maskgroup.svg',
-                  width: AppDimensions.d180.w,
-                  height: AppDimensions.d200.h,
-                  semanticsLabel: '',
-                ),
-
-                SizedBox(height: AppDimensions.d40.h),
-
-                // Welcome Text
-                Text(
-                  'welcome_to_okr_navigator'.tr,
-                  style: TextStyle(
-                    fontSize: AppDimensions.d28.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryBlue,
-                    fontFamily: 'Gothic',
                   ),
-                  textAlign: TextAlign.center,
                 ),
-
-                SizedBox(height: AppDimensions.d16.h),
-
-                // Description
-                Text(
-                  'start_screen_description'.tr,
-                  style: TextStyle(
-                    fontSize: AppDimensions.d16.sp,
-                    color: AppColors.textSecondary,
-                    fontFamily: 'Gothic',
-                    height: 1.5,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                SizedBox(height: AppDimensions.d40.h),
-
-                // Swipe to Start Container
-                SwipeToStart(
-                  onSwipeComplete: () {
-                    Get.offAllNamed(AppRoutes.splash1);
-                  },
-                ),
-
-                SizedBox(height: AppDimensions.d40.h),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
-      ],
-    ),
-  );
+        );
+      },
+    );
+  }
 }
 
 // ---------------- SwipeToStart Widget ----------------
@@ -120,7 +138,7 @@ class _SwipeToStartState extends State<SwipeToStart> {
   @override
   Widget build(BuildContext context) {
     final double containerWidth =
-        MediaQuery.of(context).size.width - 48.w; // Padding accounted
+        MediaQuery.of(context).size.width - 48.w; // Considering padding
     final double arrowSize = 50.w;
 
     return GestureDetector(
@@ -137,9 +155,7 @@ class _SwipeToStartState extends State<SwipeToStart> {
         if (_dragPosition >= containerWidth - arrowSize - 5) {
           widget.onSwipeComplete();
         } else {
-          setState(() {
-            _dragPosition = 0;
-          });
+          setState(() => _dragPosition = 0);
         }
       },
       child: Stack(
@@ -155,16 +171,14 @@ class _SwipeToStartState extends State<SwipeToStart> {
             ),
           ),
 
-          // Base Text (Black)
+          // Base Text (Black) → Theme applied
           Positioned.fill(
             child: Center(
               child: Text(
                 'swipe_to_start'.tr,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: AppDimensions.d16.sp,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
-                  fontFamily: 'Gothic',
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -190,18 +204,16 @@ class _SwipeToStartState extends State<SwipeToStart> {
               child: Center(
                 child: Text(
                   'swipe_to_start'.tr,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: AppDimensions.d16.sp,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontFamily: 'Gothic',
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
           ),
 
-          // Circular Arrow
+          // Circular Arrow Button
           Positioned(
             left: _dragPosition,
             child: Container(

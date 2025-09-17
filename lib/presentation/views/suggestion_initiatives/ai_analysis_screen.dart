@@ -5,159 +5,113 @@ import 'package:get/get.dart';
 import '../../../controllers/custom_ai_startegy_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-
 import '../../routes/app_routes.dart';
-
 import '../../widgets/custom_button.dart';
-import '../../widgets/custom_curved_arrow.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/custom_info_container.dart';
-import '../../widgets/custom_svg.dart';
+import '../../widgets/screens_unique_parts/custom_background.dart';
+import '../../widgets/screens_unique_parts/custom_header.dart';
 
 class AIAnalysisScreen extends StatelessWidget {
-  // Initialize controller with Get.put
-  final AIStrategyController controller = Get.put(AIStrategyController());
-
   AIAnalysisScreen({super.key});
 
+  final AIStrategyController controller = Get.put(AIStrategyController());
+
+  String _safeTranslate(String? key, {String fallback = ''}) {
+    if (key == null) return fallback;
+    try {
+      return key.tr;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final screenWidth = constraints.maxWidth;
-      final screenHeight = constraints.maxHeight;
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-      return Scaffold(
-        backgroundColor: Colors.white,
-
-        body: SafeArea(
-          child: Stack(
-            children: [
-              // Background Gradient
-              Positioned.fill(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.backgroundTop,
-                        AppColors.backgroundBottom,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Scrollable Content
-              Positioned.fill(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: AppDimensions.d90.h),
+    return OrientationBuilder(
+      builder: (context, orientation) => Scaffold(
+        body: CustomBackground(
+          child: SafeArea(
+            child: Stack(
+              children: [
+                /// ---------- MAIN SCROLL CONTENT ----------
+                Positioned.fill(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.only(bottom: AppDimensions.d18.h),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(height: AppDimensions.d16.h),
 
-                        // Header
+                        /// ---------- HEADER ----------
+                        CustomHeader(
+                          title: _safeTranslate('suggestion'),
+                          highlightedText: _safeTranslate('of_initiatives'),
+                          subtitle: '',
+                          onBackTap: () =>
+                              Get.offAllNamed(AppRoutes.teamSuggestionInitiativeScreen),
+                        ),
+
+                        SizedBox(height: AppDimensions.d20.h),
+
+                        /// ---------- INFO CONTAINER ----------
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppDimensions.d1.w,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomCurvedArrow(
-                                isLeft: true,
-                                onTap: () =>
-                                    Get.offAllNamed(AppRoutes.keyResultsScreen),
-                                width: AppDimensions.d55.w,
-                                height: AppDimensions.d130.h,
-                              ),
-                              Expanded(
-                                child: RichText(
-                                  textAlign: TextAlign.center,
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: 'suggestion'.tr + ' ',
-                                        style: TextStyle(
-                                          fontFamily: 'Gotham-Bold',
-                                          fontSize: AppDimensions.d40.sp,
-                                          color: AppColors.primaryRed,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: '\n' + 'of_initiatives'.tr,
-                                        style: TextStyle(
-                                          fontFamily: 'Gotham-Bold',
-                                          fontSize: AppDimensions.d26.sp,
-                                          color: AppColors.primaryBlue,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              CircleAvatar(
-                                radius: AppDimensions.d22.r,
-                                backgroundColor: AppColors.white,
-                                child: Padding(
-                                  padding: EdgeInsets.all(2.r),
-                                  child: CustomSvg(
-                                    assetPath: 'assets/images/solo.svg',
-                                    semanticsLabel: 'profile'.tr,
-                                    height: AppDimensions.d60.h,
-                                    width: AppDimensions.d60.w,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: const CustomInfoContainer(
+                            percentage: 65,
+                            robotAsset: "assets/images/robot.svg",
+                            title: "Strategic Tips",
+                            description:
+                            "Focus on measurable actions that directly impact revenue\n\n"
+                                "Consider market research, product development, or sales strategies\n\n"
+                                "Think about timeline, resources, and success metrics",
+                            percentageBarColor: Color(0xFFBFD200),
                           ),
                         ),
 
-                        SizedBox(height: AppDimensions.d10.h),
-                         CustomInfoContainer(
-                          backgroundColor: Colors.green,
-                          logoAsset: 'assets/icons/bulb.svg',
-                          description: 'submit_initiatives_info'.tr,
-                          title: '',
-                        ),
+                        SizedBox(height: AppDimensions.d25.h),
 
-                        SizedBox(height: AppDimensions.d10.h),
-                        // Complete Button
+                        /// ---------- BUTTON ----------
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppDimensions.d40.w,
-                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: Obx(() {
-                            final bool isEnabled =
+                            final bool enabled =
                                 controller.isAnalysisDone.value;
                             return CustomButton(
-                              text: 'check_contextual_challenge'.tr,
-                              onPressed: () {},
+                              text: _safeTranslate(
+                                  'check_contextual_challenge'),
+                              onPressed: enabled
+                                  ? () => Get.offAllNamed(
+                                AppRoutes.contextualChallenge,
+                              )
+                                  : () {Get.offAllNamed(
+                                AppRoutes.contextualChallenge,
+                              );},
                             );
                           }),
                         ),
 
-                        SizedBox(height: AppDimensions.d20.h),
+                        SizedBox(height: AppDimensions.d30.h),
                       ],
                     ),
                   ),
                 ),
-              ),
 
-              // Home Navbar
-              Positioned(
-                right: screenWidth * -0.07,
-                top: screenHeight * 0.50,
-                child: const CustomHomeNavBar(),
-              ),
-            ],
+                /// ---------- FLOATING HOME NAV ----------
+                Positioned(
+                  right: screenWidth * -0.07,
+                  top: screenHeight * 0.50,
+                  child: const CustomHomeNavBar(),
+                ),
+              ],
+            ),
           ),
         ),
-      );
-    },
-  );
+      ),
+    );
+  }
 }

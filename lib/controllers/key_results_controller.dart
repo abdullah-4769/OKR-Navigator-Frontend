@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 class KeyResultsController extends GetxController {
   // Add this method to your KeyResultsController class
-  List<Map<String, dynamic>> getSelectedKeyResults() =>
-      selectedIndexes.map((index) => keyResults[index]).toList();
+  List<Map<String, dynamic>> getSelectedKeyResults() => selectedIndexes.map((index) => keyResults[index]).toList();
 
   // Selected items count
   RxInt selectedCount = 0.obs;
@@ -15,47 +14,42 @@ class KeyResultsController extends GetxController {
   // Required count (for now hardcoded, replace with backend later)
   RxInt requiredCount = 3.obs;
 
-  // List of Key Results (can later come from backend)
+  // List of Key Results - use translation KEYS instead of actual strings
   final List<Map<String, dynamic>> keyResults = [
     {
-      'title': 'Achieve \$5M Revenue from New Products',
-      'description':
-      'Generate significant revenue stream within first 12 months of launch',
+      'titleKey': 'achieve_5m_revenue',
+      'descriptionKey': 'generate_revenue_stream',
       'icon': Icons.attach_money,
-      'tag1': 'Revenue',
-      'tag2': '12 months',
+      'tag1Key': 'revenue',
+      'tag2Key': 'twelve_months',
     },
     {
-      'title': 'Acquire 10,000 New Customers',
-      'description':
-      'Build customer base in target emerging markets through product adoption',
+      'titleKey': 'acquire_10000_customers',
+      'descriptionKey': 'build_customer_base',
       'icon': Icons.people,
-      'tag1': 'Customer Growth',
-      'tag2': '15 months',
+      'tag1Key': 'customer_growth',
+      'tag2Key': 'fifteen_months',
     },
     {
-      'title': 'Achieve 15% Market Share in Target Regions',
-      'description':
-      'Establish significant market presence through new product penetration',
+      'titleKey': 'achieve_15_market_share',
+      'descriptionKey': 'establish_market_presence',
       'icon': Icons.pie_chart,
-      'tag1': 'Market Share',
-      'tag2': '18 months',
+      'tag1Key': 'market_share',
+      'tag2Key': 'eighteen_months',
     },
     {
-      'title': 'Achieve 4.5+ Customer Satisfaction Score',
-      'description':
-      'Maintain high quality standards and customer experience across new products',
+      'titleKey': 'achieve_45_satisfaction',
+      'descriptionKey': 'maintain_quality_standards',
       'icon': Icons.star,
-      'tag1': 'Satisfaction',
-      'tag2': 'Ongoing',
+      'tag1Key': 'satisfaction',
+      'tag2Key': 'ongoing',
     },
     {
-      'title': 'Launch Products 20% Faster Than Industry Average',
-      'description':
-      'Optimize development cycles to gain competitive advantage in time-to-market',
+      'titleKey': 'launch_products_faster',
+      'descriptionKey': 'optimize_development_cycles',
       'icon': Icons.speed,
-      'tag1': 'Medium Impact',
-      'tag2': '9 months',
+      'tag1Key': 'medium_impact',
+      'tag2Key': 'nine_months',
     },
   ];
 
@@ -74,8 +68,8 @@ class KeyResultsController extends GetxController {
   // Check if a key result is selected
   bool isSelected(int index) => selectedIndexes.contains(index);
 
-  // Get list of selected key result titles
+  // Get list of selected key result titles - REMOVE .tr from here!
   List<String> getSelectedTitles() => selectedIndexes
-      .map((index) => keyResults[index]['title'] as String)
+      .map((index) => keyResults[index]['titleKey'] as String) // Just return the key, no .tr
       .toList();
 }

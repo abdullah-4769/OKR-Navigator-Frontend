@@ -1,52 +1,55 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-
 import '../presentation/routes/app_routes.dart';
+import 'game_mode_controller.dart';
 
 class PricingController extends GetxController {
   final RxInt currentPageIndex = 0.obs;
 
+  /// Inject GameModeController
+  final GameModeController gameModeController = Get.find<GameModeController>();
+
   final List<Map<String, dynamic>> pricingPlans = [
     {
-      'title': 'Navigator',
+      'title': 'navigator',
       'price': 'Free',
       'features': [
-        {'text': 'Solo Mode Level 1', 'included': true},
-        {'text': '1 AI feedback per day', 'included': true},
-        {'text': '1 Certified Challenge per day', 'included': true},
-        {'text': 'Limited badges', 'included': true},
+        {'text': 'solo_mode_level_1', 'included': true},
+        {'text': 'ai_feedback_per_day', 'included': true},
+        {'text': 'certified_challenge_per_day', 'included': true},
+        {'text': 'limited_badges', 'included': true},
       ],
-      'level': 'Level 1 Access',
-      'users': 'Single User',
+      'level': 'level_1_access',
+      'users': 'single_user',
       'highlighted': false,
     },
     {
-      'title': 'Navigator+',
+      'title': 'navigator_plus',
       'price': '3.99€/month',
       'features': [
-        {'text': 'Full Solo Mode', 'included': true},
-        {'text': 'Weekly missions', 'included': true},
-        {'text': 'AI tips & debrief', 'included': true},
-        {'text': 'XP tracking', 'included': true},
-        {'text': 'Community leaderboard', 'included': true},
-        {'text': 'Bonus mode', 'included': true},
+        {'text': 'full_solo_mode', 'included': true},
+        {'text': 'weekly_missions', 'included': true},
+        {'text': 'ai_tips_debrief', 'included': true},
+        {'text': 'xp_tracking', 'included': true},
+        {'text': 'community_leaderboard', 'included': true},
+        {'text': 'bonus_mode', 'included': true},
       ],
-      'level': 'Level 2 Access',
-      'users': 'Single User',
+      'level': 'level_2_access',
+      'users': 'single_user',
       'highlighted': true,
     },
     {
-      'title': 'Master Navigation',
+      'title': 'master_navigation',
       'price': '9.99€/month',
       'features': [
-        {'text': 'All Navigator+ features', 'included': true},
-        {'text': 'Official certificate', 'included': true},
-        {'text': 'Performance reports', 'included': true},
-        {'text': 'Monthly live coaching', 'included': true},
-        {'text': 'Exclusive badge sets', 'included': true},
+        {'text': 'all_navigator_plus_features', 'included': true},
+        {'text': 'official_certificate', 'included': true},
+        {'text': 'performance_reports', 'included': true},
+        {'text': 'monthly_live_coaching', 'included': true},
+        {'text': 'exclusive_badge_sets', 'included': true},
       ],
-      'level': 'Level 3 Access',
-      'users': 'Multiple Users',
+      'level': 'level_3_access',
+      'users': 'multiple_users',
       'highlighted': false,
     },
   ];
@@ -76,9 +79,25 @@ class PricingController extends GetxController {
       );
     }
   }
+  void handleContinue() {
+    final mode = gameModeController.selectedMode.value;
+
+    if (mode == 'team') {
+      // 👇 Navigate to splash for team
+      Get.toNamed(AppRoutes.splashScreenTeam);
+
+      // dispose pricing controller after moving away
+      Get.delete<PricingController>();
+    } else {
+      // 👇 Solo or Campaign continue normal flow
+      selectPlan(currentPageIndex.value);
+    }
+  }
 
   void selectPlan(int index) {
-    // Navigate to next screen
-    Get.offAllNamed(AppRoutes.roleSelection);
+    Get.toNamed(AppRoutes.roleSelection);
+    // dispose pricing controller after use
+    Get.delete<PricingController>();
   }
+
 }

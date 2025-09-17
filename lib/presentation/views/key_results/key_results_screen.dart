@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import '../../../controllers/journey_controller.dart';
 import '../../../controllers/key_results_controller.dart';
 import '../../../controllers/okr_constellation_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_home_navbar.dart';
@@ -24,10 +24,22 @@ class KeyResultsScreen extends StatelessWidget {
   final KeyResultsController keyResultsController = Get.put(
     KeyResultsController(),
   );
+
   final OKRConstellationController constellationController = Get.put(
     OKRConstellationController(),
   );
+
   final JourneyController journeyController = Get.find<JourneyController>();
+
+  // Helper method to safely get translated text
+  String _safeTranslate(String? key, {String fallback = ''}) {
+    if (key == null) return fallback;
+    try {
+      return key.tr;
+    } catch (e) {
+      return fallback;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +76,7 @@ class KeyResultsScreen extends StatelessWidget {
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: AppDimensions.d90.h),
+                      padding: EdgeInsets.only(bottom: AppDimensions.d24.h),
                       child: Column(
                         children: [
                           SizedBox(height: AppDimensions.d16.h),
@@ -89,7 +101,7 @@ class KeyResultsScreen extends StatelessWidget {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'select'.tr + ' ',
+                                          text: _safeTranslate('select') + ' ',
                                           style: TextStyle(
                                             fontFamily: 'Gotham-Bold',
                                             fontSize: AppDimensions.d40.sp,
@@ -98,7 +110,7 @@ class KeyResultsScreen extends StatelessWidget {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: '\n${'key_results'.tr}',
+                                          text: '\n${_safeTranslate('key_results')}',
                                           style: TextStyle(
                                             fontFamily: 'Gotham-Bold',
                                             fontSize: AppDimensions.d26.sp,
@@ -127,16 +139,16 @@ class KeyResultsScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: AppDimensions.d10.h),
-                           CustomObjectiveContainer(
-                            title: 'selected_objective'.tr,
-                            subtitle: 'launch_2_products'.tr,
-                            description: 'objective_description'.tr,
+                          CustomObjectiveContainer(
+                            title: _safeTranslate('selected_objective'),
+                            subtitle: _safeTranslate('launch_2_products'),
+                            description: _safeTranslate('objective_description'),
                           ),
-                          SizedBox(height: AppDimensions.d20.h),
+                          SizedBox(height: AppDimensions.d16.h),
                           const CustomSelectedKeyResultsContainer(),
-                          SizedBox(height: AppDimensions.d20.h),
+                          SizedBox(height: AppDimensions.d10.h),
                           Text(
-                            'select_key_results'.tr,
+                            _safeTranslate('select_key_results'),
                             style: TextStyle(
                               fontSize: AppDimensions.d20.sp,
                               fontWeight: FontWeight.bold,
@@ -144,12 +156,15 @@ class KeyResultsScreen extends StatelessWidget {
                               fontFamily: 'Gotham-Bold',
                             ),
                           ),
-                          Text(
-                            'choose_3_outcomes'.tr,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: AppDimensions.d15.sp,
-                              color: AppColors.textSecondary,
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w),
+                            child: Text(
+                              _safeTranslate('choose_3_outcomes'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: AppDimensions.d15.sp,
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                           ),
                           SizedBox(height: AppDimensions.d20.h),
@@ -160,38 +175,33 @@ class KeyResultsScreen extends StatelessWidget {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: keyResultsController.keyResults.length,
                               itemBuilder: (context, index) {
-                                final item =
-                                keyResultsController.keyResults[index];
+                                final item = keyResultsController.keyResults[index];
+                                final titleKey = item['titleKey'] as String?;
+                                final descriptionKey = item['descriptionKey'] as String?;
+                                final tag1Key = item['tag1Key'] as String?;
+                                final tag2Key = item['tag2Key'] as String?;
+
                                 return Obx(
                                       () => CustomIndustryContainer(
-                                    title: item['title']?.tr,
-                                    description: item['description']?.tr,
+                                    title: _safeTranslate(titleKey, fallback: 'Unknown Title'),
+                                    description: _safeTranslate(descriptionKey, fallback: 'No description'),
                                     icon: Icons.rocket,
-                                    isSelected: keyResultsController.isSelected(
-                                      index,
-                                    ),
+                                    isSelected: keyResultsController.isSelected(index),
                                     onTap: () {
-                                      keyResultsController.toggleSelection(
-                                        index,
-                                      );
-
+                                      keyResultsController.toggleSelection(index);
                                       final icon = item['icon'];
-                                      if (keyResultsController.isSelected(
-                                        index,
-                                      )) {
+                                      if (keyResultsController.isSelected(index)) {
                                         constellationController.addIcon(icon);
                                       } else {
-                                        constellationController.removeIcon(
-                                          icon,
-                                        );
+                                        constellationController.removeIcon(icon);
                                       }
                                     },
                                     showTag1: true,
                                     tag1Icon: Icons.trending_up,
-                                    tag1Text: item['tag1']?.tr,
+                                    tag1Text: _safeTranslate(tag1Key, fallback: ''),
                                     showTag2: true,
                                     tag2Icon: Icons.access_time,
-                                    tag2Text: item['tag2']?.tr,
+                                    tag2Text: _safeTranslate(tag2Key, fallback: ''),
                                   ),
                                 );
                               },
@@ -216,18 +226,13 @@ class KeyResultsScreen extends StatelessWidget {
                             ),
                             child: Obx(
                                   () => CustomButton2(
-                                text: 'complete_selection'.tr,
-                                onPressed:
-                                keyResultsController.selectedCount.value ==
-                                    keyResultsController.requiredCount.value
-                                    ? () {
+                                text: _safeTranslate('complete_selection'),
+                                onPressed: keyResultsController.selectedCount.value == keyResultsController.requiredCount.value ? () {
                                   journeyController.completeStep(2);
                                   Get.offAllNamed(
-                                    AppRoutes
-                                        .suggestionInitiativeScreen,
+                                    AppRoutes.suggestionInitiativeScreen,
                                   );
-                                }
-                                    : null,
+                                } : null,
                               ),
                             ),
                           ),

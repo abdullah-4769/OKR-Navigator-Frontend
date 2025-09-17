@@ -9,10 +9,10 @@ class LanguageController extends GetxController {
   final _storage = GetStorage();
   static const String _storageKey = 'langCode';
 
-  /// Currently selected language code
-  var selectedLanguage = 'en'.obs;
+  /// Reactive selected language code
+  final RxString selectedLanguage = 'en'.obs;
 
-  /// List of supported languages
+  /// Supported languages list
   final List<Map<String, String>> supportedLanguages = const [
     {'code': 'en', 'name': 'English', 'nativeName': 'English', 'flag': '🇬🇧'},
     {'code': 'fr', 'name': 'French', 'nativeName': 'Français', 'flag': '🇫🇷'},
@@ -25,11 +25,11 @@ class LanguageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Load saved language or fallback to current locale
-    selectedLanguage.value = _storage.read(_storageKey) ??
-        _localizationService.currentLanguageCode;
+    // Load saved or fallback language
+    selectedLanguage.value =
+        _storage.read(_storageKey) ?? _localizationService.currentLanguageCode;
 
-    // Apply the language immediately
+    // Apply language immediately
     _localizationService.changeLocale(selectedLanguage.value);
   }
 
@@ -40,14 +40,13 @@ class LanguageController extends GetxController {
     selectedLanguage.value = langCode;
     _localizationService.changeLocale(langCode);
 
-    // Persist selection
+    // Persist in storage
     _storage.write(_storageKey, langCode);
   }
 
-  /// Current selected language code
   String get currentLanguage => selectedLanguage.value;
 
-  /// Get language info by its code
+  /// Get language details
   Map<String, String>? getLanguageByCode(String code) =>
       supportedLanguages.firstWhere(
             (lang) => lang['code'] == code,

@@ -59,15 +59,16 @@ class CustomTextField extends StatelessWidget {
     style: TextStyle(
       fontSize: AppDimensions.d16.sp,
       color: AppColors.textPrimary,
-      fontFamily: 'Gothic',
+      fontFamily: 'GothamMedium',
     ),
     decoration: InputDecoration(
       counterText: '',
       hintText: hint,
       hintStyle: TextStyle(
-        fontSize: AppDimensions.d14.sp,
+        fontSize: AppDimensions.d12.sp,
         color: AppColors.textSecondary,
-        fontFamily: 'Gothic',
+        fontFamily: 'GothamMedium',
+        fontWeight: FontWeight.w400
       ),
       prefixIcon: prefixIcon != null
           ? Padding(
@@ -120,7 +121,7 @@ class CustomTextField extends StatelessWidget {
       errorStyle: TextStyle(
         fontSize: AppDimensions.d12.sp,
         color: AppColors.error,
-        fontFamily: 'Gothic',
+        fontFamily: 'Gotham',
       ),
     ),
   );

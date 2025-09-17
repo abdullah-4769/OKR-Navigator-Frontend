@@ -43,6 +43,8 @@ class AppColors {
   static const Color successGreen = Color(0xFFB9FBC0); // Light Pistachio Green
 
   static const Color lightSkyBlue = Color(0xFF87CEFA);
+  static const Color imageBackgroundColor = Color(0xFFB2FFE2);
+  static const Color iconMiddleColor = Color(0xFED402);
 
   static const Color primaryGreen = Color(0xFF4ECDC4);
   static const Color primaryPurple = Color(0xFF6C63FF);

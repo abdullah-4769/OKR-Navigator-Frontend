@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/generated/assets.dart';
+import 'package:game_app/presentation/routes/app_routes.dart';
+import 'package:game_app/presentation/widgets/bubble_button.dart';
+import 'package:game_app/presentation/widgets/custom_button2.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/home_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-
 import '../../widgets/custom_svg.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,168 +21,171 @@ class HomeScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
+    return OrientationBuilder(
+      builder: (context, orientation) => Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppDimensions.d8.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: AppDimensions.d26.h),
+          child: SafeArea(
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppDimensions.d8.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: AppDimensions.d26.h),
 
-                    // LOGO
-                    CustomSvg(
-                      assetPath: 'assets/images/okrnev.svg',
-                      semanticsLabel: 'OKR',
-                      height: 50.h,
-                    ),
-
-                    SizedBox(height: AppDimensions.d40.h),
-
-                    // Bonus + Certification
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Positioned(
-                              left: -70.w,
-                              top: -40.h,
-                              child: CustomSvg(
-                                assetPath: 'assets/images/robot.svg',
-                                height: 64.h,
-                                width: 58.w,
-                                semanticsLabel: 'robot',
-                              ),
-                            ),
-                            const SizedBox(height: 48),
-                            _underlineText('bonus_mode'.tr),
-                          ],
-                        ),
-                        SizedBox(width: 22.w),
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            _chip('certification'.tr),
-                            Positioned(
-                              right: -55.w,
-                              top: -22.h,
-                              child: CircleAvatar(
-                                radius: 26.r,
-                                backgroundColor: Colors.white,
-                                child: Padding(
-                                  padding: EdgeInsets.all(3.r),
-                                  child: CustomSvg(
-                                    assetPath: 'assets/images/certificate.svg',
-                                    semanticsLabel: 'certificate',
-                                    height: 28.h,
-                                    width: 28.w,
+                      // LOGO
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomSvg(
+                            assetPath: 'assets/images/okrnev.svg',
+                            semanticsLabel: 'OKR',
+                            height: 50.h,
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 40.h),
+                                child: SizedBox(
+                                  child: Image.asset(
+                                    Assets.imagesNavigationImage,
+                                    scale: 2.9,
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                              Container(
+                                height: 49.sp,
+                                width: 49.sp,
+                                margin: EdgeInsets.only(right: 10.w),
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColors.primaryRed,
+                                  ),
+                                  color: AppColors.softRed.withValues(
+                                    alpha: 0.4,
+                                  ),
+                                ),
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    Assets.imagesCertificateImage,
+                                    fit: BoxFit.cover,
+                                    scale: 1.8,
+                                  ),
+                                ),
+                              ),
 
-                    SizedBox(height: AppDimensions.d18.h),
-
-                    // Cards + vertical dots
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: SizedBox(
-                          width: screenWidth,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              _verticalDots(),
-                              SizedBox(width: 8.w),
-                              SizedBox(
-                                width: screenWidth * 0.8,
-                                height: screenHeight * 0.5,
-                                child: PageView.builder(
-                                  controller: c.pageController,
-                                  scrollDirection: Axis.vertical,
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: c.cards.length,
-                                  itemBuilder: (context, index) =>
-                                      AnimatedBuilder(
-                                        animation: c.pageController,
-                                        builder: (context, child) {
-                                          final double page =
-                                          c.pageController.hasClients
-                                              ? (c.pageController.page ?? 0.0)
-                                              : 0.0;
-                                          final delta = (index - page);
-                                          final translateX = delta * -40.w;
-                                          final rotate = delta * -0.09;
-                                          final scale =
-                                          (1 - (delta.abs() * 0.1)).clamp(
-                                            0.9,
-                                            1.0,
-                                          );
-
-                                          return Transform.translate(
-                                            offset: Offset(translateX, 0),
-                                            child: Transform.rotate(
-                                              angle: rotate,
-                                              child: Transform.scale(
-                                                scale: scale,
-                                                child: _card(index),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
+                              Container(
+                                height: 49.sp,
+                                width: 49.sp,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppColors.primaryRed,
+                                  ),
+                                  color: AppColors.imageBackgroundColor
+                                      .withValues(alpha: 0.4),
+                                ),
+                                child: ClipOval(
+                                  child: Image.network(
+                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPfO37MK81JIyR1ptwqr_vYO3w4VR-iC2wqQ&s",
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
+                        ],
+                      ),
+                      Center(
+                        child: CustomBubbleButton(
+                          text: 'Certificate',
+                          width: 90,
+                          height: 30,
+                          onTap: () {},
                         ),
                       ),
-                    ),
 
-                    SizedBox(height: AppDimensions.d12.h),
-                    _dashboardButton(),
-                    SizedBox(height: AppDimensions.d16.h),
-                  ],
-                ),
-              ),
+                      // Bonus + Certification
+                      SizedBox(height: AppDimensions.d18.h),
 
-              // Top-right profile
-              Positioned(
-                top: 12.h,
-                right: 16.w,
-                child: CircleAvatar(
-                  radius: 18.r,
-                  backgroundColor: Colors.white,
-                  child: Padding(
-                    padding: EdgeInsets.all(2.r),
-                    child: CustomSvg(
-                      assetPath: 'assets/images/persondashboard.svg',
-                      semanticsLabel: 'profile',
-                      height: 30.h,
-                      width: 30.w,
-                    ),
+                      // Cards + vertical dots
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: SizedBox(
+                            width: screenWidth,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                _verticalDots(),
+                                SizedBox(width: 8.w),
+                                SizedBox(
+                                  width: screenWidth * 0.8,
+                                  height: screenHeight * 0.5,
+                                  child: PageView.builder(
+                                    controller: c.pageController,
+                                    scrollDirection: Axis.vertical,
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: c.cards.length,
+                                    itemBuilder: (context, index) =>
+                                        AnimatedBuilder(
+                                          animation: c.pageController,
+                                          builder: (context, child) {
+                                            final double page =
+                                                c.pageController.hasClients
+                                                ? (c.pageController.page ?? 0.0)
+                                                : 0.0;
+                                            final delta = (index - page);
+                                            final translateX = delta * -40.w;
+                                            final rotate = delta * -0.09;
+                                            final scale =
+                                                (1 - (delta.abs() * 0.1)).clamp(
+                                                  0.9,
+                                                  1.0,
+                                                );
+
+                                            return Transform.translate(
+                                              offset: Offset(translateX, 0),
+                                              child: Transform.rotate(
+                                                angle: rotate,
+                                                child: Transform.scale(
+                                                  scale: scale,
+                                                  child: _card(index, context),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: AppDimensions.d12.h),
+                      _dashboardButton(context),
+                      SizedBox(height: AppDimensions.d16.h),
+                    ],
                   ),
                 ),
-              ),
-            ],
+
+                // Top-right profile
+              ],
+            ),
           ),
         ),
       ),
@@ -187,18 +193,16 @@ class HomeScreen extends StatelessWidget {
   }
 
   // ===== Widgets =====
-  Widget _underlineText(String text) => Text(
+  Widget _underlineText(String text, BuildContext context) => Text(
     text,
-    style: TextStyle(
-      fontSize: AppDimensions.d14.sp,
+    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
       color: Colors.grey.shade700,
       fontWeight: FontWeight.w700,
-      fontFamily: 'Gotham',
       decoration: TextDecoration.underline,
     ),
   );
 
-  Widget _chip(String text) => Container(
+  Widget _chip(String text, BuildContext context) => Container(
     padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
     decoration: BoxDecoration(
       color: Colors.white.withValues(alpha: 0.7),
@@ -207,17 +211,16 @@ class HomeScreen extends StatelessWidget {
     ),
     child: Text(
       text,
-      style: TextStyle(
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
         fontSize: 12.sp,
         color: const Color(0xFF3E85C9),
         fontWeight: FontWeight.w700,
-        fontFamily: 'Gotham',
       ),
     ),
   );
 
   Widget _verticalDots() => Obx(
-        () => SizedBox(
+    () => SizedBox(
       width: 12.w,
       height: 140.h,
       child: Column(
@@ -239,7 +242,7 @@ class HomeScreen extends StatelessWidget {
     ),
   );
 
-  Widget _card(int index) {
+  Widget _card(int index, BuildContext context) {
     final m = c.cards[index];
     final bg = Color(m['bg'] as int);
     final bg2 = Color(m['bg2'] as int);
@@ -268,34 +271,29 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          child: _cardBody(m),
+          child: _cardBody(m, context),
         ),
       ),
     );
   }
 
-  Widget _cardBody(Map<String, dynamic> m) => Column(
+  Widget _cardBody(Map<String, dynamic> m, BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       RichText(
         text: TextSpan(
           children: [
             TextSpan(
-              text: '${m['titleTop']?.tr}\n',
-              style: TextStyle(
+              text: '${(m['titleTop'] ?? '').toString().tr}\n',
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 fontSize: 32.sp,
-                height: 1.0,
-                fontWeight: FontWeight.w900,
-                fontFamily: 'Gotham',
                 color: Colors.white,
               ),
             ),
             TextSpan(
-              text: m['titleBottom']?.tr,
-              style: TextStyle(
+              text: (m['titleBottom'] ?? '').toString().tr,
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 fontSize: 28.sp,
-                fontWeight: FontWeight.w800,
-                fontFamily: 'Gotham',
                 color: Colors.black.withValues(alpha: 0.6),
               ),
             ),
@@ -304,51 +302,47 @@ class HomeScreen extends StatelessWidget {
       ),
       SizedBox(height: 10.h),
       Text(
-        m['subtitle']?.tr,
-        style: TextStyle(
+        (m['subtitle'] ?? '').toString().tr,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 13.sp,
           height: 1.35,
           color: Colors.white,
-          fontFamily: 'Gotham',
         ),
       ),
       const Spacer(),
       Text(
-        m['cta']?.tr,
-        style: TextStyle(
+        (m['cta'] ?? '').toString().tr,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 14.sp,
           fontWeight: FontWeight.w700,
           decoration: TextDecoration.underline,
           color: Colors.white,
-          fontFamily: 'Gotham',
         ),
       ),
     ],
   );
 
-  Widget _dashboardButton() => GestureDetector(
-    onTap: () => Get.toNamed('/dashboard'),
+  Widget _dashboardButton(BuildContext context) => GestureDetector(
+    onTap: () => Get.toNamed(AppRoutes.personalDashboardScreen),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           'go_to'.tr,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: 15.sp,
-            color: Colors.black87,
-            fontFamily: 'Gotham',
             fontWeight: FontWeight.w600,
+            color: Colors.black87,
           ),
         ),
         SizedBox(height: 1.h),
         Text(
           'dashboard'.tr,
-          style: TextStyle(
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: 15.sp,
-            color: Colors.black87,
-            fontFamily: 'Gotham',
             fontWeight: FontWeight.w800,
             decoration: TextDecoration.underline,
+            color: Colors.black87,
           ),
         ),
       ],

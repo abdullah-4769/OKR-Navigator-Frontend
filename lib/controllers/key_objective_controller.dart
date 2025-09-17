@@ -6,40 +6,33 @@ class KeyObjectiveController extends GetxController {
   // Store selected objective index
   RxInt selectedIndex = (-1).obs;
 
-  // Objectives list
+  // Objectives list - use translation KEYS, not the actual translated strings
   final List<Map<String, dynamic>> objectives = [
     {
-      'title': 'Expand Product Line'.tr,
-      'description': 'Introduce new products in emerging markets'.tr,
+      'titleKey': 'expand_product_line',
+      'descriptionKey': 'introduce_new_products',
       'icon': Icons.add_business,
     },
     {
-      'title': 'Improve Customer Experience'.tr,
-      'description': 'Enhance satisfaction across all touchpoints'.tr,
+      'titleKey': 'improve_customer_experience',
+      'descriptionKey': 'enhance_satisfaction',
       'icon': Icons.sentiment_satisfied,
     },
     {
-      'title': 'Increase Market Share'.tr,
-      'description': 'Gain significant presence in target regions'.tr,
+      'titleKey': 'increase_market_share',
+      'descriptionKey': 'gain_significant_presence',
       'icon': Icons.pie_chart,
     },
   ];
-
-  // Reference to Journey Controller
-  final JourneyController journeyController = Get.find<JourneyController>();
 
   // Toggle objective selection
   void selectObjective(int index) {
     if (selectedIndex.value == index) {
       // Deselect if clicked again
       selectedIndex.value = -1;
-      journeyController.progress.value = 20; // Reset progress
-      journeyController.completedSteps[0] = false;
     } else {
       // Select new objective
       selectedIndex.value = index;
-      journeyController.progress.value = 40; // Update progress
-      journeyController.completedSteps[0] = true;
     }
   }
 
@@ -49,7 +42,8 @@ class KeyObjectiveController extends GetxController {
   // Button enabled only when something is selected
   bool get isButtonEnabled => selectedIndex.value != -1;
 
-  // Get selected objective title
-  String get selectedTitle =>
-      selectedIndex.value != -1 ? objectives[selectedIndex.value]['title'] : '';
+  // Get selected objective title - JUST return the key, NO .tr here
+  String get selectedTitleKey => selectedIndex.value != -1
+      ? objectives[selectedIndex.value]['titleKey']
+      : '';
 }

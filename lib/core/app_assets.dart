@@ -6,7 +6,7 @@ class AppAssets {
 
   static const String imagesArrow = 'assets/images/arrow.svg';
   static const String imagesCertificate = 'assets/images/certificate.svg';
-  static const String imagesCompaign = 'assets/images/compaign.svg';
+  static const String imagesCompaign = 'assets/images/campaign.svg';
   static const String imagesFirstmaskgrp = 'assets/images/firstmaskgrp.svg';
   static const String imagesLeft = 'assets/images/left.svg';
   static const String imagesLogo = 'assets/images/logo.svg';

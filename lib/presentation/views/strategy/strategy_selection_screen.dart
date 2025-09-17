@@ -20,7 +20,7 @@ class StrategySelectionScreen extends StatelessWidget {
 
   final journeyController = Get.find<JourneyController>();
   final controller = Get.find<StrategySelectionController>();
-
+  final soloController = Get.find<StrategySelectionController>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -53,7 +53,7 @@ class StrategySelectionScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: AppDimensions.d90.h),
+                  padding: EdgeInsets.only(bottom: AppDimensions.d20.h),
                   child: Column(
                     children: [
                       SizedBox(height: height * 0.02),
@@ -170,7 +170,7 @@ class StrategySelectionScreen extends StatelessWidget {
                             SizedBox(height: height * 0.03),
 
                             // Cards Section
-                            CustomCardPagerBuilder(),
+                            CustomCardPagerBuilder(controller: soloController,),
 
                             SizedBox(height: height * 0.03),
 

@@ -8,6 +8,7 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isLoading;
   final Widget? leading;
+  final IconData? icon;
   final Color? backgroundColor;
   final Color? textColor;
   final double? width;
@@ -20,6 +21,7 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.isLoading = false,
     this.leading,
+    this.icon,
     this.backgroundColor,
     this.textColor,
     this.width,
@@ -29,42 +31,43 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: width ?? double.infinity.w,
-    height: height ?? AppDimensions.d48.h,
+    width: width ?? 310.w,
+    height: height ?? 45.h,
     child: ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? AppColors.primaryRed,
         disabledBackgroundColor: (backgroundColor ?? AppColors.primaryRed)
-            .withValues(alpha: 0.5),
+            .withOpacity(0.5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius.r),
         ),
       ),
       child: isLoading
           ? SizedBox(
-              width: AppDimensions.d22.w,
-              height: AppDimensions.d22.h,
-              child: const CircularProgressIndicator(color: Colors.white),
-            )
+        width: AppDimensions.d22.w,
+        height: AppDimensions.d22.h,
+        child: const CircularProgressIndicator(color: Colors.white),
+      )
           : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (leading != null) ...[
-                  leading!,
-                  SizedBox(width: AppDimensions.d8.w),
-                ],
-                Text(
-                  text,
-                  style: TextStyle(
-                    color: textColor ?? AppColors.white,
-                    fontSize: AppDimensions.d18.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, color: textColor ?? AppColors.white),
+            SizedBox(width: AppDimensions.d8.w),
+          ],
+          if (leading != null) ...[
+            leading!,
+            SizedBox(width: AppDimensions.d8.w),
+          ],
+          Text(
+            text,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.white),
+
+          ),
+        ],
+      ),
     ),
   );
 }

@@ -58,7 +58,7 @@ class SuggestionInitiativesScreen extends StatelessWidget {
             Positioned.fill(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(bottom: height * 0.15),
+                padding: EdgeInsets.only(bottom: height * 0.01),
                 child: Column(
                   children: [
                     SizedBox(height: height * 0.02),
@@ -147,7 +147,7 @@ class SuggestionInitiativesScreen extends StatelessWidget {
                       descController: controller.secondInitiativeDesc,
                     ),
 
-                    SizedBox(height: height * 0.03),
+                    SizedBox(height: height * 0.001),
 
                     const CustomAIStrategyContainer(),
 

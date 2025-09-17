@@ -25,7 +25,10 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: AppConstants.splashDuration));
     if (!mounted) return;
 
-    await Get.offAllNamed(AppRoutes.language);
+
+
+
+ await Get.offAllNamed(AppRoutes.language);
   }
 
   @override

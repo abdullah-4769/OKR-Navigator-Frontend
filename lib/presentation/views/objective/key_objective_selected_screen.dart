@@ -5,7 +5,6 @@ import '../../../controllers/journey_controller.dart';
 import '../../../controllers/key_objective_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
-
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_home_navbar.dart';
@@ -21,9 +20,22 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
   final KeyObjectiveController controller = Get.put(KeyObjectiveController());
   final JourneyController journeyController = Get.find<JourneyController>();
 
+  // Helper method to safely get translated text
+  String _safeTranslate(String? key, {String fallback = ''}) {
+    if (key == null) return fallback;
+    try {
+      return key.tr;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    journeyController.setStep(0, true);
+    // Initialize journey step when screen builds
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      journeyController.setStep(0, true);
+    });
 
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -50,7 +62,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: AppDimensions.d90.h),
+                  padding: EdgeInsets.only(bottom: AppDimensions.d18.h),
                   child: Column(
                     children: [
                       SizedBox(height: AppDimensions.d16.h),
@@ -63,8 +75,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                           children: [
                             CustomCurvedArrow(
                               isLeft: true,
-                              onTap: () =>
-                                  Get.offAllNamed(AppRoutes.selectStrategy),
+                              onTap: () => Get.offAllNamed(AppRoutes.selectStrategy),
                               width: AppDimensions.d55.w,
                               height: AppDimensions.d130.h,
                             ),
@@ -74,7 +85,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'choose'.tr + ' ',
+                                      text: _safeTranslate('choose') + ' ',
                                       style: TextStyle(
                                         fontFamily: 'Gotham-Bold',
                                         fontSize: AppDimensions.d40.sp,
@@ -83,7 +94,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: '\n${'objective'.tr}',
+                                      text: '\n${_safeTranslate('objective')}',
                                       style: TextStyle(
                                         fontFamily: 'Gotham-Bold',
                                         fontSize: AppDimensions.d26.sp,
@@ -111,28 +122,34 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                       CustomObjectiveContainer(
-                        title: 'selected_strategy'.tr,
-                        subtitle: 'development_new_markets'.tr,
-                        description: 'objective_description'.tr,
+                      CustomObjectiveContainer(
+                        title: _safeTranslate('selected_strategy'),
+                        subtitle: _safeTranslate('development_new_markets'),
+                        description: _safeTranslate('objective_description'),
                         icon: Icons.emoji_objects,
                       ),
                       SizedBox(height: AppDimensions.d20.h),
-                      Text(
-                        'choose_your_objective'.tr,
-                        style: TextStyle(
-                          fontSize: AppDimensions.d20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryRed,
-                          fontFamily: 'Gotham-Bold',
+                      Padding(
+                        padding:  EdgeInsets.all(8.w),
+                        child: Text(
+                          _safeTranslate('choose_your_objective'),
+                          style: TextStyle(
+                            fontSize: AppDimensions.d20.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryRed,
+                            fontFamily: 'Gotham-Bold',
+                          ),
                         ),
                       ),
-                      Text(
-                        'select_one_objective'.tr,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: AppDimensions.d15.sp,
-                          color: AppColors.textSecondary,
+                      Padding(
+                        padding:  EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Text(
+                          _safeTranslate('select_one_objective'),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: AppDimensions.d15.sp,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ),
                       SizedBox(height: AppDimensions.d10.h),
@@ -142,17 +159,26 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                             controller.objectives.length,
                                 (index) {
                               final obj = controller.objectives[index];
+                              final titleKey = obj['titleKey'] as String?;
+                              final descriptionKey = obj['descriptionKey'] as String?;
+
                               return Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(12.0),
                                 child: CustomIndustryContainer(
-                                  title: obj['title']?.tr,
-                                  description: obj['description']?.tr,
-                                  icon: obj['icon'],
+                                  title: _safeTranslate(titleKey, fallback: 'Unknown'),
+                                  description: _safeTranslate(descriptionKey, fallback: 'No description available'),
+                                  icon: obj['icon'] as IconData,
                                   isSelected: controller.isSelected(index),
                                   onTap: () {
                                     controller.selectObjective(index);
-                                    journeyController.completeStep(0);
-                                    journeyController.progress.value = 40;
+                                    // Update journey progress after selection
+                                    if (controller.isSelected(index)) {
+                                      journeyController.progress.value = 40;
+                                      journeyController.completeStep(0);
+                                    } else {
+                                      journeyController.progress.value = 20;
+                                      journeyController.completedSteps[0] = false;
+                                    }
                                   },
                                 ),
                               );
@@ -177,7 +203,7 @@ class KeyObjectiveSelectedScreen extends StatelessWidget {
                         ),
                         child: Obx(
                               () => CustomButton2(
-                            text: 'complete_selection'.tr,
+                            text: _safeTranslate('complete_selection'),
                             onPressed: controller.isButtonEnabled
                                 ? () => Get.offAllNamed(
                               AppRoutes.keyResultsScreen,

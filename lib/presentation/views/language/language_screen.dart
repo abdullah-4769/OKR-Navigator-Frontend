@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/generated/assets.dart';
 import 'package:get/get.dart';
 import '../../../controllers/language_controller.dart';
 import '../../../core/app_colors.dart';
@@ -14,299 +14,167 @@ class LanguageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final LanguageController controller = Get.find<LanguageController>();
+    final theme = Theme.of(context);
 
+    // 🔹 Use OrientationBuilder for responsiveness
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(AppDimensions.d12.h),
-              child: Column(
-                children: [
-                  SizedBox(height: AppDimensions.d15.h),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          final mediaQuery = MediaQuery.of(context);
+          final screenHeight = mediaQuery.size.height;
+          final screenWidth = mediaQuery.size.width;
 
-                  // Title Section with Icon
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.language,
-                        color: AppColors.primaryRed,
-                        size: AppDimensions.d28.r,
-                      ),
-                      SizedBox(width: AppDimensions.d6.w),
-                      // ❌ Removed Obx: translation key updates automatically
-                      Text(
-                        'select_language'.tr,
-                        style: TextStyle(
-                          fontSize: AppDimensions.d22.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryBlue,
-                          fontFamily: 'Gotham',
-                        ),
-                      ),
-                    ],
-                  ),
+          final titleStyle =
+              theme.textTheme.headlineLarge ?? const TextStyle(fontSize: 22);
+          final tileTitleStyle =
+              theme.textTheme.bodyLarge ?? const TextStyle(fontSize: 16);
+          final tileSubtitleStyle =
+              theme.textTheme.bodyMedium ?? const TextStyle(fontSize: 14);
 
-                  SizedBox(height: AppDimensions.d12.h),
-
-                  // Language List
-                  Column(
-                    children: controller.supportedLanguages
-                        .map(
-                          (lang) => _buildLanguageTile(
-                        lang['nativeName']!,
-                        lang['name']!,
-                        lang['flag']!,
-                        lang['code']!,
-                        controller,
-                      ),
-                    )
-                        .toList(),
-                  ),
-
-                  SizedBox(height: AppDimensions.d12.h),
-
-                  // Continue Button
-                  CustomButton(
-                    text: 'continue'.tr,
-                    onPressed: () {
-                      Get.offAllNamed(AppRoutes.register);
-                    },
-                    backgroundColor: AppColors.primaryRed,
-                  ),
-
-                  SizedBox(height: AppDimensions.d12.h),
-
-                  // Bottom Logo
-                  Center(
-                    child: CustomSvg(
-                      assetPath: 'assets/images/logo.svg',
-                      width: AppDimensions.d30.w,
-                      height: AppDimensions.d30.h,
-                      semanticsLabel: '',
-                    ),
-                  ),
-                ],
+          return Container(
+            height: screenHeight,
+            width: screenWidth,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
               ),
             ),
-          ),
-        ),
+            child: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.05,
+                            vertical: screenHeight * 0.015,
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(height: AppDimensions.d28),
+
+                              /// 🔹 TITLE
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+
+                                 Image.asset(Assets.imagesLanguageImage,scale: 2.5,),
+                                  SizedBox(width: AppDimensions.d6),
+                                  Flexible(
+                                    child: Text(
+                                      'select_language'.tr,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: titleStyle.copyWith(
+                                        color: AppColors.primaryBlue,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: AppDimensions.d16),
+
+                              /// 🔹 LANGUAGE LIST
+                              Column(
+                                children: controller.supportedLanguages
+                                    .map(
+                                      (lang) => _buildLanguageTile(
+                                    lang['nativeName']!,
+                                    lang['name']!,
+                                    lang['flag']!,
+                                    lang['code']!,
+                                    controller,
+                                    tileTitleStyle,
+                                    tileSubtitleStyle,
+                                  ),
+                                )
+                                    .toList(),
+                              ),
+
+                              SizedBox(height: AppDimensions.d20),
+
+                              /// 🔹 CONTINUE BUTTON
+                              CustomButton(
+                                text: 'continue'.tr,
+                                onPressed: () =>
+                                    Get.offAllNamed(AppRoutes.register),
+                                backgroundColor: AppColors.primaryRed,
+                              ),
+
+                              SizedBox(height: AppDimensions.d24),
+
+                              /// 🔹 BOTTOM LOGO
+                              Center(
+                                child: CustomSvg(
+                                  assetPath: 'assets/images/logo.svg',
+                                  width: screenWidth * 0.09,
+                                  height: screenWidth * 0.09,
+                                  semanticsLabel: '',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
+  /// 🔹 Language tile widget (GetX reactive)
   Widget _buildLanguageTile(
       String title,
       String subtitle,
       String flag,
       String languageCode,
       LanguageController controller,
-      ) {
-    // ✅ Wrap only the part that needs reactive updates
-    return Obx(() {
+      TextStyle tileTitleBase,
+      TextStyle tileSubtitleBase,
+      ) => Obx(() {
       final isSelected = controller.selectedLanguage.value == languageCode;
 
       return Container(
-        margin: EdgeInsets.symmetric(vertical: AppDimensions.d6.h),
+        margin: EdgeInsets.symmetric(vertical: AppDimensions.d6),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppDimensions.d8.r),
+          borderRadius: BorderRadius.circular(AppDimensions.d8),
           border: Border.all(
             color: isSelected ? AppColors.primaryRed : AppColors.borderGrey,
-            width: AppDimensions.d2.w,
+            width: AppDimensions.d2,
           ),
           color: isSelected ? AppColors.selectedBg : AppColors.white,
         ),
         child: ListTile(
-          leading: Text(
-            flag,
-            style: TextStyle(fontSize: AppDimensions.d26.sp),
-          ),
+          leading: Text(flag, style: tileTitleBase),
           title: Text(
             title,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: AppDimensions.d18.sp,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            style: tileTitleBase.copyWith(
               color: isSelected ? AppColors.primaryRed : AppColors.textPrimary,
-              fontFamily: 'Gotham',
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
           subtitle: Text(
             subtitle,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: AppDimensions.d14.sp,
+            style: tileSubtitleBase.copyWith(
               color: AppColors.textSecondary,
-              fontFamily: 'Gotham',
             ),
           ),
-          trailing: isSelected
-              ? const Icon(Icons.check, color: AppColors.primaryRed)
-              : null,
+          trailing:
+          isSelected ? const Icon(Icons.check, color: AppColors.primaryRed) : null,
           onTap: () => controller.changeLanguage(languageCode),
         ),
       );
     });
-  }
 }
-
-
-//
-// class LanguageScreen extends StatelessWidget {
-//   const LanguageScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final LanguageController controller = Get.find<LanguageController>();
-//
-//     return Scaffold(
-//       body: Container(
-//         decoration: const BoxDecoration(
-//           gradient: LinearGradient(
-//             begin: Alignment.topCenter,
-//             end: Alignment.bottomCenter,
-//             colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-//           ),
-//         ),
-//         child: SafeArea(
-//           child: SingleChildScrollView(
-//             child: Padding(
-//               padding: EdgeInsets.all(AppDimensions.d12.h),
-//               child: Column(
-//                 children: [
-//                   SizedBox(height: AppDimensions.d15.h),
-//
-//                   // Title Section
-//                   Row(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: [
-//                       Icon(
-//                         Icons.language,
-//                         color: AppColors.primaryRed,
-//                         size: AppDimensions.d28.r,
-//                       ),
-//                       SizedBox(width: AppDimensions.d6.w),
-//                       Flexible(
-//                         child: Obx(
-//                               () => Text(
-//                             'select_language'.tr,
-//                             overflow: TextOverflow.ellipsis,
-//                             style: TextStyle(
-//                               fontSize: AppDimensions.d22.sp,
-//                               fontWeight: FontWeight.bold,
-//                               color: AppColors.primaryBlue,
-//                               fontFamily: 'Gotham',
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//
-//                   SizedBox(height: AppDimensions.d12.h),
-//
-//                   // Language List
-//                   Obx(
-//                         () => Column(
-//                       children: controller.supportedLanguages
-//                           .map((lang) => _buildLanguageTile(
-//                         lang['nativeName']!,
-//                         lang['name']!,
-//                         lang['flag']!,
-//                         lang['code']!,
-//                         controller,
-//                       ))
-//                           .toList(),
-//                     ),
-//                   ),
-//
-//                   SizedBox(height: AppDimensions.d12.h),
-//
-//                   // Continue Button
-//                   CustomButton(
-//                     text: 'continue'.tr,
-//                     onPressed: () {
-//                       Get.offAllNamed(AppRoutes.register);
-//                     },
-//                     backgroundColor: AppColors.primaryRed,
-//                   ),
-//
-//                   SizedBox(height: AppDimensions.d12.h),
-//
-//                   // Bottom Logo
-//                   Center(
-//                     child: CustomSvg(
-//                       assetPath: 'assets/images/logo.svg',
-//                       width: AppDimensions.d30.w,
-//                       height: AppDimensions.d30.h,
-//                       semanticsLabel: '',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildLanguageTile(
-//       String title,
-//       String subtitle,
-//       String flag,
-//       String languageCode,
-//       LanguageController controller,
-//       ) {
-//     final isSelected = controller.selectedLanguage.value == languageCode;
-//
-//     return Container(
-//       margin: EdgeInsets.symmetric(vertical: AppDimensions.d6.h),
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(AppDimensions.d8.r),
-//         border: Border.all(
-//           color: isSelected ? AppColors.primaryRed : AppColors.borderGrey,
-//           width: AppDimensions.d2.w,
-//         ),
-//         color: isSelected ? AppColors.selectedBg : AppColors.white,
-//       ),
-//       child: ListTile(
-//         leading: Text(
-//           flag,
-//           style: TextStyle(fontSize: AppDimensions.d26.sp),
-//         ),
-//         title: Text(
-//           title,
-//           overflow: TextOverflow.ellipsis,
-//           style: TextStyle(
-//             fontSize: AppDimensions.d18.sp,
-//             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-//             color: isSelected ? AppColors.primaryRed : AppColors.textPrimary,
-//             fontFamily: 'Gotham',
-//           ),
-//         ),
-//         subtitle: Text(
-//           subtitle,
-//           overflow: TextOverflow.ellipsis,
-//           style: TextStyle(
-//             fontSize: AppDimensions.d14.sp,
-//             color: AppColors.textSecondary,
-//             fontFamily: 'Gotham',
-//           ),
-//         ),
-//         trailing: isSelected
-//             ? const Icon(Icons.check, color: AppColors.primaryRed)
-//             : null,
-//         onTap: () => controller.changeLanguage(languageCode),
-//       ),
-//     );
-//   }
-// }

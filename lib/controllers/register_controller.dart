@@ -4,36 +4,35 @@ import '../../core/app_strings.dart';
 import '../../utils/snackbar_helper.dart';
 
 class RegisterController extends GetxController {
+  // Form Key
+  final formKey = GlobalKey<FormState>();
+
+  // Text Controllers
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
 
+  // Loading State
   final isLoading = false.obs;
 
-  bool validateRegisterForm() {
-    if (formKey.currentState!.validate()) {
-      return true;
-    }
-    return false;
-  }
+  bool validateRegisterForm() => formKey.currentState?.validate() ?? false;
 
   Future<void> register() async {
     if (!validateRegisterForm()) return;
 
-    if (passwordController.text.trim() !=
-        confirmPasswordController.text.trim()) {
+    if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
       SnackbarHelper.error(AppStrings.passwordMismatch.tr);
       return;
     }
 
     isLoading.value = true;
     try {
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API Call
+      // Fake API call
+      await Future.delayed(const Duration(seconds: 2));
       SnackbarHelper.success('registration_successful'.tr);
-      // Navigate to login screen after successful registration
+
       await Get.offAllNamed('/login');
     } catch (e) {
       SnackbarHelper.error('registration_failed'.tr);
@@ -44,12 +43,11 @@ class RegisterController extends GetxController {
 
   @override
   void onClose() {
-    phoneController.dispose();
     nameController.dispose();
+    phoneController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
-
     super.onClose();
   }
 }

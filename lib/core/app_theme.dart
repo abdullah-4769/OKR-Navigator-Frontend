@@ -5,71 +5,107 @@ import 'app_dimensions.dart';
 
 final ThemeData appTheme = ThemeData(
   primaryColor: AppColors.primary,
-  fontFamily: 'Gothic',
-
-  // Text Styles
+  fontFamily: 'Gotham',
+  useMaterial3: true, // ✅ modern Material
   textTheme: TextTheme(
+    // ---------------------- DISPLAY ----------------------
     displayLarge: TextStyle(
       fontFamily: 'Gotham',
-      fontSize: AppDimensions.d28.sp,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w900, // Extra bold / Black
+      fontSize: 32.sp, // Large hero text
       color: AppColors.textPrimary,
     ),
+    displayMedium: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w800,
+      fontSize: 28.sp,
+      color: AppColors.textPrimary,
+    ),
+    displaySmall: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w700,
+      fontSize: 24.sp,
+      color: AppColors.textPrimary,
+    ),
+
+    // ---------------------- HEADLINE ----------------------
     headlineLarge: TextStyle(
       fontFamily: 'Gotham',
-      fontSize: AppDimensions.d20.sp,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w700, // Bold
+      fontSize: 22.sp,
       color: AppColors.textPrimary,
     ),
+    headlineMedium: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w600,
+      fontSize: 20.sp,
+      color: AppColors.textPrimary,
+    ),
+    headlineSmall: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w400,
+      fontSize: 18.sp,
+      color: AppColors.textPrimary,
+    ),
+
+    // ---------------------- TITLE ----------------------
+    titleLarge: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w600,
+      fontSize: 18.sp,
+      color: AppColors.textPrimary,
+    ),
+    titleMedium: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w500,
+      fontSize: 16.sp,
+      color: AppColors.textPrimary,
+    ),
+    titleSmall: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w400,
+      fontSize: 14.sp,
+      color: AppColors.textPrimary,
+    ),
+
+    // ---------------------- BODY ----------------------
     bodyLarge: TextStyle(
       fontFamily: 'Gotham',
-      fontSize: AppDimensions.d16.sp,
+      fontWeight: FontWeight.w400,
+      fontSize: 16.sp,
       color: AppColors.textPrimary,
     ),
     bodyMedium: TextStyle(
       fontFamily: 'Gotham',
-      fontSize: AppDimensions.d14.sp,
+      fontWeight: FontWeight.w400,
+      fontSize: 14.sp,
       color: AppColors.textSecondary,
     ),
-  ),
-
-  // TextFields Styling
-  inputDecorationTheme: InputDecorationTheme(
-    filled: true,
-    fillColor: AppColors.surface,
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.d12.r),
-      borderSide: const BorderSide(color: AppColors.borderGrey),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppDimensions.d12.r),
-      borderSide: BorderSide(
-        color: AppColors.primary,
-        width: AppDimensions.d2.w,
-      ),
-    ),
-    hintStyle: TextStyle(
+    bodySmall: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w400, // ✅ force non-bold
+      fontSize: 12.sp,
       color: AppColors.textSecondary,
-      fontSize: AppDimensions.d14.sp,
     ),
-  ),
 
-  // Buttons Styling
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.primary,
-      foregroundColor: Colors.white,
-      padding: EdgeInsets.symmetric(
-        vertical: AppDimensions.d14.h,
-        horizontal: AppDimensions.d20.w,
-      ),
-      textStyle: TextStyle(
-        fontSize: AppDimensions.d16.sp,
-        fontWeight: FontWeight.w600,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppDimensions.d12.r),
-      ),
+    // ---------------------- LABEL (Buttons, Chips, etc.) ----------------------
+    labelLarge: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w600,
+      fontSize: 14.sp,
+      color: AppColors.textPrimary,
+    ),
+    labelMedium: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w500,
+      fontSize: 12.sp,
+      color: AppColors.textSecondary,
+    ),
+    labelSmall: TextStyle(
+      fontFamily: 'Gotham',
+      fontWeight: FontWeight.w500,
+      fontSize: 11.sp,
+      color: AppColors.textSecondary.withOpacity(0.8),
     ),
   ),
 );
