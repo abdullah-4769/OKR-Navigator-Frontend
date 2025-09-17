@@ -72,10 +72,10 @@ class _SplashScreen2State extends State<SplashScreen2> {
                               'splash2_title'.tr,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headlineSmall
+                                  .headlineLarge
                                   ?.copyWith(
                                 color: AppColors.primaryBlue,
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w900, // Keep bold
                               ),
                               textAlign: TextAlign.center,
                             ),

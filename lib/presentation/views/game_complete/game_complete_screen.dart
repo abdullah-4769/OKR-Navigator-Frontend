@@ -6,6 +6,7 @@ import 'package:game_app/presentation/widgets/custom_journey_map.dart';
 import 'package:get/get.dart';
 
 import '../../../core/app_colors.dart';
+import '../../../core/app_dimensions.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/game_complete_widgets/achievement_summary.dart';
@@ -125,15 +126,16 @@ class GameCompleteScreen extends StatelessWidget {
                           onTap: () {Get.toNamed(AppRoutes.strategyJourneyScreen);},
                           child: Text(
                             "view_your_journey".tr,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontSize: AppDimensions.d14.sp,
                               color: AppColors.primaryBlue,
                               decoration: TextDecoration.underline,
                             ),
+
                           ),
                         ),
+
+                        SizedBox(height: 16.h),
                       ],
                     ),
                   ),

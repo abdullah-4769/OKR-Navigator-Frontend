@@ -45,7 +45,7 @@ class AIAnalysisScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: AppDimensions.d16.h),
+                        SizedBox(height: screenHeight * 0.03),
 
                         /// ---------- HEADER ----------
                         CustomHeader(
@@ -56,7 +56,7 @@ class AIAnalysisScreen extends StatelessWidget {
                               Get.offAllNamed(AppRoutes.teamSuggestionInitiativeScreen),
                         ),
 
-                        SizedBox(height: AppDimensions.d20.h),
+                        SizedBox(height: screenHeight * 0.005),
 
                         /// ---------- INFO CONTAINER ----------
                         Padding(
@@ -73,7 +73,7 @@ class AIAnalysisScreen extends StatelessWidget {
                           ),
                         ),
 
-                        SizedBox(height: AppDimensions.d25.h),
+                        SizedBox(height: screenHeight * 0.02),
 
                         /// ---------- BUTTON ----------
                         Padding(
@@ -85,17 +85,17 @@ class AIAnalysisScreen extends StatelessWidget {
                               text: _safeTranslate(
                                   'check_contextual_challenge'),
                               onPressed: enabled
-                                  ? () => Get.offAllNamed(
+                                  ? () => Get.toNamed(
                                 AppRoutes.contextualChallenge,
                               )
-                                  : () {Get.offAllNamed(
+                                  : () {Get.toNamed(
                                 AppRoutes.contextualChallenge,
                               );},
                             );
                           }),
                         ),
 
-                        SizedBox(height: AppDimensions.d30.h),
+                        SizedBox(height: screenHeight * 0.001),
                       ],
                     ),
                   ),

@@ -34,6 +34,7 @@ class AssignRolesScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
+                SizedBox(height: height * 0.015),
 
                 /// ---------- HEADER ----------
                 CustomHeader(
@@ -42,10 +43,10 @@ class AssignRolesScreen extends StatelessWidget {
                   onBackTap: () => Navigator.pop(context),
                 ),
 
+                SizedBox(height: height * 0.015),
                 /// ---------- MAIN CONTENT ----------
-                Transform.translate(
-                  offset: Offset(0, -height * 0.062),
-                  child: Padding(
+
+                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,47 +56,19 @@ class AssignRolesScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               /// Larger solo icon
-                              Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  color: AppColors.softRed.withValues(alpha: 0.5),
-                                  borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(color: AppColors.primaryRed),
-                                ),
-                                child: Center(
-                                  child: Container(
-                                    width: 160,
-                                    height: 160,
-                                    decoration: BoxDecoration(
-                                      color: Colors.yellowAccent,
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: Center(
-                                      child: Container(
-                                        width: 130,
-                                        height: 130,
-                                        decoration: BoxDecoration(
-                                          color: Colors.limeAccent.withValues(alpha: 0.9),
-                                          borderRadius: BorderRadius.circular(100),
-                                        ),
-                                        child: CustomCircularAvatar(
-                                          imagePath: 'assets/images/role_icon.png',
-                                          innerColors: [
-                                            Colors.yellow.shade100,
-                                            Colors.orange.shade100,
-                                            Colors.lightGreenAccent,
-                                          ],
-                                          borderGradient: [
-                                            AppColors.primaryRed.withOpacity(0.9),
-                                            AppColors.primaryRed.withOpacity(0.3),
-                                          ],
-                                          size: 120,
-                                        ),
-
-                                      ),
-                                    ),
-                                  ),
+                              Center(
+                                child: CustomCircularAvatar(
+                                  imagePath: 'assets/images/role_icon.png',
+                                  innerColors: [
+                                    Colors.yellow.shade100,
+                                    Colors.orange.shade100,
+                                    Colors.lightGreenAccent,
+                                  ],
+                                  borderGradient: [
+                                    AppColors.primaryRed.withOpacity(0.9),
+                                    AppColors.primaryRed.withOpacity(0.3),
+                                  ],
+                                  size: 150,
                                 ),
                               ),
                               SizedBox(height: height * 0.015),
@@ -137,8 +110,8 @@ class AssignRolesScreen extends StatelessWidget {
                                 child: Text(
                                   'Assign roles to optimize team performance'.tr,
                                   textAlign: TextAlign.center,
-                                  style: textTheme.bodySmall?.copyWith(
-                                    color: AppColors.grey,
+                                  style: textTheme.bodyLarge?.copyWith(
+                                    color: AppColors.black,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -197,6 +170,7 @@ class AssignRolesScreen extends StatelessWidget {
                           child: CustomButton(
                             text: 'Auto Assign Roles'.tr,
                             onPressed: () {},
+                            backgroundColor: AppColors.primaryBlue,
                           ),
                         ),
 
@@ -204,7 +178,7 @@ class AssignRolesScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
+
               ],
             ),
           ),

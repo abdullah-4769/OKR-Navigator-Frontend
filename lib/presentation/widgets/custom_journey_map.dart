@@ -27,8 +27,7 @@ class CustomJourneyMap extends StatelessWidget {
     final height = size.height;
 
     return OrientationBuilder(
-      builder: (context, orientation) {
-        return Container(
+      builder: (context, orientation) => Container(
           width: double.infinity,
           margin: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
           padding: EdgeInsets.all(AppDimensions.d16.w),
@@ -52,23 +51,23 @@ class CustomJourneyMap extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: 'journey'.tr + ' ',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         fontSize: (orientation == Orientation.portrait
                             ? AppDimensions.d26
                             : AppDimensions.d22)
                             .sp,
-                        color: AppColors.primaryRed,
+                        color: AppColors.primaryBlue,
 
                       ),
                     ),
                     TextSpan(
                       text: '\n' + 'map'.tr,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
                         fontSize: (orientation == Orientation.portrait
-                            ? AppDimensions.d22
-                            : AppDimensions.d20)
+                            ? AppDimensions.d32
+                            : AppDimensions.d30)
                             .sp,
-                        color: AppColors.primaryBlue,
+                        color: AppColors.primaryRed,
 
                       ),
                     ),
@@ -82,7 +81,7 @@ class CustomJourneyMap extends StatelessWidget {
                 onTap: onToggle,
                 child: Text(
                   showDetails ? 'show_less'.tr : 'show_progress'.tr,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontSize: AppDimensions.d14.sp,
                     color: AppColors.primaryBlue,
                     decoration: TextDecoration.underline,
@@ -107,7 +106,7 @@ class CustomJourneyMap extends StatelessWidget {
                       '${progress.toInt()}% ' + 'complete'.tr,
                       style: Theme.of(context)
                           .textTheme
-                          .titleMedium
+                          .displayMedium
                           ?.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: AppDimensions.d18.sp,
@@ -139,8 +138,7 @@ class CustomJourneyMap extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
+        ),
     );
   }
 

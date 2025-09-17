@@ -35,50 +35,37 @@ class RoleSelectionScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: AppDimensions.d10.h),
+                    padding: EdgeInsets.only(top: 0, bottom: AppDimensions.d10.h),
                     child: Column(
                       children: [
+                        SizedBox(height: AppDimensions.d20.h),
                         // ✅ Reusable Header
                         CustomHeader(
                           title: trKey('select'),
                           highlightedText: trKey('role'),
-                          onBackTap: () =>
-                              Get.offAllNamed(AppRoutes.pricingScreen),
+                          onBackTap: () => Get.offAllNamed(AppRoutes.pricingScreen),
                         ),
 
                         // ✅ Welcome Section
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppDimensions.d20.w),
+                          padding: EdgeInsets.symmetric(horizontal: AppDimensions.d20.w),
                           child: Column(
                             children: [
                               Text(
                                 trKey('welcome_navigator'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineLarge
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.displayMedium?.copyWith(
                                   color: AppColors.primaryRed,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: orientation ==
-                                      Orientation.portrait
-                                      ? 20.sp
-                                      : 16.sp,
+                                  fontSize: orientation == Orientation.portrait ? 20.sp : 16.sp,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(height: AppDimensions.d8.h),
                               Text(
                                 trKey('company_crisis_description'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   height: 1.4,
-                                  fontSize: orientation ==
-                                      Orientation.portrait
-                                      ? 14.sp
-                                      : 12.sp,
+                                  fontSize: orientation == Orientation.portrait ? 14.sp : 12.sp,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -89,20 +76,13 @@ class RoleSelectionScreen extends StatelessWidget {
 
                         // ✅ Instruction
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppDimensions.d24.w),
+                          padding: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
                           child: Align(
                             child: Text(
                               trKey('choose_role_instruction'),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(
+                              style: Theme.of(context).textTheme.displaySmall?.copyWith(
                                 fontWeight: FontWeight.w600,
-                                fontSize: orientation ==
-                                    Orientation.portrait
-                                    ? 15.sp
-                                    : 13.sp,
+                                fontSize: orientation == Orientation.portrait ? 15.sp : 13.sp,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -112,14 +92,11 @@ class RoleSelectionScreen extends StatelessWidget {
 
                         // ✅ Roles Grid
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppDimensions.d16.w),
+                          padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
                           child: LayoutBuilder(
                             builder: (context, constraints) {
-                              final screenWidth =
-                                  MediaQuery.of(context).size.width;
-                              final screenHeight =
-                                  MediaQuery.of(context).size.height;
+                              final screenWidth = MediaQuery.of(context).size.width;
+                              final screenHeight = MediaQuery.of(context).size.height;
 
                               int crossAxisCount = 2;
                               if (screenWidth > 1200) {
@@ -128,26 +105,17 @@ class RoleSelectionScreen extends StatelessWidget {
                                 crossAxisCount = 3;
                               }
 
-                              double childAspectRatio =
-                                  (screenWidth / crossAxisCount) /
-                                      (screenHeight *
-                                          (orientation ==
-                                              Orientation.portrait
-                                              ? 0.38
-                                              : 0.55));
+                              double childAspectRatio = (screenWidth / crossAxisCount) / (screenHeight * (orientation == Orientation.portrait ? 0.38 : 0.55));
 
                               return GridView.builder(
                                 shrinkWrap: true,
-                                physics:
-                                const NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: controller.roles.length,
-                                gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: crossAxisCount,
                                   crossAxisSpacing: AppDimensions.d10.w,
                                   mainAxisSpacing: AppDimensions.d10.h,
-                                  childAspectRatio:
-                                  childAspectRatio.clamp(0.72, 0.95),
+                                  childAspectRatio: childAspectRatio.clamp(0.72, 0.95),
                                 ),
                                 itemBuilder: (context, index) {
                                   final role = controller.roles[index];
@@ -166,14 +134,12 @@ class RoleSelectionScreen extends StatelessWidget {
 
                         // ✅ Continue Button & Tutorial
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppDimensions.d18.w),
+                          padding: EdgeInsets.symmetric(horizontal: AppDimensions.d18.w),
                           child: Column(
                             children: [
                               CustomButton2(
                                 text: trKey('select_continue'),
-                                onPressed:
-                                controller.continueWithSelection,
+                                onPressed: controller.continueWithSelection,
                               ),
                               SizedBox(height: AppDimensions.d12.h),
                               Row(
@@ -181,35 +147,22 @@ class RoleSelectionScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     trKey('first_time_playing'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
+                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                       color: Colors.black,
-                                      fontSize: orientation ==
-                                          Orientation.portrait
-                                          ? 13.sp
-                                          : 11.sp,
+                                      fontSize: orientation == Orientation.portrait ? 13.sp : 11.sp,
                                     ),
                                   ),
                                   Padding(
-                                    padding:  EdgeInsets.symmetric(horizontal: 8.w),
+                                    padding: EdgeInsets.symmetric(horizontal: 8.w),
                                     child: GestureDetector(
                                       onTap: controller.openTutorial,
                                       child: Text(
                                         trKey('watch_tutorial'),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
+                                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                           color: AppColors.primaryRed,
                                           fontWeight: FontWeight.bold,
-                                          decoration:
-                                          TextDecoration.underline,
-                                          fontSize: orientation ==
-                                              Orientation.portrait
-                                              ? 13.sp
-                                              : 11.sp,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: orientation == Orientation.portrait ? 13.sp : 11.sp,
                                         ),
                                       ),
                                     ),
@@ -240,7 +193,7 @@ class RoleSelectionScreen extends StatelessWidget {
   );
 }
 
-// ✅ Role Card
+// ✅ Role Card (unchanged)
 class _RoleCard extends StatelessWidget {
   final int index;
   final Map<String, dynamic> role;
@@ -267,9 +220,7 @@ class _RoleCard extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(AppDimensions.d16.r),
             border: Border.all(
-              color: selected
-                  ? AppColors.primaryRed
-                  : AppColors.grey.withOpacity(0.2),
+              color: selected ? AppColors.primaryRed : AppColors.grey.withOpacity(0.2),
               width: selected ? 2.2 : 1,
             ),
             boxShadow: selected
@@ -300,9 +251,7 @@ class _RoleCard extends StatelessWidget {
                     padding: EdgeInsets.all(AppDimensions.d8.w),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: selected
-                          ? AppColors.primaryRed.withOpacity(0.06)
-                          : Colors.grey.shade50,
+                      color: selected ? AppColors.primaryRed.withOpacity(0.06) : Colors.grey.shade50,
                     ),
                     child: Center(
                       child: CustomSvg(
@@ -318,7 +267,7 @@ class _RoleCard extends StatelessWidget {
                   // Role Title
                   Text(
                     trKey(role['title']),
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: AppColors.primaryRed,
                       fontWeight: FontWeight.bold,
                     ),
@@ -342,11 +291,10 @@ class _RoleCard extends StatelessWidget {
                   ),
 
                   // Extra Info
-                  if (role['extra'] != null &&
-                      role['extra'].toString().isNotEmpty)
+                  if (role['extra'] != null && role['extra'].toString().isNotEmpty)
                     Text(
                       trKey(role['extra']),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.grey,
                         fontWeight: FontWeight.w600,
                       ),

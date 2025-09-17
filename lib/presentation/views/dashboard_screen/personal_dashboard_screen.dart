@@ -6,7 +6,9 @@ import '../../../controllers/personal_dashboard_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/common_image.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_circular_avatar.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
@@ -58,7 +60,7 @@ class PersonalDashboardScreen extends StatelessWidget {
                             highlightedText: 'ScoreBoard',
                             subtitle: '',
                             onBackTap: () =>
-                                Get.offAllNamed(AppRoutes.scoreboardScreen),
+                                Get.back(),
                           ),
 
                           SizedBox(height: height * 0.002),
@@ -71,26 +73,18 @@ class PersonalDashboardScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 /// Avatar + Level Badge
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: avatarSize / 2,
-                                      backgroundColor: AppColors.primaryRed
-                                          .withOpacity(0.08),
-                                      child: CircleAvatar(
-                                        radius: avatarSize / 2 - 6,
-                                        backgroundColor: Colors.white,
-                                        child: Icon(
-                                          Icons.person,
-                                          size: avatarSize * 0.5,
-                                          color: AppColors.primaryBlue,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                Center(
+                                  child: CustomCircularAvatar(
+                                    imagePath: 'assets/images/solo_image.png',
+                                    innerColors: [
+                                      AppColors.softRed.withValues(alpha: 0.5),
+                                      AppColors.softRed.withValues(alpha: 0.5),
+                                      AppColors.softRed.withValues(alpha: 0.5)
+                                    ],
+                                    borderGradient: [AppColors.primaryRed, AppColors.primaryRed.withOpacity(0.5)],
+                                    size: 120,
+                                  ),
                                 ),
-
                                 SizedBox(height: 12.h),
 
                                 /// Title & Success rate

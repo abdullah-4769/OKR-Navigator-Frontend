@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
 
- await Get.offAllNamed(AppRoutes.language);
+await Get.offAllNamed(AppRoutes.language);
   }
 
   @override

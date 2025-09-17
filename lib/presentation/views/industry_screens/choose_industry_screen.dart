@@ -43,10 +43,14 @@ class ChooseIndustryScreen extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.only(bottom: AppDimensions.d20.h),
                       child: Column(
+
                         children: [
+                          SizedBox(height: screenHeight * 0.03),
                           CustomHeader(title:
                       trKey('choose'),
                         highlightedText: trKey('your_industry'), onBackTap: () => Get.offAllNamed(AppRoutes.roleSelection),),
+
+
 
                           SizedBox(height: screenHeight * 0.01),
                           // Welcome Text
@@ -73,6 +77,18 @@ class ChooseIndustryScreen extends StatelessWidget {
                                       .bodyMedium
                                       ?.copyWith(
                                     color: AppColors.textSecondary,
+                                    height: 1.4,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: screenHeight * 0.01),
+                                Text(
+                                  'own_industry'.tr,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineSmall
+                                      ?.copyWith(
+                                    color: AppColors.black,
                                     height: 1.4,
                                   ),
                                   textAlign: TextAlign.center,

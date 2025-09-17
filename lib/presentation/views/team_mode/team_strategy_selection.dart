@@ -45,96 +45,93 @@ class TeamStrategySelectionScreen extends StatelessWidget {
                     child: Column(
                       children: [
 
-
+                        SizedBox(height: height * 0.02),
                         /// ---------- HEADER ----------
                         CustomHeader(
                           title: "Select".tr,
                           highlightedText: "Strategy".tr,
                           subtitle: "".tr,
-                          onBackTap: () => Get.back(),
+                          onBackTap: () => Get.offAllNamed(AppRoutes.teamLobby),
                         ),
 
-                        SizedBox(height: height * 0.02),
+                        SizedBox(height: height * 0.01),
 
                         /// ---------- CONTENT ----------
-                        Transform.translate(
-                          offset: Offset(0, -height * 0.08),
-                          child: Column(
-                            children: [
-                              /// Welcome texts
-                              Padding(
+                        Column(
+                          children: [
+                            /// Welcome texts
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: width * 0.041,
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'welcome_team'.tr,
+                                    style: appTheme.textTheme.headlineLarge
+                                        ?.copyWith(
+                                      color: AppColors.primaryRed,
+                                      fontFamily: 'Gotham-Bold',
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: height * 0.01),
+                                  Text(
+                                    'draw_team_strategy_subtitle'.tr,
+                                    style: appTheme.textTheme.bodyLarge
+                                        ?.copyWith(
+                                      color: AppColors.black,
+                                      fontFamily: 'Gotham-Bold',
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: height * 0.025),
+
+                            /// Cards Section
+                            CustomCardPagerBuilder(controller: teamController,),
+
+                            SizedBox(height: height * 0.025),
+
+                            /// Journey Map
+                            Obx(
+                                  () => CustomJourneyMap(
+                                progress: journeyController.progress.value,
+                                steps: journeyController.steps,
+                                completedSteps:
+                                journeyController.completedSteps,
+                                onToggle:
+                                journeyController.toggleJourneyDetails,
+                                showDetails:
+                                journeyController.showDetails.value,
+                              ),
+                            ),
+
+                            SizedBox(height: height * 0.025),
+
+                            /// Begin Mission Button
+                            Obx(
+                                  () => Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: width * 0.041,
+                                  horizontal: width * 0.12,
                                 ),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'welcome_team'.tr,
-                                      style: appTheme.textTheme.headlineLarge
-                                          ?.copyWith(
-                                        color: AppColors.primaryRed,
-                                        fontFamily: 'Gotham-Bold',
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    SizedBox(height: height * 0.01),
-                                    Text(
-                                      'draw_team_strategy_subtitle'.tr,
-                                      style: appTheme.textTheme.bodyLarge
-                                          ?.copyWith(
-                                        color: AppColors.black,
-                                        fontFamily: 'Gotham-Bold',
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                                child: CustomButton2(
+                                  text: 'begin_mission'.tr,
+                                  onPressed: teamStrategySelectionController
+                                      .isCardRevealed.value
+                                      ? () {
+                                    journeyController.setStep(0, true);
+                                    teamStrategySelectionController
+                                        .beginMission();
+                                  }
+                                      : null,
                                 ),
                               ),
-
-                              SizedBox(height: height * 0.025),
-
-                              /// Cards Section
-                              CustomCardPagerBuilder(controller: teamController,),
-
-                              SizedBox(height: height * 0.025),
-
-                              /// Journey Map
-                              Obx(
-                                    () => CustomJourneyMap(
-                                  progress: journeyController.progress.value,
-                                  steps: journeyController.steps,
-                                  completedSteps:
-                                  journeyController.completedSteps,
-                                  onToggle:
-                                  journeyController.toggleJourneyDetails,
-                                  showDetails:
-                                  journeyController.showDetails.value,
-                                ),
-                              ),
-
-                              SizedBox(height: height * 0.025),
-
-                              /// Begin Mission Button
-                              Obx(
-                                    () => Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: width * 0.12,
-                                  ),
-                                  child: CustomButton2(
-                                    text: 'begin_mission'.tr,
-                                    onPressed: teamStrategySelectionController
-                                        .isCardRevealed.value
-                                        ? () {
-                                      journeyController.setStep(0, true);
-                                      teamStrategySelectionController
-                                          .beginMission();
-                                    }
-                                        : null,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

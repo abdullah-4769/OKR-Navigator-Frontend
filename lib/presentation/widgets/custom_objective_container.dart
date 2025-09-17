@@ -93,8 +93,9 @@ class CustomObjectiveContainer extends StatelessWidget {
                   Text(
                     title.tr,
                     textAlign: TextAlign.center,
-                    style: appTheme.textTheme.headlineMedium?.copyWith(
+                    style: appTheme.textTheme.displayLarge?.copyWith(
                       color: titleColor,
+                      fontSize: 18,
                     ),
                   ),
                   if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
@@ -102,7 +103,7 @@ class CustomObjectiveContainer extends StatelessWidget {
                     Text(
                       subtitle!.tr,
                       textAlign: TextAlign.center,
-                      style: appTheme.textTheme.bodyMedium?.copyWith(
+                      style: appTheme.textTheme.bodySmall?.copyWith(
                         color: AppColors.grey,
                       ),
                     ),
@@ -151,4 +152,7 @@ class _GradientBorderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+
+
+
 }

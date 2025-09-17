@@ -42,7 +42,7 @@ class SuggestionInitiativesController extends GetxController {
 
       // ✅ Navigate to next screen after success
       await Get.toNamed(
-        AppRoutes.aiAnalysisShowScreen,
+        AppRoutes.contextualChallenge,
         arguments: {
           'keyResults': keyResults,
           'initiatives': [

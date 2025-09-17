@@ -8,10 +8,10 @@ import '../journey_controller.dart';
 class TeamStrategySelectionController extends GetxController {
   /// List of available team strategy card assets
   final List<String> cardAssets = [
-    'assets/images/team_card1.png',
-    'assets/images/team_card2.png',
-    'assets/images/team_card3.png',
-    'assets/images/team_card4.png',
+    'assets/images/card_1.png',
+    'assets/images/card_1.png',
+    'assets/images/card_1.png',
+    'assets/images/card_1.png',
   ];
 
   /// Index of the selected card (-1 = backcard)

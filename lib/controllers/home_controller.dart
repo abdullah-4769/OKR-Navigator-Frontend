@@ -73,10 +73,10 @@ class HomeController extends GetxController {
 
   void onTapCTA() {
     switch (selectedCardIndex.value) {
-      case 0:
+      case 0:Get.toNamed(AppRoutes.gameMode);
       case 1:
-      case 2:
-        Get.toNamed(AppRoutes.gameMode);
+      case 2:Get.toNamed(AppRoutes.scoreboardScreen);
+
         break;
     }
   }

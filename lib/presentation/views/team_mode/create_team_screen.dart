@@ -34,7 +34,7 @@ class CreateTeamScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
 
-
+                      SizedBox(height: height * 0.01),
                       /// ---------- HEADER ----------
                       CustomHeader(
                         title: 'Create'.tr,

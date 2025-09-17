@@ -1,160 +1,139 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
-import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_curved_arrow.dart';
 import '../../widgets/custom_svg.dart';
 
-class SplashScreenTeam extends StatefulWidget {
+class SplashScreenTeam extends StatelessWidget {
   const SplashScreenTeam({super.key});
 
   @override
-  State<SplashScreenTeam> createState() => _SplashScreen1State();
-}
-
-class _SplashScreen1State extends State<SplashScreenTeam> {
-  @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+    final isPortrait = size.height > size.width;
 
-    return OrientationBuilder(
-      builder: (context, orientation) => Scaffold(
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-            ),
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
           ),
-          child: SafeArea(
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: AppDimensions.d50.h),
+        ),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: height * 0.06),
 
-                      // Top Logo
-                      CustomSvg(
-                        semanticsLabel: 'okr_logo'.tr,
-                        assetPath: 'assets/images/okrnev.svg',
-                        height: 70.h,
-                        width: 90.w,
-                      ),
+                    /// Top Logo
+                    CustomSvg(
+                      semanticsLabel: 'okr_logo'.tr,
+                      assetPath: 'assets/images/okrnev.svg',
+                      height: height * 0.08,
+                      width: width * 0.25,
+                    ),
 
-                      SizedBox(height: AppDimensions.d24.h),
+                    SizedBox(height: height * 0.03),
 
-                      // Mask SVG
-                      CustomSvg(
-                        semanticsLabel: 'mask_group'.tr,
-                        assetPath: 'assets/images/team.svg',
-                        height: 170.h,
-                        width: 200.w,
-                      ),
+                    /// Mask SVG
+                    CustomSvg(
+                      semanticsLabel: 'mask_group'.tr,
+                      assetPath: 'assets/images/team.svg',
+                      height: isPortrait ? height * 0.22 : height * 0.4,
+                      width: isPortrait ? width * 0.55 : width * 0.35,
+                    ),
 
-                      SizedBox(height: AppDimensions.d16.h),
+                    SizedBox(height: height * 0.02),
 
-                      // Title - Using Theme
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AppDimensions.d16.w,
+                    /// Title
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                      child: Text(
+                        'welcome_team'.tr,
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                          color: AppColors.primaryBlue,
+                          fontWeight: FontWeight.w900,
+                          fontSize: isPortrait ? width * 0.07 : width * 0.05,
                         ),
-                        child: Center(
-                          child: Text(
-                            'welcome_team'.tr,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge
-                                ?.copyWith(
-                              color: AppColors.primaryBlue,
-                              fontWeight: FontWeight.w900, // Keep bold
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                        textAlign: TextAlign.center,
                       ),
+                    ),
 
-                      SizedBox(height: AppDimensions.d16.h),
+                    SizedBox(height: height * 0.02),
 
-                      // Subtitle - Using Theme
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AppDimensions.d12.w,
+                    /// Subtitle
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: width * 0.1),
+                      child: Text(
+                        'splash_team_subtitle'.tr,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.black,
+                          height: 1.5,
+                          fontSize: isPortrait ? width * 0.04 : width * 0.03,
                         ),
-                        child: Center(
-                          child: Text(
-                            'splash_team_subtitle'.tr,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                              color: AppColors.black,
-                              height: 1.5,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                        textAlign: TextAlign.center,
                       ),
+                    ),
 
-                      SizedBox(height: screenHeight * 0.25),
+                    SizedBox(height: height * 0.22),
 
-                      // Bottom Logo
-                      Center(
-                        child: CustomSvg(
-                          assetPath: 'assets/images/logo.svg',
-                          width: AppDimensions.d30.w,
-                          height: AppDimensions.d30.h,
-                          semanticsLabel: '',
-                        ),
-                      ),
-                      SizedBox(height: AppDimensions.d20.h),
-                    ],
+                    /// Bottom Logo
+                    CustomSvg(
+                      assetPath: 'assets/images/logo.svg',
+                      width: width * 0.1,
+                      height: width * 0.1,
+                      semanticsLabel: '',
+                    ),
+                    SizedBox(height: height * 0.03),
+                  ],
+                ),
+              ),
+
+              /// Left Arrow
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.0,
+                    bottom: height * 0.15,
+                  ),
+                  child: CustomCurvedArrow(
+                    isLeft: true,
+                    onTap: () => Get.back(),
+                    width: width * 0.15,
+                    height: height * 0.2,
                   ),
                 ),
+              ),
 
-                // Left Arrow Button
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: screenWidth * 0.00,
-                      bottom: screenHeight * 0.15,
-                    ),
-                    child: CustomCurvedArrow(
-                      isLeft: true,
-                      onTap: () => Get.back(),
-                      width: AppDimensions.d55.w,
-                      height: AppDimensions.d130.h,
-                    ),
+              /// Right Arrow
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    right: width * 0.0,
+                    bottom: height * 0.15,
+                  ),
+                  child: CustomCurvedArrow(
+                    isLeft: false,
+                    onTap: () => Get.toNamed(AppRoutes.createTeam),
+                    width: width * 0.15,
+                    height: height * 0.2,
                   ),
                 ),
-
-                // Right Arrow Button
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      right: screenWidth * 0.00,
-                      bottom: screenHeight * 0.15,
-                    ),
-                    child: CustomCurvedArrow(
-                      isLeft: false,
-                      onTap: () => Get.toNamed(AppRoutes.createTeam),
-                      width: AppDimensions.d55.w,
-                      height: AppDimensions.d130.h,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

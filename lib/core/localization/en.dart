@@ -17,6 +17,9 @@ final Map<String, String> en = {
   "describe_your_team_mission": "Describe your team's mission",
   "choose_team_avatar": "Choose Team Avatar",
 
+
+
+  "own_industry":"Choose your business Industry for OKR Journey.",
   /// Join Existing Team Section
   "join_existing_team": "Join an Existing Team",
   "enter_team_code": "Team Code or Invite Link",
@@ -831,7 +834,7 @@ final Map<String, String> en = {
   "strategy": "Strategy",
   "draw_strategy": "Draw Your Strategy",
   "draw_strategy_subtitle":
-      "Draw your strategy card and take the first step\nin reshaping the company’s future.",
+      "Draw your strategy card and take the first step in reshaping the company’s future.",
   "strategy_tips": "Strategy Tips",
   "strategic_tips": "Strategic Tips",
   "draw_new_strategy": "Draw New Strategy",

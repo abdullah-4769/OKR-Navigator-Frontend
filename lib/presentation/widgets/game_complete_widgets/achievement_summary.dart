@@ -17,7 +17,7 @@ class AchievementSummary extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: width * 0.03),
-      padding: EdgeInsets.all(width * 0.04),
+      padding: EdgeInsets.all(width * 0.05),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
         color: Colors.white,
@@ -29,12 +29,15 @@ class AchievementSummary extends StatelessWidget {
           /// Heading with icon
           Row(
             children: [
-              Icon(
-                Icons.emoji_events,
-                color: AppColors.primaryRed,
-                size: isSmallScreen ? 24.sp : 28.sp,
+              CircleAvatar(
+                backgroundColor: AppColors.primaryRed,
+                child: Icon(
+                  Icons.emoji_events,
+                  color: AppColors.white,
+                  size: isSmallScreen ? 24.sp : 28.sp,
+                ),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   "achievement_summary".tr,

@@ -51,13 +51,31 @@ class ContextualChallengeScreen extends StatelessWidget {
                         CustomHeader(
                           title: 'contextual'.tr,
                           highlightedText: 'challenge'.tr,
-                          subtitle: 'adapt_strategy_to_challenge'.tr,
+                          subtitle: ''.tr,
                           onBackTap: () =>
                               Get.toNamed(AppRoutes.aiAnalysisShowScreen),
                         ),
 
                         SizedBox(height: height * 0.025),
 
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'adapt_strategy_to_challenge'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                color: AppColors.black,
+                                height: 1.2,
+                                fontWeight: FontWeight.w400
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: height * 0.025),
                         /// Challenge Alert
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: width * 0.05),
@@ -219,7 +237,7 @@ class ContextualChallengeScreen extends StatelessWidget {
                             child: CustomButton(
                               text: 'propose_adjustment'.tr,
                               onPressed: () {
-                                Get.offNamed(AppRoutes.contextualCAdjustment);
+                                Get.toNamed(AppRoutes.contextualCAdjustment);
                               },
                             ),
                           ),

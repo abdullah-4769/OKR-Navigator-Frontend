@@ -41,21 +41,21 @@ class ScoreboardScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
+                    SizedBox(height: AppDimensions.d10.h),
                     /// ✅ Header
                     CustomHeader(
                       title: "your".tr,
                       highlightedText: "scoreboard".tr,
-                      subtitle: "show_personal_achievements".tr,
+                      subtitle: "".tr,
                       onBackTap: () => Get.back(),
                     ),
 
-                    SizedBox(height: AppDimensions.d14.h),
+                    SizedBox(height: AppDimensions.d4.h),
                     Center(
-                      child: GestureDetector(
-                        onTap: () {Get.offAllNamed(AppRoutes.strategyJourneyScreen);},
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "view_your_journey".tr,
+                          "show_personal_achievements".tr,
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium
@@ -65,9 +65,12 @@ class ScoreboardScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
                     ),
-                    SizedBox(height: AppDimensions.d14.h),
+
+
+
+
+                    SizedBox(height: AppDimensions.d4.h),
                     /// ✅ Top Performers
                     Padding(
                         padding: EdgeInsets.symmetric(horizontal: AppDimensions.d8.w),
@@ -75,13 +78,29 @@ class ScoreboardScreen extends StatelessWidget {
                     ),
                     SizedBox(height: AppDimensions.d14.h),
 
-                    const Center(
+                     Center(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: CustomObjectiveContainer(
                           title: '',
-                          subtitle: '',
-                          description: 'I’m ranked #3 in Strategic Agility this week!',
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: AppDimensions.d16.w,
+                              vertical: AppDimensions.d8.h,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'I’m ranked #3 in Strategic Agility this week!'.tr,
+                                  style: appTheme.textTheme.bodySmall?.copyWith(
+                                    color: AppColors.grey,
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),

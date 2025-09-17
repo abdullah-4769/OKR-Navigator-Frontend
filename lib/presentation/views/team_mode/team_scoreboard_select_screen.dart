@@ -46,7 +46,7 @@ class _TeamScoreboardSelectScreenState extends State<TeamScoreboardSelectScreen>
                   padding: EdgeInsets.only(bottom: height * 0.02),
                   child: Column(
                     children: [
-
+                      SizedBox(height: 10.h),
 
                       /// ---------- HEADER ----------
                       CustomHeader(
@@ -56,12 +56,12 @@ class _TeamScoreboardSelectScreenState extends State<TeamScoreboardSelectScreen>
                         onBackTap: () => Get.back(),
                       ),
 
-
+                      SizedBox(height: 15.h),
 
                       /// ---------- SELECT TEAM TITLE ----------
                       Text(
                         'Select Team',
-                        style: theme.textTheme.titleMedium?.copyWith(
+                        style: theme.textTheme.headlineMedium?.copyWith(
                           color: AppColors.primaryRed,
                           fontWeight: FontWeight.bold,
                         ),
@@ -70,7 +70,7 @@ class _TeamScoreboardSelectScreenState extends State<TeamScoreboardSelectScreen>
                       Text(
                         'To view the team scoreboard',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: AppColors.black,
                         ),
                       ),
 

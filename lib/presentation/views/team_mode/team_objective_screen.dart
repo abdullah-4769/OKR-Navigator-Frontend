@@ -191,7 +191,7 @@ class TeamObjectiveScreen extends StatelessWidget {
                           /// ---------- JOURNEY MAP ----------
                           Obx(
                                 () => Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w),
+                              padding: EdgeInsets.symmetric(horizontal: 4.w),
                               child: CustomJourneyMap(
                                 progress: journeyController.progress.value,
                                 steps: journeyController.steps,

@@ -101,6 +101,6 @@ class TeamGameCompleteController extends GetxController {
   }
 
   void viewJourney() {
-    Get.toNamed(AppRoutes.teamStrategicJourneyScreen);
+    Get.toNamed(AppRoutes.teamScoreboardSelectScreen);
   }
 }

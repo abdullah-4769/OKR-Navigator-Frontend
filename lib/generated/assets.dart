@@ -2,12 +2,16 @@
 class Assets {
   Assets._();
 
+  static const String assetsImagesCard1 = 'assets/images/card_1.png';
   static const String fontsGothamBlack900 = 'assets/fonts/gotham_black_900.ttf';
   static const String fontsGothamBlackRegular = 'assets/fonts/gotham_black_regular.ttf';
   static const String fontsGothamBold = 'assets/fonts/gotham_bold.ttf';
+  static const String fontsGothamBook = 'assets/fonts/gotham_book.ttf';
   static const String fontsGothamMedium = 'assets/fonts/gotham_medium.ttf';
+  static const String fontsGothamUltra = 'assets/fonts/gotham_ultra.ttf';
   static const String imagesArrow = 'assets/images/arrow.svg';
   static const String imagesBackcard = 'assets/images/backcard.svg';
+  static const String imagesBackcardImg = 'assets/images/backcard_img.png';
   static const String imagesBadge = 'assets/images/badge.png';
   static const String imagesCampaign = 'assets/images/campaign.svg';
   static const String imagesCard1 = 'assets/images/card1.svg';
@@ -25,6 +29,8 @@ class Assets {
   static const String imagesDottedrightup = 'assets/images/dottedrightup.svg';
   static const String imagesFirstmaskgrp = 'assets/images/firstmaskgrp.svg';
   static const String imagesGame = 'assets/images/game.png';
+  static const String imagesGlobalPersondashboard = 'assets/images/global_persondashboard.png';
+  static const String imagesGlobalRobort = 'assets/images/global_robort.png';
   static const String imagesLanguageImage = 'assets/images/language_image.png';
   static const String imagesLeft = 'assets/images/left.svg';
   static const String imagesLocalizationImage = 'assets/images/localization_image.png';
@@ -41,8 +47,11 @@ class Assets {
   static const String imagesSecondmaskgrp = 'assets/images/secondmaskgrp.svg';
   static const String imagesSolo = 'assets/images/solo.svg';
   static const String imagesSolo2 = 'assets/images/solo2.png';
+  static const String imagesSoloImage = 'assets/images/solo_image.png';
   static const String imagesSolop = 'assets/images/solop.png';
+  static const String imagesStartScreenImg = 'assets/images/start_screen_img.png';
   static const String imagesTeam = 'assets/images/team.svg';
+  static const String imagesTeamImage = 'assets/images/team_image.png';
   static const String imagesTrophy = 'assets/images/trophy.png';
 
 }

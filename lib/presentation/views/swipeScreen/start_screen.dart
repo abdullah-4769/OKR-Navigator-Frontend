@@ -5,6 +5,7 @@ import '../../../core/app_assets.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/common_image.dart';
 import '../../widgets/custom_svg.dart';
 
 class StartScreen extends StatelessWidget {
@@ -64,8 +65,8 @@ class StartScreen extends StatelessWidget {
                             SizedBox(height: AppDimensions.d20.h),
 
                             // MaskGroup SVG
-                            CustomSvg(
-                              assetPath: 'assets/images/maskgroup.svg',
+                            CommonImage(
+                              assetPath: 'assets/images/start_screen_img.png',
                               width: AppDimensions.d180.w,
                               height: AppDimensions.d200.h,
                               semanticsLabel: '',
@@ -78,7 +79,7 @@ class StartScreen extends StatelessWidget {
                               'welcome_to_okr_navigator'.tr,
                               style: Theme.of(context)
                                   .textTheme
-                                  .displayLarge
+                                  .displayMedium
                                   ?.copyWith(color: AppColors.primaryBlue),
                               textAlign: TextAlign.center,
                             ),
@@ -90,9 +91,9 @@ class StartScreen extends StatelessWidget {
                               'start_screen_description'.tr,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyLarge
+                                  .bodyMedium
                                   ?.copyWith(
-                                color: AppColors.textSecondary,
+                                color: AppColors.black,
                                 height: 1.5,
                               ),
                               textAlign: TextAlign.center,

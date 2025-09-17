@@ -5,44 +5,44 @@ import 'app_dimensions.dart';
 
 final ThemeData appTheme = ThemeData(
   primaryColor: AppColors.primary,
-  fontFamily: 'Gotham',
+  fontFamily: 'Gotham ',
   useMaterial3: true, // ✅ modern Material
   textTheme: TextTheme(
     // ---------------------- DISPLAY ----------------------
     displayLarge: TextStyle(
-      fontFamily: 'Gotham',
-      fontWeight: FontWeight.w900, // Extra bold / Black
-      fontSize: 32.sp, // Large hero text
+      fontFamily: 'GothamUltra',
+      fontWeight: FontWeight.w500, // Extra bold / Black
+      fontSize: 30.sp, // Large hero text
       color: AppColors.textPrimary,
     ),
     displayMedium: TextStyle(
-      fontFamily: 'Gotham',
+      fontFamily: 'GothamExtraBold',
       fontWeight: FontWeight.w800,
-      fontSize: 28.sp,
+      fontSize: 26.sp,
       color: AppColors.textPrimary,
     ),
     displaySmall: TextStyle(
-      fontFamily: 'Gotham',
+      fontFamily: 'GothamBold',
       fontWeight: FontWeight.w700,
-      fontSize: 24.sp,
+      fontSize: 22.sp,
       color: AppColors.textPrimary,
     ),
 
     // ---------------------- HEADLINE ----------------------
     headlineLarge: TextStyle(
-      fontFamily: 'Gotham',
+      fontFamily: 'GothamBold',
       fontWeight: FontWeight.w700, // Bold
       fontSize: 22.sp,
       color: AppColors.textPrimary,
     ),
     headlineMedium: TextStyle(
-      fontFamily: 'Gotham',
+      fontFamily: 'GothamBold',
       fontWeight: FontWeight.w600,
       fontSize: 20.sp,
       color: AppColors.textPrimary,
     ),
     headlineSmall: TextStyle(
-      fontFamily: 'Gotham',
+      fontFamily: 'GothamBold',
       fontWeight: FontWeight.w400,
       fontSize: 18.sp,
       color: AppColors.textPrimary,
@@ -51,13 +51,13 @@ final ThemeData appTheme = ThemeData(
     // ---------------------- TITLE ----------------------
     titleLarge: TextStyle(
       fontFamily: 'Gotham',
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       fontSize: 18.sp,
       color: AppColors.textPrimary,
     ),
     titleMedium: TextStyle(
       fontFamily: 'Gotham',
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w400,
       fontSize: 16.sp,
       color: AppColors.textPrimary,
     ),
@@ -83,7 +83,7 @@ final ThemeData appTheme = ThemeData(
     ),
     bodySmall: TextStyle(
       fontFamily: 'Gotham',
-      fontWeight: FontWeight.w400, // ✅ force non-bold
+      fontWeight: FontWeight.w400,
       fontSize: 12.sp,
       color: AppColors.textSecondary,
     ),

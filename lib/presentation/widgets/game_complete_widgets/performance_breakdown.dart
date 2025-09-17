@@ -22,7 +22,7 @@ class PerformanceBreakdown extends StatelessWidget {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16.r),
       color: Colors.white,
-      border: Border.all(color: AppColors.grey.withOpacity(0.3)),
+      border: Border.all(color: AppColors.primaryRed),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

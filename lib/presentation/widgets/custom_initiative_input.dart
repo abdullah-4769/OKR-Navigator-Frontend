@@ -59,11 +59,11 @@ class CustomInitiativeInput extends StatelessWidget {
                   numberText.tr,
                   style: TextStyle(
                     fontSize: AppDimensions.d16.sp,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w900,
                     color: mode == 'team'
                         ? AppColors.primaryBlue
                         : AppColors.primaryRed,
-                    fontFamily: 'Gotham',
+                    fontFamily: 'GothamBold',
                   ),
                 ),
                 SizedBox(height: AppDimensions.d10.h),
@@ -73,10 +73,14 @@ class CustomInitiativeInput extends StatelessWidget {
                   controller: titleController,
                   decoration: InputDecoration(
                     hintText: 'enter_initiative_name'.tr,
-                    hintStyle: TextStyle(fontSize: width * 0.035),
+                    hintStyle: TextStyle(fontSize: width * 0.035,
+                      fontFamily: 'Gotham',
+                      fontWeight: FontWeight.w900,
+                    color: AppColors.grey),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: width * 0.03,
                       vertical: height * 0.015,
+
                     ),
                     border: OutlineInputBorder(
                       borderRadius:
@@ -95,7 +99,10 @@ class CustomInitiativeInput extends StatelessWidget {
                   maxLines: 3,
                   decoration: InputDecoration(
                     hintText: 'describe_initiative_help'.tr,
-                    hintStyle: TextStyle(fontSize: width * 0.035),
+                    hintStyle: TextStyle(fontSize: width * 0.035,
+                        fontFamily: 'Gotham',
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.grey),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: width * 0.03,
                       vertical: height * 0.02,

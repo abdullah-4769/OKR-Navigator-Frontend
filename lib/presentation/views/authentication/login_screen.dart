@@ -77,7 +77,7 @@ class LoginScreen extends StatelessWidget {
                       Text(
                         'strategy_awaits'.tr,
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyLarge?.copyWith(
+                        style: theme.textTheme.bodySmall?.copyWith(
                           fontSize:
                           isPortrait ? screenWidth * 0.04 : screenWidth * 0.03,
                           color: AppColors.textSecondary,

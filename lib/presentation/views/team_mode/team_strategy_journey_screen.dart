@@ -42,7 +42,7 @@ class TeamStrategyJourneyScreen extends StatelessWidget {
                       CustomHeader(
                         title: 'strategic'.tr,
                         highlightedText: 'journey'.tr,
-                        subtitle: 'team'.tr,
+                        subtitle: ''.tr,
                         onBackTap: () => Get.back(),
                       ),
 

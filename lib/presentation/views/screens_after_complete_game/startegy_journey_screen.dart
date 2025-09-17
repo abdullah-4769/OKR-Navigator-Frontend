@@ -97,42 +97,19 @@ class StrategyJourneyScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
-                      // Achievement Summary card
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: AppDimensions.d16.w),
-                        child: Container(
-                          margin:
-                          EdgeInsets.symmetric(vertical: AppDimensions.d8.h),
-                          padding: EdgeInsets.all(AppDimensions.d12.w),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                            BorderRadius.circular(AppDimensions.d18.r),
-                            border: Border.all(
-                              color: AppColors.primaryRed.withOpacity(0.2),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-
-                              AchievementSummary(
-                                  achievements:
-                                  controller.achievements.toList()),
-                            ],
-                          ),
-                        ),
+                      SizedBox(height: height * 0.02),
+                      Center(
+                        child: AchievementSummary(
+                            achievements:
+                            controller.achievements.toList()),
                       ),
-
                       SizedBox(height: height * 0.02),
 
                       // Journey Map (expandable)
                       Obx(
                             () => Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: AppDimensions.d4.w),
+                              horizontal: AppDimensions.d2.w),
                           child: CustomJourneyMap(
                             progress: controller.progress.value,
                             steps: controller.steps,

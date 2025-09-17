@@ -77,10 +77,10 @@ class TeamGameCompleteScreen extends StatelessWidget {
                           subtitle: "your_initiative".tr,
                           trailingIcon: Icons.play_arrow_rounded,
                           onPressed: () {
-                            onPressed: () {
+
                               Get.put(TeamStrategicArchitectController()); // Initialize controller
                               Get.toNamed(AppRoutes.teamStrategicArchitectScreen2);
-                            };
+
                           },
                         ),
                       ),
@@ -217,13 +217,15 @@ class TeamGameCompleteScreen extends StatelessWidget {
                           "View Team Journey",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyMedium
+                              .titleSmall
                               ?.copyWith(
                             color: AppColors.primaryBlue,
                             decoration: TextDecoration.underline,
+
                           ),
                         ),
                       ),
+                      SizedBox(height: height * 0.04),
                     ],
                   ),
                 ),

@@ -32,6 +32,7 @@ class TeamLobbyScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      SizedBox(height: height * 0.015),
                       /// 🔻 Header
                       CustomHeader(
                         title: 'Team'.tr,
@@ -41,7 +42,7 @@ class TeamLobbyScreen extends StatelessWidget {
                       ),
 
 
-
+                      SizedBox(height: height * 0.01),
                       /// 🔻 Team Avatar with bubble
                       Stack(
                         alignment: Alignment.bottomRight,

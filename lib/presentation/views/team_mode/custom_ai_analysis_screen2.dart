@@ -80,6 +80,7 @@ class CustomAIAnalysisScreen2 extends StatelessWidget {
                             text: _safeTranslate('proceed'),
                             onPressed: () =>
                                 Get.toNamed(AppRoutes.teamGameCompleteScreen),
+                            icon: Icons.play_arrow,
                           ),
                         ),
 

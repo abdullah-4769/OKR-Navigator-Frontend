@@ -43,13 +43,30 @@ class ContextualCAdjustmentScreen extends StatelessWidget {
                         CustomHeader(
                           title: 'contextual'.tr,
                           highlightedText: 'adjustment'.tr,
-                          subtitle: 'refine_strategy_address_challenge'.tr,
+                          subtitle: ''.tr,
                           onBackTap: () =>
                               Get.toNamed(AppRoutes.aiAnalysisShowScreen),
                         ),
 
                         SizedBox(height: height * 0.0025),
 
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "refine_strategy_address_challenge".tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.black,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: height * 0.025),
                         /// Single Main Adjustment Container
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: width * 0.05),

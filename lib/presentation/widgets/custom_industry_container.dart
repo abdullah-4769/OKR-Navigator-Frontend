@@ -55,8 +55,7 @@ class CustomIndustryContainer extends StatelessWidget {
     final maxWidth = media.size.width;
 
     return OrientationBuilder(
-      builder: (context, orientation) {
-        return GestureDetector(
+      builder: (context, orientation) => GestureDetector(
           onTap: onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
@@ -93,7 +92,7 @@ class CustomIndustryContainer extends StatelessWidget {
               children: [
                 /// 🔹 Icon + Title + Selection Circle Row
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       padding: EdgeInsets.all(AppDimensions.d10.w),
@@ -120,6 +119,7 @@ class CustomIndustryContainer extends StatelessWidget {
 
                     /// Title Text
                     Expanded(
+
                       child: Text(
                         title,
                         style: TextStyle(
@@ -128,7 +128,7 @@ class CustomIndustryContainer extends StatelessWidget {
                               : AppDimensions.d18.sp,
                           fontWeight: FontWeight.w700,
                           color: activeColor,
-                          fontFamily: 'Gotham',
+                          fontFamily: 'GothamBold',
                         ),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -185,8 +185,7 @@ class CustomIndustryContainer extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
+        ),
     );
   }
 
