@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/presentation/widgets/common_image.dart';
 import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
@@ -53,10 +54,10 @@ class _SplashScreen1State extends State<SplashScreen1> {
                         SizedBox(height: AppDimensions.d24.h),
 
                         // Mask SVG
-                        CustomSvg(
+                        CommonImage(
                           semanticsLabel: 'mask_group'.tr,
-                          assetPath: 'assets/images/maskgroup.svg',
-                          height: 170.h,
+                          assetPath: 'assets/images/start_screen_img.png',
+                          height: 190.h,
                           width: 200.w,
                         ),
 

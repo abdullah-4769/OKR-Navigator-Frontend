@@ -844,7 +844,28 @@ final Map<String, String> en = {
   "strategy_tip1": "Develop and introduce innovative products",
   "strategy_tip2":
       "Focus on expanding into untapped markets to drive sustainable growth and increase market share.",
-
+  "campaign": "Campaign",
+  "mode": "Mode",
+  "you_are_navigator": "You are Navigator",
+  "navigator_mission": "Navigator Mission",
+  "navigator_mission_desc":
+  "You are a Navigator on a mission to transform 3 organizations. Each organization presents unique challenges and objectives that will test your OKR mastery.",
+  "campaign_progress": "Campaign Progress",
+  "organizations": "3 Organizations",
+  "organizations_desc": "You’re leading 3 organizations toward growth.",
+  "organization_a": "Organization A",
+  "organization_b": "Organization B",
+  "organization_c": "Organization C",
+  "startup_phase_level1": "Startup Growth Phase • Level 1",
+  "startup_phase_level2": "Startup Growth Phase • Level 2",
+  "strategy_cards": "Strategy Cards",
+  "challenges": "Challenges",
+  "growth_scale_obj": "Growth & Scale Objectives",
+  "global_alignment": "Global Alignment",
+  "digital_transformation": "Digital Transformation",
+  "locked": "Locked",
+  "begin_campaign": "Begin Campaign",
+  "campaign_guide": "Campaign Guide",
   // AI STRATEGIC ANALYSIS
   "ai_strategic_analysis": "AI Strategic Analysis",
   "submit_initiatives_ai_analysis": "Submit your initiatives for AI analysis",
@@ -853,7 +874,11 @@ final Map<String, String> en = {
   "ai_tips_debrief": "AI tips & debrief",
   "AI has analyzed your initiatives and found them highly relevant! 🚀":
       "AI has analyzed your initiatives and found them highly relevant! 🚀",
-
+  "start": "Start",
+  "the_mission": "The Mission",
+  "trophy_rewards": "Trophy & Rewards Unlocked",
+  "badge_strategic_thinker": "Badge Strategic Thinker",
+  "title_master_adapter": "Title Master Adapter",
 
   'choose': 'Choose',
   'objective': 'Your Objective',

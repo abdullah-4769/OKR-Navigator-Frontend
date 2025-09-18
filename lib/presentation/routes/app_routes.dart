@@ -1,4 +1,6 @@
 import 'package:game_app/controllers/team_mode_controller/team_strategic_architect_controller.dart';
+import 'package:game_app/presentation/views/campaign_mode_views/campaign_mode_screen.dart';
+import 'package:game_app/presentation/views/campaign_mode_views/mission_screen.dart';
 import 'package:game_app/presentation/views/team_mode/team_achievements_screen.dart';
 import 'package:game_app/presentation/views/team_mode/team_contextual_challenge_screen.dart';
 import 'package:game_app/presentation/views/team_mode/team_scoreboard_screen.dart';
@@ -113,10 +115,25 @@ class AppRoutes {
   static const String teamLobby = '/team-lobby';
   static const teamDashboard = '/team-dashboard';
   static const teamChatScreen = '/team-chat-screen';
+  static const String campaignModeScreen = "/campaignMode";
+  static const String missionScreen = "/mission_screen";
+
+
+
+
+
 
   static final List<GetPage> pages = [
     /// ✅ Team mode
 
+    GetPage(
+      name: AppRoutes.missionScreen,
+      page: () => MissionScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.campaignModeScreen,
+      page: () => CampaignModeScreen(),
+    ),
 
     GetPage(
       name: AppRoutes.teamDashboard,

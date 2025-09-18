@@ -83,13 +83,21 @@ class PricingController extends GetxController {
     final mode = gameModeController.selectedMode.value;
 
     if (mode == 'team') {
-      // 👇 Navigate to splash for team
+      //  Navigate to splash for team
       Get.toNamed(AppRoutes.splashScreenTeam);
 
       // dispose pricing controller after moving away
       Get.delete<PricingController>();
-    } else {
-      // 👇 Solo or Campaign continue normal flow
+    }
+    else if (mode == 'campaign') {
+      //  Navigate to splash for team
+      Get.toNamed(AppRoutes.campaignModeScreen);
+
+      // dispose pricing controller after moving away
+      Get.delete<PricingController>();
+    }
+    else {
+      //  Solo or Campaign continue normal flow
       selectPlan(currentPageIndex.value);
     }
   }

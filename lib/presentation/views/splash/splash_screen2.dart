@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
+import '../../widgets/common_image.dart';
 import '../../widgets/custom_curved_arrow.dart';
 import '../../widgets/custom_svg.dart';
 
@@ -53,10 +54,10 @@ class _SplashScreen2State extends State<SplashScreen2> {
                         SizedBox(height: AppDimensions.d24.h),
 
                         // Mask Image
-                        CustomSvg(
+                        CommonImage(
                           semanticsLabel: 'mask_group'.tr,
-                          assetPath: 'assets/images/maskgroup.svg',
-                          height: 170.h,
+                          assetPath: 'assets/images/start_screen_img.png',
+                          height: 190.h,
                           width: 200.w,
                         ),
 

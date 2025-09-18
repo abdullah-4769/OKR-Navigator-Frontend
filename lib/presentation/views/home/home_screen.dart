@@ -129,8 +129,10 @@ class HomeScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                _verticalDots(),
-                                SizedBox(width: 8.w),
+
+                                Align( alignment: Alignment.centerRight,
+                                    child: _verticalDots()),
+                                SizedBox(width: 30.w),
                                 SizedBox(
                                   width: screenWidth * 0.8,
                                   height: screenHeight * 0.5,

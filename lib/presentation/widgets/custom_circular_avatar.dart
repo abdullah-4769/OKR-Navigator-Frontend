@@ -1,110 +1,97 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/app_colors.dart';
 class CustomCircularAvatar extends StatelessWidget {
   final String imagePath;
-  final List<Color> innerColors; // 3 colors for layered circles
-  final List<Color>? borderGradient; // gradient for border (optional now)
+  final List<Color> innerColors; // must be 3
+  final List<Color>? borderGradient; // optional gradient border
   final double size;
+
+  // ✅ Controls
+  final double imageScale; // scale factor for image
+  final Offset imageOffset; // shift image
+  final double borderWidth; // gradient border thickness
+  final double innermostFactor; // size of last circle (default 0.6)
 
   const CustomCircularAvatar({
     super.key,
     required this.imagePath,
     required this.innerColors,
-    this.borderGradient, // made optional
+    this.borderGradient,
     this.size = 100,
+    this.imageScale = 0.6,
+    this.imageOffset = Offset.zero,
+    this.borderWidth = 3,
+    this.innermostFactor = 0.6, // 👈 default same as before
   }) : assert(innerColors.length == 3, 'innerColors must have exactly 3 colors');
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    width: size.w,
-    height: size.w,
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        // Only draw gradient border if provided
-        if (borderGradient != null)
-          CustomPaint(
-            size: Size(size.w, size.w),
-            painter: _GradientBorderPainter(
-              gradientColors: borderGradient!,
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size.w,
+      height: size.w,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Outer gradient border
+          Container(
+            width: size.w,
+            height: size.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: borderGradient != null
+                  ? LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: borderGradient!,
+              )
+                  : null,
+              color: borderGradient == null ? innerColors[0] : null,
             ),
           ),
 
-        // 3 layered circles
-        Container(
-          width: (size * 0.95).w,
-          height: (size * 0.95).w,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: innerColors[0],
-          ),
-          child: Center(
-            child: Container(
-              width: (size * 0.85).w,
-              height: (size * 0.85).w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: innerColors[1],
-              ),
-              child: Center(
-                child: Container(
-                  width: (size * 0.7).w,
-                  height: (size * 0.7).w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: innerColors[2],
-                  ),
-                  child: Center(
-                    child: Image.asset(
-                      imagePath,
-                      width: (size * 1).w,
-                      height: (size * 1).w,
-                      fit: BoxFit.contain,
+          // Inner circle (background layers)
+          Container(
+            width: (size - 2 * borderWidth).w,
+            height: (size - 2 * borderWidth).w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: innerColors[0],
+            ),
+            child: Center(
+              child: Container(
+                width: (size * 0.75).w,
+                height: (size * 0.75).w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: innerColors[1],
+                ),
+                child: Center(
+                  child: Container(
+                    width: (size * innermostFactor).w, // 👈 configurable now
+                    height: (size * innermostFactor).w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: innerColors[2],
+                    ),
+                    child: Center(
+                      child: Transform.translate(
+                        offset: imageOffset,
+                        child: Image.asset(
+                          imagePath,
+                          width: (size * imageScale).w, // 👈 not capped anymore
+                          height: (size * imageScale).w,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-
-/// CustomPainter for gradient border
-class _GradientBorderPainter extends CustomPainter {
-  final List<Color> gradientColors;
-
-  _GradientBorderPainter({required this.gradientColors});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final gradient = LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: gradientColors,
-    );
-
-    final paint = Paint()
-      ..shader = gradient.createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = size.width * 0.03;
-
-    canvas.drawArc(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      -3.14 / 2,
-      3.14 * 2,
-      false,
-      paint,
+        ],
+      ),
     );
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

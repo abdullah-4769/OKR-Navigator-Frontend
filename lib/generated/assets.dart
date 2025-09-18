@@ -2,7 +2,6 @@
 class Assets {
   Assets._();
 
-  static const String assetsImagesCard1 = 'assets/images/card_1.png';
   static const String fontsGothamBlack900 = 'assets/fonts/gotham_black_900.ttf';
   static const String fontsGothamBlackRegular = 'assets/fonts/gotham_black_regular.ttf';
   static const String fontsGothamBold = 'assets/fonts/gotham_bold.ttf';
@@ -14,14 +13,8 @@ class Assets {
   static const String imagesBackcardImg = 'assets/images/backcard_img.png';
   static const String imagesBadge = 'assets/images/badge.png';
   static const String imagesCampaign = 'assets/images/campaign.svg';
-  static const String imagesCard1 = 'assets/images/card1.svg';
-  static const String imagesCard2 = 'assets/images/card2.svg';
-  static const String imagesCard3 = 'assets/images/card3.svg';
-  static const String imagesCard4 = 'assets/images/card4.svg';
-  static const String imagesCard5 = 'assets/images/card5.svg';
-  static const String imagesCard6 = 'assets/images/card6.svg';
-  static const String imagesCard7 = 'assets/images/card7.svg';
-  static const String imagesCard8 = 'assets/images/card8.svg';
+  static const String imagesCampaignImage = 'assets/images/campaign_image.png';
+  static const String imagesCard1 = 'assets/images/card_1.png';
   static const String imagesCertificate = 'assets/images/certificate.svg';
   static const String imagesCertificateImage = 'assets/images/certificate_image.png';
   static const String imagesDottedleftdown = 'assets/images/dottedleftdown.svg';
