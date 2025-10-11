@@ -32,6 +32,8 @@ class MyApp extends StatelessWidget {
   final LocalizationService localizationService;
   const MyApp({super.key, required this.localizationService});
 
+
+
   @override
   Widget build(BuildContext context) => ScreenUtilInit(
       designSize: const Size(375, 812),
