@@ -1,10 +1,98 @@
+// import 'package:flutter/material.dart';
+// import 'package:game_app/controllers/key_objective_controller.dart';
+// import 'package:game_app/controllers/language_controller.dart';
+// import 'package:game_app/controllers/strategy_selection_controller.dart';
+// import 'package:game_app/generated/models/responses/key_results/key_results_response.dart';
+// import 'package:get/get.dart';
+//
+// import '../data/repositories/strategy_repository.dart';
+//
+// class SuggestionInitiativesController extends GetxController {
+//   final firstInitiativeTitle = TextEditingController();
+//   final firstInitiativeDesc = TextEditingController();
+//   final secondInitiativeTitle = TextEditingController();
+//   final secondInitiativeDesc = TextEditingController();
+//
+//   var aiFeedback = ''.obs;
+//   var isSubmitting = false.obs;
+//
+//   /// ✅ Submit initiatives for AI analysis
+//   Future<void> submitInitiatives(List<KeyResult> selectedKeyResults) async {
+//     if (firstInitiativeTitle.text.isEmpty ||
+//         firstInitiativeDesc.text.isEmpty ||
+//         secondInitiativeTitle.text.isEmpty ||
+//         secondInitiativeDesc.text.isEmpty) {
+//       Get.snackbar(
+//         'error'.tr,
+//         'fill_initiatives'.tr,
+//         snackPosition: SnackPosition.BOTTOM,
+//         backgroundColor: Colors.red,
+//         colorText: Colors.white,
+//       );
+//       return;
+//     }
+//
+//     try {
+//       isSubmitting.value = true;
+//
+//       // 🔹 Future: Send data to backend / AI API
+//       // For now, just simulate processing delay
+//       final response = await Get.find<StrategyRepository>().submitInitiatives(
+//         strategy: Get.find<StrategySelectionController>()
+//             .selectedStrategy
+//             .value!
+//             .title!,
+//         initiatives: [
+//           firstInitiativeTitle.text.trim(),
+//           firstInitiativeDesc.text.trim(),
+//           secondInitiativeTitle.text.trim(),
+//           secondInitiativeDesc.text.trim(),
+//         ],
+//         keyResults: selectedKeyResults,
+//         objective:
+//             Get.find<KeyObjectiveController>().selectedObjective.value!.title!,
+//         language: Get.find<LanguageController>().selectedLanguage.value.name,
+//       );
+//
+//       aiFeedback.value = 'initiatives_submitted'.tr;
+//
+//       // ✅ Navigate to next screen after success
+//       // await Get.toNamed(
+//       //   AppRoutes.contextualChallenge,
+//       //   arguments: {
+//       //     'keyResults': keyResults,
+//       //     'initiatives': [
+//       //       {
+//       //         'title': firstInitiativeTitle.text,
+//       //         'description': firstInitiativeDesc.text,
+//       //       },
+//       //       {
+//       //         'title': secondInitiativeTitle.text,
+//       //         'description': secondInitiativeDesc.text,
+//       //       },
+//       //     ],
+//       //   },
+//       // );
+//     } finally {
+//       isSubmitting.value = false;
+//     }
+//   }
+//
+//   @override
+//   void onClose() {
+//     firstInitiativeTitle.dispose();
+//     firstInitiativeDesc.dispose();
+//     secondInitiativeTitle.dispose();
+//     secondInitiativeDesc.dispose();
+//     super.onClose();
+//   }
+// }
 import 'package:flutter/material.dart';
 import 'package:game_app/controllers/key_objective_controller.dart';
 import 'package:game_app/controllers/language_controller.dart';
 import 'package:game_app/controllers/strategy_selection_controller.dart';
 import 'package:game_app/generated/models/responses/key_results/key_results_response.dart';
 import 'package:get/get.dart';
-
 import '../data/repositories/strategy_repository.dart';
 
 class SuggestionInitiativesController extends GetxController {
@@ -16,8 +104,9 @@ class SuggestionInitiativesController extends GetxController {
   var aiFeedback = ''.obs;
   var isSubmitting = false.obs;
 
-  /// ✅ Submit initiatives for AI analysis
+  /// ✅ Submit initiatives for AI evaluation
   Future<void> submitInitiatives(List<KeyResult> selectedKeyResults) async {
+    // ✅ Input validation
     if (firstInitiativeTitle.text.isEmpty ||
         firstInitiativeDesc.text.isEmpty ||
         secondInitiativeTitle.text.isEmpty ||
@@ -35,44 +124,43 @@ class SuggestionInitiativesController extends GetxController {
     try {
       isSubmitting.value = true;
 
-      // 🔹 Future: Send data to backend / AI API
-      // For now, just simulate processing delay
+      // ✅ Fetch required data from other controllers
+      final strategyTitle = Get.find<StrategySelectionController>()
+          .selectedStrategy
+          .value!
+          .title!;
+      final objectiveTitle =
+      Get.find<KeyObjectiveController>().selectedObjective.value!.title!;
+      final language =
+          Get.find<LanguageController>().selectedLanguage.value.name;
+
+      // ✅ Convert to List<String> for backend
+      final initiatives = [
+        '${firstInitiativeTitle.text.trim()} - ${firstInitiativeDesc.text.trim()}',
+        '${secondInitiativeTitle.text.trim()} - ${secondInitiativeDesc.text.trim()}',
+      ];
+
+      // ✅ API call via StrategyRepository
       final response = await Get.find<StrategyRepository>().submitInitiatives(
-        strategy: Get.find<StrategySelectionController>()
-            .selectedStrategy
-            .value!
-            .title!,
-        initiatives: [
-          firstInitiativeTitle.text.trim(),
-          firstInitiativeDesc.text.trim(),
-          secondInitiativeTitle.text.trim(),
-          secondInitiativeDesc.text.trim(),
-        ],
+        strategy: strategyTitle,
+        objective: objectiveTitle,
+        initiatives: initiatives,
         keyResults: selectedKeyResults,
-        objective:
-            Get.find<KeyObjectiveController>().selectedObjective.value!.title!,
-        language: Get.find<LanguageController>().selectedLanguage.value.name,
+        language: language,
       );
 
-      aiFeedback.value = 'initiatives_submitted'.tr;
+      // ✅ Handle success
+      aiFeedback.value =
+          response.message ?? 'initiatives_submitted_successfully'.tr;
 
-      // ✅ Navigate to next screen after success
-      // await Get.toNamed(
-      //   AppRoutes.contextualChallenge,
-      //   arguments: {
-      //     'keyResults': keyResults,
-      //     'initiatives': [
-      //       {
-      //         'title': firstInitiativeTitle.text,
-      //         'description': firstInitiativeDesc.text,
-      //       },
-      //       {
-      //         'title': secondInitiativeTitle.text,
-      //         'description': secondInitiativeDesc.text,
-      //       },
-      //     ],
-      //   },
-      // );
+    } catch (e) {
+      Get.snackbar(
+        'error'.tr,
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isSubmitting.value = false;
     }
@@ -87,3 +175,6 @@ class SuggestionInitiativesController extends GetxController {
     super.onClose();
   }
 }
+
+
+

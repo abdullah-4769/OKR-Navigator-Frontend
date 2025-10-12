@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../../controllers/journey_controller.dart';
 import '../../../controllers/key_results_controller.dart';
 import '../../../controllers/okr_constellation_controller.dart';
@@ -17,6 +16,7 @@ import '../../widgets/custom_okr_constellation.dart';
 import '../../widgets/custom_selected_key_result_container.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
+import '../suggestion_Initiatives/suggestion_initiatives_creen.dart';
 
 class KeyResultsScreen extends StatelessWidget {
   KeyResultsScreen({super.key});
@@ -29,7 +29,6 @@ class KeyResultsScreen extends StatelessWidget {
   );
   final JourneyController journeyController = Get.find<JourneyController>();
 
-  // Helper method to safely get translated text
   String _safeTranslate(String? key, {String fallback = ''}) {
     if (key == null) return fallback;
     try {
@@ -50,7 +49,6 @@ class KeyResultsScreen extends StatelessWidget {
     final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
 
-    // Responsive calculations
     final isTablet = screenWidth > 600;
     final isDesktop = screenWidth > 900;
 
@@ -194,7 +192,7 @@ class KeyResultsScreen extends StatelessWidget {
 
                         /// Journey Map
                         Obx(
-                          () => CustomJourneyMap(
+                              () => CustomJourneyMap(
                             progress: journeyController.progress.value,
                             steps: journeyController.steps,
                             completedSteps: journeyController.completedSteps,
@@ -217,19 +215,27 @@ class KeyResultsScreen extends StatelessWidget {
                             ),
                           ),
                           child: Obx(
-                            () => CustomButton2(
+                                () => CustomButton2(
                               text: _safeTranslate('complete_selection'),
-                              onPressed:
-                                  keyResultsController.selectedCount.value ==
-                                      keyResultsController.requiredCount.value
+                              onPressed: keyResultsController
+                                  .selectedCount.value ==
+                                  keyResultsController.requiredCount.value
                                   ? () {
-                                      journeyController.completeStep(2);
-                                      Get.offAllNamed(
-                                        AppRoutes.suggestionInitiativeScreen,
-                                        arguments:
-                                            keyResultsController.keyResults,
-                                      );
-                                    }
+                                journeyController.completeStep(2);
+
+                                // ✅ Convert Map to KeyResult model
+                                final selectedKeyResults =
+                                keyResultsController
+                                    .getSelectedKeyResults();
+
+                                // ✅ Navigate with proper type
+                                Get.to(
+                                      () => SuggestionInitiativesScreen(
+                                    selectedKeyResults:
+                                    selectedKeyResults,
+                                  ),
+                                );
+                              }
                                   : null,
                             ),
                           ),
@@ -259,7 +265,6 @@ class KeyResultsScreen extends StatelessWidget {
 
   /// Build key results list with responsive layout
   Widget _buildKeyResultsList(double screenWidth, bool isTablet) {
-    // For tablets and larger screens, consider grid layout if needed
     if (isTablet && screenWidth > 800) {
       return GridView.builder(
         shrinkWrap: true,
@@ -275,7 +280,6 @@ class KeyResultsScreen extends StatelessWidget {
       );
     }
 
-    // Default column layout for mobile and smaller tablets
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -287,47 +291,44 @@ class KeyResultsScreen extends StatelessWidget {
     );
   }
 
+  /// Build individual key result item
+  Widget _buildKeyResultItem(int index) {
+    final item = keyResultsController.keyResults[index];
 
-
-    /// Build individual key result item
-    Widget _buildKeyResultItem(int index) {
-      final item = keyResultsController.keyResults[index];
-
-      return Obx(
-            () => CustomIndustryContainer(
-          title: _safeTranslate(item['title'], fallback: 'Unknown Title'),
-          description: _safeTranslate(item['description'], fallback: 'No description'),
-          icon: item['icon'] ?? Icons.rocket,
-          isSelected: keyResultsController.isSelected(item),
-          onTap: () {
-            keyResultsController.toggleSelection(item);
-            final icon = Icons.key;
-            if (keyResultsController.isSelected(item)) {
-              constellationController.addIcon(icon);
-            } else {
-              constellationController.removeIcon(icon);
-            }
-          },
-          showTag1: true,
-          tag1Icon: Icons.trending_up,
-          tag1Text: _safeTranslate(item['tag1'] ?? 'No tag1', fallback: ''),
-          showTag2: true,
-          tag2Icon: Icons.access_time,
-          tag2Text: _safeTranslate(item['tag2'] ?? 'No tag2', fallback: ''),
+    return Obx(
+          () => CustomIndustryContainer(
+        title: _safeTranslate(item['title'], fallback: 'Unknown Title'),
+        description: _safeTranslate(
+          item['description'],
+          fallback: 'No description',
         ),
-      );
-    }
-
+        icon: item['icon'] ?? Icons.rocket,
+        isSelected: keyResultsController.isSelected(index),
+        onTap: () {
+          keyResultsController.toggleSelection(index);
+          final icon = item['icon'] ?? Icons.key;
+          if (keyResultsController.isSelected(index)) {
+            constellationController.addIcon(icon);
+          } else {
+            constellationController.removeIcon(icon);
+          }
+        },
+        showTag1: true,
+        tag1Icon: Icons.trending_up,
+        tag1Text: _safeTranslate(item['tag1'] ?? '', fallback: ''),
+        showTag2: true,
+        tag2Icon: Icons.access_time,
+        tag2Text: _safeTranslate(item['tag2'] ?? '', fallback: ''),
+      ),
+    );
   }
 
   // 🔹 RESPONSIVE HELPER METHODS
 
-  /// Get responsive spacing
   double _getResponsiveSpacing(double dimension, double factor) {
     return dimension * factor;
   }
 
-  /// Get horizontal padding for general content
   double _getHorizontalPadding(double screenWidth) {
     if (screenWidth > 1200) return screenWidth * 0.06;
     if (screenWidth > 900) return screenWidth * 0.04;
@@ -335,34 +336,30 @@ class KeyResultsScreen extends StatelessWidget {
     return screenWidth * 0.02;
   }
 
-  /// Get content padding for key results list
   double _getContentPadding(double screenWidth, bool isTablet) {
     if (isTablet) return screenWidth * 0.06;
     return screenWidth * 0.04;
   }
 
-  /// Get button padding
   double _getButtonPadding(double screenWidth, bool isTablet, bool isDesktop) {
     if (isDesktop) return screenWidth * 0.25;
     if (isTablet) return screenWidth * 0.15;
     return screenWidth * 0.1;
   }
 
-  /// Get title font size
   double _getTitleFontSize(double screenWidth, bool isTablet, bool isDesktop) {
     if (isDesktop) return (screenWidth * 0.035).sp;
     if (isTablet) return (screenWidth * 0.04).sp;
     return (screenWidth * 0.055).sp;
   }
 
-  /// Get subtitle font size
   double _getSubtitleFontSize(
-    double screenWidth,
-    bool isTablet,
-    bool isDesktop,
-  ) {
+      double screenWidth,
+      bool isTablet,
+      bool isDesktop,
+      ) {
     if (isDesktop) return (screenWidth * 0.026).sp;
     if (isTablet) return (screenWidth * 0.030).sp;
     return (screenWidth * 0.039).sp;
   }
-
+}

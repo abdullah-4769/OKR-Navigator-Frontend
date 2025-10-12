@@ -5,7 +5,7 @@ import '../../core/app_dimensions.dart';
 
 class CustomButton2 extends StatelessWidget {
   final String text;
-  final VoidCallback? onPressed; // ✅ Made nullable
+  final VoidCallback? onPressed; // ✅ Callback
   final bool isLoading;
   final Widget? leading;
   final Color? backgroundColor;
@@ -15,6 +15,9 @@ class CustomButton2 extends StatelessWidget {
   final double borderRadius;
   final bool hasShadow;
   final Color? borderColor;
+
+  // ✅ NEW: Optional print message
+  final String? debugMessage;
 
   const CustomButton2({
     super.key,
@@ -29,24 +32,32 @@ class CustomButton2 extends StatelessWidget {
     this.borderRadius = AppDimensions.d30,
     this.hasShadow = true,
     this.borderColor,
+    this.debugMessage, // ✅ add to constructor
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isDisabled = isLoading || onPressed == null; // ✅ NEW LOGIC
+    final bool isDisabled = isLoading || onPressed == null;
 
     return SizedBox(
       width: width ?? double.infinity,
       height: height ?? AppDimensions.d48.h,
       child: ElevatedButton(
-        onPressed: isDisabled ? null : onPressed,
+        onPressed: isDisabled
+            ? null
+            : () {
+          // ✅ Optional print statement
+          if (debugMessage != null) {
+            // ignore: avoid_print
+            print('🖱️ Button Pressed: $debugMessage');
+          }
+          onPressed?.call();
+        },
         style: ElevatedButton.styleFrom(
-          // ✅ Always use gray when disabled
           backgroundColor: isDisabled
-              ? AppColors
-                    .grey // <-- Change here
+              ? AppColors.grey
               : backgroundColor ?? AppColors.primaryRed,
-          disabledBackgroundColor: AppColors.grey, // ✅ Ensures gray background
+          disabledBackgroundColor: AppColors.grey,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius.r),
             side: borderColor != null
@@ -60,32 +71,32 @@ class CustomButton2 extends StatelessWidget {
         ),
         child: isLoading
             ? SizedBox(
-                width: AppDimensions.d22.w,
-                height: AppDimensions.d22.w,
-                child: CircularProgressIndicator(
-                  color: textColor ?? AppColors.white,
-                  strokeWidth: 2,
-                ),
-              )
+          width: AppDimensions.d22.w,
+          height: AppDimensions.d22.w,
+          child: CircularProgressIndicator(
+            color: textColor ?? AppColors.white,
+            strokeWidth: 2,
+          ),
+        )
             : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (leading != null) ...[
-                    leading!,
-                    SizedBox(width: AppDimensions.d8.w),
-                  ],
-                  Text(
-                    text,
-                    style: TextStyle(
-                      color: textColor ?? AppColors.white,
-                      fontSize: AppDimensions.d16.sp,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'GothamBold',
-                    ),
-                  ),
-                ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (leading != null) ...[
+              leading!,
+              SizedBox(width: AppDimensions.d8.w),
+            ],
+            Text(
+              text,
+              style: TextStyle(
+                color: textColor ?? AppColors.white,
+                fontSize: AppDimensions.d16.sp,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'GothamBold',
               ),
+            ),
+          ],
+        ),
       ),
     );
   }

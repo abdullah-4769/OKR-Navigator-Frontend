@@ -150,6 +150,9 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                       SizedBox(height: AppDimensions.d16.h),
 
                       /// KEY RESULTS GRID
+// Replace this section in your MiniSimulationPlayScreen
+
+                      /// KEY RESULTS GRID (Fixed version)
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: AppDimensions.d16.w,
@@ -167,68 +170,47 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: keyResultsController.keyResults.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: crossAxisCount,
-                                    crossAxisSpacing: AppDimensions.d12.w,
-                                    mainAxisSpacing: AppDimensions.d12.h,
-                                    childAspectRatio: isPortrait ? 1.2 : 1.8,
-                                  ),
-
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: crossAxisCount,
+                                crossAxisSpacing: AppDimensions.d12.w,
+                                mainAxisSpacing: AppDimensions.d12.h,
+                                childAspectRatio: isPortrait ? 1.2 : 1.8,
+                              ),
                               itemBuilder: (context, index) {
                                 final item = keyResultsController.keyResults[index];
 
                                 return Obx(
                                       () => CustomIndustryContainer(
-                                    title: _safeTranslate(item['title'], fallback: 'Unknown Title'),
-                                    description: _safeTranslate(item['description'], fallback: 'No description'),
+                                    title: _safeTranslate(
+                                      item['title'],
+                                      fallback: 'Unknown Title',
+                                    ),
+                                    description: _safeTranslate(
+                                      item['description'],
+                                      fallback: 'No description',
+                                    ),
                                     icon: item['icon'] ?? Icons.rocket,
-                                    isSelected: keyResultsController.isSelected(item),
-                                    onTap: () => keyResultsController.toggleSelection(item),
+                                    isSelected: keyResultsController.isSelected(index), // ✅ Use index
+                                    onTap: () => keyResultsController.toggleSelection(index), // ✅ Use index
                                     showTag1: true,
                                     tag1Icon: Icons.trending_up,
-                                    tag1Text: _safeTranslate(item['tag1'] ?? 'No tag1', fallback: ''),
+                                    tag1Text: _safeTranslate(
+                                      item['tag1'] ?? 'No tag1',
+                                      fallback: '',
+                                    ),
                                     showTag2: true,
                                     tag2Icon: Icons.access_time,
-                                    tag2Text: _safeTranslate(item['tag2'] ?? 'No tag2', fallback: ''),
+                                    tag2Text: _safeTranslate(
+                                      item['tag2'] ?? 'No tag2',
+                                      fallback: '',
+                                    ),
                                   ),
                                 );
                               },
-
-                              // itemBuilder: (context, index) {
-                              //   final item =
-                              //       keyResultsController.keyResults[index];
-                              //
-                              //   return Obx(
-                              //     () => CustomIndustryContainer(
-                              //       title: _safeTranslate(item.title),
-                              //       description: _safeTranslate(
-                              //         item.description,
-                              //       ),
-                              //       icon: Icons.rocket,
-                              //       isSelected: keyResultsController.isSelected(
-                              //         item,
-                              //       ),
-                              //       onTap: () => keyResultsController
-                              //           .toggleSelection(item),
-                              //       showTag1: true,
-                              //       tag1Icon: Icons.trending_up,
-                              //       tag1Text: _safeTranslate(
-                              //         'No tag1 from API',
-                              //       ),
-                              //       showTag2: true,
-                              //       tag2Icon: Icons.access_time,
-                              //       tag2Text: _safeTranslate(
-                              //         'No tag2 from API',
-                              //       ),
-                              //     ),
-                              //   );
-                              // },
                             );
                           },
                         ),
                       ),
-
                       SizedBox(height: AppDimensions.d24.h),
 
                       /// NAVIGATION BUTTONS

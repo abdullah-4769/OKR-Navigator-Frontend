@@ -75,11 +75,12 @@ class CustomIndustryContainer extends StatelessWidget {
             minWidth: maxWidth * 0.85,
           ),
           decoration: BoxDecoration(
+
             color: AppColors.lightGrey,
             borderRadius: BorderRadius.circular(AppDimensions.d16.r),
             border: Border.all(
               color: isSelected
-                  ? AppColors.primaryRed
+                  ? AppColors.accentRed
                   : AppColors.grey.withValues(alpha: 0.3),
               width: isSelected ? 2 : 1,
             ),

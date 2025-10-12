@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/services/shared_preference.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'app_urls/shared_preference.dart';
 import 'controllers/game_mode_controller.dart';
 import 'controllers/journey_controller.dart';
 import 'core/app_binding.dart';

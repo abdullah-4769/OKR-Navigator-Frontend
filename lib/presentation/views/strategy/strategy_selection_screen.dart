@@ -15,19 +15,18 @@ import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 
 class StrategySelectionScreen extends StatelessWidget {
-  final Map<String, dynamic>? selectedRole;
-  final Map<String, dynamic>? selectedIndustry;
-  StrategySelectionScreen({
-    super.key,
-    this.selectedRole,
-    this.selectedIndustry,
-  });
+  StrategySelectionScreen({super.key});
 
   final journeyController = Get.find<JourneyController>();
   final controller = Get.find<StrategySelectionController>();
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Get arguments from GetX instead of constructor
+    final args = Get.arguments as Map<String, dynamic>?;
+    final selectedRole = args?['selectedRole'] as Map<String, dynamic>?;
+    final selectedIndustry = args?['selectedIndustry'] as Map<String, dynamic>?;
+
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
@@ -82,6 +81,7 @@ class StrategySelectionScreen extends StatelessWidget {
                                   color: AppColors.textSecondary,
                                   fontFamily: 'Gotham',
                                   height: 1.4,
+
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -98,7 +98,7 @@ class StrategySelectionScreen extends StatelessWidget {
 
                         // Journey Map
                         Obx(
-                          () => CustomJourneyMap(
+                              () => CustomJourneyMap(
                             progress: journeyController.progress.value,
                             steps: journeyController.steps,
                             completedSteps: journeyController.completedSteps,
@@ -111,7 +111,7 @@ class StrategySelectionScreen extends StatelessWidget {
 
                         // Begin Mission Button
                         Obx(
-                          () => Padding(
+                              () => Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: width * 0.12,
                             ),
@@ -119,12 +119,12 @@ class StrategySelectionScreen extends StatelessWidget {
                               text: 'begin_mission'.tr,
                               onPressed: controller.isCardRevealed.value
                                   ? () {
-                                      journeyController.setStep(0, true);
-                                      controller.beginMission(
-                                        selectedRole,
-                                        selectedIndustry,
-                                      );
-                                    }
+                                journeyController.setStep(0, true);
+                                controller.beginMission(
+                                  selectedRole,
+                                  selectedIndustry,
+                                );
+                              }
                                   : null,
                             ),
                           ),

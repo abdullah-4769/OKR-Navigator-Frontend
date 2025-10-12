@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import '../app_urls/shared_preference.dart';
 import '../presentation/routes/app_routes.dart';
+import '../services/shared_preference.dart';
 
 class ChooseIndustryController extends GetxController {
   final RxInt selectedIndex = (-1).obs;

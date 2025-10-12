@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/presentation/widgets/screens_unique_parts/custom_background.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../../controllers/journey_controller.dart';
 import '../../../controllers/suggestion_initiatives_ontroller.dart';
@@ -22,6 +23,7 @@ class SuggestionInitiativesScreen extends StatelessWidget {
 
   final JourneyController journeyController = Get.find<JourneyController>();
   final controller = Get.put(SuggestionInitiativesController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +103,10 @@ class SuggestionInitiativesScreen extends StatelessWidget {
                                 : () => controller.submitInitiatives(
                                     selectedKeyResults,
                                   ),
+
+
                           ),
+
                         ),
                       ),
 

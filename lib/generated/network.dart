@@ -7,7 +7,7 @@ import '../data/repositories/storage_repository.dart';
 final dio = Dio()
   ..options = BaseOptions(
     validateStatus: (_) => true,
-    baseUrl: 'http://192.168.1.3:3000',
+    baseUrl: 'http://192.168.1.6:3000',
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 20),
   )
