@@ -11,6 +11,8 @@ import '../../controllers/register_controller.dart';
 import '../../controllers/strategy_selection_controller.dart';
 import '../../controllers/key_objective_controller.dart';
 import '../controllers/okr_constellation_controller.dart';
+import '../data/repositories/innovative_repo.dart';
+import '../view_model/challenge_view_model/innovative_view_model.dart';
 import '../view_model/key_results_view_model/key_results_view_model.dart';
 import 'localization/localization_services.dart';
 
@@ -42,5 +44,10 @@ class AppBindings extends Bindings {
     // ✅ AUTH CONTROLLERS - Only when login/register screen opens
     Get.lazyPut(() => RegisterController());
     Get.lazyPut(() => LoginController());
+    Get.lazyPut(() => AuthRepository());
+    // contextual challenge ...........
+    Get.lazyPut(() => InnovativeStrategiesRepository());
+    Get.lazyPut(() => InnovativeStrategiesViewModel());
+
   }
 }

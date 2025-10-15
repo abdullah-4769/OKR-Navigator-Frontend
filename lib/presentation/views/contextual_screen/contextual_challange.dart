@@ -7,6 +7,10 @@ import '../../../controllers/journey_controller.dart';
 import '../../../controllers/key_objective_controller.dart';
 import '../../../controllers/key_results_controller.dart';
 import '../../../core/app_colors.dart';
+import '../../../data/repositories/storage_repository.dart';
+import '../../../generated/models/responses/contexual_challenge/innovation_model.dart';
+import '../../../view_model/challenge_view_model/contextual_challenge_view_model.dart';
+import '../../../view_model/challenge_view_model/innovative_view_model.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_adjustment_container.dart';
 import '../../widgets/custom_button.dart';
@@ -21,6 +25,9 @@ class ContextualChallengeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final challengeViewModel = Get.put(ChallengeViewModel());
+    final innovative = Get.put(InnovativeStrategiesViewModel());
+
     final controller = Get.put(ContextualChallengeController());
     final journeyController = Get.find<JourneyController>();
     Get.lazyPut(() => KeyObjectiveController());
@@ -73,29 +80,21 @@ class ContextualChallengeScreen extends StatelessWidget {
                       SizedBox(height: height * 0.025),
 
                       /// Challenge Alert
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                        child: CustomObjectiveContainer(
-                          title: 'challenge_alert'.tr,
-                          subtitle: '',
-                          description: 'adaptation_required'.tr,
-                          titleColor: AppColors.primaryRed,
-                        ),
-                      ),
+                      Obx(() {
+                        return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                            child: CustomMarketDisruptionCard(
+                              icon: Icons.warning_amber_rounded,
+                              title: challengeViewModel.marketDisruptionTitle,
+                              description: challengeViewModel.marketDisruptionDescription,
+                              warningText: 'revenue_drop_warning'.tr,
+                              warningIcon: Icons.trending_down,
+                            )
+                        );
+                      }),
 
                       SizedBox(height: height * 0.025),
 
-                      /// Market Disruption
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                        child: CustomMarketDisruptionCard(
-                          icon: Icons.warning_amber_rounded,
-                          title: 'market_disruption_challenge'.tr,
-                          description: 'competitor_launched_product'.tr,
-                          warningText: 'revenue_drop_warning'.tr,
-                          warningIcon: Icons.trending_down,
-                        ),
-                      ),
 
                       SizedBox(height: height * 0.001),
 
@@ -135,86 +134,85 @@ class ContextualChallengeScreen extends StatelessWidget {
                       SizedBox(height: height * 0.001),
 
                       /// Current Strategy & Related Containers
+                      /// 🔹 Combined Container for all strategy sections
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                        child: Column(
-                          children: [
-                            /// 🔹 Current Strategy
-                            CustomAdjustmentContainer(
-                              icon: Icons.track_changes,
-                              iconColor: AppColors.primaryRed,
-                              title: 'current_strategy'.tr,
-                              description: 'development_new_markets'.tr,
-                            ),
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(color: AppColors.grey.withOpacity(0.4)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// 🔸 Current Strategy
+                              CustomAdjustmentContainer(
+                                icon: Icons.track_changes,
+                                iconColor: AppColors.primaryRed,
+                                title: 'current_strategy'.tr,
+                                description: 'development_new_markets'.tr,
+                              ),
 
-                            SizedBox(height: 4.h),
+                              Divider(height: 20.h, color: AppColors.grey.withOpacity(0.4)),
 
-                            /// 🔹 Objective
-                            CustomAdjustmentContainer(
-                              icon: Icons.flag,
-                              iconColor: AppColors.primaryRed,
-                              title: 'objective'.tr,
-                              description: 'expand_emerging_markets'.tr,
-                              actionText: 'modify'.tr,
-                              actionColor: AppColors.primaryBlue,
-                              onActionTap: () {
-                                // TODO: open objective editing dialog
-                              },
-                            ),
+                              /// 🔸 Objective
+                              CustomAdjustmentContainer(
+                                icon: Icons.flag,
+                                iconColor: AppColors.primaryRed,
+                                title: 'objective'.tr,
+                                description: 'expand_emerging_markets'.tr,
+                                actionText: 'modify'.tr,
+                                actionColor: AppColors.primaryBlue,
+                                onActionTap: () {
+                                  // TODO: open objective editing dialog
+                                },
+                              ),
 
-                            SizedBox(height: 4.h),
+                              Divider(height: 20.h, color: AppColors.grey.withOpacity(0.4)),
 
-                            /// 🔹 Key Results
-                            CustomAdjustmentContainer(
-                              icon: Icons.flag,
-                              iconColor: AppColors.primaryGreen,
-                              title: 'key_results'.tr,
-                              actionText: 'adjust'.tr,
-                              actionColor: AppColors.primaryBlue,
-                              onActionTap: () {},
-                              children: [
-                                _buildResultItem(
-                                  context,
-                                  'achieve_revenue_new_products'.tr,
-                                  highlight: true,
-                                ),
-                                _buildResultItem(
-                                  context,
-                                  'launch_new_geographic_markets'.tr,
-                                ),
-                                _buildResultItem(
-                                  context,
-                                  'achieve_market_share_target'.tr,
-                                ),
-                              ],
-                            ),
+                              /// 🔸 Key Results
+                              CustomAdjustmentContainer(
+                                icon: Icons.flag,
+                                iconColor: AppColors.primaryGreen,
+                                title: 'key_results'.tr,
+                                actionText: 'adjust'.tr,
+                                actionColor: AppColors.primaryBlue,
+                                onActionTap: () {},
 
-                            /// 🔹 Initiatives
-                            CustomAdjustmentContainer(
-                              icon: Icons.rocket_launch,
-                              iconColor: AppColors.primaryRed,
-                              title: 'initiatives'.tr,
-                              actionText: 'revise'.tr,
-                              actionColor: AppColors.primaryBlue,
-                              onActionTap: () {},
-                              children: [
-                                _buildInitiativeItem(
-                                  context,
-                                  1,
-                                  'first_initiative'.tr,
-                                  'premium_product_program'.tr,
-                                ),
-                                _buildInitiativeItem(
-                                  context,
-                                  2,
-                                  'second_initiative'.tr,
-                                  'strategic_market_entry'.tr,
-                                ),
-                              ],
-                            ),
-                          ],
+                              ),
+
+                              Divider(height: 20.h, color: AppColors.grey.withOpacity(0.4)),
+
+                              /// 🔸 Initiatives
+                              // Update the Initiatives section in your existing ContextualChallengeScreen
+
+                              /// 🔸 Initiatives
+                              CustomAdjustmentContainer(
+                                icon: Icons.rocket_launch,
+                                iconColor: AppColors.primaryRed,
+                                title: 'initiatives'.tr,
+                                actionText: 'revise'.tr,
+                                actionColor: AppColors.primaryBlue,
+                                onActionTap: () {
+                                  _showInnovativeStrategiesDialog(context);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+
+
 
                       SizedBox(height: height * 0.003),
 
@@ -341,4 +339,118 @@ class ContextualChallengeScreen extends StatelessWidget {
       ],
     ),
   );
+  void _showInnovativeStrategiesDialog(BuildContext context) {
+    final innovativeViewModel = Get.put(InnovativeStrategiesViewModel());
+    final storageRepository = Get.find<StorageRepository>();
+
+    // Get strategy ID - you might need to adjust this based on your app structure
+    int strategyId = 4; // Default value, replace with dynamic value if needed
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Innovative Strategies'),
+        content: Obx(() {
+          if (innovativeViewModel.isLoading.value) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (innovativeViewModel.errorMessage.isNotEmpty) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error, color: Colors.red, size: 48),
+                SizedBox(height: 16),
+                Text('Error: ${innovativeViewModel.errorMessage.value}'),
+              ],
+            );
+          }
+
+          return Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: innovativeViewModel.innovativeStrategies.length,
+              itemBuilder: (context, index) {
+                final strategy = innovativeViewModel.innovativeStrategies[index];
+                return _buildStrategyCard(context, strategy);
+              },
+            ),
+          );
+        }),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Close'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              innovativeViewModel.fetchInnovativeStrategies(strategyId);
+            },
+            child: Text('Refresh'),
+          ),
+        ],
+      ),
+    ).then((_) {
+      // Fetch data when dialog is shown
+      innovativeViewModel.fetchInnovativeStrategies(strategyId);
+    });
+  }
+
+  Widget _buildStrategyCard(BuildContext context, InnovativeStrategy strategy) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              strategy.keyResult,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryRed,
+              ),
+            ),
+            SizedBox(height: 12),
+
+            if (strategy.firstInnovative != null)
+              _buildInnovativeItem(context, '1.', strategy.firstInnovative!),
+
+            if (strategy.secondInnovative != null)
+              _buildInnovativeItem(context, '2.', strategy.secondInnovative!),
+
+            if (strategy.thirdInnovative != null)
+              _buildInnovativeItem(context, '3.', strategy.thirdInnovative!),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInnovativeItem(BuildContext context, String number, InnovativeItem item) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$number ${item.title}',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            item.description,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

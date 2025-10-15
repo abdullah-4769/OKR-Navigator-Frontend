@@ -93,12 +93,15 @@ class SuggestionInitiativesViewModel extends GetxController {
       print('API Response Status: ${response.status}');
       print('API Response Data: ${response.data?.toJson()}');
       print('API Response Message: ${response.message}');
-      print('Is Status.COMPLETED: ${response.status == Status.COMPLETED}');
+
+      // Check status
+      print('Is Status.completed: ${response.status == Status.completed}');
       print('Is Data Not Null: ${response.data != null}');
 
       apiResponse.value = response;
 
-      if (response.status == Status.COMPLETED && response.data != null) {
+      // Compare with Status.completed
+      if (response.status == Status.completed && response.data != null) {
         print('Success: Navigating to AIAnalysisShowScreen with data: ${response.data?.toJson()}');
         Get.snackbar(
           'success'.tr,
@@ -144,7 +147,9 @@ class SuggestionInitiativesViewModel extends GetxController {
   }
 
   EvaluateInitiativeModel? get evaluationResult => apiResponse.value.data;
-  bool get hasData => apiResponse.value.status == Status.COMPLETED;
+
+  // Use Status.completed
+  bool get hasData => apiResponse.value.status == Status.completed;
 
   @override
   void onClose() {

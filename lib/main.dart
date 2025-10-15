@@ -46,7 +46,8 @@ class MyApp extends StatelessWidget {
           locale: localizationService.currentLocale,
           fallbackLocale: const Locale('en'),
           initialBinding: AppBindings(),
-         // initialRoute: AppRoutes.splash0,
+
+        // initialRoute: AppRoutes.splash0,
         initialRoute: AppRoutes.splash0,
         // initialRoute: AppRoutes.start,
           getPages: AppRoutes.pages,

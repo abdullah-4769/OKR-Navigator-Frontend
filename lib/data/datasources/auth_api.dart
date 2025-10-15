@@ -16,4 +16,5 @@ abstract class AuthApi {
 
   @POST('/auth/register')
   Future<RegisterResponse> register(@Body() RegisterRequest request);
+
 }

@@ -22,19 +22,26 @@ class AIAnalysisViewModel extends GetxController {
       if (Get.isRegistered<SuggestionInitiativesViewModel>()) {
         final viewModel = Get.find<SuggestionInitiativesViewModel>();
 
-        if (viewModel.apiResponse.value.status == Status.COMPLETED &&
+        // Use Status.completed (lowercase)
+        if (viewModel.apiResponse.value.status == Status.completed &&
             viewModel.evaluationResult != null) {
           evaluationData.value = viewModel.evaluationResult;
           isAnalysisDone.value = true;
+          print('✅ Evaluation data loaded successfully');
+          print('Score: ${evaluationData.value?.score}');
+          print('Decision: ${evaluationData.value?.decision}');
         } else {
           isAnalysisDone.value = false;
+          print('❌ Evaluation data not available');
+          print('Status: ${viewModel.apiResponse.value.status}');
         }
       } else {
         isAnalysisDone.value = false;
+        print('❌ SuggestionInitiativesViewModel not registered');
       }
     } catch (e) {
       isAnalysisDone.value = false;
-      print('Error loading evaluation data: $e');
+      print('❌ Error loading evaluation data: $e');
     }
   }
 

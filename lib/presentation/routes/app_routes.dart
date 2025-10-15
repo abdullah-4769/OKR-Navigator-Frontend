@@ -551,7 +551,7 @@ class AppRoutes {
     ),
     GetPage(
       name: contextualChallenge,
-      page: () => const ContextualChallengeScreen(),
+      page: () =>  ContextualChallengeScreen(),
     ),
     GetPage(
       name: contextualCAdjustment,
