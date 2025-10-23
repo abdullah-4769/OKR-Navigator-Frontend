@@ -1,5 +1,3 @@
-// lib/presentation/widgets/custom_navigation.dart
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +19,7 @@ class CustomNavigation {
     duration: const Duration(milliseconds: 300),
   );
   
-  // ✅ NEW: Replace current route up to a target route.
+  // Replace current route up to a target route.
   static Future<dynamic> replaceUntilNamed({
     required String routeName,
     dynamic arguments,
