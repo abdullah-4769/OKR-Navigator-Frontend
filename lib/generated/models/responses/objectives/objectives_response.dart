@@ -53,4 +53,6 @@ class Objective {
     'description': description,
     'difficulty': difficulty,
   };
+
+  void operator [](String other) {}
 }

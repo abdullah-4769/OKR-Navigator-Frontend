@@ -8,13 +8,13 @@ import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../../core/app_theme.dart';
 import '../../routes/app_routes.dart';
+import '../../../generated/models/responses/key_results/key_results_response.dart' hide Text;
 
 import '../../widgets/custom_ai_strategy_container.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/custom_initiative_input.dart';
 import '../../widgets/custom_journey_map.dart';
-import '../../widgets/custom_svg.dart';
 import '../../widgets/responsive_arrow.dart';
 import '../../widgets/custom_industry_container.dart';
 import '../../widgets/custom_objective_container.dart';
@@ -22,24 +22,58 @@ import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 
 class TeamSuggestionInitiativesScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> selectedKeyResults;
-
+  
   TeamSuggestionInitiativesScreen({
-    super.key,
-    required this.selectedKeyResults,
-  });
+    super.key, required List selectedKeyResults,
+  }) {
+    // 1. Retrieve arguments immediately when the screen widget is instantiated
+    final args = Get.arguments as Map<String, dynamic>?;
+    final List<KeyResult> selectedKeyResults = (args?['selectedKeyResults'] as List<KeyResult>?) ?? [];
+    
+    // 2. Initialize controller with retrieved arguments using Get.put
+    Get.put(TeamSuggestionInitiativesController(keyResults: selectedKeyResults));
+  }
+  
 
   final JourneyController journeyController = Get.find<JourneyController>();
+  
+  // Get controller instance once it's been initialized in the constructor
+  TeamSuggestionInitiativesController get controller => Get.find<TeamSuggestionInitiativesController>();
+
+  // ✅ FIX: Helper function to safely handle translation keys and raw strings
+  String _safeTranslate(String? text, {String fallback = ''}) {
+    if (text == null || text.isEmpty) return fallback;
+    try {
+      // If the text contains spaces, assume it's a raw string from the API and return it directly.
+      if (text.contains(' ')) return text; 
+      return text.tr;
+    } catch (e) {
+      return text; // Fallback to raw string if translation fails
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(
-      TeamSuggestionInitiativesController(keyResults: selectedKeyResults),
-    );
-
+    
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    
+    // Defensive check for Key Results data
+    if (controller.keyResults.isEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+            Get.snackbar("Error", "Key Results data is missing. Navigating back.");
+            Get.offNamed(AppRoutes.teamKeyResultScreen);
+        });
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    
+    // Defensive access to the first KR for the header container title
+    final firstKeyResult = controller.keyResults.first;
+    final firstKRTitle = _safeTranslate(firstKeyResult.title, fallback: 'Focus on Key Result');
+    final firstKRDescription = _safeTranslate(firstKeyResult.description, fallback: 'Detail not available');
+
 
     return Scaffold(
       body: CustomBackground(
@@ -98,14 +132,16 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Randomly Selected Key Result'.tr,
+                                      // ✅ FIXED: Using safe translated title
+                                      firstKRTitle,
                                       style: appTheme.textTheme.bodyLarge?.copyWith(
                                         color: AppColors.primaryRed,
                                       ),
                                     ),
                                     SizedBox(height: 4.h),
                                     Text(
-                                      'Focus your initiatives on this outcome'.tr,
+                                      // ✅ FIXED: Using safe translated description
+                                      firstKRDescription,
                                       style: appTheme.textTheme.bodySmall?.copyWith(
                                         color: AppColors.black.withValues(alpha: 0.7),
                                       ),
@@ -122,26 +158,32 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                       const ResponsiveArrow(),
                       SizedBox(height: height * 0.02),
 
-                      /// ✅ Only One Industry Container
+                      /// ✅ Key Results List (Used as Industries/Context)
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.w),
                         child: Obx(() {
-                          final item = controller.industries.first;
-                          return CustomIndustryContainer(
-                            showSelectionCircle: false,
-                            title: item['title'] ?? '',
-                            description: item['description'] ?? '',
-                            icon: item['icon'],
-                            isSelected: controller.selectedIndustry.value == 0,
-                            onTap: () {
-                              controller.selectedIndustry.value = 0;
-                            },
-                            showTag1: true,
-                            tag1Icon: Icons.trending_up,
-                            tag1Text: item['tag1'] ?? '',
-                            showTag2: true,
-                            tag2Icon: Icons.access_time,
-                            tag2Text: item['tag2'] ?? '',
+                          // Display all selected Key Results as context containers
+                          if (controller.industries.isEmpty) return const SizedBox.shrink();
+                          
+                          return Column(
+                            children: controller.keyResults.map((kr) => Padding(
+                              padding: EdgeInsets.only(bottom: 8.h),
+                              child: CustomIndustryContainer(
+                                showSelectionCircle: false,
+                                // ✅ FIXED: Using safe translate for KR titles and descriptions
+                                title: _safeTranslate(kr.title),
+                                description: _safeTranslate(kr.description),
+                                icon: Icons.key, 
+                                isSelected: false,
+                                onTap: () {}, 
+                                showTag1: true,
+                                tag1Icon: Icons.trending_up,
+                                tag1Text: 'Goal'.tr,
+                                showTag2: true,
+                                tag2Icon: Icons.access_time,
+                                tag2Text: 'Timeframe'.tr,
+                              ),
+                            )).toList(),
                           );
                         }),
                       ),
@@ -210,9 +252,9 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                             text: controller.isSubmitting.value
                                 ? 'submitting'.tr
                                 : 'submit_analysis'.tr,
-                            onPressed: controller.isSubmitting.value
-                                ? null
-                                : () => controller.submitInitiatives(),
+                           onPressed: controller.isButtonEnabled 
+                            ? () => controller.submitInitiatives()
+                            : null, 
                           ),
                         ),
                       ),

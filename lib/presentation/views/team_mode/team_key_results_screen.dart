@@ -26,7 +26,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
   final JourneyController journeyController = Get.isRegistered<JourneyController>()
       ? Get.find<JourneyController>()
       : Get.put(JourneyController());
-
+final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMode'] ?? false;
   String _safeTranslate(String? key, {String fallback = ''}) {
     if (key == null) return fallback;
     try {
@@ -41,6 +41,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       journeyController.completeStep(1);
       journeyController.setStep(2, true);
+      controller.fetchKeyResults(); 
     });
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -119,48 +120,44 @@ class TeamKeyResultsScreen extends StatelessWidget {
                           SizedBox(height: AppDimensions.d16.h),
 
                           /// -------- KEY RESULTS LIST ---------
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12.w),
-                            child: Obx(
-                                  () => Column(
-                                children: List.generate(
-                                  controller.keyResults.length,
-                                      (index) {
-                                    final item = controller.keyResults[index];
-                                    final titleKey = item['titleKey'] as String?;
-                                    final descriptionKey = item['descriptionKey'] as String?;
-                                    final tag1Key = item['tag1Key'] as String?;
-                                    final tag2Key = item['tag2Key'] as String?;
+                        Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
+                        child: Obx(
+                          () => Column(
+                            children: List.generate(
+                              controller.keyResults.length,
+                              (index) {
+                                final item = controller.keyResults[index];
 
-                                    return Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                                      child: CustomIndustryContainer(
-                                        title: _safeTranslate(titleKey, fallback: 'Unknown'),
-                                        description: _safeTranslate(descriptionKey, fallback: 'No description'),
-                                        icon: item['icon'],
-                                        isSelected: controller.isSelected(index),
-                                        onTap: () {
-                                          controller.toggleSelection(index);
-                                          final icon = item['icon'];
-                                          if (controller.isSelected(index)) {
-                                            constellationController.addIcon(icon);
-                                          } else {
-                                            constellationController.removeIcon(icon);
-                                          }
-                                        },
-                                        showTag1: true,
-                                        tag1Icon: Icons.trending_up,
-                                        tag1Text: _safeTranslate(tag1Key, fallback: ''),
-                                        showTag2: true,
-                                        tag2Icon: Icons.access_time,
-                                        tag2Text: _safeTranslate(tag2Key, fallback: ''),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                                  child: CustomIndustryContainer(
+                                    title: item.title ?? 'Unknown',
+                                    description: item.description ?? 'No description',
+                                    icon: Icons.key, // replace with proper icon if needed
+                                    isSelected: controller.isSelected(index),
+                                    onTap: () {
+                                      controller.toggleSelection(index);
+                                      final icon = Icons.key; // replace with real icon if you have one
+                                      if (controller.isSelected(index)) {
+                                        constellationController.addIcon(icon);
+                                      } else {
+                                        constellationController.removeIcon(icon);
+                                      }
+                                    },
+                                    showTag1: false, // if you have tag data, handle separately
+                                    tag1Icon: null,
+                                    tag1Text: null,
+                                    showTag2: false,
+                                    tag2Icon: null,
+                                    tag2Text: null,
+                                  ),
+                                );
+                              },
                             ),
                           ),
+                        ),
+                      ),
 
                           SizedBox(height: AppDimensions.d20.h),
 
@@ -186,7 +183,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
                           SizedBox(height: AppDimensions.d24.h),
 
                           /// -------- BUTTON ---------
-                          Padding(
+                       Padding(
                             padding: EdgeInsets.symmetric(horizontal: 40.w),
                             child: Obx(
                                   () => CustomButton2(
@@ -194,14 +191,27 @@ class TeamKeyResultsScreen extends StatelessWidget {
                                 onPressed: controller.selectedCount.value ==
                                     controller.requiredCount.value
                                     ? () {
-                                  journeyController.completeStep(3);
-                                  Get.toNamed(AppRoutes.teamSuggestionInitiativeScreen);
+                                  journeyController.completeStep(3); // Update progress status
+                                  
+                                  final selectedResults = controller.getSelectedKeyResults();
+                                  
+                                  if (isChallengeMode) {
+                                      // ✅ CHALLENGE FLOW FIX: Go directly back to Contextual Challenge screen
+                                      Get.back();
+                                  } else {
+                                      // NORMAL FLOW: Proceed to Initiatives screen
+                                      Get.toNamed(
+                                        AppRoutes.teamSuggestionInitiativeScreen,
+                                        arguments: {
+                                            'selectedKeyResults': selectedResults,
+                                        }
+                                      );
+                                  }
                                 }
                                     : null,
                               ),
                             ),
                           ),
-
                           SizedBox(height: AppDimensions.d20.h),
                         ],
                       ),

@@ -1,4 +1,4 @@
-class BaseResponse {
+  class BaseResponse {
   final int? statusCode;
   final String? message;
 

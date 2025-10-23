@@ -13,12 +13,40 @@ import '../../widgets/custom_objective_container.dart';
 import '../../widgets/custom_industry_container.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
+// ... existing imports ...
 
 class TeamObjectiveScreen extends StatelessWidget {
-  TeamObjectiveScreen({super.key});
+  TeamObjectiveScreen({super.key}) {
+    // 💡 Add explicit call to fetch objectives after controller initialization
+    _fetchObjectivesOnLoad();
+  }
 
+  // Use Get.put and Get.find correctly
   final TeamObjectiveController controller = Get.put(TeamObjectiveController());
   final JourneyController journeyController = Get.find<JourneyController>();
+  final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMode'] ?? false;
+  void _fetchObjectivesOnLoad() {
+    // Only call fetch logic once if objectives are not loaded yet
+    if (controller.objectives.isEmpty && !controller.loading.value) {
+      final args = Get.arguments as Map<String, dynamic>?;
+      // You must ensure these keys match what's passed from the previous screen (e.g., AssignRolesScreen's navigation)
+      final Map<String, dynamic>? role = args?['selectedRole'] as Map<String, dynamic>?;
+      final Map<String, dynamic>? industry = args?['selectedIndustry'] as Map<String, dynamic>?;
+
+      // Use hardcoded placeholder values if missing, or throw error to debug navigation chain
+      if (role == null || industry == null) {
+          // Fallback values for testing if navigation arguments are missing
+          final defaultRole = {'title': 'CEO'};
+          final defaultIndustry = {'titleKey': 'Technology'};
+          controller.getTeamObjectives(role: defaultRole, industry: defaultIndustry);
+          
+          Get.snackbar('Warning', 'Missing Role/Industry. Using default values for now.', snackPosition: SnackPosition.BOTTOM);
+      } else {
+        // If arguments are present, trigger the API call
+        controller.getTeamObjectives(role: role, industry: industry);
+      }
+    }
+  }
 
   String _safeTranslate(String? key, {String fallback = ''}) {
     if (key == null) return fallback;
@@ -105,86 +133,48 @@ class TeamObjectiveScreen extends StatelessWidget {
 
                           /// --------- OBJECTIVES LIST ----------
                           Obx(
-                                () => Column(
-                              children: List.generate(
-                                controller.objectives.length,
-                                    (index) {
-                                  final obj = controller.objectives[index];
-                                  final titleKey = obj['titleKey'] as String?;
-                                  final descriptionKey =
-                                  obj['descriptionKey'] as String?;
+  () => Column(
+    children: List.generate(
+      controller.objectives.length,
+      (index) {
+        final obj = controller.objectives[index]; // obj is Objective
 
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 10.h, horizontal: 12.w),
-                                    child: CustomIndustryContainer(
-                                      title: _safeTranslate(titleKey,
-                                          fallback: 'Unknown'),
-                                      description: _safeTranslate(
-                                          descriptionKey,
-                                          fallback: 'No description'),
-                                      icon: obj['icon'] as IconData,
-                                      isSelected:
-                                      controller.isSelected(index),
-                                      onTap: () {
-                                        controller.selectObjective(index);
-                                        if (controller.isSelected(index)) {
-                                          journeyController.progress.value =
-                                          40;
-                                          journeyController.completeStep(0);
-                                        } else {
-                                          journeyController.progress.value =
-                                          20;
-                                          journeyController
-                                              .completedSteps[0] = false;
-                                        }
-                                      },
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+          child: CustomIndustryContainer(
+            title: _safeTranslate(obj.title ?? 'Unknown'),
+            description: _safeTranslate(obj.description ?? 'No description'),
+            icon: Icons.star, // Default icon since API doesn’t provide one
+            isSelected: controller.isSelected(obj),
+            onTap: () {
+              controller.selectObjective(obj);
 
-                                      /// ✅ Pass tags from controller
-                                      showTag1: obj['tags'] != null &&
-                                          obj['tags'].length > 0,
-                                      tag1Icon: obj['tags'] != null &&
-                                          obj['tags'].length > 0
-                                          ? obj['tags'][0]['icon'] as IconData?
-                                          : null,
-                                      tag1Text: obj['tags'] != null &&
-                                          obj['tags'].length > 0
-                                          ? _safeTranslate(
-                                          obj['tags'][0]['textKey']
-                                          as String?)
-                                          : null,
+              if (controller.isSelected(obj)) {
+                journeyController.progress.value = 40;
+                journeyController.completeStep(0);
+              } else {
+                journeyController.progress.value = 20;
+                journeyController.completedSteps[0] = false;
+              }
+            },
 
-                                      showTag2: obj['tags'] != null &&
-                                          obj['tags'].length > 1,
-                                      tag2Icon: obj['tags'] != null &&
-                                          obj['tags'].length > 1
-                                          ? obj['tags'][1]['icon'] as IconData?
-                                          : null,
-                                      tag2Text: obj['tags'] != null &&
-                                          obj['tags'].length > 1
-                                          ? _safeTranslate(
-                                          obj['tags'][1]['textKey']
-                                          as String?)
-                                          : null,
+            // Hide tags (Objective model doesn’t have them)
+            showTag1: false,
+            tag1Icon: null,
+            tag1Text: null,
+            showTag2: false,
+            tag2Icon: null,
+            tag2Text: null,
+            showTag3: false,
+            tag3Icon: null,
+            tag3Text: null,
+          ),
+        );
+      },
+    ),
+  ),
+),
 
-                                      showTag3: obj['tags'] != null &&
-                                          obj['tags'].length > 2,
-                                      tag3Icon: obj['tags'] != null &&
-                                          obj['tags'].length > 2
-                                          ? obj['tags'][2]['icon'] as IconData?
-                                          : null,
-                                      tag3Text: obj['tags'] != null &&
-                                          obj['tags'].length > 2
-                                          ? _safeTranslate(
-                                          obj['tags'][2]['textKey']
-                                          as String?)
-                                          : null,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
 
                           SizedBox(height: AppDimensions.d14.h),
 
@@ -208,7 +198,7 @@ class TeamObjectiveScreen extends StatelessWidget {
                           SizedBox(height: AppDimensions.d24.h),
 
                           /// ---------- BUTTON ----------
-                          Padding(
+                         Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: AppDimensions.d40.w),
                             child: Obx(
@@ -216,14 +206,25 @@ class TeamObjectiveScreen extends StatelessWidget {
                                 text:
                                 _safeTranslate('define_key_results'),
                                 onPressed: controller.isButtonEnabled
-                                    ? () => Get.toNamed(
-                                  AppRoutes.teamKeyResultScreen,
-                                )
+                                    ? () {
+                                        // Update journey status
+                                        journeyController.completeStep(0);
+                                        
+                                        if (isChallengeMode) {
+                                            // ✅ CHALLENGE FLOW FIX: Go directly back to the screen that opened this (Contextual Challenge)
+                                            Get.back(); 
+                                        } else {
+                                            // 1. NORMAL FLOW: Proceed to Key Results screen
+                                            Get.toNamed(
+                                              AppRoutes.teamKeyResultScreen,
+                                            );
+                                        }
+                                    }
                                     : null,
                               ),
                             ),
                           ),
-                          SizedBox(height: AppDimensions.d20.h),
+                           SizedBox(height: AppDimensions.d20.h),
                         ],
                       ),
                     ),

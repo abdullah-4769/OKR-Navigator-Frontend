@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:game_app/presentation/widgets/custom_button.dart';
+import 'package:game_app/services/shared_preference.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/app_colors.dart';
@@ -23,7 +25,12 @@ class AssignRolesScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-
+    final StorageRepository storageRepo = Get.find<StorageRepository>();
+    final String? currentUserId = storageRepo.getUser()?.id;
+    final Map<String, dynamic> selectedIndustry = SharedPrefs.getSelectedIndustry() ?? {
+            'titleKey': 'Technology',
+            'title': 'Technology',
+        };
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: CustomBackground(
@@ -212,11 +219,29 @@ class AssignRolesScreen extends StatelessWidget {
 
                         SizedBox(height: height * 0.03),
 
-                        Center(
+                       Center(
                           child: CustomButton(
                             text: 'Begin Mission'.tr,
                             onPressed: () {
-                              Get.toNamed(AppRoutes.teamObjectiveSelectionScreen);
+                              // 1. Get current user's assigned role
+                              final currentUserMember = controller.members.firstWhereOrNull(
+                                (member) => member.userId == currentUserId,
+                              );
+                              final String currentRole = currentUserMember?.role ?? 'HOST';
+                              final Map<String, dynamic> roleArgument = {
+                                  'title': currentRole,
+                                  'titleKey': currentRole,
+                              };
+                              
+                              // 2. Navigate to Team Strategy Selection with arguments
+                              // ✅ FIX: AssignRoles -> TeamStrategySelection
+                              Get.toNamed(
+                                AppRoutes.teamStrategySelection,
+                                arguments: {
+                                    'selectedRole': roleArgument,
+                                    'selectedIndustry': selectedIndustry,
+                                },
+                              );
                             },
                           ),
                         ),

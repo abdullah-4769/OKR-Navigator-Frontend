@@ -20,7 +20,15 @@ class ChooseIndustryScreen extends StatelessWidget {
 
   final ChooseIndustryController controller =
   Get.put(ChooseIndustryController());
-
+  void _onContinuePressed() {
+      if (selectedRole == null) {
+        // If selectedRole is null, it is the start of the Team flow
+        controller.continueToTeamCreation();
+      } else {
+        // If selectedRole is present, it is the start of the Solo flow
+        controller.continueWithSelection(selectedRole);
+      }
+    }
   @override
   Widget build(BuildContext context) => OrientationBuilder(
     builder: (context, orientation) {
@@ -154,8 +162,7 @@ class ChooseIndustryScreen extends StatelessWidget {
                               children: [
                                 CustomButton2(
                                   text: 'select_continue'.tr,
-                                  onPressed: () => controller
-                                      .continueWithSelection(selectedRole),
+                                  onPressed: _onContinuePressed,
                                 ),
                                 SizedBox(height: screenHeight * 0.015),
                                 Row(

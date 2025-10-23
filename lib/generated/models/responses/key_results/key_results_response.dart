@@ -85,3 +85,74 @@ class KeyResult {
     'description': description,
   };
 }
+
+class EvaluateKeyResultsResponse {
+  final double? normalizedScore;
+  final String? explanation;
+
+  EvaluateKeyResultsResponse({this.normalizedScore, this.explanation});
+
+  factory EvaluateKeyResultsResponse.fromJson(Map<String, dynamic> json) =>
+      EvaluateKeyResultsResponse(
+        normalizedScore: json['normalizedScore']?.toDouble(),
+        explanation: json['explanation'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'normalizedScore': normalizedScore,
+        'explanation': explanation,
+      };
+}
+class AddInnovativeResponse {
+  final bool? success;
+  final String? message;
+
+  AddInnovativeResponse({this.success, this.message});
+
+  factory AddInnovativeResponse.fromJson(Map<String, dynamic> json) =>
+      AddInnovativeResponse(
+        success: json['success'],
+        message: json['message'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'success': success,
+        'message': message,
+      };
+}
+class InnovativeIdea {
+  final String? title;
+  final String? description;
+
+  InnovativeIdea({this.title, this.description});
+
+  factory InnovativeIdea.fromJson(Map<String, dynamic> json) =>
+      InnovativeIdea(
+        title: json['title'],
+        description: json['description'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'description': description,
+      };
+}
+
+class InnovativeIdeasResponse {
+  final List<InnovativeIdea>? ideas;
+
+  InnovativeIdeasResponse({this.ideas});
+
+  factory InnovativeIdeasResponse.fromJson(Map<String, dynamic> json) =>
+      InnovativeIdeasResponse(
+        ideas: json['ideas'] == null
+            ? []
+            : List<InnovativeIdea>.from(
+                json['ideas'].map((x) => InnovativeIdea.fromJson(x)),
+              ),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'ideas': ideas?.map((x) => x.toJson()).toList(),
+      };
+}

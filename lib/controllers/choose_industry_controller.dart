@@ -78,7 +78,20 @@ class ChooseIndustryController extends GetxController {
       },
     );
   }
+void continueToTeamCreation() {
+            if (selectedIndex.value == -1) {
+                Get.snackbar(
+                    'please_select_industry'.tr,
+                    ''.tr,
+                    snackPosition: SnackPosition.BOTTOM,
+                );
+                return;
+            }
 
+          
+            Get.toNamed(AppRoutes.createTeam);
+        }
+    
   void openTutorial() {
     Get.snackbar(
       'tutorial'.tr,

@@ -127,7 +127,7 @@ class SplashScreenTeam extends StatelessWidget {
                   ),
                   child: CustomCurvedArrow(
                     isLeft: false,
-                    onTap: () => Get.toNamed(AppRoutes.createTeam),
+                    onTap: () => Get.toNamed(AppRoutes.teamIndustryChooseScreen),
                     width: width * 0.15,
                     height: height * 0.2,
                   ),

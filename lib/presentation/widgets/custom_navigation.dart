@@ -1,3 +1,5 @@
+// lib/presentation/widgets/custom_navigation.dart
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +20,13 @@ class CustomNavigation {
     transition: Transition.rightToLeftWithFade,
     duration: const Duration(milliseconds: 300),
   );
+  
+  // ✅ NEW: Replace current route up to a target route.
+  static Future<dynamic> replaceUntilNamed({
+    required String routeName,
+    dynamic arguments,
+  }) async => Get.offNamedUntil(routeName, (route) => route.settings.name == routeName, arguments: arguments);
+
 
   static Future<dynamic> replaceNamed({
     required String routeName,

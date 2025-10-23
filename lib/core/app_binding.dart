@@ -1,7 +1,13 @@
+import 'package:game_app/controllers/team_mode_controller/create_team_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_contextual_challange_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_key_results_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_objective_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_strategy_selection_controller.dart';
 import 'package:game_app/data/repositories/auth_repository.dart';
 import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/data/repositories/strategy_repository.dart';
 import 'package:game_app/data/repositories/objective_repository.dart';
+import 'package:game_app/data/repositories/team_repo.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/journey_controller.dart';
@@ -26,12 +32,24 @@ class AppBindings extends Bindings {
 
     // ✅ REPOSITORIES - Always available (permanent)
     Get.put(StrategyRepository(), permanent: true);
+    Get.put(TeamRepository(), permanent: true);
+
     Get.put(ObjectiveRepository(), permanent: true);
     Get.lazyPut(() => AuthRepository());
 
     // ✅ GAME FLOW CONTROLLERS - Needed across multiple screens (permanent)
     Get.put(JourneyController(), permanent: true);
+        Get.put(TeamObjectiveController(), permanent: true);
+
     Get.put(StrategySelectionController(), permanent: true);
+    Get.put(TeamStrategySelectionController(), permanent: true);
+    Get.put(TeamKeyResultsController(), permanent: true);
+
+    Get.put(TeamContextualChallengeController (), permanent: true);
+
+    Get.put(CreateTeamController(), permanent: true);
+    
+
     Get.put(KeyObjectiveController(), permanent: true); // ✅ Changed to permanent
 
     // ✅ LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
@@ -47,6 +65,7 @@ class AppBindings extends Bindings {
     Get.lazyPut(() => AuthRepository());
     // contextual challenge ...........
     Get.lazyPut(() => InnovativeStrategiesRepository());
+    
     Get.lazyPut(() => InnovativeStrategiesViewModel());
 
   }

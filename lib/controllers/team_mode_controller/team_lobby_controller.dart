@@ -1,3 +1,4 @@
+import 'package:game_app/data/repositories/team_repo.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:get/get.dart';
 import '../../../generated/network.dart';
@@ -5,50 +6,60 @@ import '../../../generated/models/responses/team_mode/team_lobby_response.dart';
 import '../../../generated/models/requests/team_mode/add_member_request.dart';
 import '../../../generated/models/responses/team_mode/add_member_response.dart';
 import '../../../data/repositories/storage_repository.dart';
+import '../../../utils/snackbar_helper.dart'; // ✅ NEW IMPORT
 import 'create_team_controller.dart';
 
 class TeamLobbyController extends GetxController {
-  var players = <String>["You", "Johnson", "Tasha"].obs;
+  // players list ko ab teamData.value.members se dynamically populate karenge
+  var players = <String>[].obs; 
   var isLoading = false.obs;
   var isInvitingMember = false.obs;
   var teamData = Rxn<TeamLobbyResponse>();
   var errorMessage = ''.obs;
 
+  final TeamRepository _teamRepository = Get.find<TeamRepository>();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
+
   @override
   void onInit() {
     super.onInit();
-    fetchTeamDetails();
+    fetchTeamDetails(); // ✅ Screen load hote hi details fetch karein
   }
 
+  // ------------------------------------------------
+  // ✅ 1. GET TEAM DETAILS (API INTEGRATION)
+  // ------------------------------------------------
   Future<void> fetchTeamDetails() async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
       
-      // Get team ID from create team controller
       final createTeamController = Get.find<CreateTeamController>();
-      final teamId = createTeamController.createdTeamId.value;
+      // createdTeamId pichli screen (CreateTeam) se set hota hai
+      final teamId = createTeamController.createdTeamId.value; 
       
       if (teamId == null) {
         errorMessage.value = 'No team ID found. Please create a team first.';
+        SnackbarHelper.error('No team ID found.');
         return;
       }
       
-      final response = await dio.get('/team/$teamId/details');
+      // Call repository method: GET /team/{id}/details
+      final teamLobbyResponse = await _teamRepository.getTeamDetails(teamId);
+      teamData.value = teamLobbyResponse;
       
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final teamLobbyResponse = TeamLobbyResponse.fromJson(response.data);
-        teamData.value = teamLobbyResponse;
-        
-        // Update players list from API response
-        if (teamLobbyResponse.members != null) {
-          players.assignAll(teamLobbyResponse.members!.map((member) => member.user?.name ?? 'Unknown').toList());
-        }
+      if (teamLobbyResponse.members != null) {
+        // UI ke liye players list update karein
+        players.assignAll(teamLobbyResponse.members!.map((member) => member.user?.name ?? 'Unknown').toList());
       } else {
-        errorMessage.value = 'Failed to load team details. Please try again.';
+        players.clear();
       }
+      
+      SnackbarHelper.success('Team Lobby details loaded!');
+
     } catch (e) {
       errorMessage.value = 'Failed to load team details: ${e.toString()}';
+      SnackbarHelper.error('Failed to load team details.');
       print('Error fetching team details: $e');
     } finally {
       isLoading.value = false;
@@ -56,92 +67,58 @@ class TeamLobbyController extends GetxController {
   }
 
   void beginMission() {
-   Get.toNamed(AppRoutes.teamStrategySelection);
+    // Validation check: Minimum 2 players
+    if (players.length < 2) {
+      SnackbarHelper.warning("Minimum 2 players required to start the mission.");
+      return;
+    }
+Get.toNamed(AppRoutes.assignRoleScreen);
   }
 
+  // ------------------------------------------------
+  // ✅ 2. INVITE MEMBERS / ADD MEMBER (API INTEGRATION)
+  // ------------------------------------------------
   Future<void> inviteMembers() async {
     try {
       isInvitingMember.value = true;
       
-      // Get team ID from create team controller
-      final createTeamController = Get.find<CreateTeamController>();
-      final teamId = createTeamController.createdTeamId.value;
+      final teamId = teamData.value?.id;
+      final hostId = _storageRepository.getUser()?.id;
       
-      if (teamId == null) {
-        Get.snackbar("Error", "No team ID found. Please create a team first.");
+      if (teamId == null || hostId == null) {
+        SnackbarHelper.error("Error: Team ID or Host ID missing.");
         return;
       }
-      
-      // Get current user as host
-      final storageRepository = Get.find<StorageRepository>();
-      final user = storageRepository.getUser();
-      final hostId = user?.id;
-      
-      if (hostId == null) {
-        Get.snackbar("Error", "User not found. Please login again.");
-        return;
-      }
-      
-      // Create request object
+
+      // **NOTE:** Since actual user ID selection/input is missing from UI,
+      // we mock a request for a generic "Invite" action for now, 
+      // typically this API would use a token or QR code. 
+      // If this API adds a member directly, we use a placeholder user ID.
+
+      // Placeholder for invited user ID (Should come from user search/input in a real app)
+      final invitedUserId = 'temp_member_${DateTime.now().millisecondsSinceEpoch}';
+
       final request = AddMemberRequest(
         hostId: hostId,
-        userId: "temp_user_id", // You might want to get this from user input or selection
-        role: "member",
+        userId: invitedUserId, 
+        role: "MEMBER",
       );
       
-      final response = await dio.post('/team/$teamId/add-member', data: request.toJson());
+      // Call repository method: POST /team/{teamId}/add-member
+      final addMemberResponse = await _teamRepository.addMember(teamId, request);
       
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final addMemberResponse = AddMemberResponse.fromJson(response.data);
-        
-        // Add the new member to the existing team data
-        if (teamData.value != null && teamData.value!.members != null) {
-          // Create a new member object and add it to the list
-          final newMember = Members(
-            id: addMemberResponse.id,
-            teamId: addMemberResponse.teamId,
-            userId: addMemberResponse.userId,
-            role: addMemberResponse.role,
-            joinedAt: addMemberResponse.joinedAt,
-            user: User(
-              id: addMemberResponse.userId,
-              name: "New Member", // You might want to get this from the response or user input
-              avatarPicId: null,
-            ),
-          );
-          
-          // Create a new list with the existing members plus the new member
-          final updatedMembers = List<Members>.from(teamData.value!.members!)..add(newMember);
-          
-          // Create a new TeamLobbyResponse with updated data
-          final updatedTeamData = TeamLobbyResponse(
-            id: teamData.value!.id,
-            title: teamData.value!.title,
-            mission: teamData.value!.mission,
-            teamavatorid: teamData.value!.teamavatorid,
-            token: teamData.value!.token,
-            totalMembers: (teamData.value!.totalMembers ?? 0) + 1,
-            members: updatedMembers,
-          );
-          
-          // Update the team data to trigger UI refresh
-          teamData.value = updatedTeamData;
-          
-          // Update players list
-          players.add(newMember.user?.name ?? "New Member");
-        }
-        
-        Get.snackbar("Success", "Member invited successfully!");
+      if (addMemberResponse.id != null) {
+        SnackbarHelper.success("Member invited successfully! Lobby refreshing...");
+        // API response ke baad lobby ko refresh karein taaki naya member list mein aa jaaye
+        await fetchTeamDetails(); 
       } else {
-        Get.snackbar("Error", "Failed to invite member. Please try again.");
+        SnackbarHelper.error("Failed to invite member. Please try again.");
       }
     } catch (e) {
-      Get.snackbar("Error", "Failed to invite member: ${e.toString()}");
+      SnackbarHelper.error("Failed to invite member: ${e.toString()}");
       print('Error inviting member: $e');
     } finally {
       isInvitingMember.value = false;
     }
-    
   }
-
 }

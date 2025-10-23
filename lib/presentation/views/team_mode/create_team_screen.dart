@@ -69,7 +69,7 @@ class CreateTeamScreen extends StatelessWidget {
                             ),
                             SizedBox(height: height * 0.035),
 
-                            /// ---------- AVATAR SELECTION ----------
+                            /// ---------- AVATAR SELECTION (FIXED & CHOOSABLE) ----------
                             Align(
                               alignment: Alignment.center,
                               child: Text(
@@ -84,33 +84,41 @@ class CreateTeamScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: height * 0.015),
-
-                            SizedBox(
+SizedBox(
                               height: width * 0.25,
                               child: Obx(
                                     () => ListView.separated(
                                   scrollDirection: Axis.horizontal,
                                   itemCount: controller.avatars.length,
                                   separatorBuilder: (_, __) => SizedBox(width: width * 0.04),
-                                  itemBuilder: (context, index) => CustomCircularAvatar(
-                                    imagePath: controller.avatars[index],
-                                    size: 70,
-                                    innerColors: const [
-                                      Colors.white,
-                                      Colors.amber,
-                                      Colors.orange,
-                                    ],
-                                    borderGradient: index == 0
-                                        ? const [Colors.red, Colors.orange] // only first avatar
-                                        : null, // others have no border
-                                  ),
+                                  itemBuilder: (context, index) {
+                                    // ✅ Use dynamic check
+                                    final isSelected = controller.selectedAvatarIndex.value == index; 
+                                    
+                                    return GestureDetector(
+                                      onTap: () => controller.selectAvatar(index), // ✅ Selection Call
+                                      child: CustomCircularAvatar(
+                                        imagePath: controller.avatars[index],
+                                        size: 70,
+                                        innerColors: const [
+                                          Colors.white,
+                                          Colors.amber,
+                                          Colors.orange,
+                                        ],
+                                        borderGradient: isSelected
+                                            ? [AppColors.primaryRed, AppColors.primaryRed.withOpacity(0.5)]
+                                            : null,
+                                        borderWidth: isSelected ? 3 : 0, 
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
 
                             SizedBox(height: height * 0.035),
 
-                            /// ---------- JOIN EXISTING TEAM ----------
+                            /// ---------- JOIN EXISTING TEAM (API INTEGRATED) ----------
                             Container(
                               width: double.infinity,
                               padding: EdgeInsets.all(width * 0.04),
@@ -167,24 +175,24 @@ class CreateTeamScreen extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(height: 12.h),
-                                  CustomButton(
+                                  Obx(() => CustomButton(
                                     backgroundColor: AppColors.primaryBlue,
                                     textColor: Colors.white,
-                                    text: "join_team".tr,
-                                    onPressed: controller.joinTeam,
-                                  ),
+                                    text: controller.isLoading.value ? 'Loading...' : "join_team".tr,
+                                    onPressed: controller.isLoading.value ? () {} : controller.joinTeam, // ✅ Fixed callback
+                                  )),
                                 ],
                               ),
                             ),
 
                             SizedBox(height: height * 0.035),
 
-                            /// ---------- CONTINUE ----------
+                            /// ---------- CONTINUE (CREATE TEAM - API INTEGRATED) ----------
                             Obx(() => CustomButton(
                               backgroundColor: AppColors.primaryRed,
                               textColor: Colors.white,
-                              text: controller.isLoading.value ? "Creating...".tr : "continue".tr,
-                              onPressed: controller.isLoading.value ? () {} : controller.continueCreateTeam,
+                              text: controller.isLoading.value ? "Creating..." : "continue".tr,
+                              onPressed: controller.isLoading.value ? () {} : controller.continueCreateTeam, // ✅ Fixed callback
                             )),
                           ],
                         ),

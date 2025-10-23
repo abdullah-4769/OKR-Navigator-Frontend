@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/presentation/widgets/custom_button2.dart';
+import 'package:game_app/utils/snackbar_helper.dart';
 import 'package:get/get.dart';
 
 import '../../../core/app_colors.dart';
 import '../../../controllers/team_mode_controller/team_lobby_controller.dart';
-
 import '../../widgets/global_widgets/custom_progress_path.dart';
 import '../../widgets/scoreboard_widgets/custom_rank_container.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 import '../../widgets/custom_circular_avatar.dart';
 import '../../widgets/custom_button.dart';
+import '../../../generated/models/responses/team_mode/team_lobby_response.dart'; // Import for type hints
 
 class TeamLobbyScreen extends StatelessWidget {
   const TeamLobbyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(TeamLobbyController());
+    // Find the controller instance
+    final controller = Get.put(TeamLobbyController()); 
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
@@ -26,22 +29,18 @@ class TeamLobbyScreen extends StatelessWidget {
       body: CustomBackground(
         child: SafeArea(
           child: Obx(() {
+            final teamData = controller.teamData.value;
+            final isHost = teamData?.members?.any((m) => m.role == 'HOST' && m.user?.id == Get.find<StorageRepository>().getUser()?.id) ?? false;
+            final membersCount = controller.players.length;
+            
             if (controller.isLoading.value) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(
-                      color: AppColors.primaryRed,
-                    ),
+                    CircularProgressIndicator(color: AppColors.primaryRed),
                     SizedBox(height: 16.h),
-                    Text(
-                      'Loading team details...',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 16.sp,
-                      ),
-                    ),
+                    Text('Loading team details...', style: TextStyle(color: AppColors.textSecondary, fontSize: 16.sp)),
                   ],
                 ),
               );
@@ -52,20 +51,9 @@ class TeamLobbyScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: AppColors.primaryRed,
-                      size: 48.sp,
-                    ),
+                    Icon(Icons.error_outline, color: AppColors.primaryRed, size: 48.sp),
                     SizedBox(height: 16.h),
-                    Text(
-                      controller.errorMessage.value,
-                      style: TextStyle(
-                        color: AppColors.primaryRed,
-                        fontSize: 16.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                    Text(controller.errorMessage.value, style: TextStyle(color: AppColors.primaryRed, fontSize: 16.sp), textAlign: TextAlign.center),
                     SizedBox(height: 16.h),
                     CustomButton(
                       backgroundColor: AppColors.primaryRed,
@@ -77,7 +65,8 @@ class TeamLobbyScreen extends StatelessWidget {
                 ),
               );
             }
-
+            
+            // Render Lobby UI
             return Column(
               children: [
                 Expanded(
@@ -85,16 +74,16 @@ class TeamLobbyScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(height: height * 0.015),
-                        /// 🔻 Header
+                        /// 判 Header
                         CustomHeader(
-                          title: 'Team'.tr,
+                          title: teamData?.title ?? 'Team'.tr, // Dynamic Team Name
                           highlightedText: "Lobby".tr,
                           showDashboardIcon: true,
                           onBackTap: () => Get.back(),
                         ),
 
                         SizedBox(height: height * 0.01),
-                        /// 🔻 Team Avatar with bubble
+                        /// 判 Team Avatar with bubble
                         Stack(
                           alignment: Alignment.bottomRight,
                           children: [
@@ -134,7 +123,7 @@ class TeamLobbyScreen extends StatelessWidget {
                               SizedBox(width: 8.w),
                               Expanded(
                                 child: Text(
-                                  controller.teamData.value?.token ?? "ABC123",
+                                  teamData?.token ?? "N/A", // Dynamic Team Token
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
@@ -144,10 +133,13 @@ class TeamLobbyScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 8.w),
-                              CircleAvatar(
-                                radius: 16.r,
-                                backgroundColor: AppColors.primaryRed,
-                                child: Icon(Icons.copy, size: 18.sp, color: AppColors.white),
+                              GestureDetector(
+                                onTap: () => SnackbarHelper.info('Team code copied!'), // Placeholder for Copy action
+                                child: CircleAvatar(
+                                  radius: 16.r,
+                                  backgroundColor: AppColors.primaryRed,
+                                  child: Icon(Icons.copy, size: 18.sp, color: AppColors.white),
+                                ),
                               ),
                             ],
                           ),
@@ -155,7 +147,7 @@ class TeamLobbyScreen extends StatelessWidget {
 
                         SizedBox(height: height * 0.015),
 
-                        /// 🔻 Waiting Text
+                        /// 判 Waiting Text
                         Text(
                           "Waiting for others to join...",
                           style: TextStyle(
@@ -166,7 +158,7 @@ class TeamLobbyScreen extends StatelessWidget {
 
                         SizedBox(height: height * 0.02),
 
-                        /// 🔻 Members Joined Progress
+                        /// 判 Members Joined Progress
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: width * 0.06),
                           child: Center(
@@ -178,7 +170,7 @@ class TeamLobbyScreen extends StatelessWidget {
                                     Icon(Icons.groups, color: AppColors.primaryRed),
                                     SizedBox(width: 6.w),
                                     Text(
-                                      "${controller.teamData.value?.totalMembers ?? 3} Members Joined",
+                                      "$membersCount Members Joined", // Dynamic Count
                                       style: TextStyle(
                                         color: AppColors.primaryRed,
                                         fontSize: 16.sp,
@@ -189,8 +181,8 @@ class TeamLobbyScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10.h),
                                 CustomProgressPath(
-                                  stepLabels: ["1", "2", "3", "4", "5"],
-                                  currentStep: controller.teamData.value?.totalMembers ?? 3,
+                                  stepLabels: const ["1", "2", "3", "4", "5"],
+                                  currentStep: membersCount.clamp(0, 5), // Dynamic Step
                                   showCircles: false,
                                 ),
                               ],
@@ -200,7 +192,7 @@ class TeamLobbyScreen extends StatelessWidget {
 
                         SizedBox(height: height * 0.02),
 
-                        /// 🔻 Start Game text
+                        /// 判 Start Game text
                         Text(
                           "Start Game (Minimum 2 players required)",
                           style: TextStyle(
@@ -212,110 +204,65 @@ class TeamLobbyScreen extends StatelessWidget {
 
                         SizedBox(height: height * 0.02),
 
-                        /// 🔻 Players List
+                        /// 判 Players List (Dynamic)
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: width * 0.06),
                           child: Column(
                             children: [
-                              ...controller.teamData.value?.members?.asMap().entries.map((entry) {
+                              ...teamData?.members?.asMap().entries.map((entry) {
                                 final index = entry.key;
                                 final member = entry.value;
                                 return CustomRankContainer(
                                   rank: index + 1,
                                   name: member.user?.name ?? "Unknown",
-                                  level: 5,
-                                  points: 100 - (index * 10),
-                                  score: 80 - (index * 10),
+                                  level: 5, // Static for now
+                                  points: 100 - (index * 10), // Placeholder points
+                                  score: 80 - (index * 10), // Placeholder score
                                   isHighlighted: index == 0,
                                 );
                               }).toList() ?? [],
 
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(48.r),
-                                  border: Border.all(color: AppColors.primaryRed, width: 1),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 34.w,
-                                      height: 34.w,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: AppColors.primaryRed, width: 1.5),
-                                      ),
-                                      child: Icon(
-                                        Icons.add,
-                                        size: 16.sp,
-                                        color: AppColors.primaryRed,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10.w),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Waiting for player...",
-                                          style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                        ),
-                                        Text(
-                                          "Invite someone to join",
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: AppColors.textSecondary.withOpacity(0.7),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
+                              // Placeholder/Invite Slot
+                              if (membersCount < 5)
+                                _buildInviteSlot(width)
                             ],
                           ),
                         ),
 
                         SizedBox(height: height * 0.03),
 
-                        /// 🔻 Buttons
+                        /// 判 Buttons
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: width * 0.1),
                           child: Column(
                             children: [
-                              Obx(() {
-                                final hasEnoughPlayers = controller.players.length >= 2;
-                                return CustomButton2(
-                                  backgroundColor: hasEnoughPlayers
-                                      ? AppColors.primaryBlue
-                                      : AppColors.textSecondary.withOpacity(0.3),
-                                  textColor: Colors.white,
-                                  text: "Begin Mission".tr,
-                                  onPressed: hasEnoughPlayers ? controller.beginMission : null,
-                                );
-                              }),
+                              // Begin Mission Button
+                              CustomButton2(
+                                backgroundColor: membersCount >= 2 ? AppColors.primaryBlue : AppColors.textSecondary.withOpacity(0.3),
+                                textColor: Colors.white,
+                                text: "Begin Mission".tr,
+                                onPressed: membersCount >= 2 ? controller.beginMission : null,
+                              ),
 
                             SizedBox(height: 10.h),
-                            Obx(() {
-                              return CustomButton(
-                                backgroundColor: AppColors.primaryRed,
-                                textColor: Colors.white,
-                                text: controller.isInvitingMember.value ? "Inviting..." : "Invite Members".tr,
-                                onPressed: controller.isInvitingMember.value ? () {} : () => controller.inviteMembers(),
-                              );
-                            }),
+                            // Invite Members Button (Only Host can invite)
+                            if (isHost)
+                              Obx(() {
+                                return CustomButton(
+                                  backgroundColor: AppColors.primaryRed,
+                                  textColor: Colors.white,
+                                  text: controller.isInvitingMember.value ? "Inviting..." : "Invite Members".tr,
+                                  onPressed: controller.isInvitingMember.value ? () {} : () => controller.inviteMembers(),
+                                );
+                              }),
+                            
                             SizedBox(height: 10.h),
-                              CustomButton(
-                                backgroundColor: AppColors.primaryBlue,
-                                textColor: Colors.white,
-                                text: "Edit Team Info".tr,
-                                onPressed: () => Get.back(),
-                              ),
+                            CustomButton(
+                              backgroundColor: AppColors.primaryBlue,
+                              textColor: Colors.white,
+                              text: "Edit Team Info".tr,
+                              onPressed: () => Get.back(), // Navigates back to edit screen
+                            ),
                             ],
                           ),
                         ),
@@ -325,11 +272,62 @@ class TeamLobbyScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ],
+              ]
             );
           }),
         ),
       ),
     );
+  }
+  
+  // Helper widget for the "Waiting for player..." slot
+  Widget _buildInviteSlot(double width) {
+      return Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(48.r),
+            border: Border.all(color: AppColors.primaryRed, width: 1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                width: 34.w,
+                height: 34.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.primaryRed, width: 1.5),
+                ),
+                child: Icon(
+                  Icons.add,
+                  size: 16.sp,
+                  color: AppColors.primaryRed,
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Waiting for player...",
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  Text(
+                    "Invite someone to join",
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
   }
 }

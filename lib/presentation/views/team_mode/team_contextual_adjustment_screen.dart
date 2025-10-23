@@ -173,18 +173,20 @@ class TeamContextualAdjustmentScreen extends StatelessWidget {
                       SizedBox(height: height * 0.025),
 
                       /// Submit Adaptations Button
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: width * 0.08,
-                        ),
-                        child: CustomButton(
-                          icon: Icons.send,
-                          text: 'submit_adaptations'.tr,
-                          onPressed: () {
-                            Get.toNamed(AppRoutes.customAIAnalysisScreen2);
-                          },
-                        ),
-                      ),
+                   Padding(
+    padding: EdgeInsets.symmetric(
+      horizontal: width * 0.08,
+    ),
+    child: Obx(() => CustomButton(
+        icon: Icons.send,
+        text: controller.isSubmittingFinal.value ? 'submitting'.tr : 'submit_adaptations'.tr,
+        // ✅ FIX: Wrap the asynchronous function in a synchronous lambda
+        onPressed: () => controller.submitFinalAdjustment(), 
+        
+        // This flag automatically handles the button's visual state (graying out/spinner)
+        isLoading: controller.isSubmittingFinal.value,
+    )),
+),
 
                       SizedBox(height: height * 0.04),
                     ],

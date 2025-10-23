@@ -106,105 +106,47 @@ class CampaignChooseStrategyScreen extends StatelessWidget {
 
                           /// --------- OBJECTIVES LIST ----------
                           Obx(
-                                () => Column(
-                              children: List.generate(
-                                controller.objectives.length,
-                                    (index) {
-                                  final obj = controller.objectives[index];
-                                  final titleKey = obj['titleKey'] as String?;
-                                  final descriptionKey =
-                                  obj['descriptionKey'] as String?;
+  () => Column(
+    children: List.generate(
+      controller.objectives.length,
+      (index) {
+        final obj = controller.objectives[index]; // obj is Objective
 
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 10.h, horizontal: 12.w),
-                                    child: CustomIndustryContainer(
-                                      title: _safeTranslate(titleKey,
-                                          fallback: 'Unknown'),
-                                      description: _safeTranslate(
-                                          descriptionKey,
-                                          fallback: 'No description'),
-                                      icon: obj['icon'] as IconData,
-                                      isSelected:
-                                      controller.isSelected(index),
-                                      onTap: () {
-                                        controller.selectObjective(index);
-                                        if (controller.isSelected(index)) {
-                                          journeyController.progress.value =
-                                          40;
-                                          journeyController.completeStep(0);
-                                        } else {
-                                          journeyController.progress.value =
-                                          20;
-                                          journeyController
-                                              .completedSteps[0] = false;
-                                        }
-                                      },
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+          child: CustomIndustryContainer(
+            title: _safeTranslate(obj.title ?? 'Unknown'),
+            description: _safeTranslate(obj.description ?? 'No description'),
+            icon: Icons.star, // Default icon since API doesn’t provide one
+            isSelected: controller.isSelected(obj),
+            onTap: () {
+              controller.selectObjective(obj);
 
-                                      /// ✅ Pass tags from controller
-                                      showTag1: obj['tags'] != null &&
-                                          obj['tags'].length > 0,
-                                      tag1Icon: obj['tags'] != null &&
-                                          obj['tags'].length > 0
-                                          ? obj['tags'][0]['icon'] as IconData?
-                                          : null,
-                                      tag1Text: obj['tags'] != null &&
-                                          obj['tags'].length > 0
-                                          ? _safeTranslate(
-                                          obj['tags'][0]['textKey']
-                                          as String?)
-                                          : null,
+              if (controller.isSelected(obj)) {
+                journeyController.progress.value = 40;
+                journeyController.completeStep(0);
+              } else {
+                journeyController.progress.value = 20;
+                journeyController.completedSteps[0] = false;
+              }
+            },
 
-                                      showTag2: obj['tags'] != null &&
-                                          obj['tags'].length > 1,
-                                      tag2Icon: obj['tags'] != null &&
-                                          obj['tags'].length > 1
-                                          ? obj['tags'][1]['icon'] as IconData?
-                                          : null,
-                                      tag2Text: obj['tags'] != null &&
-                                          obj['tags'].length > 1
-                                          ? _safeTranslate(
-                                          obj['tags'][1]['textKey']
-                                          as String?)
-                                          : null,
-
-                                      showTag3: obj['tags'] != null &&
-                                          obj['tags'].length > 2,
-                                      tag3Icon: obj['tags'] != null &&
-                                          obj['tags'].length > 2
-                                          ? obj['tags'][2]['icon'] as IconData?
-                                          : null,
-                                      tag3Text: obj['tags'] != null &&
-                                          obj['tags'].length > 2
-                                          ? _safeTranslate(
-                                          obj['tags'][2]['textKey']
-                                          as String?)
-                                          : null,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(height: AppDimensions.d14.h),
-
-                          /// ---------- JOURNEY MAP ----------
-                          Obx(
-                                () => Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4.w),
-                              child: CustomJourneyMap(
-                                progress: journeyController.progress.value,
-                                steps: journeyController.steps,
-                                completedSteps:
-                                journeyController.completedSteps,
-                                onToggle:
-                                journeyController.toggleJourneyDetails,
-                                showDetails:
-                                journeyController.showDetails.value,
-                              ),
-                            ),
-                          ),
+            // Hide tags (Objective model doesn’t have them)
+            showTag1: false,
+            tag1Icon: null,
+            tag1Text: null,
+            showTag2: false,
+            tag2Icon: null,
+            tag2Text: null,
+            showTag3: false,
+            tag3Icon: null,
+            tag3Text: null,
+          ),
+        );
+      },
+    ),
+  ),
+),
 
                           SizedBox(height: AppDimensions.d24.h),
 

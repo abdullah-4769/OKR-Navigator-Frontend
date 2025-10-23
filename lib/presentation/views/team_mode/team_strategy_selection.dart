@@ -113,25 +113,19 @@ class TeamStrategySelectionScreen extends StatelessWidget {
                             /// Begin Mission Button
                             Obx(
                               () => Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: width * 0.12,
-                                ),
-                                child: CustomButton2(
-                                  text: 'begin_mission'.tr,
-                                  onPressed:
-                                      teamStrategySelectionController
-                                          .isCardRevealed
-                                          .value
-                                      ? () {
-                                          journeyController.setStep(0, true);
-                                          teamStrategySelectionController.beginMission();
-
-                                          //teamStrategySelectionController.beginMission(isCampaignMode: true);
-                                      }
-                                      : null,
-                                ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: width * 0.12,
+                                  ),
+                                  child: CustomButton2(
+                                      text: 'begin_mission'.tr,
+                                      onPressed: teamStrategySelectionController.isCardRevealed.value
+                                          ? () {
+                                              teamStrategySelectionController.beginMission(); 
+                                          }
+                                          : null,
+                                  ),
                               ),
-                            ),
+                          ),
                           ],
                         ),
                       ],
