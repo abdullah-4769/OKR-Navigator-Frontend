@@ -54,7 +54,7 @@ class GameModeController extends GetxController {
     {
       'title': 'Team'.tr,
       'subtitle': 'Collaborate with others'.tr,
-      'icon': 'assets/images/team.svg',
+      'icon': 'assets/images/team_imagee.svg',
       'color': const Color(0xFFFF6B6B),
       'description': 'Work together with your team to achieve common goals'.tr,
       'mode': 'team',

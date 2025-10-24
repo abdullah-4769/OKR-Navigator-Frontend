@@ -15,6 +15,7 @@ class Assets {
   static const String imagesCampaign = 'assets/images/campaign.svg';
   static const String imagesCampaignImage = 'assets/images/campaign_image.png';
   static const String imagesCard1 = 'assets/images/card_1.png';
+  static const String imagesCeo = 'assets/images/ceo.svg';
   static const String imagesCertificate = 'assets/images/certificate.svg';
   static const String imagesCertificateImage = 'assets/images/certificate_image.png';
   static const String imagesDottedleftdown = 'assets/images/dottedleftdown.svg';
@@ -24,10 +25,12 @@ class Assets {
   static const String imagesGame = 'assets/images/game.png';
   static const String imagesGlobalPersondashboard = 'assets/images/global_persondashboard.png';
   static const String imagesGlobalRobort = 'assets/images/global_robort.png';
+  static const String imagesHr = 'assets/images/hr.svg';
   static const String imagesLanguageImage = 'assets/images/language_image.png';
   static const String imagesLeft = 'assets/images/left.svg';
   static const String imagesLocalizationImage = 'assets/images/localization_image.png';
   static const String imagesLogo = 'assets/images/logo.svg';
+  static const String imagesManager = 'assets/images/manager.svg';
   static const String imagesMaskgroup = 'assets/images/maskgroup.svg';
   static const String imagesNavigationImage = 'assets/images/navigation_image.png';
   static const String imagesNavigatorCertificateIcon = 'assets/images/navigator_certificate_icon.png';
