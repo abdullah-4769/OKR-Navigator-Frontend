@@ -40,14 +40,14 @@ class CustomHeader extends StatelessWidget {
               /// Top row → Arrow | Title+Highlight | Profile
               Row(
 
-                crossAxisAlignment: CrossAxisAlignment.center,
+                //crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   /// Left curved arrow
                   SizedBox(
                     width: width * 0.18,
 
                     child: Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.topLeft,
                       child: CustomCurvedArrow(
                         isLeft: true,
                         onTap: onBackTap,
@@ -73,8 +73,8 @@ class CustomHeader extends StatelessWidget {
                           style: theme.textTheme.displayLarge?.copyWith(
                             color: AppColors.primaryRed,
                             fontSize: orientation == Orientation.portrait
-                                ? 36.sp // Reduced font size
-                                : 28.sp,
+                                ? 30.sp // Reduced font size
+                                : 24.sp,
                             height: 1.25,
                           ),
                         ),
@@ -85,8 +85,8 @@ class CustomHeader extends StatelessWidget {
                             style: theme.textTheme.headlineLarge?.copyWith(
                               color: AppColors.primaryBlue,
                               fontSize: orientation == Orientation.portrait
-                                  ? 21.sp // Reduced font size
-                                  : 17.sp,
+                                  ? 18.sp // Reduced font size
+                                  : 15.sp,
                               height: 0.1,
                             ),
                           ),

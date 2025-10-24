@@ -58,6 +58,14 @@ class RoleSelectionController extends GetxController {
       'icon': Icons.favorite,
       'iconBg': const Color(0xFFFF80AB),
     },
+{
+'id': 5,
+'title': 'launch products faster',
+'description': 'optimize development cycles',
+'icon': Icons.speed,
+'tag1': 'medium_impact',
+'tag2': 'nine_months',
+},
   ];
 
   @override

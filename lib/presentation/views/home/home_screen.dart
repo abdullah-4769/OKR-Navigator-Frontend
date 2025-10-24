@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           CustomSvg(
                             assetPath: 'assets/images/okrnev.svg',
-                            semanticsLabel: 'OKR',
+                            semanticsLabel: 'okr'.tr,
                             height: 50.h,
                           ),
                           Row(
@@ -110,7 +110,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       Center(
                         child: CustomBubbleButton(
-                          text: 'Certificate',
+                          text: 'certificate'.tr,
                           width: 90,
                           height: 30,
                           onTap: () {
@@ -234,8 +234,8 @@ class HomeScreen extends StatelessWidget {
           final dotIndex = i ~/ 2;
           final active = c.selectedCardIndex.value == dotIndex;
           return Container(
-            width: 6.w,
-            height: 6.w,
+            width: 7.w,
+            height: 9.w,
             decoration: BoxDecoration(
               color: active ? const Color(0xFFC34028) : Colors.black26,
               shape: BoxShape.circle,
@@ -256,8 +256,8 @@ class HomeScreen extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: Container(
-          width: 0.75.sw,
-          height: 0.28.sh,
+          width: 0.80.sw,
+          height: 0.32.sh,
           margin: EdgeInsets.only(bottom: 14.h),
           padding: EdgeInsets.fromLTRB(22.w, 22.h, 22.w, 16.h),
           decoration: BoxDecoration(
@@ -304,7 +304,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      SizedBox(height: 10.h),
+      SizedBox(height: 6.h),
       Text(
         (m['subtitle'] ?? '').toString().tr,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -313,13 +313,14 @@ class HomeScreen extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      const Spacer(),
+       Spacer(flex: 1,),
+
       Text(
         (m['cta'] ?? '').toString().tr,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 14.sp,
           fontWeight: FontWeight.w700,
-          decoration: TextDecoration.underline,
+          decoration: TextDecoration.none,
           color: Colors.white,
         ),
       ),

@@ -1,11 +1,14 @@
+
 import 'package:game_app/generated/models/requests/team_mode/set_team_role_for_game_request.dart';
 import 'package:game_app/generated/models/responses/team_mode/set_team_role_for_game_response.dart';
+import 'package:game_app/utils/snackbar_helper.dart';
 import 'package:get/get.dart';
 import '../../../generated/network.dart';
 import '../../../generated/models/responses/team_mode/assign_roles_response.dart/assign_roles_response.dart';
 import '../../../generated/models/requests/team_mode/update_team_member_request.dart';
 import '../../../generated/models/responses/team_mode/update_team_member_response.dart';
 import '../../../data/repositories/storage_repository.dart';
+import '../../data/repositories/team_repository.dart';
 import 'create_team_controller.dart';
 
 class AssignRolesController extends GetxController {
@@ -14,11 +17,13 @@ class AssignRolesController extends GetxController {
   var isAutoUpdatingRole =false.obs;
   var members = <AssignRoleResponse>[].obs;
   var errorMessage = ''.obs;
+final TeamRepository _teamRepository = Get.find<TeamRepository>(); // ✅ Inject Repository
 
   @override
   void onInit() {
     super.onInit();
-    fetchTeamMembers();
+    // ✅ Load members as soon as the controller is initialized (when screen opens)
+    fetchTeamMembers(); 
   }
 
   Future<void> fetchTeamMembers() async {
@@ -32,33 +37,19 @@ class AssignRolesController extends GetxController {
       
       if (teamId == null) {
         errorMessage.value = 'No team ID found. Please create a team first.';
+        SnackbarHelper.error('Cannot load members: Team ID missing.');
         return;
       }
       
-      final response = await dio.get('/team/$teamId/members');
+      // ✅ API Call: GET /team/{teamId}/members via Repository
+      // Note: Humne pichle steps mein TeamRepository mein getTeamMembers method define kiya tha.
+      final membersList = await _teamRepository.getTeamMembers(teamId);
       
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        if (response.data is List) {
-          // If response is a list of members
-          final List<dynamic> membersList = response.data;
-          members.assignAll(
-            membersList.map((member) => AssignRoleResponse.fromJson(member)).toList()
-          );
-        } else if (response.data is Map && response.data['members'] != null) {
-          // If response has a members array
-          final List<dynamic> membersList = response.data['members'];
-          members.assignAll(
-            membersList.map((member) => AssignRoleResponse.fromJson(member)).toList()
-          );
-        } else {
-          // Single member response
-          members.assignAll([AssignRoleResponse.fromJson(response.data)]);
-        }
-      } else {
-        errorMessage.value = 'Failed to load team members. Please try again.';
-      }
+      members.assignAll(membersList);
+      
     } catch (e) {
       errorMessage.value = 'Failed to load team members: ${e.toString()}';
+      SnackbarHelper.error('Failed to load team members.');
       print('Error fetching team members: $e');
     } finally {
       isLoading.value = false;
@@ -107,7 +98,7 @@ class AssignRolesController extends GetxController {
           members.refresh(); // Trigger UI update
         }
         
-        Get.snackbar("Success", "Role updated successfully!");
+        SnackbarHelper.success("Role updated successfully!");
       } else {
         Get.snackbar("Error", "Failed to update role. Please try again.");
       }

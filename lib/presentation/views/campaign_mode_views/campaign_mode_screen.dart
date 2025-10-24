@@ -58,7 +58,7 @@ class CampaignModeScreen extends StatelessWidget {
                     children: [
                       SizedBox(height: 10.h),
                       CustomHeader(
-                        title: "campaign".tr,
+                        title: "camp".tr,
                         highlightedText: "mode".tr,
                         onBackTap: () => Get.back(),
                         showDashboardIcon: false,
@@ -206,6 +206,18 @@ class CampaignModeScreen extends StatelessWidget {
                         },
                       ),
 
+                      SizedBox(height: 20.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: CustomButton(
+                          text: "Start Certification".tr,
+                          backgroundColor: AppColors.primaryBlue,
+                          icon: Icons.info,
+                          onPressed: () {
+                           Get.toNamed(AppRoutes.navigatorStartScreen);
+                          },
+                        ),
+                      ),
                       SizedBox(height: 20.h),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.w),

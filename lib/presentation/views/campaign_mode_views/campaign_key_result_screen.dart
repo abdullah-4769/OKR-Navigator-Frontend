@@ -132,7 +132,7 @@ class CampaignKeyResultScreen extends StatelessWidget {
                                   ),
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.primaryRed,
-                                  fontFamily: 'GothamExtraBold',
+                                  fontFamily: 'GothamBold',
                                 ),
                                 textAlign: TextAlign.center,
                               ),

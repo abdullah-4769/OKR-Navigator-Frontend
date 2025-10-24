@@ -12,7 +12,7 @@ final ThemeData appTheme = ThemeData(
     displayLarge: TextStyle(
       fontFamily: 'GothamUltra',
       fontWeight: FontWeight.w500, // Extra bold / Black
-      fontSize: 30.sp, // Large hero text
+      fontSize: 28.sp, // Large hero text
       color: AppColors.textPrimary,
     ),
     displayMedium: TextStyle(

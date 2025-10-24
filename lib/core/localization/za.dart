@@ -6,6 +6,52 @@ final Map<String, String> za = {
   "okr_now": "OKR'Now",
   "okr_logo": "OKR Logo",
   "bottom_logo": "App Logo",
+  "okr": "OKR",
+  "certificate": "Sertifikaat",
+  
+  // FEEDBACK SCREEN
+  "feedback": "Terugvoer",
+  "no_feedback_data": "Geen terugvoerdata beskikbaar nie",
+  "level_completed": "Vlak voltooi!",
+  "organization_completed": "Organisasie ${0} voltooi!",
+  "score": "Telling: ${0}",
+  "strategic_alignment": "Strategiese Belyning",
+  "objective_alignment": "Doelwit Belyning",
+  "key_results_quality": "Kwaliteit van Sleutelresultate",
+  "okr_assessment_feedback": "OKR Assesseringsterugvoer",
+  
+  // SCOREBOARD SCREEN
+  "your": "Jou",
+  "scoreboard": "Puntebord",
+  "show_personal_achievements": "Wys Persoonlike Prestasies",
+  "ranked_strategic_agility": "Ek is hierdie week #3 in Strategiese Ratsheid!",
+  
+  // TEAM INITIATIVE SCREEN
+  "suggestion": "Voorstel",
+  "of_initiatives": "van Inisiatiewe",
+  "error": "Fout",
+  
+  // Personal Achievements Screen
+  "personal": "Persoonlik",
+  "achievements": "Prestasies",
+  "strategic_architect": "Strategiese Argitek",
+  "level": "Vlak {{num}}",
+  "points": "Punte",
+  
+  // Final Test Certification Screen
+  "final_test": "Finale Toets",
+  "certification": "Sertifisering",
+  "ai_evaluation_progress": "KI-evalueringvordering",
+  "test_completed": "Toets Voltooi",
+  
+  // Mini Simulation Screen
+  "mini_simulation": "Mini Simulasie",
+  "refine_strategy_address_challenge": "Verfyn jou strategie om die uitdaging aan te pak",
+  "solve_scenario_minutes": "Los hierdie scenario op in net 'n paar minute",
+  
+  // Game Complete Screen
+  "game": "Spel",
+  "complete": "Voltooi",
 
   // AUTHENTICATION & ONBOARDING
   "dont_have_account": "Don't have an account?",

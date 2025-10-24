@@ -307,7 +307,10 @@ class _ResponsiveCardPager extends StatelessWidget {
                     ),
 
                     /// 🔹 Bubble Button Below Card (only if buildActionButton is true)
-                    _buildActionButton(),
+                    Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: 30.w),
+                      child: Center(child: _buildActionButton()),
+                    ),
                   ],
                 ],
               ),

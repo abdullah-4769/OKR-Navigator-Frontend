@@ -44,7 +44,7 @@ class GameModeController extends GetxController {
 
   final List<Map<String, dynamic>> gameModes = [
     {
-      'title': 'Solo'.tr,
+      'title': 'solo'.tr,
       'subtitle': 'Play alone at your own pace'.tr,
       'icon': 'assets/images/solo.svg',
       'color': const Color(0xFF4ECDC4),
@@ -60,7 +60,7 @@ class GameModeController extends GetxController {
       'mode': 'team',
     },
     {
-      'title': 'Campaign'.tr,
+      'title': 'campaign'.tr,
       'subtitle': 'Complete missions and progress'.tr,
       'icon': 'assets/images/campaign.svg',
       'color': const Color(0xFF45B7D1),
@@ -197,46 +197,35 @@ class GameModeController extends GetxController {
   bool isSoloMode() {
     return selectedMode.value == 'solo';
   }
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
+//kjsscoiugasdluvc
+//
+//
 // import 'package:flutter/material.dart';
 // import 'package:game_app/presentation/routes/app_routes.dart';
 // import 'package:get/get.dart';
-// import '../../services/shared_preference.dart'; // Add this import
 //
 // class GameModeController extends GetxController {
 //   final PageController pageController = PageController(viewportFraction: 0.8);
 //   final RxInt selectedIndex = 0.obs;
-//
 //   @override
 //   void onInit() {
 //     super.onInit();
 //     // Instead of jumpToPage here, wait for the first frame
 //     WidgetsBinding.instance.addPostFrameCallback((_) {
 //       if (pageController.hasClients) {
-//         pageController.jumpToPage(0);
+//         pageController.jumpToPage(0); // or whatever index you want
 //       }
 //     });
 //
 //     pageController.addListener(_handlePageChange);
-//     _loadSavedGameMode(); // Load saved mode on init
 //   }
 //
 //   void resetGameMode() {
 //     selectedIndex.value = 0;
 //     selectedMode.value = 'solo';
-//     SharedPrefs.clearGameMode(); // Clear saved mode
 //     if (pageController.hasClients) {
 //       pageController.jumpToPage(0);
 //     }
@@ -275,6 +264,8 @@ class GameModeController extends GetxController {
 //     },
 //   ];
 //
+//
+//
 //   @override
 //   void onClose() {
 //     pageController.removeListener(_handlePageChange);
@@ -287,22 +278,6 @@ class GameModeController extends GetxController {
 //       final newIndex = pageController.page!.round();
 //       if (newIndex != selectedIndex.value) {
 //         selectedIndex.value = newIndex;
-//       }
-//     }
-//   }
-//
-//   /// Load saved game mode from SharedPreferences
-//   Future<void> _loadSavedGameMode() async {
-//     final savedMode = await SharedPrefs.getGameMode();
-//     if (savedMode != null && savedMode.isNotEmpty) {
-//       selectedMode.value = savedMode;
-//       // Find the index of the saved mode
-//       final index = gameModes.indexWhere((mode) => mode['mode'] == savedMode);
-//       if (index != -1) {
-//         selectedIndex.value = index;
-//         if (pageController.hasClients) {
-//           pageController.jumpToPage(index);
-//         }
 //       }
 //     }
 //   }
@@ -337,7 +312,6 @@ class GameModeController extends GetxController {
 //   void navigateToPricingScreen() {
 //     final selectedGameMode = gameModes[selectedIndex.value]['mode'] as String;
 //     selectedMode.value = selectedGameMode;
-//     SharedPrefs.saveGameMode(selectedGameMode); // ✅ Save to SharedPreferences
 //     Get.toNamed(AppRoutes.pricingScreen);
 //   }
 //
@@ -347,10 +321,14 @@ class GameModeController extends GetxController {
 //       case 'team':
 //         return 'assets/images/team.svg';
 //       case 'campaign':
-//         return 'assets/images/campaign.svg';
+//         return 'assets/images/campaign.svg'; // ✅ fixed spelling
 //       case 'solo':
 //       default:
 //         return 'assets/images/solo.svg';
 //     }
 //   }
 // }
+//
+
+
+

@@ -114,10 +114,10 @@ class _NavigatorFinalTestCertificationScreenState
                       ),
                       SizedBox(height: height * 0.01),
 
-                      SizedBox(height: 10.h),
+
                       Center(child:
                       CountdownTimerWidget(
-                        totalMinutes: 15,
+
                         size: 130,
                         onTimerComplete: () {
                           // Custom navigation or action

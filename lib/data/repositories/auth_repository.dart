@@ -48,7 +48,6 @@ class AuthRepository {
     // ✅ Save access token
     await Get.find<StorageRepository>().saveAccessToken(response.accessToken!);
 
-    // ✅ Save user ID - this is the ONLY change needed
     if (response.user!.id != null) {
       await SharedPrefs.saveUserId(response.user!.id!);
       log('✅ User ID saved: ${response.user!.id}');

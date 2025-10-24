@@ -5,7 +5,53 @@ final Map<String, String> it = {
   "okr_hau": "OKR'hau",
   "okr_now": "OKR'Now",
   "okr_logo": "Logo OKR",
-  "bottom_logo": "Logo inferiore",
+  "bottom_logo": "Logo App",
+  "okr": "OKR",
+  "certificate": "Certificato",
+  
+  // FEEDBACK SCREEN
+  "feedback": "Feedback",
+  "no_feedback_data": "Nessun dato di feedback disponibile",
+  "level_completed": "Livello completato!",
+  "organization_completed": "Organizzazione ${0} completata!",
+  "score": "Punteggio: ${0}",
+  "strategic_alignment": "Allineamento Strategico",
+  "objective_alignment": "Allineamento degli Obiettivi",
+  "key_results_quality": "Qualità dei Risultati Chiave",
+  "okr_assessment_feedback": "Feedback di Valutazione OKR",
+  
+  // SCOREBOARD SCREEN
+  "your": "Il tuo",
+  "scoreboard": "Tabellone",
+  "show_personal_achievements": "Mostra Risultati Personali",
+  "ranked_strategic_agility": "Sono classificato #3 in Agilità Strategica questa settimana!",
+  
+  // TEAM INITIATIVE SCREEN
+  "suggestion": "Suggerimento",
+  "of_initiatives": "di Iniziative",
+  "error": "Errore",
+  
+  // Personal Achievements Screen
+  "personal": "Personale",
+  "achievements": "Risultati",
+  "strategic_architect": "Architetto Strategico",
+  "level": "Livello {{num}}",
+  "points": "Punti",
+  
+  // Final Test Certification Screen
+  "final_test": "Test Finale",
+  "certification": "Certificazione",
+  "ai_evaluation_progress": "Progresso Valutazione IA",
+  "test_completed": "Test Completato",
+  
+  // Mini Simulation Screen
+  "mini_simulation": "Mini Simulazione",
+  "refine_strategy_address_challenge": "Perfeziona la tua strategia per affrontare la sfida",
+  "solve_scenario_minutes": "Risolvi questo scenario in pochi minuti",
+  
+  // Game Complete Screen
+  "game": "Gioco",
+  "complete": "Completato",
 
   // AUTHENTICATION & ONBOARDING
   "dont_have_account": "Non hai un account?",

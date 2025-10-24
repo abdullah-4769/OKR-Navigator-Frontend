@@ -6,6 +6,8 @@ final Map<String, String> de = {
   "okr_now": "OKR'Now",
   "okr_logo": "OKR-Logo",
   "bottom_logo": "App-Logo",
+  "okr": "OKR",
+  "certificate": "Zertifikat",
 
   // AUTHENTICATION & ONBOARDING
   "dont_have_account": "Noch kein Konto?",
@@ -63,6 +65,51 @@ final Map<String, String> de = {
   "german": "Deutsch",
   "italian": "Italienisch",
   "russian": "Russisch",
+  "afrikaans": "Afrikaans",
+
+  // FEEDBACK SCREEN
+  "feedback": "Feedback",
+  "no_feedback_data": "Keine Feedback-Daten verfügbar",
+  "level_completed": "Level abgeschlossen!",
+  "organization_completed": "Organisation ${0} abgeschlossen!",
+  "score": "Punktzahl: ${0}",
+  "strategic_alignment": "Strategische Ausrichtung",
+  "objective_alignment": "Zielausrichtung",
+  "key_results_quality": "Qualität der Schlüsselergebnisse",
+  "okr_assessment_feedback": "OKR-Bewertungsfeedback",
+  
+  // SCOREBOARD SCREEN
+  "your": "Dein",
+  "scoreboard": "Punktestand",
+  "show_personal_achievements": "Persönliche Erfolge anzeigen",
+  "ranked_strategic_agility": "Ich bin diese Woche #3 in Strategischer Agilität!",
+  
+  // TEAM INITIATIVE SCREEN
+  "suggestion": "Vorschlag",
+  "of_initiatives": "von Initiativen",
+  "error": "Fehler",
+  
+  // Personal Achievements Screen
+  "personal": "Persönlich",
+  "achievements": "Erfolge",
+  "strategic_architect": "Strategischer Architekt",
+  "level": "Stufe {{num}}",
+  "points": "Punkte",
+  
+  // Final Test Certification Screen
+  "final_test": "Abschlusstest",
+  "certification": "Zertifizierung",
+  "ai_evaluation_progress": "KI-Bewertungsfortschritt",
+  "test_completed": "Test Abgeschlossen",
+  
+  // Mini Simulation Screen
+  "mini_simulation": "Mini-Simulation",
+  "refine_strategy_address_challenge": "Verfeinern Sie Ihre Strategie, um die Herausforderung zu bewältigen",
+  "solve_scenario_minutes": "Lösen Sie dieses Szenario in nur wenigen Minuten",
+  
+  // Game Complete Screen
+  "game": "Spiel",
+  "complete": "Abgeschlossen",
 
   // COMMON BUTTONS & STATES
   "continue": "Fortfahren",

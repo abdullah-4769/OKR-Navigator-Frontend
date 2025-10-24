@@ -32,6 +32,8 @@ class GameCompleteScreen extends StatelessWidget {
 
     // ✅ Get user ID from SharedPreferences
     final String? userId = SharedPrefs.getUserId();
+    // ✅ Get saved mode from SharedPreferences
+    final String? savedMode = SharedPrefs.getGameMode();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -64,7 +66,7 @@ class GameCompleteScreen extends StatelessWidget {
                       Obx(() {
                         // Show loading/error/content only if user ID is available
                         if (userId == null || userId.isEmpty) {
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }
 
                         if (viewModel.isLoading.value) {
@@ -90,7 +92,8 @@ class GameCompleteScreen extends StatelessWidget {
                           viewModel,
                           journeyController,
                           height,
-                          context, // ✅ Pass context here
+                          context,
+                          savedMode, // ✅ Pass savedMode to content
                         );
                       }),
 
@@ -227,7 +230,8 @@ class GameCompleteScreen extends StatelessWidget {
       GameCompleteViewModel viewModel,
       JourneyController journeyController,
       double height,
-      BuildContext context, // ✅ Receive context as parameter
+      BuildContext context,
+      String? savedMode, // ✅ Receive savedMode
       ) {
     return Column(
       children: [
@@ -280,21 +284,40 @@ class GameCompleteScreen extends StatelessWidget {
         SizedBox(height: height * 0.04),
 
         /// Action Buttons
-        _buildActionButtons(gameData, context), // ✅ Pass context here
+        _buildActionButtons(gameData, context, savedMode), // ✅ Pass savedMode
       ],
     );
   }
 
-  // 🔹 ACTION BUTTONS
-  Widget _buildActionButtons(GameCompleteModel gameData, BuildContext context) {
+  // 🔹 ACTION BUTTONS - UPDATED with campaign mode check
+  Widget _buildActionButtons(GameCompleteModel gameData, BuildContext context, String? savedMode) {
     return Column(
       children: [
+        // ✅ Show "Start Certificate Mode" button only if current mode is campaign
+        if (savedMode == 'campaign') ...[
+          CustomButton(
+            text: "start_certificate_mode".tr,
+            icon: Icons.verified_outlined,
+            backgroundColor: AppColors.primaryGreen, // Use a different color to distinguish
+            onPressed: () {
+              // Navigate to game mode screen
+              Get.offAllNamed(AppRoutes.campaignModeScreen);
+            },
+          ),
+          SizedBox(height: 12.h),
+        ],
+
+        // Regular action buttons
         CustomButton(
           text: "play_again".tr,
           icon: Icons.play_arrow,
           onPressed: () {
-            // Navigate to start screen
-            Get.offAllNamed(AppRoutes.teamStrategySelection);
+            // Navigate to start screen based on mode
+            if (savedMode == 'campaign') {
+              Get.offAllNamed(AppRoutes.teamStrategySelection);
+            } else {
+              Get.offAllNamed(AppRoutes.roleSelection);
+            }
           },
         ),
         SizedBox(height: 12.h),
@@ -422,8 +445,6 @@ ${gameData.scor ?? "Great performance!"}
 
 
 
-
-
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:game_app/controllers/journey_controller.dart';
@@ -434,7 +455,7 @@ ${gameData.scor ?? "Great performance!"}
 // import '../../../core/app_colors.dart';
 // import '../../../core/app_dimensions.dart';
 // import '../../../generated/models/responses/game_complete_model/game_complete_model.dart';
-// import '../../../services/shared_preference.dart'; // Import SharedPrefs
+// import '../../../services/shared_preference.dart';
 // import '../../../view_model/game_complete/game_complete_view_model.dart';
 // import '../../widgets/custom_button.dart';
 // import '../../widgets/custom_home_navbar.dart';
@@ -456,7 +477,7 @@ ${gameData.scor ?? "Great performance!"}
 //     final JourneyController journeyController = Get.find<JourneyController>();
 //     final GameCompleteViewModel viewModel = Get.put(GameCompleteViewModel());
 //
-//     // ✅ Get user ID from SharedPreferences instead of hardcoding
+//     // ✅ Get user ID from SharedPreferences
 //     final String? userId = SharedPrefs.getUserId();
 //
 //     return Scaffold(
@@ -484,193 +505,39 @@ ${gameData.scor ?? "Great performance!"}
 //
 //                       /// User ID Check
 //                       if (userId == null || userId.isEmpty)
-//                         Padding(
-//                           padding: EdgeInsets.all(16.h),
-//                           child: Container(
-//                             padding: EdgeInsets.all(16.h),
-//                             decoration: BoxDecoration(
-//                               color: Colors.orange[50],
-//                               borderRadius: BorderRadius.circular(12.r),
-//                               border: Border.all(color: Colors.orange),
-//                             ),
-//                             child: Column(
-//                               children: [
-//                                 Icon(Icons.warning, color: Colors.orange, size: 32.sp),
-//                                 SizedBox(height: 8.h),
-//                                 Text(
-//                                   'User ID not found. Please login again.',
-//                                   style: TextStyle(
-//                                     color: Colors.orange[800],
-//                                     fontSize: 14.sp,
-//                                   ),
-//                                   textAlign: TextAlign.center,
-//                                 ),
-//                                 SizedBox(height: 12.h),
-//                                 CustomButton(
-//                                   text: "go_to_login".tr,
-//                                   onPressed: () {
-//                                     // Navigate to login screen
-//                                     Get.offAllNamed(AppRoutes.login);
-//                                   },
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         ),
+//                         _buildNoUserIdCard(),
 //
-//                       /// Loading State
-//                       ///
+//                       /// Main Content
 //                       Obx(() {
 //                         // Show loading/error/content only if user ID is available
 //                         if (userId == null || userId.isEmpty) {
-//                           return SizedBox(); // Hide content if no user ID
+//                           return SizedBox.shrink();
 //                         }
 //
 //                         if (viewModel.isLoading.value) {
-//                           return Padding(
-//                             padding: EdgeInsets.all(20.h),
-//                             child: Center(
-//                               child: CircularProgressIndicator(
-//                                 color: AppColors.primaryRed,
-//                               ),
-//                             ),
-//                           );
+//                           return _buildLoadingCard();
 //                         }
 //
-//                         if (viewModel.errorMessage.isNotEmpty) {
-//                           return Padding(
-//                             padding: EdgeInsets.all(20.h),
-//                             child: Column(
-//                               children: [
-//                                 Icon(Icons.error_outline, color: Colors.red, size: 48.sp),
-//                                 SizedBox(height: 16.h),
-//                                 Text(
-//                                   'Failed to load game data: ${viewModel.errorMessage}',
-//                                   style: Theme.of(context).textTheme.bodyMedium,
-//                                   textAlign: TextAlign.center,
-//                                 ),
-//                                 SizedBox(height: 16.h),
-//                                 CustomButton(
-//                                   text: "retry".tr,
-//                                   onPressed: () => viewModel.fetchLatestGameScore(userId),
-//                                 ),
-//                               ],
-//                             ),
-//                           );
+//                         // ✅ FIXED: Use .value to get the string from RxString
+//                         if (viewModel.errorMessage.value.isNotEmpty) {
+//                           return _buildErrorCard(viewModel.errorMessage.value, () {
+//                             viewModel.fetchLatestGameScore(userId);
+//                           });
 //                         }
 //
 //                         final gameData = viewModel.gameCompleteData.value;
 //                         if (gameData == null) {
-//                           return Padding(
-//                             padding: EdgeInsets.all(20.h),
-//                             child: Column(
-//                               children: [
-//                                 Text(
-//                                   'No game data found',
-//                                   style: Theme.of(context).textTheme.bodyMedium,
-//                                 ),
-//                                 SizedBox(height: 16.h),
-//                                 CustomButton(
-//                                   text: "load_game_data".tr,
-//                                   onPressed: () => viewModel.fetchLatestGameScore(userId),
-//                                 ),
-//                               ],
-//                             ),
-//                           );
+//                           return _buildNoDataCard(() {
+//                             viewModel.fetchLatestGameScore(userId);
+//                           });
 //                         }
 //
-//                         return Column(
-//                           children: [
-//                             /// Score Card
-//                             CustomScoreCard(
-//                               score: gameData.score ?? 0,
-//                               title: viewModel.getScoreTitle(),
-//                               description: viewModel.getScoreDescription(),
-//                             ),
-//
-//                             SizedBox(height: height * 0.025),
-//
-//                             /// Performance Breakdown
-//                             PerformanceBreakdown(
-//                               points: _calculatePoints(gameData.totalPoints),
-//                               totalPoints: 10,
-//                               items: viewModel.getBreakdownItems(),
-//                             ),
-//
-//                             SizedBox(height: height * 0.025),
-//
-//                             /// Rewards Unlocked
-//                             RewardsUnlocked(
-//                               badgeImage: "assets/images/badge.png",
-//                               badgeName: gameData.badge ?? "No Badge",
-//                               titleImage: "assets/images/game.png",
-//                               titleName: viewModel.getScoreTitle(),
-//                               trophyImage: "assets/images/trophy.png",
-//                               trophyName: gameData.trophy?.isNotEmpty == true
-//                                   ? gameData.trophy!
-//                                   : "Participant",
-//                             ),
-//
-//                             SizedBox(height: height * 0.025),
-//
-//                             Obx(() => CustomJourneyMap(
-//                               progress: journeyController.progress.value,
-//                               steps: journeyController.steps,
-//                               completedSteps: journeyController.completedSteps,
-//                               onToggle: journeyController.toggleJourneyDetails,
-//                               showDetails: journeyController.showDetails.value,
-//                             )),
-//
-//                             SizedBox(height: height * 0.025),
-//
-//                             /// Achievement Summary
-//                             AchievementSummary(
-//                               achievements: _getAchievements(gameData),
-//                             ),
-//
-//                             SizedBox(height: height * 0.04),
-//
-//                             /// Buttons
-//                             CustomButton(
-//                               text: "play_again".tr,
-//                               icon: Icons.play_arrow,
-//                               onPressed: () {
-//                                 // Navigate to start screen
-//                                 Get.offAllNamed(AppRoutes.teamStrategySelection);
-//                               },
-//                             ),
-//                             SizedBox(height: 12.h),
-//                             CustomButton(
-//                               text: "view_badges".tr,
-//                               icon: Icons.badge_outlined,
-//                               onPressed: () {
-//                                 Get.offAllNamed(AppRoutes.personalAchievementScreen);
-//                               },
-//                             ),
-//                             SizedBox(height: 12.h),
-//                             CustomButton(
-//                               text: "share_score".tr,
-//                               icon: Icons.score,
-//                               onPressed: () {
-//                                 _shareScore(gameData);
-//                               },
-//                             ),
-//
-//                             SizedBox(height: 16.h),
-//                             GestureDetector(
-//                               onTap: () {
-//                                 Get.toNamed(AppRoutes.strategyJourneyScreen);
-//                               },
-//                               child: Text(
-//                                 "view_your_journey".tr,
-//                                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-//                                   fontSize: AppDimensions.d14.sp,
-//                                   color: AppColors.primaryBlue,
-//                                   decoration: TextDecoration.underline,
-//                                 ),
-//                               ),
-//                             ),
-//                           ],
+//                         return _buildGameCompleteContent(
+//                           gameData,
+//                           viewModel,
+//                           journeyController,
+//                           height,
+//                           context, // ✅ Pass context here
 //                         );
 //                       }),
 //
@@ -690,6 +557,225 @@ ${gameData.scor ?? "Great performance!"}
 //           ),
 //         ),
 //       ),
+//     );
+//   }
+//
+//   // 🔹 NO USER ID CARD
+//   Widget _buildNoUserIdCard() {
+//     return Padding(
+//       padding: EdgeInsets.all(16.h),
+//       child: Container(
+//         padding: EdgeInsets.all(16.h),
+//         decoration: BoxDecoration(
+//           color: Colors.orange[50],
+//           borderRadius: BorderRadius.circular(12.r),
+//           border: Border.all(color: Colors.orange),
+//         ),
+//         child: Column(
+//           children: [
+//             Icon(Icons.warning, color: Colors.orange, size: 32.sp),
+//             SizedBox(height: 8.h),
+//             Text(
+//               'User ID not found. Please login again.',
+//               style: TextStyle(
+//                 color: Colors.orange[800],
+//                 fontSize: 14.sp,
+//               ),
+//               textAlign: TextAlign.center,
+//             ),
+//             SizedBox(height: 12.h),
+//             CustomButton(
+//               text: "go_to_login".tr,
+//               onPressed: () => Get.offAllNamed(AppRoutes.login),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // 🔹 LOADING CARD
+//   Widget _buildLoadingCard() {
+//     return Padding(
+//       padding: EdgeInsets.all(20.h),
+//       child: Center(
+//         child: Column(
+//           children: [
+//             CircularProgressIndicator(color: AppColors.primaryRed),
+//             SizedBox(height: 16.h),
+//             Text(
+//               'Loading your game results...',
+//               style: TextStyle(
+//                 fontSize: 16.sp,
+//                 color: AppColors.textSecondary,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // 🔹 ERROR CARD
+//   Widget _buildErrorCard(String errorMessage, VoidCallback onRetry) {
+//     return Padding(
+//       padding: EdgeInsets.all(20.h),
+//       child: Column(
+//         children: [
+//           Icon(Icons.error_outline, color: Colors.red, size: 48.sp),
+//           SizedBox(height: 16.h),
+//           Text(
+//             'Failed to load game data: $errorMessage',
+//             style: TextStyle(
+//               fontSize: 14.sp,
+//               color: AppColors.textSecondary,
+//             ),
+//             textAlign: TextAlign.center,
+//           ),
+//           SizedBox(height: 16.h),
+//           CustomButton(
+//             text: "retry".tr,
+//             onPressed: onRetry,
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   // 🔹 NO DATA CARD
+//   Widget _buildNoDataCard(VoidCallback onLoadData) {
+//     return Padding(
+//       padding: EdgeInsets.all(20.h),
+//       child: Column(
+//         children: [
+//           Icon(Icons.info_outline, color: AppColors.primaryBlue, size: 48.sp),
+//           SizedBox(height: 16.h),
+//           Text(
+//             'No game data found. Complete a game to see your results!',
+//             style: TextStyle(
+//               fontSize: 14.sp,
+//               color: AppColors.textSecondary,
+//             ),
+//             textAlign: TextAlign.center,
+//           ),
+//           SizedBox(height: 16.h),
+//           CustomButton(
+//             text: "load_game_data".tr,
+//             onPressed: onLoadData,
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   // 🔹 GAME COMPLETE CONTENT
+//   Widget _buildGameCompleteContent(
+//       GameCompleteModel gameData,
+//       GameCompleteViewModel viewModel,
+//       JourneyController journeyController,
+//       double height,
+//       BuildContext context, // ✅ Receive context as parameter
+//       ) {
+//     return Column(
+//       children: [
+//         /// Score Card with actual data
+//         CustomScoreCard(
+//           score: gameData.score ?? 0,
+//           title: viewModel.getScoreTitle(),
+//           description: gameData.scor ?? "Complete your first game to see results!",
+//         ),
+//
+//         SizedBox(height: height * 0.025),
+//
+//         /// Performance Breakdown
+//         PerformanceBreakdown(
+//           points: _calculatePoints(gameData.totalPoints),
+//           totalPoints: 10,
+//           items: viewModel.getBreakdownItems(),
+//         ),
+//
+//         SizedBox(height: height * 0.025),
+//
+//         /// Rewards Unlocked with actual badges
+//         RewardsUnlocked(
+//           badgeImage: "assets/images/badge.png",
+//           badgeName: gameData.badge ?? "New Player",
+//           titleImage: "assets/images/game.png",
+//           titleName: viewModel.getScoreTitle(),
+//           trophyImage: "assets/images/trophy.png",
+//           trophyName: gameData.trophy?.isNotEmpty == true ? gameData.trophy! : "First Steps",
+//         ),
+//
+//         SizedBox(height: height * 0.025),
+//
+//         /// Journey Map
+//         Obx(() => CustomJourneyMap(
+//           progress: journeyController.progress.value,
+//           steps: journeyController.steps,
+//           completedSteps: journeyController.completedSteps,
+//           onToggle: journeyController.toggleJourneyDetails,
+//           showDetails: journeyController.showDetails.value,
+//         )),
+//
+//         SizedBox(height: height * 0.025),
+//
+//         /// Achievement Summary
+//         AchievementSummary(
+//           achievements: _getAchievements(gameData),
+//         ),
+//
+//         SizedBox(height: height * 0.04),
+//
+//         /// Action Buttons
+//         _buildActionButtons(gameData, context), // ✅ Pass context here
+//       ],
+//     );
+//   }
+//
+//   // 🔹 ACTION BUTTONS
+//   Widget _buildActionButtons(GameCompleteModel gameData, BuildContext context) {
+//     return Column(
+//       children: [
+//         CustomButton(
+//           text: "play_again".tr,
+//           icon: Icons.play_arrow,
+//           onPressed: () {
+//             // Navigate to start screen
+//             Get.offAllNamed(AppRoutes.teamStrategySelection);
+//           },
+//         ),
+//         SizedBox(height: 12.h),
+//         CustomButton(
+//           text: "view_badges".tr,
+//           icon: Icons.badge_outlined,
+//           onPressed: () {
+//             Get.offAllNamed(AppRoutes.personalAchievementScreen);
+//           },
+//         ),
+//         SizedBox(height: 12.h),
+//         CustomButton(
+//           text: "share_score".tr,
+//           icon: Icons.score,
+//           onPressed: () {
+//             _shareScore(gameData);
+//           },
+//         ),
+//
+//         SizedBox(height: 16.h),
+//         GestureDetector(
+//           onTap: () {
+//             Get.toNamed(AppRoutes.strategyJourneyScreen);
+//           },
+//           child: Text(
+//             "view_your_journey".tr,
+//             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+//               fontSize: AppDimensions.d14.sp,
+//               color: AppColors.primaryBlue,
+//               decoration: TextDecoration.underline,
+//             ),
+//           ),
+//         ),
+//       ],
 //     );
 //   }
 //
@@ -747,4 +833,35 @@ ${gameData.scor ?? "Great performance!"}
 //       snackPosition: SnackPosition.BOTTOM,
 //     );
 //   }
+//
+//   // Add this to your GameCompleteViewModel as a fallback
+//   GameCompleteModel _createFallbackGameData(int score, String feedback) {
+//     return GameCompleteModel(
+//       score: score,
+//       scor: feedback,
+//       totalPoints: '$score/100',
+//       badge: _getBadgeForScore(score),
+//       trophy: _getTrophyForScore(score),
+//     );
+//   }
+//
+//   String _getBadgeForScore(int score) {
+//     if (score >= 90) return 'Strategic Master';
+//     if (score >= 80) return 'Strategic Architect';
+//     if (score >= 70) return 'Strategic Thinker';
+//     if (score >= 60) return 'Emerging Strategist';
+//     return 'New Player';
+//   }
+//
+//   String _getTrophyForScore(int score) {
+//     if (score >= 90) return 'Gold Trophy';
+//     if (score >= 80) return 'Silver Trophy';
+//     if (score >= 70) return 'Bronze Trophy';
+//     return 'Participation Trophy';
+//   }
 // }
+//
+//
+//
+//
+//

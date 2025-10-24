@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:game_app/controllers/base_strategy_controller.dart';
@@ -11,19 +10,22 @@ import '../generated/models/responses/strategy/strategy_response.dart';
 class StrategySelectionController extends BaseStrategyController {
   @override
   void revealCard(StrategyResponse strategy) {
+    // Use the same logic as your working team controller
     final randomIndex = Random().nextInt(cardAssets.length);
-    selectedCardImage.value = cardAssets[randomIndex];
+
+    // Set the selected card index instead of selectedCardImage
+    selectedCardIndex.value = randomIndex;
     isCardRevealed.value = true;
 
     selectedStrategy.value = strategy;
 
-    // ✅ Mark step 0 as completed & update journey progress
     journey.completeStep(0);
   }
 
   @override
   void hideCard() {
-    selectedCardImage.value = null; // backcard
+    // Reset to back card state (-1 index)
+    selectedCardIndex.value = -1;
     isCardRevealed.value = false;
     selectedStrategy.value = null;
 
@@ -57,8 +59,66 @@ class StrategySelectionController extends BaseStrategyController {
   }
 }
 
-
-
+//
+// import 'dart:math';
+//
+// import 'package:game_app/controllers/base_strategy_controller.dart';
+// import 'package:game_app/data/repositories/strategy_repository.dart';
+// import 'package:game_app/utils/snackbar_helper.dart';
+// import 'package:get/get.dart';
+//
+// import '../generated/models/responses/strategy/strategy_response.dart';
+//
+// class StrategySelectionController extends BaseStrategyController {
+//   @override
+//   void revealCard(StrategyResponse strategy) {
+//     final randomIndex = Random().nextInt(cardAssets.length);
+//     selectedCardImage.value = cardAssets[randomIndex];
+//     isCardRevealed.value = true;
+//
+//     selectedStrategy.value = strategy;
+//
+//     journey.completeStep(0);
+//   }
+//
+//   @override
+//   void hideCard() {
+//     selectedCardImage.value = null; // backcard
+//     isCardRevealed.value = false;
+//     selectedStrategy.value = null;
+//
+//     // ✅ Reset journey progress for step 0
+//     journey.resetStep(0);
+//   }
+//
+//   /// Draw a new strategy → Go back to backcard.svg first
+//   @override
+//   void resetAndDrawNewCard() {
+//     // ✅ Show backcard.svg again
+//     hideCard();
+//     // ❌ Do NOT reveal a random card automatically
+//   }
+//
+//   /// Reveal a random strategy card from the list
+//   @override
+//   Future<void> revealRandomCard() async {
+//     try {
+//       if (cardAssets.isNotEmpty) {
+//         loading.value = true;
+//         final strategy = await Get.find<StrategyRepository>()
+//             .getStrategyImage();
+//         revealCard(strategy);
+//         loading.value = false;
+//       }
+//     } catch (e, s) {
+//       loading.value = false;
+//       SnackbarHelper.error(e.toString());
+//     }
+//   }
+// }
+//
+//
+//
 
 
 

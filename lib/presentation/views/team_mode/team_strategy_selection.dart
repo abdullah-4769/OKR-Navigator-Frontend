@@ -46,8 +46,8 @@ class TeamStrategySelectionScreen extends StatelessWidget {
 
                         /// ---------- HEADER ----------
                         CustomHeader(
-                          title: "Select".tr,
-                          highlightedText: "Strategy".tr,
+                          title: "this".tr,
+                          highlightedText: "given".tr,
                           subtitle: "".tr,
                           onBackTap: () => Get.offAllNamed(AppRoutes.teamLobby),
                         ),
@@ -113,25 +113,19 @@ class TeamStrategySelectionScreen extends StatelessWidget {
                             /// Begin Mission Button
                             Obx(
                               () => Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: width * 0.12,
-                                ),
-                                child: CustomButton2(
-                                  text: 'begin_mission'.tr,
-                                  onPressed:
-                                      teamStrategySelectionController
-                                          .isCardRevealed
-                                          .value
-                                      ? () {
-                                          journeyController.setStep(0, true);
-                                          teamStrategySelectionController.beginMission();
-
-                                          //teamStrategySelectionController.beginMission(isCampaignMode: true);
-                                      }
-                                      : null,
-                                ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: width * 0.12,
+                                  ),
+                                  child: CustomButton2(
+                                      text: 'begin_mission'.tr,
+                                      onPressed: teamStrategySelectionController.isCardRevealed.value
+                                          ? () {
+                                              teamStrategySelectionController.beginMission(); 
+                                          }
+                                          : null,
+                                  ),
                               ),
-                            ),
+                          ),
                           ],
                         ),
                       ],

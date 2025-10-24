@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/presentation/views/campaign_mode_views/widgets/custom_timer_widget.dart';
 import 'package:get/get.dart';
 
 import '../../../core/app_colors.dart';
@@ -179,7 +180,19 @@ class _NavigatorSuggestionInitiativesScreenState extends State<NavigatorSuggesti
                           ),
                           SizedBox(height: height * 0.01),
                           const Center(child: ResponsiveArrow()),
+                          Center(child:
+                          CountdownTimerWidget(
 
+                            size: 130,
+                            onTimerComplete: () {
+                              // Custom navigation or action
+                              Get.offAllNamed('/campaignModeScreen');
+                              // Or any other action
+                            },
+                          )),
+                          SizedBox(height: 10.h),
+                          Center(child: const ResponsiveArrow()),
+                          SizedBox(height: 10.h),
                           /// Scenario
                           Padding(
                             padding: const EdgeInsets.all(16.0),

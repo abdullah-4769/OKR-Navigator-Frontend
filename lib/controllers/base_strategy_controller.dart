@@ -61,8 +61,8 @@ abstract class BaseStrategyController extends GetxController {
   final List<String> cardAssets = [
     'assets/images/backcard_img.png',
     'assets/images/card_1.png',
-    'assets/images/card_2.png',
-    'assets/images/card_3.png',
+    'assets/images/backcard_img.png',
+    'assets/images/backcard_img.png',
   ];
 
   /// Reactive properties for UI updates

@@ -33,3 +33,15 @@ class StrategyResponse extends BaseResponse {
             : DateTime.parse(json['createdAt']),
       );
 }
+
+class GetTeamStrategyRequest {
+  final int teamId;
+  final String role; // "HOST"
+
+  GetTeamStrategyRequest({required this.teamId, required this.role});
+
+  Map<String, dynamic> toJson() => {
+    "teamId": teamId,
+    "role": role,
+  };
+}

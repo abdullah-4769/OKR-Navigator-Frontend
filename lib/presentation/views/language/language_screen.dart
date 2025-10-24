@@ -159,7 +159,7 @@ class LanguageScreen extends StatelessWidget {
         SizedBox(width: _getResponsiveSpacing(screenWidth, 0.013)),
         Flexible(
           child: Text(
-            'select_language'.tr,
+            'choose_language'.tr,
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,

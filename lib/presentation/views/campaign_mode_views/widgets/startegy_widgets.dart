@@ -48,25 +48,29 @@ class _GrowthStrategySectionState extends State<GrowthStrategySection> {
                     color: Colors.black87,
                   ),
                 ),
-                if (selectedStrategy != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade50,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.green.shade200),
-                    ),
-                    child: Text(
-                      'Selected',
-                      style: TextStyle(
-                        color: Colors.green.shade800,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+
               ],
             ),
+            const SizedBox(height: 12),
+            if (selectedStrategy != null)
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade50,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.green.shade200),
+                  ),
+                  child: Text(
+                    'Selected',
+                    style: TextStyle(
+                      color: Colors.green.shade800,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             const SizedBox(height: 12),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),

@@ -202,12 +202,7 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
 
           if (challengeId == null || challengeId.isEmpty) {
             print('❌ Challenge ID not found, using fallback');
-            Get.snackbar(
-              'Warning',
-              'Challenge ID not found, showing mock results',
-              backgroundColor: Colors.orange,
-              colorText: Colors.white,
-            );
+
           }
 
           if (userId == null || userId.isEmpty) {
@@ -244,7 +239,7 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
             await CampaignProgressService.completeLevel(2);
             await CampaignProgressService.completeLevel(3);
 
-            Get.offAllNamed(AppRoutes.campaignModeScreen);
+            Get.offAllNamed(AppRoutes.gameCompleteScreen);
           } else {
             print('➡️ Default navigation to Campaign Mode Screen');
             Get.offAllNamed(AppRoutes.campaignModeScreen);

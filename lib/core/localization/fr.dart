@@ -1,6 +1,28 @@
 // ignore_for_file: constant_identifier_names
 
 const Map<String, String> fr = {
+  // Feedback Screen
+  "okr": "OKR",
+  "feedback": "Retour d'information",
+  "no_feedback_data_available": "Aucune donnée de retour disponible",
+  "continue": "Continuer",
+  "level_completed": "Niveau terminé !",
+  "organization_completed": "Organisation ${0} terminée !",
+  "score": "Score: ${0}",
+  "strategy_alignment": "Alignement stratégique",
+  "objective_alignment": "Alignement des objectifs",
+  "key_result_quality": "Qualité des résultats clés",
+  "okr_evaluation_feedback": "Évaluation des OKR",
+  
+  // Home Screen
+  "certificate": "Certificat",
+  
+  // Scoreboard Screen
+  "your": "Votre",
+  "scoreboard": "Tableau de Score",
+  "show_personal_achievements": "Afficher les Réalisations Personnelles",
+  "I'm ranked #3 in Strategic Agility this week!": "Je suis classé #3 en Agilité Stratégique cette semaine !",
+  
   // Authentication
   "sign_in": "Se connecter",
   "sign_up": "S'inscrire",
@@ -36,7 +58,7 @@ const Map<String, String> fr = {
   "save": "Enregistrer",
   "cancel": "Annuler",
   "retry": "Réessayer",
-  "continue": "Continuer",
+  //"continue": "Continuer",
   "next": "Suivant",
   "back": "Retour",
   "update": "Mettre à jour",
@@ -76,7 +98,32 @@ const Map<String, String> fr = {
   "points": "Points",
   "your_score": "Votre score : @score",
 
-  // Common Labels
+  // TEAM INITIATIVE SCREEN
+  "suggestion": "Suggestion",
+  "of_initiatives": "d'Initiatives",
+  "error": "Erreur",
+  
+  // Personal Achievements Screen
+  "personal": "Personnel",
+  "achievements": "Réalisations",
+  "strategic_architect": "Architecte Stratégique",
+  "level": "Niveau {{num}}",
+  //"points": "Points",
+  
+  // Final Test Certification Screen
+  "final_test": "Test Final",
+  //"certification": "Certification",
+  "ai_evaluation_progress": "Progression de l'Évaluation IA",
+  "test_completed": "Test Terminé",
+  
+  // Mini Simulation Screen
+  "mini_simulation": "Mini Simulation",
+  "refine_strategy_address_challenge": "Affinez votre stratégie pour relever le défi",
+  "solve_scenario_minutes": "Résolvez ce scénario en quelques minutes",
+  
+  // Game Complete Screen
+  "game": "Jeu",
+  "complete": "Terminé",// Common Labels
   "loading": "Chargement...",
   "search": "Rechercher",
   "language": "Langue",
@@ -86,7 +133,7 @@ const Map<String, String> fr = {
   // Miscellaneous
   "okr_logo": "Logo OKR",
   "robot_assistant": "Assistant IA",
-  "certificate": "Certificat",
+  //"certificate": "Certificat",
   "person_dashboard": "Tableau de bord personnel",
 
   // Placeholders for future translations

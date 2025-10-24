@@ -6,6 +6,66 @@ final Map<String, String> es = {
   "okr_now": "OKR'Now",
   "okr_logo": "Logo OKR",
   "bottom_logo": "Logo de la app",
+  
+  // Feedback Screen
+  "okr": "OKR",
+  "feedback": "Retroalimentación",
+  "no_feedback_data_available": "No hay datos de retroalimentación disponibles",
+  "continue": "Continuar",
+  "level_completed": "¡Nivel Completado!",
+  "organization_completed": "¡Organización ${0} completada!",
+  "score": "Puntuación: ${0}",
+  "strategy_alignment": "Alineación Estratégica",
+  "objective_alignment": "Alineación de Objetivos",
+  "key_result_quality": "Calidad de Resultados Clave",
+  "okr_evaluation_feedback": "Retroalimentación de Evaluación OKR",
+  
+  // Language Screen
+  "choose_language": "Elige tu idioma",
+  "language_subtitle": "Selecciona tu idioma preferido para la aplicación",
+  "continue_button": "Continuar",
+  "english": "Inglés",
+  "spanish": "Español",
+  "french": "Francés",
+  "german": "Alemán",
+  "italian": "Italiano",
+  "afrikaans": "Afrikáans",
+  
+  // Home Screen
+  "certificate": "Certificado",
+  
+  // Scoreboard Screen
+  "your": "Tu",
+  "scoreboard": "Tablero de Puntuación",
+  "show_personal_achievements": "Mostrar Logros Personales",
+  "I'm ranked #3 in Strategic Agility this week!": "¡Estoy clasificado #3 en Agilidad Estratégica esta semana!",
+  
+  // Team Initiative Screen
+  "suggestion": "Sugerencia",
+  "of_initiatives": "de Iniciativas",
+  "error": "Error",
+  
+  // Personal Achievements Screen
+  "personal": "Personal",
+  "achievements": "Logros",
+  "strategic_architect": "Arquitecto Estratégico",
+  "level": "Nivel {{num}}",
+  "points": "Puntos",
+  
+  // Final Test Certification Screen
+  "final_test": "Examen Final",
+  "certification": "Certificación",
+  "ai_evaluation_progress": "Progreso de Evaluación IA",
+  "test_completed": "Prueba Completada",
+  
+  // Mini Simulation Screen
+  "mini_simulation": "Mini Simulación",
+  "refine_strategy_address_challenge": "Refina tu estrategia para abordar el desafío",
+  "solve_scenario_minutes": "Resuelve este escenario en solo unos minutos",
+  
+  // Game Complete Screen
+  "game": "Juego",
+  "complete": "Completado",
 
   // AUTHENTICATION & ONBOARDING
   "dont_have_account": "¿No tienes una cuenta?",

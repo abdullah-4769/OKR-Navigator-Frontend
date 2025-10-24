@@ -20,7 +20,7 @@ class ObjectiveRepository {
       'industry': industry,
       'language': language,
     });
-    if (response.statusCode != null && response.statusCode != 200) {
+    if (response.statusCode != null && response.statusCode != 200 ) {
       throw Exception(response.message ?? 'Could not generate objectives');
     }
     return response.objectives ?? [];

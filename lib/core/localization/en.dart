@@ -10,6 +10,66 @@ final Map<String, String> en = {
   "draw_strategy": "Draw Your Strategy",
   "draw_strategy_subtitle": "Pick your card to define your mission strategy.",
   "begin_mission": "Begin Mission",
+  
+// Feedback Screen
+  "okr": "OKR",
+  "feedback": "Feedback",
+  "no_feedback_data_available": "No feedback data available",
+  "continue": "Continue",
+  "level_completed": "Level Completed!",
+  "organization_completed": "Organization ${0} completed!",
+  "score": "Score: ${0}",
+  "strategy_alignment": "Strategy Alignment",
+  "objective_alignment": "Objective Alignment",
+  "key_result_quality": "Key Result Quality",
+  "okr_evaluation_feedback": "OKR Evaluation Feedback",
+  
+// Language Screen
+  "choose_language": "Choose Your Language",
+  "language_subtitle": "Select your preferred language for the app",
+  "continue_button": "Continue",
+  "english": "English",
+  "spanish": "Spanish",
+  "french": "French",
+  "german": "German",
+  "italian": "Italian",
+  "afrikaans": "Afrikaans",
+  
+// Home Screen
+  "certificate": "Certificate",
+  
+// Personal Achievements Screen
+  "personal": "Personal",
+  "achievements": "Achievements",
+  "strategic_architect": "Strategic Architect",
+  "level": "Level {{num}}",
+  "points": "Points",
+  
+  // Final Test Certification Screen
+  "final_test": "Final Test",
+  "certification": "Certification",
+  "ai_evaluation_progress": "AI Evaluation Progress",
+  "test_completed": "Test Completed",
+  
+  // Mini Simulation Screen
+  "mini_simulation": "Mini Simulation",
+  "refine_strategy_address_challenge": "Refine your strategy to address the challenge",
+  "solve_scenario_minutes": "Solve this scenario in just a few minutes",
+  
+  // Game Complete Screen
+  "game": "Game",
+  "complete": "Complete",
+  
+// Scoreboard Screen
+  "your": "Your",
+  "scoreboard": "Scoreboard",
+  "show_personal_achievements": "Show Personal Achievements",
+  "I'm ranked #3 in Strategic Agility this week!": "I'm ranked #3 in Strategic Agility this week!",
+  
+// Team Initiative Screen
+  "suggestion": "Suggestion",
+  "of_initiatives": "of Initiatives",
+  "error": "Error",
 // Create Team Screen
   "create": "Create",
   "new_team": "New Team",
@@ -96,7 +156,7 @@ final Map<String, String> en = {
   'fill_initiatives': 'Please fill both initiatives before submitting.',
   'initiatives_submitted': 'Initiatives submitted successfully!',
   'profile': 'Profile',
-  'team': 'Team',
+
   "readthread":"Read Thread",
   "start_mission":"Lets Start Mission",
   // ===== SuggestionInitiatives (Solo + Team) =====
@@ -125,7 +185,7 @@ final Map<String, String> en = {
   // ---------- Splash / Welcome (Team Mode) ----------
   'welcome_team': 'Welcome Team!',
   'splash_team_subtitle': 'Every great mission needs a strong team. Select your allies wisely each of you will play a critical role in cracking the code. Collaboration is your secret weapon.',
-  'team': 'Team',
+
   'draw_team_strategy_subtitle':
   'Unite your strengths and draw your strategy card to kick off the mission together.',
 
@@ -845,8 +905,9 @@ final Map<String, String> en = {
   "strategy_tip1": "Develop and introduce innovative products",
   "strategy_tip2":
   "Focus on expanding into untapped markets to drive sustainable growth and increase market share.",
-  "campaign": "Campaign",
+  "campaign": "I am Taking\nMy Certification",
   "mode": "Mode",
+  "camp":"Campaign",
   "you_are_navigator": "You are Navigator",
   "navigator_mission": "Navigator Mission",
   "navigator_mission_desc":
@@ -942,10 +1003,10 @@ final Map<String, String> en = {
   // GAME MODES
   "game_mode": "Game Mode",
   "unknown_mode": "Unknown Mode",
-  "solo": "Solo",
-  "Solo": "Solo",
-  "Team": "Team",
-  "Campaign": "Campaign",
+  "solo": "I Want to Play alone",
+
+  "Team": "I Play in a team",
+
   "bonus_mode": "Bonus mode",
   "navigator": "Navigator",
   "navigator_plus": "Navigator+",
@@ -1096,7 +1157,8 @@ final Map<String, String> en = {
   "solo_campaign_level_1": "Solo Campaign - Level 1",
   "team_challenge": "Team Challenge",
   "score": "Score",
-
+"this":"Here is",
+  "given":"Your Strategy",
   // Buttons
   "schedule_async_game": "Schedule Async Game",
   "invite_a_player": "Invite a Player",

@@ -38,8 +38,8 @@ class FeedbackScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomHeader(
-                      title: 'OKR',
-                      highlightedText: "Feedback",
+                      title: 'okr'.tr,
+                      highlightedText: "feedback".tr,
                       onBackTap: () => Get.back(),
                     ),
                     SizedBox(height: 20.h),
@@ -57,7 +57,7 @@ class FeedbackScreen extends StatelessWidget {
                         return Center(
                           child: Padding(
                             padding: EdgeInsets.only(top: 100.h),
-                            child: Text('No feedback data available'),
+                            child: Text('no_feedback_data_available'.tr),
                           ),
                         );
                       }
@@ -87,7 +87,7 @@ class FeedbackScreen extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.all(16.w),
                             child: CustomButton2(
-                              text: 'Continue',
+                              text: 'continue'.tr,
                               onPressed: () => _navigateBasedOnGameMode(),
                             ),
                           ),
@@ -175,16 +175,16 @@ class FeedbackScreen extends StatelessWidget {
     final normalizedScore = feedback.normalizedScore;
 
     final scores = [
-      {'score': '${breakdown.strategyAlignment.score}/40', 'label': 'Strategy Alignment'},
-      {'score': '${breakdown.objectiveAlignment.score}/40', 'label': 'Objective Alignment'},
-      {'score': '${breakdown.keyResultQuality.score}/40', 'label': 'Key Result Quality'},
+      {'score': '${breakdown.strategyAlignment.score}/40', 'label': 'strategy_alignment'.tr},
+      {'score': '${breakdown.objectiveAlignment.score}/40', 'label': 'objective_alignment'.tr},
+      {'score': '${breakdown.keyResultQuality.score}/40', 'label': 'key_result_quality'.tr},
     ];
 
     return Column(
       children: [
         // Overall normalized score
         Text(
-          'Score: $normalizedScore',
+          'score'.tr.replaceFirst('${0}', normalizedScore.toString()),
           style: TextStyle(
             fontFamily: 'GothamBold',
             fontSize: 18.sp,
@@ -273,7 +273,7 @@ class FeedbackScreen extends StatelessWidget {
               ),
               SizedBox(width: 8.w),
               Text(
-                'OKR Evaluation Feedback',
+                'okr_evaluation_feedback'.tr,
                 style: TextStyle(
                   fontFamily: 'GothamBold',
                   fontSize: 16.sp,

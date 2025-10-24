@@ -49,8 +49,8 @@ class StrategySelectionScreen extends StatelessWidget {
 
                         // 🔹 Custom Header
                         CustomHeader(
-                          title: 'select'.tr,
-                          highlightedText: 'strategy'.tr,
+                          title: 'this'.tr,
+                          highlightedText: 'given'.tr,
                           onBackTap: () {
                             // ✅ Navigate back based on game mode
                             final gameMode = SharedPrefs.getGameMode();
@@ -171,7 +171,7 @@ class StrategySelectionScreen extends StatelessWidget {
 
               // 🔹 Floating Navbar
               Positioned(
-                right: width * -0.07,
+                right: width * -0.14,
                 top: height * 0.50,
                 child: const CustomHomeNavBar(),
               ),

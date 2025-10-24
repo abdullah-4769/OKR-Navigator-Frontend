@@ -641,355 +641,73 @@ class SharedPrefs {
 }
 
 
+//need to see
 
 
-// import 'dart:convert';
+//import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:flutter/material.dart'; // ✅ Needed for Icons
 //
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:flutter/material.dart';
-//
-// /// 🎯 SharedPreferences Wrapper
-// /// Centralized storage for all app data
 // class SharedPrefs {
 //   static SharedPreferences? _prefs;
 //
-//
-//
-//   // 🔹 ADAPTATION DATA STORAGE
-//   static const String keyRevisedKeyResult = 'revised_key_result';
-//   static const String keyStrategicActions = 'strategic_actions';
-//   static const String keyAdaptationNotes = 'adaptation_notes';
-//
-//   // Save adaptation data
-//   static Future<void> saveAdaptationData({
-//     required String revisedKeyResult,
-//     required String strategicActions,
-//     String adaptationNotes = '',
-//   }) async {
-//     await _prefs?.setString(keyRevisedKeyResult, revisedKeyResult);
-//     await _prefs?.setString(keyStrategicActions, strategicActions);
-//     await _prefs?.setString(keyAdaptationNotes, adaptationNotes);
-//   }
-//   // 🔹 API RESULTS STORAGE
-//   static const String keyFinalOkrEvaluationResult = 'final_okr_evaluation_result';
-//   static const String keyChallengeEvaluationResult = 'challenge_evaluation_result';
-//   static const String keyEvaluationScore = 'evaluation_score';
-//   static const String keyEvaluationDecision = 'evaluation_decision';
-//   static const String keyEvaluationExplanation = 'evaluation_explanation';
-//
-//   // Save Final OKR Evaluation Result (for Solo Mode)
-//   static Future<void> saveFinalOkrEvaluationResult(Map<String, dynamic> result) async {
-//     final jsonString = jsonEncode(result); // Now this will work with the import
-//     await _prefs?.setString(keyFinalOkrEvaluationResult, jsonString);
-//   }
-//   // Save evaluation summary for quick access
-//   static Future<void> saveEvaluationSummary({
-//     required int score,
-//     required String decision,
-//     required String explanation,
-//   }) async {
-//     await _prefs?.setInt(keyEvaluationScore, score);
-//     await _prefs?.setString(keyEvaluationDecision, decision);
-//     await _prefs?.setString(keyEvaluationExplanation, explanation);
-//   }
-//
-//   // Get evaluation summary
-//   static Map<String, dynamic> getEvaluationSummary() {
-//     return {
-//       'score': _prefs?.getInt(keyEvaluationScore) ?? 0,
-//       'decision': _prefs?.getString(keyEvaluationDecision) ?? 'Pending',
-//       'explanation': _prefs?.getString(keyEvaluationExplanation) ?? 'No analysis available',
-//     };
-//   }
-// // Save challenge results
-//   static Future<void> saveChallengeResults(List<Map<String, dynamic>> results) async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.setString('challenge_results', jsonEncode(results));
-//   }
-//
-//   // Get challenge results
-//   // Get challenge results - Make it async
-//   static Future<List<Map<String, dynamic>>?> getChallengeResults() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final resultsJson = prefs.getString('challenge_results');
-//     if (resultsJson == null) return null;
-//
-//     try {
-//       final List<dynamic> resultsList = jsonDecode(resultsJson);
-//       return resultsList.map((item) => Map<String, dynamic>.from(item)).toList();
-//     } catch (e) {
-//       print('❌ Error parsing challenge results: $e');
-//       return null;
-//     }
-//   }
-//   // Save current challenge data
-//   static Future<void> saveCurrentChallengeData(Map<String, dynamic> data) async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.setString('current_challenge_data', jsonEncode(data));
-//   }
-// // Get current challenge data - Make it async
-//   static Future<Map<String, dynamic>?> getCurrentChallengeData() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final dataJson = prefs.getString('current_challenge_data');
-//     if (dataJson == null) return null;
-//
-//     try {
-//       return Map<String, dynamic>.from(jsonDecode(dataJson));
-//     } catch (e) {
-//       print('❌ Error parsing current challenge data: $e');
-//       return null;
-//     }
-//   }
-//   // Clear all evaluation data
-//   static Future<void> clearEvaluationData() async {
-//     await _prefs?.remove(keyFinalOkrEvaluationResult);
-//     await _prefs?.remove(keyChallengeEvaluationResult);
-//     await _prefs?.remove(keyEvaluationScore);
-//     await _prefs?.remove(keyEvaluationDecision);
-//     await _prefs?.remove(keyEvaluationExplanation);
-//   }
-//   // Get Final OKR Evaluation Result
-//   static Map<String, dynamic>? getFinalOkrEvaluationResult() {
-//     final jsonString = _prefs?.getString(keyFinalOkrEvaluationResult);
-//     if (jsonString == null) return null;
-//     try {
-//       return jsonDecode(jsonString); // Now this will work with the import
-//     } catch (e) {
-//       return null;
-//     }
-//   }
-//
-//   // Save Challenge Evaluation Result (for Challenge Mode)
-//   static Future<void> saveChallengeEvaluationResult(Map<String, dynamic> result) async {
-//     final jsonString = jsonEncode(result); // Now this will work with the import
-//     await _prefs?.setString(keyChallengeEvaluationResult, jsonString);
-//   }
-//
-//   // Get Challenge Evaluation Result
-//   static Map<String, dynamic>? getChallengeEvaluationResult() {
-//     final jsonString = _prefs?.getString(keyChallengeEvaluationResult);
-//     if (jsonString == null) return null;
-//     try {
-//       return jsonDecode(jsonString); // Now this will work with the import
-//     } catch (e) {
-//       return null;
-//     }
-//   }
-//   // Get adaptation data
-//   static Map<String, String> getAdaptationData() {
-//     return {
-//       'revisedKeyResult': _prefs?.getString(keyRevisedKeyResult) ?? '',
-//       'strategicActions': _prefs?.getString(keyStrategicActions) ?? '',
-//       'adaptationNotes': _prefs?.getString(keyAdaptationNotes) ?? '',
-//     };
-//   }
-//
-//   // Clear adaptation data
-//   static Future<void> clearAdaptationData() async {
-//     await _prefs?.remove(keyRevisedKeyResult);
-//     await _prefs?.remove(keyStrategicActions);
-//     await _prefs?.remove(keyAdaptationNotes);
-//   }
-//
-//
-//   // ... your existing code ...
-//
-//   // 🔹 ADD THESE METHODS FOR INITIATIVES STORAGE
-//   static const String keyFirstInitiativeTitle = 'first_initiative_title';
-//   static const String keyFirstInitiativeDesc = 'first_initiative_desc';
-//   static const String keySecondInitiativeTitle = 'second_initiative_title';
-//   static const String keySecondInitiativeDesc = 'second_initiative_desc';
-//
-//   // Save initiatives
-//   static Future<void> saveInitiatives({
-//     required String firstTitle,
-//     required String firstDesc,
-//     required String secondTitle,
-//     required String secondDesc,
-//   }) async {
-//     await _prefs?.setString(keyFirstInitiativeTitle, firstTitle);
-//     await _prefs?.setString(keyFirstInitiativeDesc, firstDesc);
-//     await _prefs?.setString(keySecondInitiativeTitle, secondTitle);
-//     await _prefs?.setString(keySecondInitiativeDesc, secondDesc);
-//   }
-//
-//   // Get initiatives
-//   static Map<String, String> getInitiatives() {
-//     return {
-//       'firstTitle': _prefs?.getString(keyFirstInitiativeTitle) ?? '',
-//       'firstDesc': _prefs?.getString(keyFirstInitiativeDesc) ?? '',
-//       'secondTitle': _prefs?.getString(keySecondInitiativeTitle) ?? '',
-//       'secondDesc': _prefs?.getString(keySecondInitiativeDesc) ?? '',
-//     };
-//   }
-//
-//   // Clear initiatives
-//   static Future<void> clearInitiatives() async {
-//     await _prefs?.remove(keyFirstInitiativeTitle);
-//     await _prefs?.remove(keyFirstInitiativeDesc);
-//     await _prefs?.remove(keySecondInitiativeTitle);
-//     await _prefs?.remove(keySecondInitiativeDesc);
-//   }
 //   /// ✅ Initialize SharedPreferences (call once in main.dart)
 //   static Future<void> init() async {
 //     _prefs = await SharedPreferences.getInstance();
 //   }
-//   static Future<void> saveString(String key, String value) async {
-//     await _prefs?.setString(key, value);
-//   }
 //
-//   static Future<String?> getString(String key) async {
-//     return _prefs?.getString(key);
-//   }
-//   // ===========================================================================
-//   // 🔹 SECTION 1: USER AUTHENTICATION & PROFILE
-//   // ===========================================================================
-//
+//   // ---------------------------------------------------------------------------
+//   // 🔹 General Keys
+//   // ---------------------------------------------------------------------------
+//   static const String keySelectedRoleIndex = 'selectedRoleIndex';
 //   static const String keyUserId = 'userId';
 //   static const String keyUserName = 'userName';
-//   static const String keyUserRole = 'userRole';
-//   static const String keySelectedRoleIndex = 'selectedRoleIndex';
 //
-//   static Future<void> saveGameMode(String gameMode) async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.setString('game_mode', gameMode);
-//   }
-//
-//   static Future<String?> getGameMode() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     return prefs.getString('game_mode');
-//   }
-//
-//   static Future<void> clearGameMode() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.remove('game_mode');
-//   }
-//
-//   /// Save User ID
-//   static Future<void> saveUserId(String id) async {
-//     await _prefs?.setString(keyUserId, id);
-//   }
-//
-//   /// Get User ID
-//   static String? getUserId() {
-//     return _prefs?.getString(keyUserId);
-//   }
-//
-//   /// Save User Name
-//   static Future<void> saveUserName(String name) async {
-//     await _prefs?.setString(keyUserName, name);
-//   }
-//
-//   /// Get User Name
-//   static String? getUserName() {
-//     return _prefs?.getString(keyUserName);
-//   }
-//
-//   /// Save User Role (e.g., "Product Manager")
-//   static Future<void> saveUserRole(String role) async {
-//     await _prefs?.setString(keyUserRole, role);
-//   }
-//
-//   /// Get User Role
-//   static String? getUserRole() {
-//     return _prefs?.getString(keyUserRole);
-//   }
-//
-//   /// Save Selected Role Index
+//   // ---------------------------------------------------------------------------
+//   // 🔹 Role
+//   // ---------------------------------------------------------------------------
 //   static Future<void> saveSelectedRoleIndex(int index) async {
 //     await _prefs?.setInt(keySelectedRoleIndex, index);
 //   }
 //
-//   /// Get Selected Role Index (-1 if not set)
 //   static int getSelectedRoleIndex() {
 //     return _prefs?.getInt(keySelectedRoleIndex) ?? -1;
 //   }
 //
-//   // ===========================================================================
-//   // 🔹 SECTION 2: CHALLENGE MANAGEMENT
-//   // ===========================================================================
-//
-//   static const String keyHostId = 'hostId';
-//   static const String keyChallengeId = 'challengeId';
-//   static const String keyJoinChallengeId = 'joinChallengeId';
-//   static const String keyAcceptChallengeId = 'acceptChallengeId';
-//   static const String keyAcceptInviteChallengeId = 'acceptInviteChallengeId';
-//
-//   /// Save Host ID
-//   static Future<void> saveHostId(String id) async {
-//     await _prefs?.setString(keyHostId, id);
+//   // ---------------------------------------------------------------------------
+//   // 🔹 User Info
+//   // ---------------------------------------------------------------------------
+//   static Future<void> saveUserId(String id) async {
+//     await _prefs?.setString(keyUserId, id);
 //   }
 //
-//   /// Get Host ID
-//   static String? getHostId() {
-//     return _prefs?.getString(keyHostId);
+//   static String? getUserId() {
+//     return _prefs?.getString(keyUserId);
 //   }
 //
-//   /// Save Challenge ID
-//   static Future<void> saveChallengeId(String challengeId) async {
-//     await _prefs?.setString(keyChallengeId, challengeId);
+//   static Future<void> saveUserName(String name) async {
+//     await _prefs?.setString(keyUserName, name);
 //   }
 //
-//   /// Get Challenge ID
-//   static Future<String?> getChallengeId() async {
-//     return _prefs?.getString(keyChallengeId);
+//   static String? getUserName() {
+//     return _prefs?.getString(keyUserName);
 //   }
 //
-//   /// Save Join Challenge ID
-//   static Future<void> saveJoinChallengeId(String challengeId) async {
-//     await _prefs?.setString(keyJoinChallengeId, challengeId);
-//   }
-//
-//   /// Get Join Challenge ID
-//   static String? getJoinChallengeId() {
-//     return _prefs?.getString(keyJoinChallengeId);
-//   }
-//
-//   /// Save Accept Challenge ID
-//   static Future<void> saveAcceptChallengeId(String challengeId) async {
-//     await _prefs?.setString(keyAcceptChallengeId, challengeId);
-//   }
-//
-//   /// Get Accept Challenge ID
-//   static String? getAcceptChallengeId() {
-//     return _prefs?.getString(keyAcceptChallengeId);
-//   }
-//
-//   /// Save Accept Invite Challenge ID
-//   static Future<void> saveAcceptInviteChallengeId(String challengeId) async {
-//     await _prefs?.setString(keyAcceptInviteChallengeId, challengeId);
-//   }
-//
-//   /// Get Accept Invite Challenge ID
-//   static String? getAcceptInviteChallengeId() {
-//     return _prefs?.getString(keyAcceptInviteChallengeId);
-//   }
-//
-//   // ===========================================================================
-//   // 🔹 SECTION 3: INDUSTRY SELECTION
-//   // ===========================================================================
-//
+//   // ---------------------------------------------------------------------------
+//   // 🔹 Industry
+//   // ---------------------------------------------------------------------------
 //   static const String keySelectedIndustryTitle = 'selectedIndustryTitle';
 //   static const String keySelectedIndustryDesc = 'selectedIndustryDesc';
 //   static const String keySelectedIndustryIcon = 'selectedIndustryIcon';
 //
-//   /// Save Selected Industry (title, description, icon)
 //   static Future<void> saveSelectedIndustry(Map<String, dynamic> industry) async {
 //     await _prefs?.setString(
-//       keySelectedIndustryTitle,
-//       industry['titleKey'].toString(),
-//     );
+//         keySelectedIndustryTitle, industry['titleKey'].toString());
 //     await _prefs?.setString(
-//       keySelectedIndustryDesc,
-//       industry['descriptionKey'].toString(),
-//     );
+//         keySelectedIndustryDesc, industry['descriptionKey'].toString());
 //     await _prefs?.setString(
-//       keySelectedIndustryIcon,
-//       _iconToString(industry['icon']),
-//     );
+//         keySelectedIndustryIcon, _iconToString(industry['icon']));
 //   }
 //
-//   /// Get Selected Industry
 //   static Map<String, dynamic>? getSelectedIndustry() {
 //     final title = _prefs?.getString(keySelectedIndustryTitle);
 //     final desc = _prefs?.getString(keySelectedIndustryDesc);
@@ -1004,71 +722,15 @@ class SharedPrefs {
 //     };
 //   }
 //
-//   /// Clear Selected Industry
 //   static Future<void> clearSelectedIndustry() async {
 //     await _prefs?.remove(keySelectedIndustryTitle);
 //     await _prefs?.remove(keySelectedIndustryDesc);
 //     await _prefs?.remove(keySelectedIndustryIcon);
 //   }
 //
-//   // ===========================================================================
-//   // 🔹 SECTION 4: CAMPAIGN SUGGESTION (AI Generated)
-//   // ===========================================================================
-//
-//   static const String keyCampaignSuggestionName = 'campaignSuggestionName';
-//   static const String keyCampaignSuggestionDesc = 'campaignSuggestionDesc';
-//
-//   /// Save Campaign Suggestion (from AI API)
-//   static Future<void> saveCampaignSuggestion(
-//       String name,
-//       String description,
-//       ) async {
-//     await _prefs?.setString(keyCampaignSuggestionName, name);
-//     await _prefs?.setString(keyCampaignSuggestionDesc, description);
-//   }
-//
-//   /// Get Campaign Suggestion Name
-//   static String? getCampaignSuggestionName() {
-//     return _prefs?.getString(keyCampaignSuggestionName);
-//   }
-//
-//   /// Get Campaign Suggestion Description
-//   static String? getCampaignSuggestionDescription() {
-//     return _prefs?.getString(keyCampaignSuggestionDesc);
-//   }
-//
-//   /// Clear Campaign Suggestion
-//   static Future<void> clearCampaignSuggestion() async {
-//     await _prefs?.remove(keyCampaignSuggestionName);
-//     await _prefs?.remove(keyCampaignSuggestionDesc);
-//   }
-//
-//   // ===========================================================================
-//   // 🔹 SECTION 5: MISSION DESCRIPTION
-//   // ===========================================================================
-//
-//   static const String keyMissionDescription = 'mission_description';
-//
-//   /// Save Mission Description
-//   static Future<void> saveMissionDescription(String description) async {
-//     await _prefs?.setString(keyMissionDescription, description);
-//   }
-//
-//   /// Get Mission Description
-//   static String? getMissionDescription() {
-//     return _prefs?.getString(keyMissionDescription);
-//   }
-//
-//   /// Clear Mission Description
-//   static Future<void> clearMissionDescription() async {
-//     await _prefs?.remove(keyMissionDescription);
-//   }
-//
-//   // ===========================================================================
-//   // 🔹 SECTION 6: ICON CONVERSION HELPERS (Private)
-//   // ===========================================================================
-//
-//   /// Convert IconData to String for storage
+//   // ---------------------------------------------------------------------------
+//   // 🔹 Helper methods for icon storage
+//   // ---------------------------------------------------------------------------
 //   static String _iconToString(IconData? icon) {
 //     if (icon == Icons.computer) return 'computer';
 //     if (icon == Icons.account_balance) return 'finance';
@@ -1082,7 +744,6 @@ class SharedPrefs {
 //     return 'default';
 //   }
 //
-//   /// Convert String back to IconData
 //   static IconData _stringToIcon(String? iconName) {
 //     switch (iconName) {
 //       case 'computer':
@@ -1108,22 +769,10 @@ class SharedPrefs {
 //     }
 //   }
 //
-//   // ===========================================================================
-//   // 🔹 SECTION 7: UTILITY METHODS
-//   // ===========================================================================
-//
-//   /// Clear all stored data
+//   // ---------------------------------------------------------------------------
+//   // 🔹 Clear Everything
+//   // ---------------------------------------------------------------------------
 //   static Future<void> clearAll() async {
 //     await _prefs?.clear();
-//   }
-//
-//   /// Check if key exists
-//   static bool containsKey(String key) {
-//     return _prefs?.containsKey(key) ?? false;
-//   }
-//
-//   /// Get all keys (for debugging)
-//   static Set<String> getAllKeys() {
-//     return _prefs?.getKeys() ?? {};
 //   }
 // }

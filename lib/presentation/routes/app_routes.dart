@@ -71,6 +71,39 @@ import '../views/team_mode/team_strategy_journey_screen.dart';
 import '../views/team_mode/team_suggestion_initiatives_screen.dart';
 
 class AppRoutes {
+
+
+  /// Team mode
+  static const String teamStrategySelection = '/team-strategy-selection-screen';
+  static const String teamObjectiveSelectionScreen = '/team-objective-selection-screen';
+  static const String teamIndustryChooseScreen = '/team-industry-choose-screen';
+  static const String assignRoleScreen = '/assign-role-screen';
+  static const String teamKeyResultScreen = '/team-key-result-screen';
+  static const String teamSuggestionInitiativeScreen = '/team-suggestion-initiative-screen';
+  static const String teamaiAnalysisScreen = '/team-ai-analysis-screen';
+  static const String teamContextualChallengeScreen = '/team-contextual-challenge-screen';
+  static const String teamContextualAdjustmentScreen = '/team-adjustments-screen';
+  static const String customAIAnalysisScreen2 = '/customAIAnalysisScreen2';
+  static const String teamGameCompleteScreen = '/team-game-complete';
+  static const String teamStrategicJourneyScreen = '/teamStrategicJourneyScreen';
+  static const String teamScoreboardScreen = '/teamScoreboardScreen';
+  static const String teamStrategicArchitectScreen2 = '/teamStrategicArchitectScreen2';
+  static const String teamScoreboardSelectScreen = '/teamScoreboardSelectScreen';
+  static const String teamAchievementsScreen = '/teamAchievements';
+  static const String createTeam = '/create-team';
+  static const String teamLobby = '/team-lobby';
+  static const String teamDashboard = '/team-dashboard';
+  static const String teamChatScreen = '/team-chat-screen';
+  static const String campaignModeScreen = '/campaignMode';
+  static const String missionScreen = '/mission_screen';
+  static const String campaignStrategySelection = '/campaign_strategy_selection';
+  static const String campaignChooseStrategy = '/campaign_choose_strategy';
+  static const String campaignKeyResultScreen = '/campaign_key_result';
+  static const String campaignSuggestionInitiativeScreen = '/campaignSuggestionInitiativeScreen';
+
+
+
+  /////////////////////////////
   static const String splash0 = '/splash0';
   static const String splash1 = '/splash1';
   static const String splash2 = '/splash2';
@@ -103,43 +136,6 @@ class AppRoutes {
   static const scoreboardScreen = '/scoreboard-screen';
 
   /// teammode
-  static const teamStrategySelection = '/team-strategy-selection-screen';
-  static const teamObjectiveSelectionScreen =
-      '/team-objective-selection-screen';
-  static const teamIndustryChooseScreen = '/team-industry-choose-screen';
-  static const assignRoleScreen = '/assign-role-screen';
-  static const teamKeyResultScreen = '/team-key-result-screen';
-
-  static const teamSuggestionInitiativeScreen =
-      '/team-suggestion-initiative-screen';
-  static const teamaiAnalysisScreen = '/team-ai-analysis-screen';
-
-  static const teamContextualChallengeScreen =
-      '/team-contextual-challenge-screen';
-  static const teamContextualAdjustmentScreen = '/team-adjustments-screen';
-  static const String customAIAnalysisScreen2 = '/customAIAnalysisScreen2';
-  static const teamGameCompleteScreen = '/team-game-complete';
-  static const String teamStrategicJourneyScreen =
-      '/teamStrategicJourneyScreen';
-  static const String teamScoreboardScreen = '/teamScoreboardScreen';
-  static const String teamStrategicArchitectScreen2 =
-      '/teamStrategicArchitectScreen2';
-
-  static const teamScoreboardSelectScreen = '/teamScoreboardSelectScreen';
-  static const teamAchievementsScreen = '/teamAchievements';
-
-  static const String createTeam = '/create-team';
-  static const String teamLobby = '/team-lobby';
-  static const teamDashboard = '/team-dashboard';
-  static const teamChatScreen = '/team-chat-screen';
-  static const String campaignModeScreen = '/campaignMode';
-  static const String missionScreen = '/mission_screen';
-  static const String campaignStrategySelection =
-      '/campaign_strategy_selection';
-  static const String campaignChooseStrategy = '/campaign_choose_strategy';
-  //static const String campaignKeyResult = '/campaign_key_result';
-  static const String campaignKeyResultScreen = '/campaign_key_result';
-  static const campaignSuggestionInitiativeScreen = '/campaignSuggestionInitiativeScreen';
   static const joinChallengeScreen = '/join_challenge_screen';
   static const gameResultScreen = '/game_result_screen';
   static const certificationScreen = '/certification_Screen';
@@ -219,15 +215,15 @@ class AppRoutes {
       ),
     ),
 
-    /// ✅ Team mode
-    GetPage(
-      name: AppRoutes.campaignStrategySelection,
-      page: () => CampaignStrategySelectionScreen(),
-    ),
-    GetPage(
-      name: AppRoutes.campaignChooseStrategy,
-      page: () => CampaignChooseStrategyScreen(),
-    ),
+    // /// ✅ Team mode
+    // GetPage(
+    //   name: AppRoutes.campaignStrategySelection,
+    //   page: () => CampaignStrategySelectionScreen(),
+    // ),
+    // GetPage(
+    //   name: AppRoutes.campaignChooseStrategy,
+    //   page: () => CampaignChooseStrategyScreen(),
+    // ),
     GetPage(
       name: AppRoutes.campaignKeyResultScreen,
       page: () => CampaignKeyResultScreen(),

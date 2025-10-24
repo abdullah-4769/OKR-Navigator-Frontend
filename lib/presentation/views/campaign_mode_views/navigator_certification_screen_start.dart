@@ -107,16 +107,16 @@ class _NavigatorCertificationStartScreenState extends State<NavigatorCertificati
                         ),
 
                         SizedBox(height: 10.h),
-                         Center(child:
-                         CountdownTimerWidget(
-                           totalMinutes: 15,
-                           size: 130,
-                           onTimerComplete: () {
-                             // Custom navigation or action
-                             Get.offAllNamed('/campaignModeScreen');
-                             // Or any other action
-                           },
-                         )),
+                        Center(child:
+                        CountdownTimerWidget(
+                          totalMinutes: 15,
+                          size: 130,
+                          onTimerComplete: () {
+                            // Custom navigation or action
+                            Get.offAllNamed('/campaignModeScreen');
+                            // Or any other action
+                          },
+                        )),
                         SizedBox(height: 10.h),
                         Center(child: const ResponsiveArrow()),
                         SizedBox(height: 10.h),
@@ -171,10 +171,10 @@ class _NavigatorCertificationStartScreenState extends State<NavigatorCertificati
                         Padding(
                           padding:  EdgeInsets.symmetric(horizontal: 16.w),
                           child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: CustomBubbleButton(text: "Draw New",
+                              alignment: Alignment.centerLeft,
+                              child: CustomBubbleButton(text: "Draw New",
                                 width: 120.w,
-                              height: 30.h,
+                                height: 30.h,
                                 onTap: () => {},)
                           ),
                         ),
