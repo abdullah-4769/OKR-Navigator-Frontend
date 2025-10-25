@@ -19,7 +19,7 @@ class TeamScoreboardScreen extends StatelessWidget {
   TeamScoreboardScreen({super.key});
 
   final TeamScoreboardController controller = Get.put(TeamScoreboardController());
-  final RankController rankController = Get.put(RankController());
+  final RankController rankController = Get.put(RankController()); // Still present but unused for main list
 
   @override
   Widget build(BuildContext context) {
@@ -37,27 +37,24 @@ class TeamScoreboardScreen extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: size.height * 0.012),
                   child: Column(
                     children: [
-
-
+                      SizedBox(height: AppDimensions.d10.h),
                       /// Header
                       CustomHeader(
-                        title: "Your",
-                        highlightedText: "Scoreboard",
+                        title: "Your".tr,
+                        highlightedText: "Scoreboard".tr,
                         subtitle: "",
                         onBackTap: () => Get.back(),
                       ),
 
-
-
+                      SizedBox(height: AppDimensions.d4.h),
                       /// Show achievements text button
                       Center(
                         child: TextButton(
                           onPressed: () {
-
                             Get.toNamed(AppRoutes.teamAchievementsScreen);
                           },
                           child: Text(
-                            "Show Team achievements",
+                            "Show Team achievements".tr,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: AppColors.primaryBlue,
                               decoration: TextDecoration.underline,
@@ -67,16 +64,15 @@ class TeamScoreboardScreen extends StatelessWidget {
                       ),
                       SizedBox(height: AppDimensions.d12.h),
 
-
-
+                      /// Top Performers/Podium
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: AppDimensions.d8.w),
-                        child: CustomTopPerformerWidget(),
+                        child: CustomTopPerformerWidget(), // Dynamic mock data via TopPerformerController
                       ),
 
                       SizedBox(height: AppDimensions.d20.h),
 
-                      /// Achievement banner
+                      /// Achievement banner (Static Placeholder for now, as dynamic generation is complex)
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: CustomObjectiveContainer(
@@ -88,7 +84,7 @@ class TeamScoreboardScreen extends StatelessWidget {
 
                       SizedBox(height: AppDimensions.d20.h),
 
-                      /// Leaderboard List
+                      /// Leaderboard List - DYNAMIC DATA
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
                         child: Obx(
@@ -99,12 +95,12 @@ class TeamScoreboardScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               final item = controller.leaderboard[index];
                               return CustomRankContainer(
-                                rank: item['rank'],
-                                name: item['name'],
-                                level: item['level'],
-                                points: item['points'],
-                                score: item['score'],
-                                isHighlighted: item['highlighted'] ?? false,
+                                rank: item['rank'] as int,
+                                name: item['name'].toString(),
+                                level: item['level'] as int,
+                                points: item['points'] as int,
+                                score: item['score'] as int,
+                                isHighlighted: item['highlighted'] as bool? ?? false,
                               );
                             },
                           ),
@@ -127,78 +123,6 @@ class TeamScoreboardScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  /// Top 3 Podium layout
-  Widget _buildTopPodium() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _podiumMember("Master", 925, 2),
-          _podiumMember("Kings", 1000, 1),
-          _podiumMember("Spark", 890, 3),
-        ],
-      ),
-    );
-  }
-
-  Widget _podiumMember(String name, int score, int rank) {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              width: AppDimensions.d70.w,
-              height: AppDimensions.d70.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: rank == 1 ? AppColors.primaryRed : AppColors.primaryBlue,
-                  width: 3,
-                ),
-              ),
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.person,
-                  size: AppDimensions.d28.sp,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -AppDimensions.d12.h,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                decoration: BoxDecoration(
-                  color: rank == 1 ? Colors.amber : Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(6.r),
-                ),
-                child: Text(
-                  "$score",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppDimensions.d14.sp,
-                      color: rank == 1 ? AppColors.primaryRed : AppColors.textPrimary),
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: AppDimensions.d28.h),
-        Text(
-          name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: AppDimensions.d14.sp,
-            color: AppColors.textPrimary,
-          ),
-        )
-      ],
     );
   }
 }

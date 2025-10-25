@@ -8,6 +8,7 @@ import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/data/repositories/strategy_repository.dart';
 import 'package:game_app/data/repositories/objective_repository.dart';
 import 'package:game_app/data/repositories/team_repo.dart';
+import 'package:game_app/services/notification_service.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/journey_controller.dart';
@@ -39,8 +40,9 @@ class AppBindings extends Bindings {
 
     // ✅ GAME FLOW CONTROLLERS - Needed across multiple screens (permanent)
     Get.put(JourneyController(), permanent: true);
-        Get.put(TeamObjectiveController(), permanent: true);
-
+    Get.put(TeamObjectiveController(), permanent: true);
+    
+    Get.put(FirebaseNotificationService(),permanent:true);
     Get.put(StrategySelectionController(), permanent: true);
     Get.put(TeamStrategySelectionController(), permanent: true);
     Get.put(TeamKeyResultsController(), permanent: true);
@@ -48,7 +50,7 @@ class AppBindings extends Bindings {
     Get.put(TeamContextualChallengeController (), permanent: true);
 
     Get.put(CreateTeamController(), permanent: true);
-    
+    Get.put(FirebaseNotificationService(), permanent: true);
 
     Get.put(KeyObjectiveController(), permanent: true); // ✅ Changed to permanent
 

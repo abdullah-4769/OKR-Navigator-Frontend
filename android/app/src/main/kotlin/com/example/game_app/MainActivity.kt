@@ -1,4 +1,4 @@
-package com.example.game_app
+package com.focusrh.okrnavigator
 
 import io.flutter.embedding.android.FlutterActivity
 

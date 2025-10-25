@@ -29,23 +29,23 @@ class TeamAchievementsScreen extends StatelessWidget {
                   SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.only(bottom: size.height * 0.14),
-                    child: Column(
+                    child: Obx(() => Column( 
                       children: [
-
-
                         /// ---------- HEADER ----------
                         CustomHeader(
-                          title: 'Team',
-                          highlightedText: 'Achievements',
+                          title: controller.teamName.value, // DYNAMIC Team Name
+                          highlightedText: 'achievements'.tr,
                           onBackTap: () => Get.offAllNamed(AppRoutes.teamScoreboardScreen),
                         ),
 
+                        SizedBox(height: size.height * 0.02),
 
 
                         /// ---------- TEAM AVATAR & INFO ----------
                         Center(
                           child: Column(
                             children: [
+                              // ... (Avatar remains static for appearance) ...
                               Container(
                                 width: 180,
                                 height: 180,
@@ -91,14 +91,12 @@ class TeamAchievementsScreen extends StatelessWidget {
                               ),
 
 
-
                               SizedBox(height: 6.h),
-                              Obx(() => Text("⭐ ${controller.points.value} Points",
+                              Text("⭐ ${controller.points.value} ${'points'.tr}", // DYNAMIC Points
                                   style: theme.textTheme.bodyLarge?.copyWith(
                                     color: AppColors.primaryRed,
                                     fontWeight: FontWeight.bold,
-                                  ))
-                              ),
+                                  )),
                             ],
                           ),
                         ),
@@ -109,42 +107,42 @@ class TeamAchievementsScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Obx(() => _statCard("${controller.badges.value}", "Badges", 'assets/images/badge.png')),
-                            Obx(() => _statCard("${controller.trophies.value}", "Trophies", 'assets/images/trophy.png')),
-                            Obx(() => _statCard("${controller.games.value}", "Games", 'assets/images/game.png')),
+                            _statCard("${controller.badges.value}", "badges".tr, 'assets/images/badge.png'), // DYNAMIC
+                            _statCard("${controller.trophies.value}", "trophies".tr, 'assets/images/trophy.png'), // DYNAMIC
+                            _statCard("${controller.games.value}", "games".tr, 'assets/images/game.png'), // DYNAMIC
                           ],
                         ),
 
                         SizedBox(height: 24.h),
 
                         /// ---------- RECENT ACHIEVEMENTS ----------
-                        Obx(() => _sectionCard(
+                        _sectionCard(
                           context,
-                          title: "Recent Achievements",
-                          items: controller.recentAchievements,
-                        )),
+                          title: "recent_achievements".tr,
+                          items: controller.recentAchievements, // DYNAMIC
+                        ),
 
                         /// ---------- RECENT GAMES ----------
-                        Obx(() => _gamesCard(
+                        _gamesCard(
                           context,
-                          games: controller.recentGames,
-                        )),
+                          games: controller.recentGames, // DYNAMIC
+                        ),
                       ],
                     ),
-                  ),
 
-                  /// ---------- FLOATING NAV ----------
-                  Positioned(
-                    right: -size.width * 0.05,
-                    top: size.height * 0.45,
-                    child: const CustomHomeNavBar(),
+                    /// ---------- FLOATING NAV ----------
+                  )
                   ),
-                ],
+                    Positioned(
+                      right: -size.width * 0.05,
+                      top: size.height * 0.45,
+                      child:  CustomHomeNavBar(),
+                    ),
+                  ],
+                ),
               ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _statCard(String value, String label, String assetPath) => Container(
@@ -205,7 +203,7 @@ class TeamAchievementsScreen extends StatelessWidget {
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
-                  child: Text(e,
+                  child: Text(e.tr, // Ensure translation if items are keys
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.black,
                           fontWeight: FontWeight.w600)),
@@ -265,7 +263,7 @@ class TeamAchievementsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text("${g['score']} Score",
+                Text("${g['score']} ${'score'.tr}",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.black,
                       fontWeight: FontWeight.bold,

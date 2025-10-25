@@ -8,6 +8,7 @@ class StorageRepository {
   final _prefs = GetStorage();
   static const String _accessTokenKey = 'access-token';
   static const String _userDataKey = 'user-data';
+  static const String _fcmTokenKey = 'fcm-token';
 
   Future<void> saveUser(User user) async {
     await _prefs.write(_userDataKey, jsonEncode(user.toJson()));
@@ -25,6 +26,9 @@ class StorageRepository {
 
   Future<void> saveAccessToken(String token) async =>
       _prefs.write(_accessTokenKey, token);
+String? getFCMToken() => _prefs.read(_fcmTokenKey);
 
+  Future<void> saveFCMToken(String token) async => 
+      _prefs.write(_fcmTokenKey, token);
   Future<void> clearAllUserData() async => await _prefs.erase();
 }

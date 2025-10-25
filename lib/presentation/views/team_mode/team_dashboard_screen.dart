@@ -48,7 +48,7 @@ class TeamDashboardScreen extends StatelessWidget {
 
                         /// Header
                         CustomHeader(
-                          title: 'team'.tr,
+                          title: controller.teamName.value, // DYNAMIC
                           highlightedText: 'dashboard'.tr,
                           subtitle: '',
                           onBackTap: () => Get.back(),
@@ -59,7 +59,7 @@ class TeamDashboardScreen extends StatelessWidget {
                         /// Avatar + Team
                         Center(
                           child: CustomCircularAvatar(
-                            imagePath: 'assets/images/role_icon.png',
+                            imagePath: 'assets/images/role_icon.png', // STATIC for now
                             innerColors: [
                               Colors.amber.shade100,
                               Colors.amber.shade200,
@@ -73,7 +73,7 @@ class TeamDashboardScreen extends StatelessWidget {
 
 
 
-                        /// Success rate bar
+                        /// Success rate bar - DYNAMIC
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: SuccessRateBar(
@@ -84,7 +84,7 @@ class TeamDashboardScreen extends StatelessWidget {
 
                         SizedBox(height: 20.h),
 
-                        /// Stats Row
+                        /// Stats Row - DYNAMIC
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -108,19 +108,18 @@ class TeamDashboardScreen extends StatelessWidget {
 
                         SizedBox(height: 10.h),
 
-                        /// Recent Achievements
+                        /// Recent Achievements - DYNAMIC
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: SectionCard(
                             title: 'recent_achievements'.tr,
-                            //icon: Icons.thumb_up,
                             borderColor: AppColors.primaryRed,
-                            items: controller.achievements,
+                            items: controller.achievements.toList(), // DYNAMIC list
                             showCheck: true,
                           ),
                         ),
 
-                        /// Feedback Section
+                        /// Feedback Section - DYNAMIC
                         SizedBox(height: 10.h),
                         Padding(
                           padding:  EdgeInsets.symmetric(horizontal: 16.w),
@@ -136,6 +135,7 @@ class TeamDashboardScreen extends StatelessWidget {
                           ),
                         ),
 
+                        // List of feedback cards - DYNAMIC
                         ...controller.feedbackList
                             .map((f) => Padding(
                               padding:  EdgeInsets.symmetric(horizontal: 12.w),
@@ -144,24 +144,25 @@ class TeamDashboardScreen extends StatelessWidget {
                             .toList(),
 
                         SizedBox(height: 10.h),
-                        /// Bottom buttons
+                        /// Bottom buttons (ViewWidget is mostly static wrapper)
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: CustomViewWidget(
                             title: 'schedule_team_game'.tr,
-                            subtitle: ''.tr,
+                            subtitle: 'plan_new_session'.tr, // Assuming plan_new_session is a valid key
                             onPressed: () {},
                             trailingIcon: Icons.schedule_send_outlined,
                           ),
                         ),
-                        /// Recent Games
+                        
+                        /// Recent Games - DYNAMIC
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: SectionCard(
                             title: 'recent_games'.tr,
                             icon: Icons.videogame_asset,
                             borderColor: AppColors.primaryRed,
-                            items: controller.recentGames,
+                            items: controller.recentGames.toList(), // DYNAMIC list
                             showScore: true,
                           ),
                         ),
@@ -178,25 +179,24 @@ class TeamDashboardScreen extends StatelessWidget {
                                 icon: Icons.schedule,
                                 text: "schedule_TG".tr,
                                 onPressed: () {
-
+                                  // Action logic here
                                 },
                               ),
                               SizedBox(height: AppDimensions.d12.h),
                               CustomButton(
                                 icon: Icons.person,
                                 text: "invite_p".tr,
-                                onPressed: () => {
-
+                                onPressed: () {
+                                  // Action logic here
                                 },
-
                                 backgroundColor: AppColors.primaryBlue,
                               ),
                               SizedBox(height: AppDimensions.d12.h),
                               CustomButton(
                                 icon: Icons.launch,
                                 text: "launch_c".tr,
-                                onPressed: () => {
-
+                                onPressed: () {
+                                  // Action logic here
                                 },
                               ),
                             ],

@@ -67,4 +67,8 @@ class TeamRepository {
       "message": message,
     });
   }
+
+  Future<void> sendFCMNotification(Map<String, dynamic> payload) async {
+    return _teamApi.sendNotification(payload);
+  }
 }

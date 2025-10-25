@@ -1,3 +1,4 @@
+// lib/presentation/views/team_mode/team_chat_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,46 +9,42 @@ import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 import '../../widgets/team_mode_widgets/chat_widget.dart';
+import '../../../controllers/team_mode_controller/team_chat_controller.dart'; // Import controller
 
 class TeamChatScreen extends StatelessWidget {
   TeamChatScreen({super.key});
 
-  final List<Map<String, dynamic>> chatMessages = [
-    {
-      'name': 'You',
-      'role': 'CEO',
-      'level': 5,
-      'message': 'Team, I got "Development of New Markets" strategy! Perfect for our goals 😊',
-      'isCurrentUser': true,
-    },
-    {
-      'name': 'Johnson',
-      'role': 'Strategist',
-      'level': 5,
-      'message': 'Nice! I drew "Digital Transformation Initiative". These strategies complement each other well!',
-      'isCurrentUser': false,
-    },
-    {
-      'name': 'Tasha',
-      'role': 'Strategist',
-      'level': 5,
-      'message': 'let\'s Start the Game,Nice! I drew "Digital Transformation Initiative". These strategies complement each other well!',
-      'isCurrentUser': false,
-    },
-  ];
-
   final List<String> quickResponses = [
-    'Let\'s align our OKRs! 😊',
+    'Let\'s align our OKRs! 🚀',
     'Starting my objectives now',
-    'Great team synergy! 🌔',
+    'Great team synergy! 🤝',
     'Need help with strategy?',
   ];
+  
+  // Find/Put the new controller
+  final TeamChatController controller = Get.put(TeamChatController()); 
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+    
+    // Add ScrollController to handle scrolling to the newest message
+    final ScrollController scrollController = ScrollController();
+
+    // Use a listener to automatically scroll to the newest message when list changes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+        ever(controller.chatMessages, (_) {
+            if (scrollController.hasClients) {
+                scrollController.animateTo(
+                    scrollController.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                );
+            }
+        });
+    });
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -57,11 +54,11 @@ class TeamChatScreen extends StatelessWidget {
             /// Scrollable content
             Positioned.fill(
               child: SingleChildScrollView(
+                controller: scrollController, // Apply ScrollController
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(bottom: height * 0.01),
+                padding: EdgeInsets.only(bottom: height * 0.20), // Increased bottom padding to show input
                 child: Column(
                   children: [
-
 
                     /// Header
                     CustomHeader(
@@ -71,11 +68,9 @@ class TeamChatScreen extends StatelessWidget {
                       onBackTap: () => Get.back(),
                     ),
 
-
-
                     /// Team Name
                     Text(
-                      'Team Alpha',
+                      'Team Alpha', 
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
@@ -85,11 +80,11 @@ class TeamChatScreen extends StatelessWidget {
 
                     SizedBox(height: height * 0.03),
 
-                    /// Chat Messages
-                    Padding(
+                    /// Chat Messages (Use Obx for dynamic list)
+                    Obx(() => Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Column(
-                        children: chatMessages
+                        children: controller.chatMessages
                             .map((message) => ChatWidget(
                           name: message['name'],
                           role: message['role'],
@@ -99,7 +94,7 @@ class TeamChatScreen extends StatelessWidget {
                         ))
                             .toList(),
                       ),
-                    ),
+                    )),
 
                     SizedBox(height: height * 0.03),
 
@@ -133,7 +128,9 @@ class TeamChatScreen extends StatelessWidget {
                             width: double.infinity,
                             height: 50.h,
                             onTap: () {
-                              // Handle quick response tap
+                              // Use the quick response text as the message and send
+                              controller.messageController.text = response;
+                              controller.sendChatMessage();
                             },
                           ),
                         ))
@@ -141,86 +138,72 @@ class TeamChatScreen extends StatelessWidget {
                       ),
                     ),
 
-
-                    /// Bottom Message Input
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Positioned(
-                        bottom: 8.h,
-                        left: 16.w,
-                        right: 16.w,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
-                          decoration: BoxDecoration(
-                            color: AppColors.softRed.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(25.r), // Added circular border
-                            border: Border.all(color: AppColors.grey.withOpacity(0.3)), // Changed to all sides border
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 8,
-                                offset: const Offset(0, -2),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w), // Added horizontal padding
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.grey.withOpacity(0.1), // Added opacity
-                                      borderRadius: BorderRadius.circular(25.r),
-                                    ),
-                                    child: Text(
-                                      'Message to team... 😊',
-                                      style: TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 12.w),
-                                Container(
-                                  padding: EdgeInsets.all(12.w),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryRed,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.send,
-                                    color: Colors.white,
-                                    size: 20.sp,
-                                  ),
-                                ),
-                                SizedBox(width: 8.w),
-                                Container(
-                                  padding: EdgeInsets.all(12.w),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryBlue,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.mic,
-                                    color: Colors.white,
-                                    size: 20.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                     SizedBox(height: height * 0.02),
-
                   ],
                 ),
               ),
             ),
+
+            /// Bottom Message Input (Positioned to stay above NavBar)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Colors.white, // Ensure the input field has a clean background
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Obx(()=> TextField(
+                        controller: controller.messageController,
+                        decoration: InputDecoration(
+                          hintText: 'Message to team... 💬',
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.r),
+                            borderSide: BorderSide(color: AppColors.grey.withOpacity(0.3)),
+                          ),
+                          enabled: !controller.isSending.value, // Disable when sending
+                          fillColor: AppColors.softRed.withOpacity(0.5),
+                          filled: true,
+                        ),
+                        onSubmitted: (value) => controller.sendChatMessage(),
+                      )),
+                    ),
+                    SizedBox(width: 12.w),
+                    Obx(()=> GestureDetector(
+                      onTap: controller.isSending.value ? null : controller.sendChatMessage, // Disable when sending
+                      child: Container(
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: controller.isSending.value ? AppColors.grey : AppColors.primaryRed,
+                          shape: BoxShape.circle,
+                        ),
+                        child: controller.isSending.value 
+                            ? SizedBox(width: 20.w, height: 20.w, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) // Spinner
+                            : Icon(Icons.send, color: Colors.white, size: 20.sp),
+                      ),
+                    )),
+                    SizedBox(width: 8.w),
+                    // Mic button (placeholder for now)
+                    Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryBlue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.white,
+                        size: 20.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
 
             /// Home Navbar
             Positioned(

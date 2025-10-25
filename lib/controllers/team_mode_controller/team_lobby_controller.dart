@@ -3,14 +3,12 @@ import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:get/get.dart';
 import '../../../generated/network.dart';
 import '../../../generated/models/responses/team_mode/team_lobby_response.dart';
-import '../../../generated/models/requests/team_mode/add_member_request.dart';
-import '../../../generated/models/responses/team_mode/add_member_response.dart';
+
 import '../../../data/repositories/storage_repository.dart';
 import '../../../utils/snackbar_helper.dart'; // ✅ NEW IMPORT
 import 'create_team_controller.dart';
 
 class TeamLobbyController extends GetxController {
-  // players list ko ab teamData.value.members se dynamically populate karenge
   var players = <String>[].obs; 
   var isLoading = false.obs;
   var isInvitingMember = false.obs;
@@ -76,47 +74,31 @@ Get.toNamed(AppRoutes.assignRoleScreen);
   }
 
   // ------------------------------------------------
-  // ✅ 2. INVITE MEMBERS / ADD MEMBER (API INTEGRATION)
+  // ✅ 2. INVITE MEMBERS (WS INVITE INTEGRATION) - MODIFIED
   // ------------------------------------------------
-  Future<void> inviteMembers() async {
+  Future<String?> inviteMembers() async {
+    final teamToken = teamData.value?.token;
+
+    if (teamToken == null) {
+      SnackbarHelper.error("Error: Team Code missing.");
+      return null;
+    }
+
     try {
       isInvitingMember.value = true;
-      
-      final teamId = teamData.value?.id;
-      final hostId = _storageRepository.getUser()?.id;
-      
-      if (teamId == null || hostId == null) {
-        SnackbarHelper.error("Error: Team ID or Host ID missing.");
-        return;
-      }
 
-      // **NOTE:** Since actual user ID selection/input is missing from UI,
-      // we mock a request for a generic "Invite" action for now, 
-      // typically this API would use a token or QR code. 
-      // If this API adds a member directly, we use a placeholder user ID.
+      // 1. Call WS Invite API to notify potential members
+      await _teamRepository.sendWsInvite(teamToken);
 
-      // Placeholder for invited user ID (Should come from user search/input in a real app)
-      final invitedUserId = 'temp_member_${DateTime.now().millisecondsSinceEpoch}';
+      SnackbarHelper.success("Invite sent! Share the team code.");
 
-      final request = AddMemberRequest(
-        hostId: hostId,
-        userId: invitedUserId, 
-        role: "MEMBER",
-      );
-      
-      // Call repository method: POST /team/{teamId}/add-member
-      final addMemberResponse = await _teamRepository.addMember(teamId, request);
-      
-      if (addMemberResponse.id != null) {
-        SnackbarHelper.success("Member invited successfully! Lobby refreshing...");
-        // API response ke baad lobby ko refresh karein taaki naya member list mein aa jaaye
-        await fetchTeamDetails(); 
-      } else {
-        SnackbarHelper.error("Failed to invite member. Please try again.");
-      }
+      // 2. Return the token for the UI to display/copy
+      return teamToken;
+
     } catch (e) {
-      SnackbarHelper.error("Failed to invite member: ${e.toString()}");
-      print('Error inviting member: $e');
+      SnackbarHelper.error("Failed to send invite: ${e.toString()}");
+      print('Error sending invite: $e');
+      return null;
     } finally {
       isInvitingMember.value = false;
     }

@@ -60,4 +60,7 @@ abstract class TeamApi {
   // 10. Send Message to Team (POST /ws/message)
   @POST('/ws/message')
   Future<void> sendWsMessage(@Body() Map<String, dynamic> body);
+
+  @POST('/notifications/send') 
+  Future<void> sendNotification(@Body() Map<String, dynamic> body);
 }

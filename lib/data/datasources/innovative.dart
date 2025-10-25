@@ -19,7 +19,7 @@ class InnovativeStrategiesApi {
       final token = await storageRepository.getAccessToken();
 
       final response = await dio.get(
-        'http://192.168.1.4:3000/keywordbase-innovative/strategy/$strategyId',
+        'http://192.168.1.6:3000/keywordbase-innovative/strategy/$strategyId',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',

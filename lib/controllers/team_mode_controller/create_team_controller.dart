@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:game_app/data/repositories/team_repo.dart';
 import 'package:game_app/generated/models/requests/team_mode/join_team.dart';
+import 'package:game_app/services/notification_service.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
 
@@ -32,9 +33,10 @@ class CreateTeamController extends GetxController {
   // Store created team ID
   var createdTeamId = Rxn<int>();
 
-  // Injected Repositories
-  final TeamRepository _teamRepository = Get.find<TeamRepository>(); // ✅ NEW
-  final StorageRepository _storageRepository = Get.find<StorageRepository>(); // ✅ NEW
+  // Injected Repositories and Services
+  final TeamRepository _teamRepository = Get.find<TeamRepository>();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>(); // ✅ SERVICE INJECTED
 
 // For now static local images (replace with your assets)
   final avatars = <String>[
@@ -47,11 +49,13 @@ class CreateTeamController extends GetxController {
  
 
   // ------------------------------------------------
-  // ✅ 1. JOIN TEAM (API INTEGRATION)
+  // ✅ 1. JOIN TEAM (API INTEGRATION + WS JOIN) - MODIFIED
   // ------------------------------------------------
   Future<void> joinTeam() async {
     final token = teamCodeController.text.trim();
-    final userId = _storageRepository.getUser()?.id;
+    final user = _storageRepository.getUser();
+    final userId = user?.id;
+    final userName = user?.name ?? 'A new player'; // Get player name
 
     if (token.isEmpty) {
       SnackbarHelper.warning("Please enter a team code or token.");
@@ -66,12 +70,24 @@ class CreateTeamController extends GetxController {
       isLoading.value = true;
       final request = JoinTeamRequest(token: token, userId: userId);
       
-      // Call repository method to join team
+      // 1. Call repository method to join team (API /team/join)
       final response = await _teamRepository.joinTeam(request);
 
       if (response.id != null) {
         createdTeamId.value = response.id;
         SnackbarHelper.success("Joined existing team: ${response.title ?? 'Team'}!");
+        
+        // 2. Call WS Join API to join the WebSocket room - NEW WS CALL
+        await _teamRepository.joinWsTeam(token, userId);
+
+        // 3. Send Notification about team join
+        _notificationService.sendTeamNotification(
+          teamId: response.id!,
+          title: "Team Update",
+          body: "$userName has joined the team.",
+          notificationType: 'TEAM_JOIN',
+        );
+
         Get.toNamed(AppRoutes.teamLobby);
       } else {
         SnackbarHelper.error(response.title ?? "Failed to join team. Invalid token or user ID.");
@@ -86,7 +102,7 @@ class CreateTeamController extends GetxController {
 
 
   // ------------------------------------------------
-  // ✅ 2. CREATE TEAM (API INTEGRATION CHECK - Logic is correct)
+  // ✅ 2. CREATE TEAM (API INTEGRATION + Notification for Team Created/Roster Update)
   // ------------------------------------------------
   Future<void> createTeam() async {
     try {
@@ -94,6 +110,7 @@ class CreateTeamController extends GetxController {
       
       final user = _storageRepository.getUser();
       final hostId = user?.id;
+      final hostName = user?.name ?? 'The Host'; // Get host name
       
       if (hostId == null) {
         SnackbarHelper.error("User not found. Please login again.");
@@ -115,8 +132,21 @@ class CreateTeamController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final createTeamResponse = CreateTeamResponse.fromJson(response.data);
-        createdTeamId.value = createTeamResponse.team?.id;
+        final teamId = createTeamResponse.team?.id;
+
+        createdTeamId.value = teamId;
         SnackbarHelper.success("Team created successfully!");
+
+        // 🔔 NOTIFICATION: Team Roster Updated / Host Update
+        if (teamId != null) {
+             _notificationService.sendTeamNotification(
+                teamId: teamId,
+                title: "Team Roster Updated",
+                body: "$hostName created the team: ${teamNameController.text.trim()}. Check the updated team list.",
+                notificationType: 'TEAM_CREATED',
+            );
+        }
+
         Get.toNamed(AppRoutes.teamLobby);
       } else {
         SnackbarHelper.error(response.data['message'] ?? "Failed to create team. Please try again.");

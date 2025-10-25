@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import '../presentation/routes/app_routes.dart';
 
 class HomeController extends GetxController {
-  final PageController pageController = PageController(viewportFraction: 0.78);
+  // HORIZONTAL SCROLL: viewportFraction adjusted to show partial next/prev card
+  final PageController pageController = PageController(viewportFraction: 0.85); 
   final RxInt selectedCardIndex = 0.obs;
 
   final List<Map<String, dynamic>> cards = [
@@ -22,17 +23,17 @@ class HomeController extends GetxController {
       'titleBottom': 'Challenge'.tr,
       'subtitle': 'Accept an invite or launch a duel. Compete with friends or colleagues to sharpen your OKR skills.'.tr,
       'cta': 'Tap to Join'.tr,
-      'bg': 0xFFBDEFE4,
-      'bg2': 0xFFA3E1D4,
+      'bg': 0xFF4ECDC4, // Color for Join Challenge (Green/Blue)
+      'bg2': 0xFF36B37E,
       'icon': 'assets/images/join.svg',
     },
     {
-      'titleTop': 'Score'.tr,
-      'titleBottom': 'Board'.tr,
+      'titleTop': 'Check'.tr,
+      'titleBottom': 'Scoreboard'.tr,
       'subtitle': 'Track your performance, see where you rank, and celebrate milestones with badges and trophies.'.tr,
       'cta': 'Tap to Check'.tr,
-      'bg': 0xFFC9CBEF,
-      'bg2': 0xFFB4B7EA,
+      'bg': 0xFF2D3E50, // Color for Scoreboard (Blue/Purple)
+      'bg2': 0xFF172B4D,
       'icon': 'assets/images/score.svg',
     },
   ];
@@ -49,8 +50,14 @@ class HomeController extends GetxController {
     if (!pageController.hasClients) return;
     final page = pageController.page;
     if (page != null) {
+      // Use round to snap selection to the nearest integer page index
       selectedCardIndex.value = page.round();
     }
+  }
+  
+  // ✅ FIX: The missing getter 'onPageChanged'
+  void onPageChanged(int index) {
+    selectedCardIndex.value = index;
   }
 
   void goNext() {
@@ -73,10 +80,17 @@ class HomeController extends GetxController {
 
   void onTapCTA() {
     switch (selectedCardIndex.value) {
-      case 0:Get.toNamed(AppRoutes.gameMode);
+      case 0:
+        // Start Game (Red Card)
+        Get.toNamed(AppRoutes.gameMode);
+        break;
       case 1:
-      case 2:Get.toNamed(AppRoutes.scoreboardScreen);
-
+        // Join Challenge (Green/Blue Card)
+        Get.toNamed(AppRoutes.contextualChallenge);
+        break;
+      case 2:
+        // Scoreboard (Blue Card)
+        Get.toNamed(AppRoutes.scoreboardScreen);
         break;
     }
   }
