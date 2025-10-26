@@ -1,8 +1,12 @@
 import 'dart:math';
+import 'package:game_app/controllers/team_mode_controller/team_game_controller.dart';
 import 'package:game_app/generated/models/responses/team_mode/strategy_response.dart';
+import 'package:game_app/presentation/views/team_mode/game_time_controller.dart';
 import 'package:game_app/utils/snackbar_helper.dart';
 import 'package:get/get.dart';
 import '../../data/repositories/strategy_repository.dart';
+import '../../data/repositories/storage_repository.dart';
+import '../../services/notification_service.dart';
 import '../../presentation/routes/app_routes.dart';
 import '../journey_controller.dart';
 import 'create_team_controller.dart'; // Import for teamId lookup
@@ -10,6 +14,8 @@ import 'create_team_controller.dart'; // Import for teamId lookup
 class TeamStrategySelectionController extends GetxController {
   /// Repository instance
   final StrategyRepository _strategyRepository = StrategyRepository();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
 
   /// List of card assets
   final List<String> cardAssets = [
@@ -36,7 +42,7 @@ class TeamStrategySelectionController extends GetxController {
 
   /// Access JourneyController
   JourneyController get journey => Get.find<JourneyController>();
-
+final TeamGameTimerController _timerController = Get.find<TeamGameTimerController>(); // <--- NEW FIND
 // -----------------------------------------------------------
 // ✅ INTEGRATED API CALL AND REVEAL LOGIC
 // -----------------------------------------------------------
@@ -65,6 +71,7 @@ class TeamStrategySelectionController extends GetxController {
         print('Exiting: CreateTeamController not found.');
         return;
       }
+
       
  final teamId = Get.find<CreateTeamController>().createdTeamId.value;
  const String role = 'HOST'; 
@@ -77,6 +84,7 @@ if (teamId == null) {
  return;
 }
       print('Calling API for Team ID: $teamId');
+      
 // 2. Call API via repository
 final response = await _strategyRepository.getTeamStrategy(teamId: teamId, role: role);
  teamStrategyResponse.value = response;
@@ -90,6 +98,16 @@ revealCard(randomIndex, name: response.title);
 
  selectedStrategy.value = response.title!;
       print('Success: Strategy revealed: ${response.title}');
+      
+      // 4. Initialize timer with real game time from API response
+      if (response.remainingTime != null) {
+        _timerController.initializeTimer(
+          minutes: response.remainingTime!.minutes,
+          seconds: response.remainingTime!.seconds,
+        );
+        print('Timer initialized with ${response.remainingTime!.minutes}:${response.remainingTime!.seconds}');
+      }
+      
  } else {
  // Handle API success but null/empty data
  Get.snackbar('Error', response.message ?? 'No strategy found for your team.');
@@ -107,7 +125,6 @@ revealCard(randomIndex, name: response.title);
 // ... rest of the file ...
 
   /// Override the method called by CustomCardPagerBuilder (UI)
-  @override
   void revealRandomCard({String? name}) {
     fetchAndRevealStrategy();
   }

@@ -74,13 +74,20 @@ class TeamContextualChallengeController extends GetxController {
   }
 
   /// ✅ NEW: Navigates to Initiatives Suggestion Screen (Revise Initiatives)
-  void reviseInitiatives() {
-    // Navigate back to Initiatives screen
-      Get.toNamed(
-              AppRoutes.teamSuggestionInitiativeScreen,
-              arguments: {'isChallengeMode': true}
-          );
+Future<void> reviseInitiatives() async {
+  final result = await Get.toNamed(
+    AppRoutes.teamSuggestionInitiativeScreen,
+    arguments: {'isChallengeMode': true},
+  );
+
+  // ✅ Check if user submitted and returned refreshed data
+  if (result != null && result['refreshed'] == true) {
+    // Rebuild UI or refresh initiatives data
+    update(); // Triggers GetBuilder/Obx rebuilds
   }
+}
+
+  
 
 
   /// Load initial data for team

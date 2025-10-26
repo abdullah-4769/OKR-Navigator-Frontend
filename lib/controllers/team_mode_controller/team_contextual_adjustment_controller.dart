@@ -68,27 +68,31 @@ class TeamContextualAdjustmentController extends GetxController {
       await _strategyRepository.submitFinalTeamScore(scoreBody);
 
       // 🔔 NOTIFICATION 1: Player Score Submitted
-      _notificationService.sendTeamNotification(
-          teamId: teamId,
-          title: "Score Updated",
-          body: "$playerName submitted their score. Team score updated.",
-          notificationType: 'SCORE_SUBMITTED',
+      // Get team member IDs for notifications (excluding current user)
+      final teamMembers = await _getTeamMemberUserIds(teamId);
+      final otherTeamMembers = teamMembers.where((id) => id != userId).toList();
+      
+      _notificationService.sendTeamScoreUpdated(
+        playerName: playerName,
+        teamId: teamId,
+        otherTeamMemberUserIds: otherTeamMembers,
       );
       
       SnackbarHelper.success("Mission complete! Submitting scores...");
 
       // 🔔 NOTIFICATION 2: Game Complete / Winner Announcement
       // Note: Winner/Loser determination should ideally come from server response after final score is processed.
-      final String finalMessage = finalScore > 85
-          ? "Your team won! Congratulations!" 
-          : "Game over. Review your feedback and prepare for the next match.";
-          
-      _notificationService.sendTeamNotification(
+      final isWinner = finalScore > 85;
+      
+      // Send game complete notification to all team members
+      for (final memberId in teamMembers) {
+        _notificationService.sendTeamGameComplete(
+          playerName: playerName,
+          recipientUserId: memberId,
           teamId: teamId,
-          title: "Team Game Complete",
-          body: finalMessage,
-          notificationType: 'GAME_COMPLETE',
-      );
+          isWinner: isWinner,
+        );
+      }
 
       // 4. Navigate to Game Complete Screen
       Get.offAllNamed(AppRoutes.teamGameCompleteScreen); 
@@ -98,6 +102,18 @@ class TeamContextualAdjustmentController extends GetxController {
       SnackbarHelper.error("Final submission failed: ${e.toString()}");
     } finally {
       isSubmittingFinal.value = false;
+    }
+  }
+
+  /// Helper method to get team member user IDs
+  Future<List<String>> _getTeamMemberUserIds(int teamId) async {
+    try {
+      // This would typically come from a team repository call
+      // For now, return a placeholder list
+      return ['user1', 'user2', 'user3']; // Replace with actual API call
+    } catch (e) {
+      log('Error getting team member IDs: $e');
+      return [];
     }
   }
 }

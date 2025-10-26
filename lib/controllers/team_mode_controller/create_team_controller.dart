@@ -27,8 +27,9 @@ class CreateTeamController extends GetxController {
   void selectAvatar(int index) {
     selectedAvatarIndex.value = index;
   }
-  // Loading state
-  var isLoading = false.obs;
+  // Loading states - separate for create and join operations
+  var isCreatingTeam = false.obs;
+  var isJoiningTeam = false.obs;
   
   // Store created team ID
   var createdTeamId = Rxn<int>();
@@ -67,7 +68,7 @@ class CreateTeamController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
+      isJoiningTeam.value = true;
       final request = JoinTeamRequest(token: token, userId: userId);
       
       // 1. Call repository method to join team (API /team/join)
@@ -78,7 +79,14 @@ class CreateTeamController extends GetxController {
         SnackbarHelper.success("Joined existing team: ${response.title ?? 'Team'}!");
         
         // 2. Call WS Join API to join the WebSocket room - NEW WS CALL
-        await _teamRepository.joinWsTeam(token, userId);
+        try {
+          await _teamRepository.joinWsTeam(token, userId);
+          log('Successfully joined WebSocket team room');
+        } catch (wsError) {
+          log('WebSocket join failed: $wsError');
+          // Don't fail the entire operation if WS join fails
+          SnackbarHelper.warning("Joined team but WebSocket connection failed. You may not receive real-time updates.");
+        }
 
         // 3. Send Notification about team join
         _notificationService.sendTeamNotification(
@@ -96,7 +104,7 @@ class CreateTeamController extends GetxController {
       log('Join team error: $e');
       SnackbarHelper.error("Network error or invalid team data.");
     } finally {
-      isLoading.value = false;
+      isJoiningTeam.value = false;
     }
   }
 
@@ -106,7 +114,7 @@ class CreateTeamController extends GetxController {
   // ------------------------------------------------
   Future<void> createTeam() async {
     try {
-      isLoading.value = true;
+      isCreatingTeam.value = true;
       
       final user = _storageRepository.getUser();
       final hostId = user?.id;
@@ -155,7 +163,7 @@ class CreateTeamController extends GetxController {
       SnackbarHelper.error("Network error. Please check your connection.");
       log('Create team error: $e');
     } finally {
-      isLoading.value = false;
+      isCreatingTeam.value = false;
     }
   }
 

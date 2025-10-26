@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:game_app/controllers/team_mode_controller/create_team_controller.dart';
-import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/data/repositories/strategy_repository.dart'; // Import StrategyRepo
 import 'package:game_app/utils/snackbar_helper.dart'; // To show messages
 
@@ -27,7 +26,6 @@ class TeamDashboardController extends GetxController {
 
   // Dependencies
   final StrategyRepository _strategyRepository = Get.find<StrategyRepository>();
-  final StorageRepository _storageRepository = Get.find<StorageRepository>();
   
   @override
   void onInit() {
@@ -69,25 +67,45 @@ class TeamDashboardController extends GetxController {
           .map((e) => e is String ? {'key': e, 'done': true, 'icon': Icons.emoji_events} : e)
           .toList().cast<Map<String, dynamic>>());
       
-      // Map Feedback List (Assuming API returns a list of members with feedback)
-      // The actual feedback structure is complex, using a mock structure with fetched user names
-      feedbackList.assignAll([
-        {
-          'name': 'Johnson',
-          'role': 'Strategist',
-          'level': 5,
+      // Map Feedback List from API response
+      final feedbackData = apiResponse['feedback'] as List? ?? [];
+      feedbackList.assignAll(feedbackData.map((feedback) {
+        if (feedback is Map<String, dynamic>) {
+          return {
+            'name': feedback['name']?.toString() ?? 'Team Member',
+            'role': feedback['role']?.toString() ?? 'Player',
+            'level': (feedback['level'] as num? ?? 1).toInt(),
+            'avatar': feedback['avatar']?.toString() ?? 'assets/images/solop.png',
+            'message': feedback['message']?.toString() ?? 'Great teamwork!',
+            'rating': (feedback['rating'] as num? ?? 4).toInt(),
+          };
+        }
+        return {
+          'name': 'Team Member',
+          'role': 'Player',
+          'level': 1,
           'avatar': 'assets/images/solop.png',
-          'message': 'Nice! I drew "Digital Transformation Initiative". These strategies complement each other well!',
-          'rating': 4
-        },
-        // Populate more feedback from API if provided in 'apiResponse'
-      ]);
+          'message': 'Great teamwork!',
+          'rating': 4,
+        };
+      }).toList());
 
-      // Map Recent Games (Assuming API returns list of recent game objects)
-      recentGames.assignAll([
-        {'title': 'Solo Campaign - Level 1', 'date': 'Jan 15, 2025', 'score': 85},
-        {'title': 'Team Challenge', 'date': 'Jan 12, 2025', 'score': 92},
-      ]);
+      // Map Recent Games from API response
+      final gamesData = apiResponse['recentGames'] as List? ?? [];
+      recentGames.assignAll(gamesData.map((game) {
+        if (game is Map<String, dynamic>) {
+          return {
+            'title': game['title']?.toString() ?? 'Team Game',
+            'date': game['date']?.toString() ?? 'Recent',
+            'score': (game['score'] as num? ?? 0).toInt(),
+          };
+        }
+        return {
+          'title': 'Team Game',
+          'date': 'Recent',
+          'score': 0,
+        };
+      }).toList());
       
       log('Team Dashboard data loaded for Team ID: $currentTeamId');
 
@@ -101,36 +119,18 @@ class TeamDashboardController extends GetxController {
   }
 
   void _useFallbackData() {
-    // Reverts to comprehensive defaults on error
-    teamName.value = "Fallback Team";
-    teamLevel.value = 1;
-    successRate.value = 85;
-    badges.value = 12;
-    trophies.value = 16;
-    games.value = 8;
+    // Minimal fallback data on error - no mock achievements or games
+    teamName.value = "Team Data Unavailable";
+    teamLevel.value = 0;
+    successRate.value = 0;
+    badges.value = 0;
+    trophies.value = 0;
+    games.value = 0;
     
-    achievements.assignAll([
-      {'key': 'strategic_thinker'.tr, 'done': true, 'icon': Icons.emoji_events},
-      {'key': 'goal_master'.tr, 'done': true, 'icon': Icons.emoji_events},
-      {'key': 'innovation_expert'.tr, 'done': true, 'icon': Icons.emoji_events},
-      {'key': 'challenge_solver'.tr, 'done': true, 'icon': Icons.emoji_events},
-    ]);
-    
-    feedbackList.assignAll([
-      {
-        'name': 'Tasha',
-        'role': 'Strategist',
-        'level': 5,
-        'avatar': 'assets/images/solop.png',
-        'message': "Strategic thinking rocks! Good job solving the challenge.",
-        'rating': 5
-      },
-    ]);
-
-    recentGames.assignAll([
-      {'title': 'Solo Campaign - Level 1', 'date': 'Jan 15, 2025', 'score': 85},
-      {'title': 'Team Challenge', 'date': 'Jan 12, 2025', 'score': 92},
-    ]);
+    // Clear all lists - no mock data
+    achievements.clear();
+    feedbackList.clear();
+    recentGames.clear();
   }
 
   double progressValue() => successRate.value / 100;

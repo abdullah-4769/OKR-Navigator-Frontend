@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import '../presentation/routes/app_routes.dart';
+import '../services/notification_service.dart';
+import '../data/repositories/storage_repository.dart';
 
 class GameCompleteController extends GetxController {
   // ----------------------
@@ -24,6 +26,13 @@ class GameCompleteController extends GetxController {
   final RxList<String> achievements = <String>[].obs;
 
   // ----------------------
+  // Dependencies
+  // ----------------------
+  
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
+
+  // ----------------------
   // Lifecycle
   // ----------------------
 
@@ -31,6 +40,7 @@ class GameCompleteController extends GetxController {
   void onInit() {
     super.onInit();
     _loadGameResults();
+    _sendSoloCompletionNotification();
   }
 
   // ----------------------
@@ -63,6 +73,17 @@ class GameCompleteController extends GetxController {
       "demonstrated_thinking_excellence".tr,
       "earned_strategic_architect".tr,
     ]);
+  }
+
+  /// Send solo mode completion notification
+  void _sendSoloCompletionNotification() {
+    final user = _storageRepository.getUser();
+    if (user != null) {
+      // Send solo overall completion notification
+      _notificationService.sendSoloOverallCompletion(
+        playerName: user.name ?? 'Player',
+      );
+    }
   }
 
   // ----------------------

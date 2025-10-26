@@ -3,11 +3,16 @@ import 'dart:ui';
 import 'package:get/get.dart';
 
 import '../../presentation/widgets/campaign_mode_widgets/organization_path_card.dart';
+import '../../services/notification_service.dart';
+import '../../data/repositories/storage_repository.dart';
 
 
 class MissionScreenController extends GetxController {
   /// Reactive values
   var orgName = "Organization A".obs;
+  
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
   var orgSubtitle = "Startup Growth".obs;
   var stars = 2.obs;
 
@@ -55,12 +60,43 @@ class MissionScreenController extends GetxController {
 
   /// Actions
   void onStartMission() {
+    // Send campaign level reminder notification
+    _sendCampaignLevelReminderNotification();
+    
     // TODO: Navigate to mission details
     print("Start Mission tapped");
   }
 
   void onNextSteps() {
+    // Send campaign certification reminder for level 3
+    _sendCampaignCertificationReminderNotification();
+    
     // TODO: Handle next steps action
     print("Next Steps tapped");
+  }
+
+  /// Send campaign level reminder notification
+  void _sendCampaignLevelReminderNotification() {
+    final user = _storageRepository.getUser();
+    if (user != null) {
+      _notificationService.sendCampaignLevelReminder(
+        playerName: user.name ?? 'Player',
+        level: 2, // Current level
+        remainingMinutes: 30, // Example remaining time
+        playerUserId: user.id!,
+      );
+    }
+  }
+
+  /// Send campaign certification reminder notification
+  void _sendCampaignCertificationReminderNotification() {
+    final user = _storageRepository.getUser();
+    if (user != null) {
+      _notificationService.sendCampaignCertificationReminder(
+        playerName: user.name ?? 'Player',
+        remainingMinutes: 45, // Example remaining time
+        playerUserId: user.id!,
+      );
+    }
   }
 }

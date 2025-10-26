@@ -1,12 +1,18 @@
 import 'package:get/get.dart';
 import 'package:game_app/utils/snackbar_helper.dart'; 
-import 'dart:developer'; 
+import 'dart:developer';
+import 'package:game_app/data/repositories/strategy_repository.dart';
+import 'package:game_app/controllers/team_mode_controller/create_team_controller.dart'; 
 
 class TeamScoreboardController extends GetxController {
   final RxString selectedTimeFrame = 'Today'.obs;
   final List<String> timeFrames = ['Today', 'This Week', 'This Month'];
 
   final RxList<Map<String, dynamic>> leaderboard = <Map<String, dynamic>>[].obs;
+  
+  // Dependencies
+  final StrategyRepository _strategyRepository = Get.find<StrategyRepository>();
+  final CreateTeamController _createTeamController = Get.find<CreateTeamController>();
 
   @override
   void onInit() {
@@ -15,48 +21,56 @@ class TeamScoreboardController extends GetxController {
     fetchLeaderboard(); 
   }
   
-  // Method to fetch live data (simulated API call)
+  // Method to fetch real leaderboard data from API
   Future<void> fetchLeaderboard() async {
-      // In a real application, this method would use a dedicated API endpoint, 
-      // like: await _teamRepository.fetchLeaderboard(selectedTimeFrame.value);
+    try {
+      log('Fetching leaderboard for: ${selectedTimeFrame.value}');
       
-      try {
-          log('Fetching leaderboard for: ${selectedTimeFrame.value}');
-          await Future.delayed(const Duration(milliseconds: 700));
-          
-          // --- Dynamic Mock API Response (REPLACING STATIC DATA) ---
-          final mockApiResponse = _generateMockLeaderboard(selectedTimeFrame.value);
-
-          // Update observable with API results
-          leaderboard.assignAll(mockApiResponse);
-          SnackbarHelper.success('Team Leaderboard loaded for ${selectedTimeFrame.value}!');
-      } catch (e) {
-          log('Leaderboard fetch error: $e');
-          SnackbarHelper.error('Failed to load leaderboard data.');
-          leaderboard.clear();
+      final teamId = _createTeamController.createdTeamId.value;
+      if (teamId == null) {
+        SnackbarHelper.error('Team ID not found. Cannot load leaderboard.');
+        leaderboard.clear();
+        return;
       }
+      
+      // API Call: GET /final-team-score/team/{teamId}/rewards-summary
+      // This endpoint should return leaderboard data based on timeframe
+      final leaderboardData = await _strategyRepository.getTeamRewardsSummary(teamId);
+      
+      // Map API response to leaderboard format
+      final teamsData = leaderboardData['teams'] as List? ?? [];
+      final mappedLeaderboard = teamsData.asMap().entries.map((entry) {
+        final index = entry.key;
+        final team = entry.value;
+        if (team is Map<String, dynamic>) {
+          return {
+            'rank': index + 1,
+            'name': team['teamName']?.toString() ?? 'Team ${index + 1}',
+            'level': (team['teamLevel'] as num? ?? 1).toInt(),
+            'points': (team['totalPoints'] as num? ?? 0).toInt(),
+            'score': (team['averageScore'] as num? ?? 0).toInt(),
+            'highlighted': team['isCurrentTeam'] as bool? ?? false,
+          };
+        }
+        return {
+          'rank': index + 1,
+          'name': 'Team ${index + 1}',
+          'level': 1,
+          'points': 0,
+          'score': 0,
+          'highlighted': false,
+        };
+      }).toList();
+      
+      leaderboard.assignAll(mappedLeaderboard);
+      SnackbarHelper.success('Team Leaderboard loaded for ${selectedTimeFrame.value}!');
+      
+    } catch (e) {
+      log('Leaderboard fetch error: $e');
+      SnackbarHelper.error('Failed to load leaderboard data.');
+      leaderboard.clear();
+    }
   }
-
-  // Helper to generate different lists per timeframe (for fidelity)
-  List<Map<String, dynamic>> _generateMockLeaderboard(String timeframe) {
-      if (timeframe == 'This Week') {
-           return [
-              {'rank': 1, 'name': 'Team Delta', 'level': 8, 'points': 8000, 'score': 900, 'highlighted': false},
-              {'rank': 2, 'name': 'Team Alpha', 'level': 7, 'points': 7500, 'score': 850, 'highlighted': false},
-              {'rank': 3, 'name': 'You', 'level': 1, 'points': 2000, 'score': 650, 'highlighted': true},
-              {'rank': 4, 'name': 'Team Echo', 'level': 5, 'points': 5000, 'score': 600, 'highlighted': false},
-          ];
-      }
-      // Default / Today
-      return [
-          {'rank': 1, 'name': 'Team Warriors', 'level': 6, 'points': 4500, 'score': 720, 'highlighted': false},
-          {'rank': 2, 'name': 'Team Queens', 'level': 5, 'points': 4200, 'score': 700, 'highlighted': false},
-          {'rank': 3, 'name': 'Team Titans', 'level': 4, 'points': 3500, 'score': 650, 'highlighted': false},
-          {'rank': 4, 'name': 'Team Mavericks', 'level': 3, 'points': 3000, 'score': 600, 'highlighted': false},
-          {'rank': 32, 'name': 'You', 'level': 1, 'points': 2000, 'score': 110, 'highlighted': true}, 
-      ];
-  }
-
 
   void changeTimeFrame(String timeframe) {
     selectedTimeFrame.value = timeframe;

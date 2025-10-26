@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:game_app/controllers/team_mode_controller/create_team_controller.dart';
-import 'package:game_app/controllers/team_mode_controller/team_dashboard_controller.dart';
+import 'package:game_app/data/repositories/strategy_repository.dart';
 import 'package:game_app/utils/snackbar_helper.dart';
 
 class TeamAchievementsController extends GetxController {
@@ -21,8 +21,7 @@ class TeamAchievementsController extends GetxController {
   
   // Dependencies (used to pull core team data)
   final CreateTeamController _createTeamController = Get.find<CreateTeamController>();
-  // You might also pull some shared stats from TeamDashboardController if available
-  final TeamDashboardController _dashboardController = Get.find<TeamDashboardController>();
+  final StrategyRepository _strategyRepository = Get.find<StrategyRepository>();
 
 
   @override
@@ -31,7 +30,7 @@ class TeamAchievementsController extends GetxController {
     _loadAchievements();
   }
 
-  /// Loads dynamic team name and simulates fetching stats.
+  /// Loads dynamic team name and fetches real stats from API.
   void _loadAchievements() async {
     final teamId = _createTeamController.createdTeamId.value;
 
@@ -48,37 +47,34 @@ class TeamAchievementsController extends GetxController {
             ? _createTeamController.teamNameController.text
             : "Team Alpha (ID: $teamId)";
 
-        // 2. Simulate API Call to fetch Achievements (using dashboard controller's values as mock)
-        // In a real app, this would be a dedicated API call: 
-        // final stats = await _achievementRepository.fetchTeamStats(teamId);
+        // 2. API Call: GET /final-team-score/team/{teamId}/rewards-summary
+        final rewardsData = await _strategyRepository.getTeamRewardsSummary(teamId);
         
-        await Future.delayed(const Duration(milliseconds: 300));
-
-        // 3. Update Observables with Fetched Data (using mock data structure for now)
-        points.value = 110;
-        badges.value = 12;
-        trophies.value = 16;
-        games.value = 3;
+        // 3. Update Observables with Real API Data
+        points.value = (rewardsData['totalPoints'] as num? ?? 0).toInt();
+        badges.value = (rewardsData['totalBadges'] as num? ?? 0).toInt();
+        trophies.value = (rewardsData['totalTrophies'] as num? ?? 0).toInt();
+        games.value = (rewardsData['gamesPlayed'] as num? ?? 0).toInt();
+        teamLevel.value = (rewardsData['teamLevel'] as num? ?? 1).toInt();
         
-        recentAchievements.assignAll([
-            "Strategic Thinker",
-            "Goal Master",
-            "Innovation Expert",
-            "Challenge Solver"
-        ]);
+        // Map recent achievements from API response
+        final achievementsList = rewardsData['recentAchievements'] as List? ?? [];
+        recentAchievements.assignAll(achievementsList.map((e) => e.toString()).toList());
         
-        recentGames.assignAll([
-            {
-              "title": "Team Campaign - Level 1",
-              "date": "Jan 15, 2025",
-              "score": "85%"
-            },
-            {
-              "title": "Team Challenge",
-              "date": "Jan 12, 2025",
-              "score": "92%"
-            },
-        ]);
+        // Map recent games from API response
+        final gamesList = rewardsData['recentGames'] as List? ?? [];
+        recentGames.assignAll(gamesList.map((game) {
+          if (game is Map<String, dynamic>) {
+            return {
+              'title': game['title']?.toString() ?? 'Team Game',
+              'date': game['date']?.toString() ?? 'Recent',
+              'score': '${game['score']?.toString() ?? '0'}%',
+            };
+          }
+          return {'title': 'Team Game', 'date': 'Recent', 'score': '0%'};
+        }).toList());
+        
+        log('Team achievements loaded successfully from API.');
         
     } catch (e) {
         log('Error loading team achievements: $e');

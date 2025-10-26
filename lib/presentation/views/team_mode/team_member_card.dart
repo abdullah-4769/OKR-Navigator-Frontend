@@ -11,6 +11,9 @@ class TeamMemberCard extends StatelessWidget {
   final int score;
   final bool isCurrentUser;
   final String status; // "View", "Working...", etc.
+  final String badge;
+  final String trophy;
+  final String title;
 
   const TeamMemberCard({
     super.key,
@@ -20,6 +23,9 @@ class TeamMemberCard extends StatelessWidget {
     required this.score,
     this.isCurrentUser = false,
     this.status = "View",
+    this.badge = "",
+    this.trophy = "",
+    this.title = "",
   });
 
   @override

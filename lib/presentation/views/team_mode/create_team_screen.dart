@@ -178,8 +178,8 @@ SizedBox(
                                   Obx(() => CustomButton(
                                     backgroundColor: AppColors.primaryBlue,
                                     textColor: Colors.white,
-                                    text: controller.isLoading.value ? 'Loading...' : "join_team".tr,
-                                    onPressed: controller.isLoading.value ? () {} : controller.joinTeam, // ✅ Fixed callback
+                                    text: controller.isJoiningTeam.value ? 'Loading...' : "join_team".tr,
+                                    onPressed: controller.isJoiningTeam.value ? () {} : controller.joinTeam,
                                   )),
                                 ],
                               ),
@@ -191,8 +191,8 @@ SizedBox(
                             Obx(() => CustomButton(
                               backgroundColor: AppColors.primaryRed,
                               textColor: Colors.white,
-                              text: controller.isLoading.value ? "Creating..." : "continue".tr,
-                              onPressed: controller.isLoading.value ? () {} : controller.continueCreateTeam, // ✅ Fixed callback
+                              text: controller.isCreatingTeam.value ? "Creating..." : "continue".tr,
+                              onPressed: controller.isCreatingTeam.value ? () {} : controller.continueCreateTeam,
                             )),
                           ],
                         ),

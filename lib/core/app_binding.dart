@@ -3,6 +3,11 @@ import 'package:game_app/controllers/team_mode_controller/team_contextual_challa
 import 'package:game_app/controllers/team_mode_controller/team_key_results_controller.dart';
 import 'package:game_app/controllers/team_mode_controller/team_objective_controller.dart';
 import 'package:game_app/controllers/team_mode_controller/team_strategy_selection_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_game_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_strategy_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_chat_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_game_complete_controller.dart';
+import 'package:game_app/controllers/dashboard_controller.dart';
 import 'package:game_app/data/repositories/auth_repository.dart';
 import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/data/repositories/strategy_repository.dart';
@@ -41,18 +46,25 @@ class AppBindings extends Bindings {
     // ✅ GAME FLOW CONTROLLERS - Needed across multiple screens (permanent)
     Get.put(JourneyController(), permanent: true);
     Get.put(TeamObjectiveController(), permanent: true);
+    Get.put(TeamGameTimerController(), permanent: true);
     
     Get.put(FirebaseNotificationService(),permanent:true);
     Get.put(StrategySelectionController(), permanent: true);
     Get.put(TeamStrategySelectionController(), permanent: true);
-    Get.put(TeamKeyResultsController(), permanent: true);
+    Get.put(TeamKeyResultsController(),permanent: true);
 
     Get.put(TeamContextualChallengeController (), permanent: true);
 
     Get.put(CreateTeamController(), permanent: true);
-    Get.put(FirebaseNotificationService(), permanent: true);
+    
+    // ✅ NEW COMPREHENSIVE CONTROLLERS
+    Get.put(TeamStrategyController(), permanent: true);
+    Get.put(TeamChatController(), permanent: true);
+    Get.put(TeamGameCompleteController(), permanent: true);
+    Get.put(DashboardController(), permanent: true);
 
     Get.put(KeyObjectiveController(), permanent: true); // ✅ Changed to permanent
+    Get.put(StrategySelectionController(), permanent: true);
 
     // ✅ LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
     Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);

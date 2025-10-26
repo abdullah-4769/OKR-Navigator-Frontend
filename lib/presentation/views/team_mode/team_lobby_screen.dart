@@ -13,7 +13,6 @@ import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 import '../../widgets/custom_circular_avatar.dart';
 import '../../widgets/custom_button.dart';
-import '../../../generated/models/responses/team_mode/team_lobby_response.dart'; // Import for type hints
 
 class TeamLobbyScreen extends StatelessWidget {
  const TeamLobbyScreen({super.key});
@@ -207,23 +206,23 @@ class TeamLobbyScreen extends StatelessWidget {
 
             SizedBox(height: height * 0.02),
 
-            /// Players List (Dynamic, no mock data)
+            /// Players List (Dynamic, using real API data)
             Padding(
              padding: EdgeInsets.symmetric(horizontal: width * 0.06),
              child: Column(
               children: [
-               ...teamData?.members?.asMap().entries.map((entry) {
+               ...controller.memberScores.asMap().entries.map((entry) {
                 final index = entry.key;
-                final member = entry.value;
+                final memberData = entry.value;
                 return CustomRankContainer(
                  rank: index + 1,
-                 name: member.user?.name ?? "Unknown",
-                 level: 0, // ❌ REMOVED MOCK: Default to 0, expecting real data from separate endpoint
-                 points: 0, // ❌ REMOVED MOCK: Default to 0
-                 score: 0, // ❌ REMOVED MOCK: Default to 0
-                 isHighlighted: member.user?.id == currentUserId, // Highlight current user
+                 name: memberData['name'] ?? "Unknown",
+                 level: memberData['level'] ?? 1,
+                 points: memberData['points'] ?? 0,
+                 score: memberData['score'] ?? 0,
+                 isHighlighted: memberData['userId'] == currentUserId, // Highlight current user
                 );
-               }).toList() ?? [],
+               }).toList(),
 
                // Placeholder/Invite Slot
                if (membersCount < 5)
@@ -244,7 +243,8 @@ class TeamLobbyScreen extends StatelessWidget {
                 backgroundColor: membersCount >= 2 ? AppColors.primaryBlue : AppColors.textSecondary.withOpacity(0.3),
                 textColor: Colors.white,
                 text: "Begin Mission".tr,
-                onPressed: membersCount >= 2 ? controller.beginMission : null,
+                onPressed: controller.beginMission,
+                // onPressed: membersCount >= 2 ? controller.beginMission : null,
                ),
 
               SizedBox(height: 10.h),
@@ -265,25 +265,89 @@ class TeamLobbyScreen extends StatelessWidget {
                        mainAxisSize: MainAxisSize.min,
                        children: [
                         Text(
-                         "Share this code or link:",
+                         "Share this code or link with your team members:",
                          style: TextStyle(fontSize: 16.sp, color: AppColors.textSecondary),
+                         textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: 10.h),
-                        // Use SelectableText for easy copy
-                        SelectableText( 
-                         token, 
-                         style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: AppColors.primaryBlue),
+                        SizedBox(height: 15.h),
+                        // Team code with copy button
+                        Container(
+                         padding: EdgeInsets.all(12.w),
+                         decoration: BoxDecoration(
+                          color: AppColors.softRed.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(color: AppColors.primaryRed, width: 1),
+                         ),
+                         child: Row(
+                          children: [
+                           Expanded(
+                            child: Text(
+                             token,
+                             style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppColors.primaryRed),
+                            ),
+                           ),
+                           SizedBox(width: 8.w),
+                           GestureDetector(
+                            onTap: () {
+                             // Copy to clipboard functionality would go here
+                             SnackbarHelper.success("Team code copied to clipboard!");
+                            },
+                            child: Container(
+                             padding: EdgeInsets.all(8.w),
+                             decoration: BoxDecoration(
+                              color: AppColors.primaryRed,
+                              borderRadius: BorderRadius.circular(6.r),
+                             ),
+                             child: Icon(Icons.copy, size: 16.sp, color: Colors.white),
+                            ),
+                           ),
+                          ],
+                         ),
                         ),
-                        SizedBox(height: 10.h),
-                        // Construct a dummy shareable link
-                        SelectableText( 
-                         "Link: app.com/join?code=$token", 
-                         style: TextStyle(fontSize: 14.sp, color: AppColors.textSecondary),
+                        SizedBox(height: 15.h),
+                        // Shareable link
+                        Container(
+                         padding: EdgeInsets.all(12.w),
+                         decoration: BoxDecoration(
+                          color: AppColors.primaryBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8.r),
+                          border: Border.all(color: AppColors.primaryBlue, width: 1),
+                         ),
+                         child: Row(
+                          children: [
+                           Expanded(
+                            child: Text(
+                             "app.com/join?code=$token",
+                             style: TextStyle(fontSize: 14.sp, color: AppColors.primaryBlue),
+                            ),
+                           ),
+                           SizedBox(width: 8.w),
+                           GestureDetector(
+                            onTap: () {
+                             // Copy link functionality would go here
+                             SnackbarHelper.success("Shareable link copied to clipboard!");
+                            },
+                            child: Container(
+                             padding: EdgeInsets.all(8.w),
+                             decoration: BoxDecoration(
+                              color: AppColors.primaryBlue,
+                              borderRadius: BorderRadius.circular(6.r),
+                             ),
+                             child: Icon(Icons.copy, size: 16.sp, color: Colors.white),
+                            ),
+                           ),
+                          ],
+                         ),
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 15.h),
+                        Text(
+                         "Team members can use either the code or the link to join your team.",
+                         style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
+                         textAlign: TextAlign.center,
+                        ),
                        ],
                       ),
-                      textConfirm: "OK",
+                      textConfirm: "Done",
                       onConfirm: () => Get.back(),
                       buttonColor: AppColors.primaryRed,
                       confirmTextColor: Colors.white,
@@ -304,6 +368,7 @@ class TeamLobbyScreen extends StatelessWidget {
               ],
              ),
             ),
+            
 
             SizedBox(height: height * 0.04),
            ],

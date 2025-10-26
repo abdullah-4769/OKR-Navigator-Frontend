@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
+import 'package:game_app/presentation/views/team_mode/game_time_controller.dart';
 import 'package:game_app/presentation/widgets/custom_button.dart';
 import 'package:game_app/services/shared_preference.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ import '../../../widgets/screens_unique_parts/custom_header.dart';
 import '../../../widgets/team_mode_widgets/custom_available_roles.dart';
 import '../../../widgets/custom_circular_avatar.dart';
 import '../../../../controllers/team_mode_controller/assign_roles_controller.dart';
+import '../../../../controllers/team_mode_controller/team_game_controller.dart';
 
 class AssignRolesScreen extends StatelessWidget {
   const AssignRolesScreen({super.key});
@@ -28,246 +30,328 @@ class AssignRolesScreen extends StatelessWidget {
     final StorageRepository storageRepo = Get.find<StorageRepository>();
     final String? currentUserId = storageRepo.getUser()?.id;
     final Map<String, dynamic> selectedIndustry = SharedPrefs.getSelectedIndustry() ?? {
-            'titleKey': 'Technology',
-            'title': 'Technology',
-        };
+      'titleKey': 'Technology',
+      'title': 'Technology',
+    };
+    
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: CustomBackground(
         child: SafeArea(
-          child: Obx(() {
-            if (controller.isLoading.value) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      color: AppColors.primaryRed,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      'Loading team members...',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 16.sp,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            if (controller.errorMessage.value.isNotEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: AppColors.primaryRed,
-                      size: 48.sp,
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      controller.errorMessage.value,
-                      style: TextStyle(
-                        color: AppColors.primaryRed,
-                        fontSize: 16.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 16.h),
-                    CustomButton(
-                      backgroundColor: AppColors.primaryRed,
-                      textColor: Colors.white,
-                      text: 'Retry',
-                      onPressed: () => controller.fetchTeamMembers(),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                SizedBox(height: height * 0.015),
-
-                /// ---------- HEADER ----------
-                CustomHeader(
-                  title: 'Assign'.tr,
-                  highlightedText: "Roles".tr,
-                  onBackTap: () => Navigator.pop(context),
-                ),
-
-                SizedBox(height: height * 0.015),
-                /// ---------- MAIN CONTENT ----------
-
-                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// Team Avatar + Time Limit
-                        Center(
-                          child: Column(
-                            children: [
-                              /// Larger solo icon
-                              Center(
-                                child: CustomCircularAvatar(
-                                  imagePath: 'assets/images/role_icon.png',
-                                  innerColors: [
-                                    Colors.yellow.shade100,
-                                    Colors.orange.shade100,
-                                    Colors.lightGreenAccent,
-                                  ],
-                                  borderGradient: [
-                                    AppColors.primaryRed.withOpacity(0.9),
-                                    AppColors.primaryRed.withOpacity(0.3),
-                                  ],
-                                  size: 150,
-                                ),
-                              ),
-                              SizedBox(height: height * 0.015),
-
-                              /// Time limit inside styled container
-                              CustomObjectiveContainer(
-                                title: '',
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: AppDimensions.d16.w,
-                                    vertical: AppDimensions.d8.h,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Time Limit'.tr,
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          color: AppColors.grey,
-                                        ),
-                                      ),
-                                      Text(
-                                        '5:00',
-                                        style: textTheme.titleLarge?.copyWith(
-                                          color: AppColors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(height: height * 0.015),
-
-                              /// Description
-                              SizedBox(
-                                width: width * 0.8,
-                                child: Text(
-                                  'Assign roles to optimize team performance'.tr,
-                                  textAlign: TextAlign.center,
-                                  style: textTheme.bodyLarge?.copyWith(
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: height * 0.025),
-
-                        /// Available Roles
-                        const CustomAvailableRoles(),
-
-                        SizedBox(height: height * 0.03),
-
-                        /// Team Members heading
-                        Center(
-                          child: Text(
-                            'Team Members'.tr,
-                            style: textTheme.headlineLarge?.copyWith(
-                              color: AppColors.primaryRed,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: height * 0.015),
-
-                        /// Team member cards
-                        ...controller.members.map((member) => Column(
-                          children: [
-                            _buildMemberCard(context, member.user?.name ?? 'Unknown', 'Level 5', member, controller),
-                            SizedBox(height: height * 0.015),
-                          ],
-                        )).toList(),
-
-                        SizedBox(height: height * 0.03),
-
-                        /// Pro Tip
-                        CustomObjectiveContainer(
-                          icon: Icons.lightbulb,
-                          title: 'Pro Tip'.tr,
-                          description:
-                          'Different roles have unique abilities and perspectives. Balance your team with complementary skills for better OKR outcomes.'
-                              .tr,
-                        ),
-
-                        SizedBox(height: height * 0.03),
-
-                       Center(
-                          child: CustomButton(
-                            text: 'Begin Mission'.tr,
-                            onPressed: () {
-                              // 1. Get current user's assigned role
-                              final currentUserMember = controller.members.firstWhereOrNull(
-                                (member) => member.userId == currentUserId,
-                              );
-                              final String currentRole = currentUserMember?.role ?? 'HOST';
-                              final Map<String, dynamic> roleArgument = {
-                                  'title': currentRole,
-                                  'titleKey': currentRole,
-                              };
-                              
-                              // 2. Navigate to Team Strategy Selection with arguments
-                              // ✅ FIX: AssignRoles -> TeamStrategySelection
-                              Get.toNamed(
-                                AppRoutes.teamStrategySelection,
-                                arguments: {
-                                    'selectedRole': roleArgument,
-                                    'selectedIndustry': selectedIndustry,
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(height: height * 0.02),
-
-                        Center(
-                          child: CustomButton(
-                            isLoading: controller.isAutoUpdatingRole.value,
-                            text: 'Auto Assign Roles'.tr,
-                            onPressed: () {
-                              controller.setRoleForGame();
-                            },
-                            backgroundColor: AppColors.primaryBlue,
-                          ),
-                        ),
-
-                        SizedBox(height: height * 0.04),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
+          child: _buildContent(
+            context: context,
+            controller: controller,
+            textTheme: textTheme,
+            width: width,
+            height: height,
+            currentUserId: currentUserId,
+            selectedIndustry: selectedIndustry,
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildContent({
+    required BuildContext context,
+    required AssignRolesController controller,
+    required TextTheme textTheme,
+    required double width,
+    required double height,
+    required String? currentUserId,
+    required Map<String, dynamic> selectedIndustry,
+  }) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: height * 0.015),
+
+          /// ---------- HEADER ----------
+          CustomHeader(
+            title: 'Assign'.tr,
+            highlightedText: "Roles".tr,
+            onBackTap: () => Navigator.pop(context),
+          ),
+
+          SizedBox(height: height * 0.015),
+
+          /// ---------- MAIN CONTENT ----------
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Team Avatar + Time Limit
+                _buildHeaderSection(context, textTheme, width, height),
+
+                SizedBox(height: height * 0.025),
+
+                /// Available Roles
+                const CustomAvailableRoles(),
+
+                SizedBox(height: height * 0.03),
+
+                /// Team Members Section with Obx for reactive updates
+                _buildTeamMembersSection(
+                  context: context,
+                  controller: controller,
+                  textTheme: textTheme,
+                  width: width,
+                  height: height,
+                  currentUserId: currentUserId,
+                  selectedIndustry: selectedIndustry,
+                ),
+
+                SizedBox(height: height * 0.03),
+
+                /// Pro Tip
+                CustomObjectiveContainer(
+                  icon: Icons.lightbulb,
+                  title: 'Pro Tip'.tr,
+                  description:
+                  'Different roles have unique abilities and perspectives. Balance your team with complementary skills for better OKR outcomes.'
+                      .tr,
+                ),
+
+                SizedBox(height: height * 0.03),
+
+                /// Action Buttons
+                _buildActionButtons(
+                  controller: controller,
+                  currentUserId: currentUserId,
+                  selectedIndustry: selectedIndustry,
+                ),
+
+                SizedBox(height: height * 0.04),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderSection(BuildContext context, TextTheme textTheme, double width, double height) {
+    return Center(
+      child: Column(
+        children: [
+          /// Larger solo icon
+          Center(
+            child: CustomCircularAvatar(
+              imagePath: 'assets/images/role_icon.png',
+              innerColors: [
+                Colors.yellow.shade100,
+                Colors.orange.shade100,
+                Colors.lightGreenAccent,
+              ],
+              borderGradient: [
+                AppColors.primaryRed.withOpacity(0.9),
+                AppColors.primaryRed.withOpacity(0.3),
+              ],
+              size: 150,
+            ),
+          ),
+          SizedBox(height: height * 0.015),
+
+          /// Time limit inside styled container
+          CustomObjectiveContainer(
+            title: '',
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppDimensions.d16.w,
+                vertical: AppDimensions.d8.h,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Time Limit'.tr,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: AppColors.grey,
+                    ),
+                  ),
+                  // Use Obx only for the timer part
+                  Obx(() {
+                    final timerController = Get.find<TeamGameTimerController>();
+                    final minutes = 30 ~/ 60;
+                    final seconds =80 % 60;
+                    final formattedTime = '$minutes:${seconds.toString().padLeft(2, '0')}';
+                    return Text(
+                      formattedTime,
+                      style: textTheme.titleLarge?.copyWith(
+                        color: AppColors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(height: height * 0.015),
+
+          /// Description
+          SizedBox(
+            width: width * 0.8,
+            child: Text(
+              'Assign roles to optimize team performance'.tr,
+              textAlign: TextAlign.center,
+              style: textTheme.bodyLarge?.copyWith(
+                color: AppColors.black,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTeamMembersSection({
+    required BuildContext context,
+    required AssignRolesController controller,
+    required TextTheme textTheme,
+    required double width,
+    required double height,
+    required String? currentUserId,
+    required Map<String, dynamic> selectedIndustry,
+  }) {
+    return Column(
+      children: [
+        /// Team Members heading
+        Center(
+          child: Text(
+            'Team Members'.tr,
+            style: textTheme.headlineLarge?.copyWith(
+              color: AppColors.primaryRed,
+            ),
+          ),
+        ),
+        SizedBox(height: height * 0.015),
+
+        /// Team member cards with loading and error states
+        Obx(() {
+          if (controller.isLoading.value) {
+            return _buildLoadingState(height);
+          }
+
+          if (controller.errorMessage.value.isNotEmpty) {
+            return _buildErrorState(controller, height);
+          }
+
+          return Column(
+            children: controller.members.map((member) => Column(
+              children: [
+                _buildMemberCard(context, member.user?.name ?? 'Unknown', 'Level 5', member, controller),
+                SizedBox(height: height * 0.015),
+              ],
+            )).toList(),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildLoadingState(double height) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: AppColors.primaryRed,
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'Loading team members...',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 16.sp,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(AssignRolesController controller, double height) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: AppColors.primaryRed,
+            size: 48.sp,
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            controller.errorMessage.value,
+            style: TextStyle(
+              color: AppColors.primaryRed,
+              fontSize: 16.sp,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 16.h),
+          CustomButton(
+            backgroundColor: AppColors.primaryRed,
+            textColor: Colors.white,
+            text: 'Retry',
+            onPressed: () => controller.fetchTeamMembers(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtons({
+    required AssignRolesController controller,
+    required String? currentUserId,
+    required Map<String, dynamic> selectedIndustry,
+  }) {
+    return Column(
+      children: [
+        Center(
+          child: CustomButton(
+            text: 'Begin Mission'.tr,
+            onPressed: () {
+              // 1. Get current user's assigned role
+              final currentUserMember = controller.members.firstWhereOrNull(
+                (member) => member.userId == currentUserId,
+              );
+              final String currentRole = currentUserMember?.role ?? 'HOST';
+              final Map<String, dynamic> roleArgument = {
+                'title': currentRole,
+                'titleKey': currentRole,
+              };
+              
+              // 2. Navigate to Team Strategy Selection with arguments
+              Get.toNamed(
+                AppRoutes.teamStrategySelection,
+                arguments: {
+                  'selectedRole': roleArgument,
+                  'selectedIndustry': selectedIndustry,
+                },
+              );
+            },
+          ),
+        ),
+        SizedBox(height: 10 * 0.02),
+
+        Center(
+          child: Obx(() => CustomButton(
+            isLoading: controller.isAutoUpdatingRole.value,
+            text: 'Auto Assign Roles'.tr,
+            onPressed: () {
+              controller.setRoleForGame();
+            },
+            backgroundColor: AppColors.primaryBlue,
+          )),
+        ),
+      ],
     );
   }
 
@@ -356,7 +440,8 @@ class AssignRolesScreen extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
 
-          DropdownButtonFormField<String>(
+          /// Dropdown with Obx for updating state
+          Obx(() => DropdownButtonFormField<String>(
             value: _getValidRole(member.role),
             decoration: InputDecoration(
               hintText: 'Select a role...'.tr,
@@ -404,7 +489,7 @@ class AssignRolesScreen extends StatelessWidget {
                 controller.assignRole(member.userId!, val);
               }
             },
-          ),
+          )),
         ],
       ),
     );

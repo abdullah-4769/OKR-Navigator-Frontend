@@ -97,6 +97,9 @@ class TeamGameCompleteScreen extends StatelessWidget {
               score: member['score'] as int,
               isCurrentUser: member['isCurrentUser'] as bool,
               status: member['status'].toString(),
+              badge: member['badge']?.toString() ?? "",
+              trophy: member['trophy']?.toString() ?? "",
+              title: member['title']?.toString() ?? "",
              )).toList(),
             ),
            )),
@@ -147,19 +150,19 @@ class TeamGameCompleteScreen extends StatelessWidget {
            SizedBox(height: height * 0.025),
 
            /// Journey Map
-           CustomJourneyMap(
-            progress: 100.0,
-            steps: const [
-             "Strategy Selection",
-             "Objective Alignment",
-             "Key Results",
-             "Initiatives",
-             "Results"
-            ],
-            completedSteps: const [true, true, true, true, true],
-            onToggle: controller.toggleJourneyDetails,
-            showDetails: true,
-           ),
+          //  CustomJourneyMap(
+          //   progress: 100.0,
+          //   steps: const [
+          //    "Strategy Selection",
+          //    "Objective Alignment",
+          //    "Key Results",
+          //    "Initiatives",
+          //    "Results"
+          //   ],
+          //   completedSteps: const [true, true, true, true, true],
+          //   // onToggle: controller.toggleJourneyDetails,
+          //   showDetails: true,
+          //  ),
 
            SizedBox(height: height * 0.025),
 

@@ -9,6 +9,7 @@ class TeamStrategyResponse extends BaseResponse {
   final String? role;
   final int? strategyId;
   final DateTime? createdAt;
+  final RemainingTime? remainingTime;
 
   const TeamStrategyResponse({
     super.statusCode,
@@ -19,6 +20,7 @@ class TeamStrategyResponse extends BaseResponse {
     this.role,
     this.strategyId,
     this.createdAt,
+    this.remainingTime,
   });
 
   factory TeamStrategyResponse.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,12 @@ class TeamStrategyResponse extends BaseResponse {
     final String? nestedFileUrl = strategyJson?['fileUrl'] as String?;
     final String? nestedCreatedAt = strategyJson?['createdAt'] as String?;
 
+    // Extract remaining time
+    final Map<String, dynamic>? remainingTimeJson = json['remainingTime'] as Map<String, dynamic>?;
+    final RemainingTime? remainingTime = remainingTimeJson != null 
+        ? RemainingTime.fromJson(remainingTimeJson)
+        : null;
+
     return TeamStrategyResponse(
       // Use determined status and message from root or default
       statusCode: determinedStatusCode,
@@ -53,6 +61,7 @@ class TeamStrategyResponse extends BaseResponse {
       createdAt: nestedCreatedAt == null 
           ? null 
           : DateTime.tryParse(nestedCreatedAt),
+      remainingTime: remainingTime,
     );
   }
 
@@ -65,6 +74,29 @@ class TeamStrategyResponse extends BaseResponse {
     'role': role,
     'strategyId': strategyId,
     'createdAt': createdAt?.toIso8601String(),
+    'remainingTime': remainingTime?.toJson(),
+  };
+}
+
+class RemainingTime {
+  final int minutes;
+  final int seconds;
+
+  const RemainingTime({
+    required this.minutes,
+    required this.seconds,
+  });
+
+  factory RemainingTime.fromJson(Map<String, dynamic> json) {
+    return RemainingTime(
+      minutes: json['minutes'] as int? ?? 0,
+      seconds: json['seconds'] as int? ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'minutes': minutes,
+    'seconds': seconds,
   };
 }
 
