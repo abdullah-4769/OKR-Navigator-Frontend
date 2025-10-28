@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../generated/models/responses/evaluate_initiative/evaluate_initiative_model.dart';
 
 class EvaluateInitiativeService {
-  final String baseUrl = 'http://192.168.1.6:3000';
+  final String baseUrl = 'http://54.145.244.15:3000';
 
   Future<EvaluateInitiativeModel> evaluateInitiatives({
     required String strategy,

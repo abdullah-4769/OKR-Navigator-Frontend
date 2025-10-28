@@ -39,8 +39,8 @@ class AssignRolesController extends GetxController {
       final teamId = createTeamController.createdTeamId.value;
       
       if (teamId == null) {
-        errorMessage.value = 'No team ID found. Please create a team first.';
-        SnackbarHelper.error('Cannot load members: Team ID missing.');
+      //   errorMessage.value = 'No team ID found. Please create a team first.';
+      //   SnackbarHelper.error('Cannot load members: Team ID missing.');
         return;
       }
       

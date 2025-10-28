@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../controllers/journey_controller.dart';
 import '../../../controllers/okr_constellation_controller.dart';
+import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../controllers/team_mode_controller/team_key_results_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
@@ -69,6 +70,46 @@ final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMo
                                 AppRoutes.teamObjectiveSelectionScreen,
                               ),
                             ),
+
+                          SizedBox(height: AppDimensions.d10.h),
+
+                          /// -------- TIMER ---------
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: CustomObjectiveContainer(
+                              title: '',
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: AppDimensions.d16.w,
+                                  vertical: AppDimensions.d8.h,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Time Limit'.tr,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: AppColors.grey,
+                                      ),
+                                    ),
+                                    Obx(() {
+                                      final timerController = Get.find<TeamGameTimerController>();
+                                      final totalSeconds = timerController.remainingSeconds.value;
+                                      final minutes = totalSeconds ~/ 60;
+                                      final seconds = totalSeconds % 60;
+                                      return Text(
+                                        '$minutes:${seconds.toString().padLeft(2, '0')}',
+                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
 
                           SizedBox(height: AppDimensions.d10.h),
 

@@ -65,7 +65,7 @@ class AppBindings extends Bindings {
 
     Get.put(KeyObjectiveController(), permanent: true); // ✅ Changed to permanent
     Get.put(StrategySelectionController(), permanent: true);
-
+Get.put(AuthRepository(), permanent: true);
     // ✅ LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
     Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
     Get.lazyPut<OKRConstellationController>(
@@ -76,7 +76,6 @@ class AppBindings extends Bindings {
     // ✅ AUTH CONTROLLERS - Only when login/register screen opens
     Get.lazyPut(() => RegisterController());
     Get.lazyPut(() => LoginController());
-    Get.lazyPut(() => AuthRepository());
     // contextual challenge ...........
     Get.lazyPut(() => InnovativeStrategiesRepository());
     

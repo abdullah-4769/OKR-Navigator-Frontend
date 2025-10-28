@@ -550,7 +550,7 @@ class TeamStrategyController extends GetxController {
   // Helper methods
   String _getBaseUrl() {
     // Replace with your actual API base URL
-    return 'http://192.168.1.6:3000';
+    return 'http://54.145.244.15:3000';
   }
 
   void _sendStrategyNotification() {

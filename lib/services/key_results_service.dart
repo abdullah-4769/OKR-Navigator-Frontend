@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../generated/models/responses/key_results_model/key_results_model.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.1.6:3000';
+  static const String baseUrl = 'http://54.145.244.15:3000';
 
   Future<KeyResultModel> fetchKeyResults({
     String? strategy,

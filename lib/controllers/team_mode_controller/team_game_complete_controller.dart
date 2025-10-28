@@ -2,6 +2,7 @@
 import 'dart:developer';
 import 'package:game_app/data/repositories/strategy_repository.dart';
 import 'package:game_app/controllers/team_mode_controller/create_team_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/team_strategy_journey_controller.dart';
 import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/services/notification_service.dart';
 import 'package:game_app/utils/snackbar_helper.dart';
@@ -49,8 +50,17 @@ class TeamGameCompleteController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Removed synchronous calls to prevent "null check" errors in Get.snackbar
+    // _loadGameResults(); 
+    // _loadTeamMemberStatus(); 
+  }
+  
+  @override
+  void onReady() {
+    super.onReady();
+    // Deferred loading until the binding and context are fully ready
     _loadGameResults(); 
-    _loadTeamMemberStatus(); // Load member data after API calls
+    _loadTeamMemberStatus(); 
   }
 
   // ----------------------
@@ -62,11 +72,12 @@ class TeamGameCompleteController extends GetxController {
     // Get dependencies
     final teamId = Get.find<CreateTeamController>().createdTeamId.value; 
     final userId = _storageRepository.getUser()?.id; 
-
+ 
+    // FIX: Suppress error if not logged in (e.g., during Splash/Login screens)
     if (teamId == null || userId == null) {
-        log('Team ID or User ID missing for final score fetch. Using fallback.');
-        SnackbarHelper.error('Cannot load game results. Missing game context.');
-        _useFallbackData();
+        // log('Team ID or User ID missing for final score fetch. Using fallback.');
+        // SnackbarHelper.error('Cannot load game results. Missing game context.');
+        // _useFallbackData();
         return;
     }
     
@@ -117,37 +128,44 @@ class TeamGameCompleteController extends GetxController {
     if (teamId == null) return;
 
     try {
-      // Get team details to get member list
-      // Note: This method needs to be implemented in StrategyRepository
-      // For now, using placeholder data
-      final teamDetails = {'members': []};
+      // Get team details to get member list from the summary response
+      final summaryResult = await _strategyRepository.getFinalTeamScoreSummary(teamId);
       
-      if (teamDetails['members'] != null) {
+      // Check if members exist in the summary response
+      final members = summaryResult['members'] as List<dynamic>? ?? [];
+      
+      if (members.isNotEmpty) {
         final List<Map<String, dynamic>> memberScores = [];
+        final currentUserId = _storageRepository.getUser()?.id;
         
-        for (final member in (teamDetails['members'] as List<dynamic>? ?? [])) {
+        for (final member in members) {
           try {
             // Get individual score for each member
-            final userScoreData = await _strategyRepository.getUserFinalScoreInTeam(teamId, member['userId']);
+            final userId = member['userId']?.toString() ?? member['id']?.toString();
+            if (userId == null) continue;
+            
+            final userScoreData = await _strategyRepository.getUserFinalScoreInTeam(teamId, userId);
             
             memberScores.add({
-              'userId': member['userId'],
-              'name': member['name'] ?? 'Unknown',
-              'role': member['role'] ?? 'Player',
+              'userId': userId,
+              'name': member['name']?.toString() ?? member['user']?['name']?.toString() ?? 'Unknown',
+              'role': member['role']?.toString() ?? member['user']?['role']?.toString() ?? 'Player',
               'level': (userScoreData['level'] as num? ?? 1).toInt(),
               'points': (userScoreData['points'] as num? ?? 0).toInt(),
               'score': (userScoreData['score'] as num? ?? 0).toInt(),
               'badge': userScoreData['badge']?.toString() ?? '',
               'trophy': userScoreData['trophy']?.toString() ?? '',
               'title': userScoreData['title']?.toString() ?? '',
-              'status': 'Completed', // or 'Pending' based on score
+              'status': (userScoreData['score'] as num? ?? 0) > 0 ? 'Completed' : 'Pending',
+              'isCurrentUser': userId == currentUserId,
           });
         } catch (e) {
             // If individual score fetch fails, use default values
+            final userId = member['userId']?.toString() ?? member['id']?.toString() ?? 'unknown';
             memberScores.add({
-              'userId': member['userId'],
-              'name': member['name'] ?? 'Unknown',
-              'role': member['role'] ?? 'Player',
+              'userId': userId,
+              'name': member['name']?.toString() ?? member['user']?['name']?.toString() ?? 'Unknown',
+              'role': member['role']?.toString() ?? member['user']?['role']?.toString() ?? 'Player',
               'level': 1,
               'points': 0,
               'score': 0,
@@ -155,6 +173,7 @@ class TeamGameCompleteController extends GetxController {
               'trophy': '',
               'title': '',
               'status': 'Pending',
+              'isCurrentUser': userId == currentUserId,
           });
         }
       }
@@ -162,7 +181,9 @@ class TeamGameCompleteController extends GetxController {
         memberData.assignAll(memberScores);
         
         // Send team game complete notifications
-        _sendTeamGameCompleteNotifications(memberScores);
+        if (memberScores.isNotEmpty) {
+          _sendTeamGameCompleteNotifications(memberScores);
+        }
       }
       
     } catch (e) {
@@ -221,45 +242,8 @@ class TeamGameCompleteController extends GetxController {
       "Earned strategic architect".tr,
     ]);
 
-    // Fallback member data
-    memberData.assignAll([
-      {
-        'userId': 'user1',
-        'name': 'You',
-        'role': 'CEO',
-        'level': 5,
-        'points': 87,
-        'score': 87,
-        'badge': 'Strategic Thinker',
-        'trophy': 'Silver',
-        'title': 'Master Adapter',
-        'status': 'Completed',
-      },
-      {
-        'userId': 'user2',
-        'name': 'Johnson',
-        'role': 'Manager',
-        'level': 5,
-        'points': 0,
-        'score': 0,
-        'badge': '',
-        'trophy': '',
-        'title': '',
-        'status': 'Pending',
-      },
-      {
-        'userId': 'user3',
-        'name': 'Tasha',
-        'role': 'Strategist',
-        'level': 5,
-        'points': 0,
-        'score': 0,
-        'badge': '',
-        'trophy': '',
-        'title': '',
-        'status': 'Pending',
-      },
-    ]);
+    // Don't add fake member data - only show real data from API
+    memberData.clear();
   }
 
   // ----------------------
@@ -279,8 +263,8 @@ class TeamGameCompleteController extends GetxController {
     achievements.clear();
     memberData.clear();
 
-    // Navigate to new game screen
-    Get.offAllNamed(AppRoutes.aiAnalysisShowScreen);
+    // Navigate to home screen
+    Get.offAllNamed(AppRoutes.home);
   }
 
   /// View badges
@@ -295,7 +279,8 @@ class TeamGameCompleteController extends GetxController {
 
   /// View journey
   void viewJourney() {
-    SnackbarHelper.info('View journey feature coming soon');
+    Get.put(TeamStrategyJourneyController.getOrPut());
+    Get.toNamed('/teamStrategicJourneyScreen');
   }
 
   /// View individual score

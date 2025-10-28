@@ -28,8 +28,8 @@ class TeamScoreboardController extends GetxController {
       
       final teamId = _createTeamController.createdTeamId.value;
       if (teamId == null) {
-        SnackbarHelper.error('Team ID not found. Cannot load leaderboard.');
-        leaderboard.clear();
+        // SnackbarHelper.error('Team ID not found. Cannot load leaderboard.');
+        // leaderboard.clear();
         return;
       }
       

@@ -36,8 +36,8 @@ class TeamAchievementsController extends GetxController {
 
     if (teamId == null) {
       teamName.value = "Team Data Missing";
-      SnackbarHelper.error("Cannot load achievements: Team not found.");
-      _useFallbackData();
+      // // SnackbarHelper.error("Cannot load achievements: Team not found.");
+      // _useFallbackData();
       return;
     }
 

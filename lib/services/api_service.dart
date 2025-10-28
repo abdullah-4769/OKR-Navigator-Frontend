@@ -8,7 +8,7 @@ class ApiService {
   ApiService._internal();
 
   late Dio _dio;
-  String baseUrl = 'http://192.168.1.6:3000';
+  String baseUrl = 'http://54.145.244.15:3000';
 
   void initialize() {
     _dio = Dio(BaseOptions(

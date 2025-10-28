@@ -1,4 +1,3 @@
-// lib/controllers/team_mode_controller/team_chat_controller.dart
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -48,7 +47,14 @@ class TeamChatController extends GetxController {
     super.onInit();
     _initializeTeamData();
     _loadTeamMembers();
-    connect(); // Auto-connect when controller initializes
+    // connect(); // Removed synchronous call
+  }
+  
+  @override
+  void onReady() {
+    super.onReady();
+    // ✅ Deferred connection call
+    connect(); 
   }
 
   @override
@@ -114,8 +120,14 @@ class TeamChatController extends GetxController {
 
   /// Connect to WebSocket
   Future<void> connect() async {
+    final user = _storageRepository.getUser();
+
+    // FIX: Suppress error if not logged in (e.g., during Splash/Login screens)
+    if (user == null) { 
+      return; 
+    }
     if (teamToken.value.isEmpty) {
-      SnackbarHelper.error('Team token not found');
+      // SnackbarHelper.error('Team token not found');
       return;
     }
 
@@ -123,7 +135,7 @@ class TeamChatController extends GetxController {
       isLoading.value = true;
       
       _channel = IOWebSocketChannel.connect(
-        'ws://192.168.1.6:3000/ws?teamToken=${teamToken.value}',
+        'ws://54.145.244.15:3000/ws?teamToken=${teamToken.value}',
       );
 
       _subscription = _channel!.stream.listen(
@@ -139,7 +151,7 @@ class TeamChatController extends GetxController {
       
     } catch (e) {
       log('Error connecting to WebSocket: $e');
-      SnackbarHelper.error('Failed to connect to team chat');
+      SnackbarHelper.error('Failed to connect to team chat'); // This line is now safe
       isConnected.value = false;
     } finally {
       isLoading.value = false;
@@ -306,6 +318,6 @@ class TeamChatController extends GetxController {
 
   /// Helper method to get base URL
   String _getBaseUrl() {
-    return 'http://192.168.1.6:3000';
+    return 'http://54.145.244.15:3000';
   }
 }

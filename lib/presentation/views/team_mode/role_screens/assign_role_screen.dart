@@ -173,19 +173,21 @@ class AssignRolesScreen extends StatelessWidget {
                     ),
                   ),
                   // Use Obx only for the timer part
-                  Obx(() {
-                    final timerController = Get.find<TeamGameTimerController>();
-                    final minutes = 30 ~/ 60;
-                    final seconds =80 % 60;
-                    final formattedTime = '$minutes:${seconds.toString().padLeft(2, '0')}';
-                    return Text(
-                      formattedTime,
-                      style: textTheme.titleLarge?.copyWith(
-                        color: AppColors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    );
-                  }),
+                 Obx(() {
+                        final timerController = Get.find<TeamGameTimerController>();
+                        final totalSeconds = timerController.remainingSeconds.value;
+                        final minutes = totalSeconds ~/ 60;
+                        final seconds = totalSeconds % 60;
+
+                        return Text(
+                          '$minutes:${seconds.toString().padLeft(2, '0')}',
+                          style: textTheme.titleLarge?.copyWith(
+                            color: AppColors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }),
+
                 ],
               ),
             ),

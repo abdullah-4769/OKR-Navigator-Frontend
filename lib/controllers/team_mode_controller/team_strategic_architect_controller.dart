@@ -40,9 +40,9 @@ class TeamStrategicArchitectController extends GetxController {
     final userId = _storageRepository.getUser()?.id;
 
     if (teamId == null || userId == null) {
-        log('Team ID or User ID missing for individual score fetch. Using fallback.');
-        SnackbarHelper.error('Cannot load individual results. Missing game context.');
-        _useFallbackData();
+        // log('Team ID or User ID missing for individual score fetch. Using fallback.');
+        // SnackbarHelper.error('Cannot load individual results. Missing game context.');
+        // _useFallbackData();
         return;
     }
     
@@ -50,21 +50,21 @@ class TeamStrategicArchitectController extends GetxController {
         // API Call: GET /final-team-score/{teamId}/user/{userId}/score
         final result = await _strategyRepository.getUserFinalScoreInTeam(teamId, userId);
 
-        // Map data from API response
-        score.value = result['individualScore'] ?? 0;
+        // Map data from API response - handle both userScore and individual score
+        score.value = result['userScore'] ?? result['individualScore'] ?? result['score'] ?? 0;
         
         final breakdown = result['breakdown'] as Map<String, dynamic>?;
         if (breakdown != null) {
-            points.value = breakdown['totalPointsAchieved'] ?? 0;
-            totalPoints.value = breakdown['totalPointsPossible'] ?? 0;
+            points.value = breakdown['totalPointsAchieved'] ?? breakdown['points'] ?? 0;
+            totalPoints.value = breakdown['totalPointsPossible'] ?? 100;
 
             // Map breakdown details - adjust scores and max points to match expected UI strings
             breakdownItems.assignAll([
-                {"title": "Strategy Selection", "score": "${breakdown['alignmentStrategy']}/15", "success": (breakdown['alignmentStrategy']??0) > 0},
-                {"title": "Objective Alignment", "score": "${breakdown['objectiveClarity']}/15", "success": (breakdown['objectiveClarity']??0) > 0},
-                {"title": "Key Results Quality", "score": "${breakdown['keyResultQuality']}/25", "success": (breakdown['keyResultQuality']??0) > 0},
-                {"title": "Initiative Relevance", "score": "${breakdown['initiativeRelevance']}/25", "success": (breakdown['initiativeRelevance']??0) > 0},
-                {"title": "Challenge Adaptation", "score": "${breakdown['challengeAdoption']}/20", "success": (breakdown['challengeAdoption']??0) > 0},
+                {"title": "Strategy Selection", "score": "${breakdown['alignmentStrategy'] ?? 0}/15", "success": (breakdown['alignmentStrategy'] ?? 0) > 0},
+                {"title": "Objective Alignment", "score": "${breakdown['objectiveClarity'] ?? 0}/15", "success": (breakdown['objectiveClarity'] ?? 0) > 0},
+                {"title": "Key Results Quality", "score": "${breakdown['keyResultQuality'] ?? 0}/25", "success": (breakdown['keyResultQuality'] ?? 0) > 0},
+                {"title": "Initiative Relevance", "score": "${breakdown['initiativeRelevance'] ?? 0}/25", "success": (breakdown['initiativeRelevance'] ?? 0) > 0},
+                {"title": "Challenge Adaptation", "score": "${breakdown['challengeAdoption'] ?? 0}/20", "success": (breakdown['challengeAdoption'] ?? 0) > 0},
             ]);
         } else {
             _initializeBreakdownStructure();
@@ -72,10 +72,17 @@ class TeamStrategicArchitectController extends GetxController {
 
         // Rewards and Achievements
         // Note: Translation keys are used for consistency with other parts of the app.
-        achievements.assignAll(result['achievements'] ?? ["completed_strategic_cycle".tr]);
-        badges.assignAll(result['badges'] ?? ["Strategic Thinker".tr]);
-        titles.assignAll(result['titles'] ?? ["Master Adapter".tr]);
-        trophy.value = result['trophy'] ?? "Bronze".tr; 
+        achievements.assignAll(
+          (result['achievements'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? 
+          ["completed_strategic_cycle".tr]
+        );
+        badges.assignAll(
+          (result['badge'] != null ? [result['badge'].toString()] : null) ?? ["Strategic Thinker".tr]
+        );
+        titles.assignAll(
+          (result['title'] != null ? [result['title'].toString()] : null) ?? ["Master Adapter".tr]
+        );
+        trophy.value = result['trophy']?.toString() ?? "Bronze".tr; 
         
         log('Individual game results loaded successfully.');
 
@@ -113,7 +120,18 @@ class TeamStrategicArchitectController extends GetxController {
       showJourneyDetails.value = !showJourneyDetails.value;
 
   void playAgain() {
-    // logic to reset or start new game
+    // Reset all data
+    score.value = 0;
+    points.value = 0;
+    totalPoints.value = 0;
+    badges.clear();
+    titles.clear();
+    trophy.value = "";
+    breakdownItems.clear();
+    achievements.clear();
+
+    // Navigate to home screen
+    Get.offAllNamed(AppRoutes.home);
   }
 
   void viewBadges() {

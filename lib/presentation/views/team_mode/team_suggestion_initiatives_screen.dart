@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/journey_controller.dart';
+import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../controllers/team_mode_controller/team_suggestion_initiative_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
@@ -96,6 +97,46 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                         showDashboardIcon: true,
                         onBackTap: () =>
                             Get.toNamed(AppRoutes.teamKeyResultScreen),
+                      ),
+
+                      SizedBox(height: height * 0.02),
+
+                      /// ✅ TIMER
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: width * 0.06),
+                        child: CustomObjectiveContainer(
+                          title: '',
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: AppDimensions.d16.w,
+                              vertical: AppDimensions.d8.h,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Time Limit'.tr,
+                                  style: appTheme.textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.grey,
+                                  ),
+                                ),
+                                Obx(() {
+                                  final timerController = Get.find<TeamGameTimerController>();
+                                  final totalSeconds = timerController.remainingSeconds.value;
+                                  final minutes = totalSeconds ~/ 60;
+                                  final seconds = totalSeconds % 60;
+                                  return Text(
+                                    '$minutes:${seconds.toString().padLeft(2, '0')}',
+                                    style: appTheme.textTheme.titleLarge?.copyWith(
+                                      color: AppColors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
 
                       SizedBox(height: height * 0.02),

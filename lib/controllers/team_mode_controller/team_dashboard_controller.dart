@@ -41,13 +41,25 @@ class TeamDashboardController extends GetxController {
       final currentTeamId = createTeamController.createdTeamId.value;
       
       if (currentTeamId == null) {
-        throw Exception("Team ID not found. Cannot load dashboard.");
+        // throw Exception("Team ID not found. Cannot load dashboard.");
+        return;
       }
 
       teamId.value = currentTeamId;
       
       // 1. API Call: GET /final-team-score/team/{teamId}/rewards-summary
-      final apiResponse = await _strategyRepository.getTeamRewardsSummary(currentTeamId);
+      Map<String, dynamic> apiResponse;
+      try {
+        apiResponse = await _strategyRepository.getTeamRewardsSummary(currentTeamId);
+      } catch (e) {
+        // Handle 404 error - team hasn't completed games yet
+        if (e.toString().contains('404') || e.toString().contains('Not Found')) {
+          log('Team has no rewards data yet. Showing default dashboard.');
+          _showEmptyDashboard();
+          return;
+        }
+        rethrow; // Re-throw if it's a different error
+      }
       
       // 2. Map API Response Data
       successRate.value = (apiResponse['successRate'] as num? ?? 0).toInt(); 
@@ -55,12 +67,19 @@ class TeamDashboardController extends GetxController {
 
       badges.value = (apiResponse['totalBadges'] as num? ?? 0).toInt();
       trophies.value = (apiResponse['totalTrophies'] as num? ?? 0).toInt();
-      games.value = (apiResponse['gamesPlayed'] as num? ?? 0).toInt(); // Assuming gamesPlayed exists
+      games.value = (apiResponse['gamesPlayed'] as num? ?? 0).toInt(); 
 
       // Update name using data from CreateTeamController (as it holds current context)
       teamName.value = createTeamController.teamNameController.text.isNotEmpty
           ? createTeamController.teamNameController.text
-          : "Team ${currentTeamId}";
+          : apiResponse['teamName']?.toString() ?? "Team ${currentTeamId}";
+      
+      // Map team members from the API response
+      final membersData = apiResponse['members'] as List? ?? [];
+      if (membersData.isNotEmpty) {
+        // Store members data for future use if needed
+        log('Team has ${membersData.length} members');
+      }
       
       // Map Achievements (Assuming API returns list of achievement objects/strings)
       achievements.assignAll((apiResponse['achievements'] as List? ?? [])
@@ -128,6 +147,23 @@ class TeamDashboardController extends GetxController {
     games.value = 0;
     
     // Clear all lists - no mock data
+    achievements.clear();
+    feedbackList.clear();
+    recentGames.clear();
+  }
+
+  void _showEmptyDashboard() {
+    // Show empty dashboard when team has no completed games
+    final createTeamController = Get.find<CreateTeamController>();
+    teamName.value = createTeamController.teamNameController.text.isNotEmpty
+        ? createTeamController.teamNameController.text
+        : "New Team";
+    teamLevel.value = 1;
+    successRate.value = 0;
+    badges.value = 0;
+    trophies.value = 0;
+    games.value = 0;
+    
     achievements.clear();
     feedbackList.clear();
     recentGames.clear();

@@ -4,6 +4,7 @@ import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/presentation/widgets/custom_button2.dart';
 import 'package:game_app/utils/snackbar_helper.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart'; // Import for Clipboard
 
 import '../../../core/app_colors.dart';
 import '../../../controllers/team_mode_controller/team_lobby_controller.dart';
@@ -34,6 +35,7 @@ class TeamLobbyScreen extends StatelessWidget {
       // Determine if current user is the host
       final isHost = teamData?.members?.any((m) => m.role == 'HOST' && m.user?.id == currentUserId) ?? false;
       final membersCount = controller.players.length;
+      final teamToken = teamData?.token ?? "N/A";
       
       if (controller.isLoading.value) {
        return Center(
@@ -125,7 +127,7 @@ class TeamLobbyScreen extends StatelessWidget {
                SizedBox(width: 8.w),
                Expanded(
                 child: Text(
-                 teamData?.token ?? "N/A", // Dynamic Team Token
+                 teamToken, // Dynamic Team Token
                  style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
@@ -136,7 +138,11 @@ class TeamLobbyScreen extends StatelessWidget {
                ),
                SizedBox(width: 8.w),
                GestureDetector(
-                onTap: () => SnackbarHelper.info('Team code copied!'), // Placeholder for Copy action
+                onTap: () {
+                    // FIX 1: Copy to clipboard the Team Token
+                    Clipboard.setData(ClipboardData(text: teamToken));
+                    SnackbarHelper.info('Team code copied!'); 
+                },
                 child: CircleAvatar(
                  radius: 16.r,
                  backgroundColor: AppColors.primaryRed,
@@ -289,7 +295,8 @@ class TeamLobbyScreen extends StatelessWidget {
                            SizedBox(width: 8.w),
                            GestureDetector(
                             onTap: () {
-                             // Copy to clipboard functionality would go here
+                             // FIX 2: Copy Team Code inside dialog
+                             Clipboard.setData(ClipboardData(text: token));
                              SnackbarHelper.success("Team code copied to clipboard!");
                             },
                             child: Container(
@@ -324,7 +331,9 @@ class TeamLobbyScreen extends StatelessWidget {
                            SizedBox(width: 8.w),
                            GestureDetector(
                             onTap: () {
-                             // Copy link functionality would go here
+                             // FIX 3: Copy Shareable Link inside dialog
+                             final shareableLink = "app.com/join?code=$token";
+                             Clipboard.setData(ClipboardData(text: shareableLink));
                              SnackbarHelper.success("Shareable link copied to clipboard!");
                             },
                             child: Container(

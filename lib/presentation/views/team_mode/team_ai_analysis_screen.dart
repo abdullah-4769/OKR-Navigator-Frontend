@@ -4,12 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart'; // Required for SvgPicture
 import 'package:get/get.dart';
 import '../../../generated/models/responses/strategy/generate_intiatives_response.dart'; // Import API response model
 
+import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart'; //
 import '../../widgets/custom_home_navbar.dart'; //
 import '../../widgets/custom_info_container.dart'; //
+import '../../widgets/custom_objective_container.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart'; //
 import '../../widgets/screens_unique_parts/custom_header.dart'; //
 
@@ -216,7 +218,47 @@ Widget _buildAnalysisContainer({
                Get.offAllNamed(AppRoutes.teamSuggestionInitiativeScreen),
             ),
 
-            SizedBox(height: AppDimensions.d20.h),
+            SizedBox(height: AppDimensions.d10.h),
+
+            /// ------------ TIMER ------------
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: CustomObjectiveContainer(
+                title: '',
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimensions.d16.w,
+                    vertical: AppDimensions.d8.h,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Time Limit'.tr,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.grey,
+                        ),
+                      ),
+                      Obx(() {
+                        final timerController = Get.find<TeamGameTimerController>();
+                        final totalSeconds = timerController.remainingSeconds.value;
+                        final minutes = totalSeconds ~/ 60;
+                        final seconds = totalSeconds % 60;
+                        return Text(
+                          '$minutes:${seconds.toString().padLeft(2, '0')}',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: AppColors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            SizedBox(height: AppDimensions.d10.h),
 
             /// ------------ DYNAMIC ANALYSIS CONTAINER ------------
             Padding(
