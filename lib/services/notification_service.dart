@@ -8,8 +8,6 @@ import '../data/repositories/team_repo.dart';
 // Top-level function for background messages (required by Flutter)
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // IMPORTANT: If you need to access shared preferences or other native features 
-  // in the background, you must call Firebase.initializeApp() here. 
   print("Handling background message: ${message.messageId}");
 }
 
@@ -92,9 +90,7 @@ class FirebaseNotificationService extends GetxService {
       final userId = _storageRepository.getUser()?.id;
       
       if (userId != null) {
-        // You should implement a dedicated endpoint in TeamRepository/TeamApi 
-        // to register this token against the userId on your server for targeting.
-        // E.g.: await _teamRepository.registerFCMToken(token, userId);
+       
       }
     }
 
@@ -171,12 +167,6 @@ class FirebaseNotificationService extends GetxService {
     }
   }
   
-  // ============================================================================
-  // The rest of your methods (e.g., sendSoloEvaluationCompleted) rely on the 
-  // updated generic 'sendNotification', which now handles the local notification.
-  // No further changes are needed in the individual methods below.
-  // ============================================================================
-
   /// Solo Mode: Evaluation Completed Successfully
   Future<void> sendSoloEvaluationCompleted({
     required String playerName,
