@@ -70,7 +70,14 @@ class FirebaseNotificationService extends GetxService {
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
-    await _localNotifications.initialize(initializationSettings);
+    await _localNotifications.initialize(
+        initializationSettings,
+        // Optional: Handle notification tap when app is opened from terminated state
+        onDidReceiveNotificationResponse: (NotificationResponse response) async {
+            // Handle tap event (e.g., navigate to a specific screen based on payload)
+            print('Local notification tapped. Payload: ${response.payload}');
+        },
+    );
 
     // 2. Permission and Token Retrieval
     NotificationSettings settings = await _messaging.requestPermission(
@@ -101,6 +108,7 @@ class FirebaseNotificationService extends GetxService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final notification = message.notification;
       if (notification != null) {
+        // Display the foreground FCM message as a local notification
         _showLocalNotification(notification.title, notification.body);
       }
     });
@@ -110,12 +118,14 @@ class FirebaseNotificationService extends GetxService {
   }
 
   /// Displays the notification using Flutter Local Notifications
-  Future<void> _showLocalNotification(String? title, String? body) async {
+  Future<void> _showLocalNotification(String? title, String? body, {String? payload}) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'okr_navigator_channel',
       'OKR Navigator Notifications',
+      channelDescription: 'Notifications for game updates and team activities.',
       importance: Importance.max,
       priority: Priority.high,
+      ticker: 'ticker',
     );
     const NotificationDetails platformDetails =
         NotificationDetails(android: androidDetails);
@@ -125,10 +135,11 @@ class FirebaseNotificationService extends GetxService {
       title,
       body,
       platformDetails,
+      payload: payload,
     );
   }
 
-  /// Generic method to send notifications
+  /// Generic method to send notifications (Network-based)
   Future<void> sendNotification({
     required String title,
     required String body,
@@ -137,6 +148,10 @@ class FirebaseNotificationService extends GetxService {
     int? teamId,
     Map<String, dynamic>? additionalData,
   }) async {
+    // 1. Trigger Local Notification Immediately (for local user feedback)
+    _showLocalNotification(title, body); // <-- ADDED LOCAL NOTIFICATION TRIGGER
+    
+    // 2. Send Network Notification (FCM via Backend)
     final Map<String, dynamic> payload = {
       'title': title,
       'body': body,
@@ -148,15 +163,18 @@ class FirebaseNotificationService extends GetxService {
     };
 
     try {
+      // Calls your backend endpoint which should forward to FCM
       await _teamRepository.sendFCMNotification(payload);
-      print('✅ Notification sent: $title');
+      print('✅ Network Notification sent: $title');
     } catch (e) {
-      print('❌ Failed to send notification: $e');
+      print('❌ Failed to send network notification: $e');
     }
   }
-
+  
   // ============================================================================
-  // SOLO MODE NOTIFICATIONS
+  // The rest of your methods (e.g., sendSoloEvaluationCompleted) rely on the 
+  // updated generic 'sendNotification', which now handles the local notification.
+  // No further changes are needed in the individual methods below.
   // ============================================================================
 
   /// Solo Mode: Evaluation Completed Successfully
@@ -207,10 +225,6 @@ class FirebaseNotificationService extends GetxService {
       },
     );
   }
-
-  // ============================================================================
-  // CHALLENGE MODE NOTIFICATIONS
-  // ============================================================================
 
   /// Challenge Mode: Invitation Received/Sent
   Future<void> sendChallengeInvitation({
@@ -314,10 +328,6 @@ class FirebaseNotificationService extends GetxService {
     );
   }
 
-  // ============================================================================
-  // CAMPAIGN MODE NOTIFICATIONS
-  // ============================================================================
-
   /// Campaign Mode: Level Unlocked
   Future<void> sendCampaignLevelUnlocked({
     required String playerName,
@@ -393,10 +403,6 @@ class FirebaseNotificationService extends GetxService {
       },
     );
   }
-
-  // ============================================================================
-  // TEAM MODE NOTIFICATIONS
-  // ============================================================================
 
   /// Team Mode: Team Invitation
   Future<void> sendTeamInvitation({

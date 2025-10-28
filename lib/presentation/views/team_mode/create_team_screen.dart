@@ -1,3 +1,5 @@
+// lib/presentation/views/team_mode/create_team_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -92,11 +94,14 @@ SizedBox(
                                   itemCount: controller.avatars.length,
                                   separatorBuilder: (_, __) => SizedBox(width: width * 0.04),
                                   itemBuilder: (context, index) {
-                                    // ✅ Use dynamic check
+                                    // ✅ FIXED: Add ValueKey for better performance on state change
+                                    final Key avatarKey = ValueKey(index); 
+                                    
                                     final isSelected = controller.selectedAvatarIndex.value == index; 
                                     
                                     return GestureDetector(
-                                      onTap: () => controller.selectAvatar(index), // ✅ Selection Call
+                                      key: avatarKey, // Apply key here
+                                      onTap: () => controller.selectAvatar(index),
                                       child: CustomCircularAvatar(
                                         imagePath: controller.avatars[index],
                                         size: 70,

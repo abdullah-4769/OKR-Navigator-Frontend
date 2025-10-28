@@ -1,21 +1,26 @@
+// lib/presentation/views/team_mode/role_screens/assign_role_screen.dart
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for Clipboard
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:game_app/data/repositories/storage_repository.dart';
+import 'package:game_app/data/repositories/storage_repository.dart' show StorageRepository;
 import 'package:game_app/presentation/routes/app_routes.dart';
-import 'package:game_app/presentation/views/team_mode/game_time_controller.dart';
 import 'package:game_app/presentation/widgets/custom_button.dart';
+import 'package:game_app/presentation/widgets/custom_circular_avatar.dart';
+import 'package:game_app/presentation/widgets/custom_objective_container.dart';
+import 'package:game_app/presentation/widgets/screens_unique_parts/custom_background.dart';
+import 'package:game_app/presentation/widgets/screens_unique_parts/custom_header.dart';
+import 'package:game_app/presentation/widgets/team_mode_widgets/custom_available_roles.dart';
 import 'package:game_app/services/shared_preference.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/app_colors.dart';
-import '../../../../core/app_dimensions.dart';
-import '../../../widgets/custom_objective_container.dart';
-import '../../../widgets/screens_unique_parts/custom_background.dart';
-import '../../../widgets/screens_unique_parts/custom_header.dart';
-import '../../../widgets/team_mode_widgets/custom_available_roles.dart';
-import '../../../widgets/custom_circular_avatar.dart';
+import '../../../../controllers/team_mode_controller/create_team_controller.dart'; 
+import '../../../../controllers/team_mode_controller/team_lobby_controller.dart';
 import '../../../../controllers/team_mode_controller/assign_roles_controller.dart';
 import '../../../../controllers/team_mode_controller/team_game_controller.dart';
+import '../../../../core/app_colors.dart';
+import '../../../../core/app_dimensions.dart';
+
 
 class AssignRolesScreen extends StatelessWidget {
   const AssignRolesScreen({super.key});
@@ -34,6 +39,17 @@ class AssignRolesScreen extends StatelessWidget {
       'title': 'Technology',
     };
     
+    // --- Get Avatar Path Logic ---
+    final TeamLobbyController lobbyController = Get.find<TeamLobbyController>();
+    final CreateTeamController createController = Get.find<CreateTeamController>();
+
+    final teamData = lobbyController.teamData.value;
+    final avatarId = int.tryParse(teamData?.teamavatorid ?? '0') ?? 0;
+    final avatarPath = createController.avatars.isNotEmpty 
+        ? createController.avatars[avatarId.clamp(0, createController.avatars.length - 1)] 
+        : 'assets/images/role_icon.png';
+    // --- End Avatar Path Logic ---
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: CustomBackground(
@@ -46,12 +62,14 @@ class AssignRolesScreen extends StatelessWidget {
             height: height,
             currentUserId: currentUserId,
             selectedIndustry: selectedIndustry,
+            avatarPath: avatarPath, // Passed dynamic path
           ),
         ),
       ),
     );
   }
 
+  // Updated _buildContent signature
   Widget _buildContent({
     required BuildContext context,
     required AssignRolesController controller,
@@ -60,6 +78,7 @@ class AssignRolesScreen extends StatelessWidget {
     required double height,
     required String? currentUserId,
     required Map<String, dynamic> selectedIndustry,
+    required String avatarPath, // New required argument
   }) {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -84,7 +103,7 @@ class AssignRolesScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Team Avatar + Time Limit
-                _buildHeaderSection(context, textTheme, width, height),
+                _buildHeaderSection(context, textTheme, width, height, avatarPath), 
 
                 SizedBox(height: height * 0.025),
 
@@ -133,14 +152,15 @@ class AssignRolesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderSection(BuildContext context, TextTheme textTheme, double width, double height) {
+  // Updated _buildHeaderSection to use dynamic avatarPath
+  Widget _buildHeaderSection(BuildContext context, TextTheme textTheme, double width, double height, String avatarPath) {
     return Center(
       child: Column(
         children: [
-          /// Larger solo icon
+          /// Larger solo icon -> REPLACED with Dynamic Avatar
           Center(
             child: CustomCircularAvatar(
-              imagePath: 'assets/images/role_icon.png',
+              imagePath: avatarPath, // DYNAMIC AVATAR PATH
               innerColors: [
                 Colors.yellow.shade100,
                 Colors.orange.shade100,

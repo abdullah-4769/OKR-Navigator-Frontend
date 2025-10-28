@@ -1,3 +1,5 @@
+// lib/presentation/widgets/global_widgets/custom_progress_path.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -62,7 +64,10 @@ class CustomProgressPath extends StatelessWidget {
             ),
             LayoutBuilder(
               builder: (context, constraints) {
-                final progress = activeStep / (stepLabels.length - 1);
+                // Ensure we don't divide by zero if there's only 1 step, or have negative progress
+                final totalSteps = stepLabels.length;
+                final denominator = totalSteps > 1 ? totalSteps - 1 : 1; 
+                final progress = activeStep / denominator; 
                 final progressWidth = constraints.maxWidth * progress;
 
                 return Container(
@@ -85,7 +90,7 @@ class CustomProgressPath extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: List.generate(stepLabels.length, (index) {
-            final isCompleted = index <= activeStep;
+            final isActiveOrCompleted = index <= activeStep;
 
             return Expanded(
               child: Center(
@@ -95,7 +100,7 @@ class CustomProgressPath extends StatelessWidget {
                   height: isLandscape ? screenWidth * 0.08 : screenWidth * 0.14,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isCompleted
+                    color: isActiveOrCompleted
                         ? AppColors.primaryRed
                         : AppColors.grey.withOpacity(0.3),
                     border: index == activeStep
@@ -106,7 +111,7 @@ class CustomProgressPath extends StatelessWidget {
                     child: Text(
                       '${index + 1}',
                       style: TextStyle(
-                        color: isCompleted
+                        color: isActiveOrCompleted
                             ? Colors.white
                             : AppColors.textSecondary,
                         fontWeight: FontWeight.bold,
@@ -119,10 +124,11 @@ class CustomProgressPath extends StatelessWidget {
                   stepLabels[index],
                   style: TextStyle(
                     fontSize: AppDimensions.d22.sp, // bigger font
-                    color: isCompleted
-                        ? AppColors.black
+                    // FIXED: Use primaryRed for active/completed text digits
+                    color: isActiveOrCompleted 
+                        ? AppColors.primaryRed 
                         : AppColors.textSecondary,
-                    fontWeight: index == activeStep
+                    fontWeight: isActiveOrCompleted 
                         ? FontWeight.bold
                         : FontWeight.normal,
                   ),

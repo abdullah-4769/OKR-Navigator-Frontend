@@ -1,3 +1,5 @@
+// lib/presentation/views/team_mode/team_suggestion_initiatives_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -45,7 +47,7 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
   String _safeTranslate(String? text, {String fallback = ''}) {
     if (text == null || text.isEmpty) return fallback;
     try {
-      // If the text contains spaces, assume it's a raw string from the API and return it directly.
+      // If the string contains spaces, assume it's a raw string from the API and return it directly.
       if (text.contains(' ')) return text; 
       return text.tr;
     } catch (e) {
