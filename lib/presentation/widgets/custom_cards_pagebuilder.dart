@@ -422,7 +422,7 @@ class _ResponsiveCardPager extends StatelessWidget {
                     ),
                 child: controller.selectedCardIndex.value == -1
                     ? Image.asset(
-                  'assets/images/card_1.png',
+                  'assets/images/backcard_img.png',
                   key: const ValueKey<String>('backcard'),
                   height: getResponsiveHeight(
                     mobile: 350,
@@ -456,104 +456,109 @@ class _ResponsiveCardPager extends StatelessWidget {
   }
 
   Widget _buildActionButton() {
-    return GestureDetector(
-      onTap: () {
-        if (controller.isCardRevealed.value) {
-          controller.resetAndDrawNewCard();
-        } else {
+    return Obx(() {
+      // Disable button if card is already revealed or loading
+      bool isDisabled = controller.isCardRevealed.value || controller.loading.value;
+
+      return GestureDetector(
+        onTap: isDisabled
+            ? null
+            : () {
           controller.revealRandomCard();
-        }
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-        height: getResponsiveHeight(
-          mobile: 46,
-          tablet: 48,
-          desktop: 50,
-          largeDesktop: 52,
-          ultraWide: 54,
-          landscapeAdjustment: 0.9,
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: getResponsiveWidth(
-            mobile: 50,
-            tablet: 60,
-            desktop: 62,
-            largeDesktop: 64,
-            ultraWide: 66,
-            landscapeAdjustment: 0.8,
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          height: getResponsiveHeight(
+            mobile: 46,
+            tablet: 48,
+            desktop: 50,
+            largeDesktop: 52,
+            ultraWide: 54,
+            landscapeAdjustment: 0.9,
           ),
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.lightSkyBlue,
-          borderRadius: BorderRadius.circular(
-            getResponsiveBorderRadius(
+          padding: EdgeInsets.symmetric(
+            horizontal: getResponsiveWidth(
               mobile: 50,
-              tablet: 55,
-              desktop: 58,
-              largeDesktop: 60,
-              ultraWide: 62,
+              tablet: 60,
+              desktop: 62,
+              largeDesktop: 64,
+              ultraWide: 66,
+              landscapeAdjustment: 0.8,
             ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primaryBlue.withValues(
-                alpha: isDesktop ? 0.3 : 0.2,
+          decoration: BoxDecoration(
+            color: isDisabled
+                ? AppColors.lightSkyBlue.withOpacity(0.5)
+                : AppColors.lightSkyBlue,
+            borderRadius: BorderRadius.circular(
+              getResponsiveBorderRadius(
+                mobile: 50,
+                tablet: 55,
+                desktop: 58,
+                largeDesktop: 60,
+                ultraWide: 62,
               ),
-              blurRadius: isDesktop ? 10 : 8,
-              offset: Offset(0, isDesktop ? 5 : 4),
-              spreadRadius: isDesktop ? 1 : 0,
             ),
-          ],
-        ),
-        alignment: Alignment.center,
-        child: controller.loading.value
-            ? SizedBox(
-          width: getResponsiveFont(
-            mobile: 20,
-            tablet: 22,
-            desktop: 24,
-            largeDesktop: 26,
-            ultraWide: 28,
-            landscapeAdjustment: 0.9,
+            boxShadow: isDisabled
+                ? []
+                : [
+              BoxShadow(
+                color: AppColors.primaryBlue.withValues(
+                  alpha: isDesktop ? 0.3 : 0.2,
+                ),
+                blurRadius: isDesktop ? 10 : 8,
+                offset: Offset(0, isDesktop ? 5 : 4),
+                spreadRadius: isDesktop ? 1 : 0,
+              ),
+            ],
           ),
-          height: getResponsiveFont(
-            mobile: 20,
-            tablet: 22,
-            desktop: 24,
-            largeDesktop: 26,
-            ultraWide: 28,
-            landscapeAdjustment: 0.9,
-          ),
-          child: CircularProgressIndicator(
-            strokeWidth: 2.5,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-          ),
-        )
-            : Text(
-          controller.isCardRevealed.value
-              ? 'draw_new_strategy'.tr
-              : 'tap_to_reveal_strategy'.tr,
-          style: TextStyle(
-            fontFamily: 'GothamBold',
-            fontSize: getResponsiveFont(
-              mobile: 14,
-              tablet: 10,
-              desktop: 11,
-              largeDesktop: 12,
-              ultraWide: 13,
+          alignment: Alignment.center,
+          child: controller.loading.value
+              ? SizedBox(
+            width: getResponsiveFont(
+              mobile: 20,
+              tablet: 22,
+              desktop: 24,
+              largeDesktop: 26,
+              ultraWide: 28,
               landscapeAdjustment: 0.9,
             ),
-            fontWeight: FontWeight.bold,
-            color: Colors.blue,
-            letterSpacing: isDesktop ? 0.6 : 0.5,
-            height: 1.2,
+            height: getResponsiveFont(
+              mobile: 20,
+              tablet: 22,
+              desktop: 24,
+              largeDesktop: 26,
+              ultraWide: 28,
+              landscapeAdjustment: 0.9,
+            ),
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+          )
+              : Text(
+            'tap_to_reveal_strategy'.tr, // Only one text now
+            style: TextStyle(
+              fontFamily: 'GothamBold',
+              fontSize: getResponsiveFont(
+                mobile: 14,
+                tablet: 10,
+                desktop: 11,
+                largeDesktop: 12,
+                ultraWide: 13,
+                landscapeAdjustment: 0.9,
+              ),
+              fontWeight: FontWeight.bold,
+              color: isDisabled ? Colors.blue.withOpacity(0.5) : Colors.blue,
+              letterSpacing: isDesktop ? 0.6 : 0.5,
+              height: 1.2,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
         ),
-      ),
-    );
+      );
+    });
   }
 }
 

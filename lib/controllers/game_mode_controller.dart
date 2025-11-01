@@ -46,7 +46,7 @@ class GameModeController extends GetxController {
     {
       'title': 'solo'.tr,
       'subtitle': 'Play alone at your own pace'.tr,
-      'icon': 'assets/images/solo.svg',
+      'icon': 'assets/images/solop.png',
       'color': const Color(0xFF4ECDC4),
       'description': 'Challenge yourself and improve your skills individually'.tr,
       'mode': 'solo',
@@ -63,7 +63,7 @@ class GameModeController extends GetxController {
     {
       'title': 'campaign'.tr,
       'subtitle': 'Complete missions and progress'.tr,
-      'icon': 'assets/images/campaign.svg',
+      'icon': 'assets/images/campaign_image.png',
       'color': const Color(0xFF45B7D1),
       'description': 'Engage in structured missions with progressive difficulty'.tr,
       'mode': 'campaign',

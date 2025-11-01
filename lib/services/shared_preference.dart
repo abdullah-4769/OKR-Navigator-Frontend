@@ -638,6 +638,67 @@ class SharedPrefs {
   static String? getString(String key) {
     return _prefs?.getString(key);
   }
+
+  // Add these methods to your existing SharedPrefs class
+
+// 🔹 STRATEGY SELECTION
+  static const String keySelectedStrategy = 'selectedStrategy';
+
+  static Future<void> saveSelectedStrategy(Map<String, dynamic> strategy) async {
+    final jsonString = jsonEncode(strategy);
+    await _prefs?.setString(keySelectedStrategy, jsonString);
+    print('💾 Saved Selected Strategy: ${strategy['title']}');
+  }
+
+  static Future<Map<String, dynamic>?> getSelectedStrategy() async {
+    final jsonString = _prefs?.getString(keySelectedStrategy);
+    if (jsonString == null) return null;
+    try {
+      return Map<String, dynamic>.from(jsonDecode(jsonString));
+    } catch (e) {
+      print('❌ Error parsing selected strategy: $e');
+      return null;
+    }
+  }
+
+  // static Future<void> clearSelectedStrategy() async {
+  //   await _prefs?.remove(keySelectedStrategy);
+  //   print('🧹 Cleared selected strategy');
+  // }
+
+// 🔹 ROLE SELECTION
+  static const String keySelectedRole = 'selectedRole';
+
+  static Future<void> saveSelectedRole(Map<String, dynamic> role) async {
+    final jsonString = jsonEncode(role);
+    await _prefs?.setString(keySelectedRole, jsonString);
+    print('💾 Saved Selected Role: ${role['titleKey']}');
+  }
+
+  static Future<Map<String, dynamic>?> getSelectedRole() async {
+    final jsonString = _prefs?.getString(keySelectedRole);
+    if (jsonString == null) return null;
+    try {
+      return Map<String, dynamic>.from(jsonDecode(jsonString));
+    } catch (e) {
+      print('❌ Error parsing selected role: $e');
+      return null;
+    }
+  }
+
+  static Future<void> clearSelectedRole() async {
+    await _prefs?.remove(keySelectedRole);
+    print('🧹 Cleared selected role');
+  }
+
+// // 🔹 USER ROLE (if different from selected role)
+//   static Future<void> saveUserRole(String role) async {
+//     await _prefs?.setString('userRole', role);
+//   }
+//
+//   static String? getUserRole() {
+//     return _prefs?.getString('userRole');
+//   }
 }
 
 

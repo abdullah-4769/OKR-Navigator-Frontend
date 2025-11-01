@@ -98,7 +98,7 @@ class StrategySelectionScreen extends StatelessWidget {
 
                         SizedBox(height: height * 0.03),
 
-                        // Cards Section
+                        // Cards Section - This uses your CustomCardPagerBuilder
                         CustomCardPagerBuilder(controller: controller),
 
                         SizedBox(height: height * 0.03),
@@ -124,38 +124,13 @@ class StrategySelectionScreen extends StatelessWidget {
                             ),
                             child: CustomButton2(
                               text: 'begin_mission'.tr,
-                              onPressed: controller.isCardRevealed.value
+                              onPressed: controller.canBeginMission
                                   ? () {
                                 journeyController.setStep(0, true);
-
-                                // ✅ Get game mode and pass appropriate data
-                                final gameMode = SharedPrefs.getGameMode();
-                                print('🎮 Current game mode: $gameMode');
-
-                                if (gameMode == 'campaign') {
-                                  // For campaign mode, use organization data
-                                  final organizationName = SharedPrefs.getCampaignSuggestionName();
-                                  final organizationDesc = SharedPrefs.getCampaignSuggestionDescription();
-
-                                  final organizationData = {
-                                    'name': organizationName ?? 'Organization',
-                                    'description': organizationDesc ?? '',
-                                    'type': 'organization'
-                                  };
-
-                                  print('🏢 Campaign mode - Using organization: $organizationName');
-                                  controller.beginMission(
-                                    selectedRole,
-                                    organizationData, // Pass organization instead of industry
-                                  );
-                                } else {
-                                  // For solo mode, use industry data as before
-                                  print('🎯 Solo mode - Using industry');
-                                  controller.beginMission(
-                                    selectedRole,
-                                    selectedIndustry,
-                                  );
-                                }
+                                controller.beginMission(
+                                  selectedRole,
+                                  selectedIndustry,
+                                );
                               }
                                   : null,
                             ),
@@ -182,14 +157,6 @@ class StrategySelectionScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
 
 
 

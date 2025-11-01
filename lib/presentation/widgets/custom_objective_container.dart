@@ -103,7 +103,7 @@ class CustomObjectiveContainer extends StatelessWidget {
                     Text(
                       subtitle!.tr,
                       textAlign: TextAlign.center,
-                      style: appTheme.textTheme.bodySmall?.copyWith(
+                      style: appTheme.textTheme.bodyLarge?.copyWith(
                         color: AppColors.grey,
                       ),
                     ),

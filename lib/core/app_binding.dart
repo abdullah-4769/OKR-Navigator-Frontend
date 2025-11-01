@@ -92,6 +92,8 @@ import '../services/key_result/key_results.dart';
 import '../services/notification_service.dart';
 import '../view_model/campaign_mode/certification_info_model.dart';
 import '../view_model/challenge_view_model/innovative_view_model.dart';
+import '../view_model/key_result_latest_view_model.dart';
+import '../view_model/key_results_view_mode.dart' hide KeyResultsLatestViewModel;
 import '../view_model/key_results_view_model/key_results_view_model.dart';
 import 'localization/localization_services.dart';
 
@@ -122,7 +124,7 @@ class AppBindings extends Bindings {
     Get.lazyPut(()=>HomeNavBarController());
     Get.lazyPut(()=>HomeNavBarController());
     // ✅ LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
-    Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
+    // Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
     Get.lazyPut<OKRConstellationController>(
           () => OKRConstellationController(),
       fenix: true,
@@ -165,7 +167,7 @@ class AppBindings extends Bindings {
     Get.put(KeyObjectiveController(), permanent: true); // ✅ Changed to permanent
 
     // ✅ LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
-    Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
+    // Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
     Get.lazyPut<OKRConstellationController>(
           () => OKRConstellationController(),
       fenix: true,
@@ -198,7 +200,7 @@ class AppBindings extends Bindings {
     Get.put(StrategySelectionController(), permanent: true);
     Get.put(AuthRepository(), permanent: true);
     // ✅ LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
-    Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
+    Get.lazyPut<KeyResultsLatestViewModel>(() => KeyResultsLatestViewModel(), fenix: true);
     Get.lazyPut<OKRConstellationController>(
           () => OKRConstellationController(),
       fenix: true,

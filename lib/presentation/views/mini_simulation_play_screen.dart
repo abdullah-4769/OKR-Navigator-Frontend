@@ -146,7 +146,7 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                       SizedBox(height: AppDimensions.d24.h),
 
                       /// SELECTED KEY RESULTS COUNTER
-                      const CustomSelectedKeyResultsContainer(),
+                    //  const CustomSelectedKeyResultsContainer(),
                       SizedBox(height: AppDimensions.d16.h),
 
                       /// KEY RESULTS GRID

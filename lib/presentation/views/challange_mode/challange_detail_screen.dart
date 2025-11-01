@@ -229,23 +229,23 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
                 ),
               ],
             ),
-            child: Center(
-              child: Image.asset(
-                controller.selectedCardIndex.value == -1
-                    ? 'assets/images/backcard_img.png'
-                    : controller.cardAssets[controller.selectedCardIndex.value],
-                key: ValueKey<int>(controller.selectedCardIndex.value),
-                height: getResponsiveHeight(
-                  mobile: 350,
-                  tablet: 420,
-                  desktop: 480,
-                  largeDesktop: 540,
-                  ultraWide: 600,
-                  landscapeAdjustment: 0.7,
-                ),
-                fit: BoxFit.contain,
-              ),
-            ),
+            // child: Center(
+            //   child: Image.asset(
+            //     controller.selectedCardIndex.value == -1
+            //         ? 'assets/images/backcard_img.png'
+            //         : controller.cardAssets[controller.selectedCardIndex.value],
+            //     key: ValueKey<int>(controller.selectedCardIndex.value),
+            //     height: getResponsiveHeight(
+            //       mobile: 350,
+            //       tablet: 420,
+            //       desktop: 480,
+            //       largeDesktop: 540,
+            //       ultraWide: 600,
+            //       landscapeAdjustment: 0.7,
+            //     ),
+            //     fit: BoxFit.contain,
+            //   ),
+            // ),
           ),
         ),
       ),

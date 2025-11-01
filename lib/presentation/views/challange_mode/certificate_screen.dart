@@ -139,32 +139,30 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
 
   @override
   Widget build(BuildContext context) => SafeArea(
-    child: CustomBackground(
-      child: SingleChildScrollView(
-        child: Center(
-          child: Container(
-            constraints: BoxConstraints(maxWidth: isWeb ? 500 : double.infinity),
-            padding: EdgeInsets.symmetric(
-              vertical: getResponsiveSpacing(
-                mobile: 18,
-                tablet: 20,
-                desktop: 24,
-                largeDesktop: 28,
-                ultraWide: 32,
-              ),
+    child: SingleChildScrollView(
+      child: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: isWeb ? 500 : double.infinity),
+          padding: EdgeInsets.symmetric(
+            vertical: getResponsiveSpacing(
+              mobile: 18,
+              tablet: 20,
+              desktop: 24,
+              largeDesktop: 28,
+              ultraWide: 32,
             ),
-            child: Obx(() {
-              if (widget.viewModel.isLoading.value) {
-                return _buildLoadingState();
-              } else if (widget.viewModel.errorMessage.value.isNotEmpty) {
-                return _buildErrorState();
-              } else if (widget.viewModel.certificationInfo != null) {
-                return _buildContent();
-              } else {
-                return _buildEmptyState();
-              }
-            }),
           ),
+          child: Obx(() {
+            if (widget.viewModel.isLoading.value) {
+              return _buildLoadingState();
+            } else if (widget.viewModel.errorMessage.value.isNotEmpty) {
+              return _buildErrorState();
+            } else if (widget.viewModel.certificationInfo != null) {
+              return _buildContent();
+            } else {
+              return _buildEmptyState();
+            }
+          }),
         ),
       ),
     ),
