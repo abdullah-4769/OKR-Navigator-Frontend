@@ -92,6 +92,39 @@ class StrategyRepository {
 
     return response;
   }
+  
+Future<List<KeyResult>> createBatchKeyResults({
+    required String strategy,
+    required List<String> objectives,
+    required String role,
+    required String language,
+  }) async {
+    final response = await _strategyApi.createBatchKeyResults({
+      'strategy': strategy,
+      'objectives': objectives,
+      'role': role,
+      'language': language,
+    });
+    
+    final List<KeyResult> keyResults = [];
+    
+    // --- FIX: Extracting from both possible paths ---
+    if (response is List<KeyResultResponse>) {
+      for (final KeyResultResponse item in response) {
+        // 1. Extract from the new topLevelKeyResults field (for the current API bug)
+        keyResults.addAll(item.topLevelKeyResults ?? []);
+        
+        // 2. Fallback check for the old nested structure (for robustness)
+        for (final text in item.text ?? <Text>[]) {
+            keyResults.addAll(text.keyResults ?? []);
+        }
+      }
+    }
+
+    // Since the API response contains multiple items (one per objective), 
+    // the list 'keyResults' will contain ALL key results generated.
+    return keyResults;
+  }
 
   /// ✅ Add Innovative Ideas
   Future<AddInnovativeResponse> addInnovativeIdea({

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for Clipboard
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/team_mode_controller/create_team_controller.dart'; 
@@ -394,7 +395,10 @@ Widget build(BuildContext context) {
        backgroundColor: AppColors.primaryBlue,
        textColor: Colors.white,
        text: "Edit Team Info".tr,
-       onPressed: () => Get.back(), // Navigates back to edit screen
+      onPressed: () { 
+          // 💡 MODIFIED: Navigate to CreateTeamScreen with isEditing flag
+          Get.toNamed(AppRoutes.createTeam, arguments: {'isEditing': true});
+       },
        ),
        ],
       ),

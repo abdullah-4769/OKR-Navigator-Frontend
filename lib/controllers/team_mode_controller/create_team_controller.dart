@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:game_app/data/repositories/team_repo.dart';
 import 'package:game_app/generated/models/requests/team_mode/join_team.dart';
+import 'package:game_app/generated/models/requests/team_mode/edit_team_request.dart';
 import 'package:game_app/services/notification_service.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
@@ -13,6 +14,8 @@ import '../../generated/models/requests/team_mode/create_team_request.dart';
 import '../../generated/models/responses/team_mode/create_team_response.dart';
 import '../../data/repositories/storage_repository.dart';
 import '../../utils/snackbar_helper.dart'; 
+import 'team_lobby_controller.dart'; 
+
 
 class CreateTeamController extends GetxController {
   final teamNameController = TextEditingController();
@@ -45,8 +48,9 @@ class CreateTeamController extends GetxController {
     'assets/images/role_icon.png',
     'assets/images/role_icon2.png',
   ].obs;
+static const int maxTeamSize = 5; 
 
-  Future<void> joinTeam() async {
+  Future<void> joinTeam() async {//
     final token = teamCodeController.text.trim();
     final user = _storageRepository.getUser();
     final userId = user?.id;
@@ -65,12 +69,29 @@ class CreateTeamController extends GetxController {
       isJoiningTeam.value = true;
       final request = JoinTeamRequest(token: token, userId: userId);
       
-      final response = await _teamRepository.joinTeam(request);
+      // ----------------------------------------------
+      // 1. PRE-JOIN VALIDATION: Check if team is full (requires fetching details via the token/API)
+      //    We can check the team details first to get the current member count.
+      // ----------------------------------------------
+      final tempTeamLobbyResponse = await _teamRepository.joinTeam(request); // Use joinTeam for validation first
+
+      if (tempTeamLobbyResponse.totalMembers != null && tempTeamLobbyResponse.totalMembers! >= maxTeamSize) {
+         // Check if the current user is already counted (which they should be, or if they are the 6th member)
+         final isAlreadyMember = tempTeamLobbyResponse.members?.any((m) => m.userId == userId) ?? false;
+
+         if (!isAlreadyMember) {
+             SnackbarHelper.error("Team is already full (Max $maxTeamSize players allowed).");
+             return;
+         }
+      }
+
+      final response = await _teamRepository.joinTeam(request); // Re-run the join request
 
       if (response.id != null) {
         createdTeamId.value = response.id;
         SnackbarHelper.success("Joined existing team: ${response.title ?? 'Team'}!");
         
+        // 2. WebSocket Call: POST /ws/join-team
         try {
           await _teamRepository.joinWsTeam(token, userId);
           log('Successfully joined WebSocket team room');
@@ -92,12 +113,68 @@ class CreateTeamController extends GetxController {
       }
     } catch (e) {
       log('Join team error: $e');
-      SnackbarHelper.error("Network error or invalid team data.");
+      // Catch specific server error if the server implements max size validation
+      if (e.toString().contains('Team is full')) { 
+         SnackbarHelper.error("Team is already full (Max $maxTeamSize players allowed).");
+      } else {
+         SnackbarHelper.error("Network error or invalid team data.");
+      }
     } finally {
       isJoiningTeam.value = false;
     }
   }
+  /// --- Helper to fetch team details (Used to pre-fill edit screen) ---
+  void loadTeamDetailsForEdit(int teamId) async {
+      try {
+        final response = await _teamRepository.getTeamDetails(teamId);
+        if (response.id != null) {
+            teamNameController.text = response.title ?? '';
+            teamMissionController.text = response.mission ?? '';
+            selectedAvatarIndex.value = int.tryParse(response.teamavatorid ?? '-1') ?? -1;
+            // The createdTeamId should already be set from the lobby navigation
+        }
+      } catch (e) {
+        log('Error loading team details for edit: $e');
+        SnackbarHelper.error('Failed to load team details for editing.');
+      }
+  }
+  
+  /// --- Dedicated Edit Method ---
+  Future<void> _performEdit(int teamId) async {
+     try {
+        isCreatingTeam.value = true; // Reusing this flag for 'isSaving' state
+        
+        final request = EditTeamRequest(
+          title: teamNameController.text.trim(),
+          mission: teamMissionController.text.trim(),
+          teamavatorid: selectedAvatarIndex.value >= 0 ? selectedAvatarIndex.value.toString() : "0",
+        );
+        
+        // 1. Call API
+        final updatedTeam = await _teamRepository.editTeam(teamId, request);
+        
+        // 2. Update local controllers with new data from API response
+        teamNameController.text = updatedTeam.title ?? '';
+        teamMissionController.text = updatedTeam.mission ?? '';
+        selectedAvatarIndex.value = int.tryParse(updatedTeam.teamavatorid ?? '-1') ?? -1;
+        
+        SnackbarHelper.success("Team updated successfully!");
+        
+        // 3. Manually trigger TeamLobbyController refresh if it's visible
+        if(Get.isRegistered<TeamLobbyController>()) {
+            Get.find<TeamLobbyController>().fetchTeamDetails();
+        }
+        
+        // 4. Navigate back to Lobby, replacing the edit screen
+        Get.offNamed(AppRoutes.teamLobby);
 
+    } catch (e) {
+        SnackbarHelper.error("Failed to update team: ${e.toString()}");
+        log('Edit team error: $e');
+    } finally {
+        isCreatingTeam.value = false;
+    }
+  }
 
   Future<void> createTeam() async {
     try {
@@ -140,7 +217,8 @@ class CreateTeamController extends GetxController {
             );
         }
 
-        Get.toNamed(AppRoutes.teamLobby);
+        // Navigate to lobby, replacing the create screen
+        Get.offNamed(AppRoutes.teamLobby);
       } else {
         SnackbarHelper.error(response.data['message'] ?? "Failed to create team. Please try again.");
       }
@@ -152,8 +230,8 @@ class CreateTeamController extends GetxController {
     }
   }
 
-  // FIXED: Block team creation if no avatar is selected
-  void continueCreateTeam() {
+  /// Handles dispatching to Create or Edit logic based on flag
+  void continueCreateTeam({required bool isEditing}) {
     if (teamNameController.text.trim().isEmpty) {
       SnackbarHelper.warning("Please enter a team name");
       return;
@@ -164,7 +242,16 @@ class CreateTeamController extends GetxController {
       return;
     }
 
-    createTeam();
+    if (isEditing) {
+        final teamId = createdTeamId.value;
+        if (teamId != null) {
+            _performEdit(teamId);
+        } else {
+            SnackbarHelper.error("Cannot edit: Team ID is missing.");
+        }
+    } else {
+        createTeam();
+    }
   }
 
   

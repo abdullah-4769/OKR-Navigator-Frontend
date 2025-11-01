@@ -4,6 +4,7 @@ class KeyResultResponse {
   final int? strategyId;
   final List<Text>? text;
   final DateTime? expiresAt;
+  final List<KeyResult>? topLevelKeyResults;
 
   KeyResultResponse({
     this.id,
@@ -11,6 +12,7 @@ class KeyResultResponse {
     this.strategyId,
     this.text,
     this.expiresAt,
+    this.topLevelKeyResults, 
   });
 
   factory KeyResultResponse.fromJson(Map<String, dynamic> json) =>
@@ -24,6 +26,12 @@ class KeyResultResponse {
         expiresAt: json['expiresAt'] == null
             ? null
             : DateTime.parse(json['expiresAt']),
+        // --- NEW MAPPING TO CAPTURE TOP-LEVEL FIELD ---
+        topLevelKeyResults: json['keyResults'] == null
+            ? []
+            : List<KeyResult>.from(
+                json['keyResults']!.map((x) => KeyResult.fromJson(x)),
+              ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +42,9 @@ class KeyResultResponse {
         ? []
         : List<dynamic>.from(text!.map((x) => x.toJson())),
     'expiresAt': expiresAt?.toIso8601String(),
+    'keyResults': topLevelKeyResults == null 
+        ? []
+        : List<dynamic>.from(topLevelKeyResults!.map((x) => x.toJson())),
   };
 }
 
