@@ -4,6 +4,7 @@ import 'package:game_app/generated/assets.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:game_app/presentation/widgets/bubble_button.dart';
 import 'package:get/get.dart';
+import 'package:stacked_card_carousel/stacked_card_carousel.dart';
 
 import '../../../controllers/home_controller.dart';
 import '../../../core/app_colors.dart';
@@ -18,14 +19,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeController c = Get.put(HomeController(), permanent: true);
+  final PageController _stackedCardController = PageController();
 
   @override
   void initState() {
     super.initState();
-    // Reset page controller when screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      c.resetPageController();
+      if (mounted) {
+        setState(() {});
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _stackedCardController.dispose();
+    super.dispose();
   }
 
   @override
@@ -132,25 +141,38 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
 
-                    // Cards
+                    // Stacked Card Carousel
                     Expanded(
-                      child: PageView.builder(
-                        key: Key('home_page_view_${DateTime.now().millisecondsSinceEpoch}'),
-                        controller: c.pageController,
-                        scrollDirection: Axis.vertical,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: c.cards.length,
-                        onPageChanged: (index) {
-                          c.selectedCardIndex.value = index;
-                        },
-                        itemBuilder: (context, index) {
-                          return _CardItem(
-                            index: index,
-                            cardData: c.cards[index],
-                            onTap: c.onTapCTA,
-                          );
-                        },
-                      ),
+                      child: Obx(() {
+                        final selectedIndex = c.selectedCardIndex.value;
+                        return StackedCardCarousel(
+                          initialOffset: 20,
+                          spaceBetweenItems: 320,
+                          items: List.generate(c.cards.length, (index) {
+                            return _CardItem(
+                              index: index,
+                              cardData: c.cards[index],
+                              isCenter: index == selectedIndex,
+                              onTap: () {
+                                if (index == selectedIndex) {
+                                  c.onTapCTA();
+                                } else {
+                                  _stackedCardController.animateToPage(
+                                    index,
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.easeInOut,
+                                  );
+                                  c.selectedCardIndex.value = index;
+                                }
+                              },
+                            );
+                          }),
+                          pageController: _stackedCardController,
+                          onPageChanged: (index) {
+                            c.selectedCardIndex.value = index;
+                          },
+                        );
+                      }),
                     ),
 
                     // Right side - Vertical dots
@@ -238,15 +260,17 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 }
 
-// Simple card widget without animation to avoid controller issues
+// Card Item Widget
 class _CardItem extends StatelessWidget {
   final int index;
   final Map<String, dynamic> cardData;
+  final bool isCenter;
   final VoidCallback onTap;
 
   const _CardItem({
     required this.index,
     required this.cardData,
+    required this.isCenter,
     required this.onTap,
   });
 
@@ -258,9 +282,8 @@ class _CardItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
-        height: 0.48.sh,
-        padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 20.h),
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -270,9 +293,9 @@ class _CardItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(24.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
+              color: Colors.black.withValues(alpha: isCenter ? 0.25 : 0.15),
+              blurRadius: isCenter ? 20 : 12,
+              offset: Offset(0, isCenter ? 8 : 4),
             ),
           ],
         ),
@@ -307,12 +330,12 @@ class _CardItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 12.h),
                 Text(
                   (cardData['subtitle'] ?? '').toString().tr,
                   style: TextStyle(
                     fontSize: 13.sp,
-                    height: 1.35,
+                    height: 1.4,
                     color: Colors.white.withValues(alpha: 0.95),
                     fontWeight: FontWeight.w400,
                   ),

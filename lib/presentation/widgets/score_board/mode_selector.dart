@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game_app/core/app_colors.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/scoreboard_controllers/score_board_controller.dart';
@@ -11,6 +12,14 @@ class ModeSelectorWidget extends StatelessWidget {
     final controller = Get.find<ScoreboardController>();
 
     return Container(
+      
+      margin: EdgeInsets.symmetric(horizontal: 14,vertical: 15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.border
+        )
+      ),
       padding: const EdgeInsets.all(8.0),
       child: Obx(
             () => Row(
