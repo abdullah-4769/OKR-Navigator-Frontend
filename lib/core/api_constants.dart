@@ -65,6 +65,20 @@ class ApiConstants {
   // static String getLatestGameScore(String userId) {
   //   return '$baseUrl/solo-score/user/$userId/latest';
   // }
+  // ......... Dashboard For All Users ........//
+  static String soloScoreBoard(String userId){
+    return "$baseUrl/solo-score/user/$userId/ranking";
+  }
+  static String teamScoreboard(String userId){
+    return "$baseUrl/final-team-score/player-ranking/$userId";
+  }
+  static String compaignModeScore(String compaignId){
+    return "$baseUrl/campaign-mode-score/ranking/$compaignId";
+  }
+  static String challengeMode(String userId){
+    return "$baseUrl/challenge-mode-score/ranking/$userId";
+  }
+  /// /------------------//------------------------/
 
   static String joinChallenge(String code) {
     return '$baseUrl/challenges/join/$code';

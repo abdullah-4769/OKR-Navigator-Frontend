@@ -52,7 +52,6 @@ class PersonalDashboardScreen extends StatelessWidget {
                         top: 12.h,
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           /// ✅ Header (no horizontal padding)
                           CustomHeader(
@@ -353,8 +352,7 @@ class PersonalDashboardScreen extends StatelessWidget {
   }
 
   /// ✅ recent games card
-  Widget _gamesCard(BuildContext context, List<Map<String, String>> games) {
-    return Container(
+  Widget _gamesCard(BuildContext context, List<Map<String, String>> games) => Container(
       margin: EdgeInsets.symmetric(vertical: 6.h),
       padding: EdgeInsets.all(AppDimensions.d12.w),
       decoration: BoxDecoration(
@@ -394,8 +392,7 @@ class PersonalDashboardScreen extends StatelessWidget {
           ),
           SizedBox(height: AppDimensions.d12.h),
 
-          ...games.map((g) {
-            return Column(
+          ...games.map((g) => Column(
               children: [
                 Row(
                   children: [
@@ -451,12 +448,10 @@ class PersonalDashboardScreen extends StatelessWidget {
                   height: 14.h,
                 ),
               ],
-            );
-          }).toList(),
+            )).toList(),
         ],
       ),
     );
-  }
 }
 
 
