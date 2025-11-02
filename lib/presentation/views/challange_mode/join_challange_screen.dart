@@ -22,7 +22,7 @@ class JoinChallengeScreen extends StatefulWidget {
 }
 
 class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
-  final ChallengeViewModel _viewModel = Get.put(ChallengeViewModel());
+  final ChallengeCreateViewModel _viewModel = Get.put(ChallengeCreateViewModel());
 
   @override
   void initState() {
@@ -194,7 +194,7 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
   }
 
   /// Invite Code Card
-  Widget _buildInviteCodeCard(ChallengeViewModel controller, String code) {
+  Widget _buildInviteCodeCard(ChallengeCreateViewModel controller, String code) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 18),
       padding: EdgeInsets.all(16.h),
@@ -422,7 +422,7 @@ class _PlayerCard extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               final playerId = player['id']; // from your player map
-              Get.find<ChallengeViewModel>().sendChallengeInvite(playerId);
+              Get.find<ChallengeCreateViewModel>().sendChallengeInvite(playerId);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             child: const Text("Challenge"),
@@ -476,7 +476,7 @@ class _ChallengerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ChallengeViewModel viewModel = Get.find<ChallengeViewModel>();
+    final ChallengeCreateViewModel viewModel = Get.find<ChallengeCreateViewModel>();
 
     return Container(
       padding: EdgeInsets.all(16.h),

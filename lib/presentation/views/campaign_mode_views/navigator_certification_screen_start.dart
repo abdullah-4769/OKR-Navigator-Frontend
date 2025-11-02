@@ -109,7 +109,7 @@ class _NavigatorCertificationStartScreenState extends State<NavigatorCertificati
                         SizedBox(height: 10.h),
                         Center(child:
                         CountdownTimerWidget(
-                          totalMinutes: 15,
+                          //totalMinutes: 15,
                           size: 130,
                           onTimerComplete: () {
                             // Custom navigation or action

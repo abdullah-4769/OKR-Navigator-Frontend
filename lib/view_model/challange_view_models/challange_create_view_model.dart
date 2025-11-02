@@ -14,7 +14,7 @@ import '../../repository/challange_repositories/challenge_accept_invitation_repo
 import '../../repository/challange_repositories/challenge_send__invite_repostory.dart';
 import '../../services/shared_preference.dart';
 
-class ChallengeViewModel extends GetxController {
+class ChallengeCreateViewModel extends GetxController {
   final ChallengeRepository _repository = ChallengeRepository();
   final ChallengeAcceptInvitationRepository _invitationRepository = ChallengeAcceptInvitationRepository();
   final isChallengeCreated = false.obs;

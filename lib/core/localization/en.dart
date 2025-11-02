@@ -1,5 +1,99 @@
 final Map<String, String> en = {
+  "tap_to_reveal_strategy": "Tap to Reveal Strategy",
+  "strategy_revealed": "Strategy Revealed",
+  "lets_start_mission": "Let's Start the Mission",
+  "selected_key_result":"Selected Key Resul",
+  'try_again_with_different': 'Try Again With Different',
+  'select_different_objective_retry': 'Select a different objective to improve your initiatives and try again',
+  'retry_attempt': 'Retry Attempt',
+  'please_select_different_objective': 'Please select a different objective',
+  'improve_initiatives_retry': 'Choose a new objective to improve your initiative success rate',
+  "select_adjust":"Select To Adjust",
+  'select': 'Select',
+  'key_results': 'Key Results',
+  'selected_objective': 'Selected Objective',
+  'select_key_results': 'Select Key Results',
+  'choose_3_outcomes': 'Choose 3 outcomes that will drive your strategy forward',
+  'choose_3_outcomes_retry': 'Choose 3 different outcomes to improve your initiatives',
+  'choose_3_outcomes_modify': 'Choose 3 outcomes to adapt to the market challenge',
+  'complete_selection': 'Complete Selection',
+  'save_changes': 'Save Changes',
+  'available_key_results': 'Available Key Results',
+  'key_results_selected': 'key results selected',
+  'select_key_results_to_continue': 'Select key results to continue',
+  'view': 'View',
+  'select_adjust': 'Select/Adjust',
+  'adapting_to_challenge': 'Adapting to Challenge',
+  'retry_attempt': 'Retry Attempt',
+  'try_again_with': 'Try Again With',
+  // Initiatives Screen Strings
+  'revise': 'Revise',
+  'revise_initiatives_subtitle': 'Update your initiatives to address the market challenge',
+  'save_revisions': 'Save Revisions',
+  'initiatives_revised_successfully': 'Initiatives revised successfully',
 
+  "selected_key_results": "Selected Key Results",
+  "viewing_existing_initiatives": "Reviewing Your Initiatives",
+  "hint_third_initiative_adaptation": "You can add your 3rd adaptive initiative in the next screen to address market changes",
+  "continue_to_adaptation": "Continue to Adaptation",
+  "review": "Review",
+
+  // For the key results section
+  "selected_key_result": "Selected Key Result",
+
+  // For initiative inputs
+  "enter_initiative_name": "Enter initiative name",
+  "describe_initiative_help": "Describe how this initiative will help achieve the key result",
+
+  // For submission states
+  "submitting": "Submitting...",
+  "save_revisions": "Save Revisions",
+  "submit_analysis": "Submit Analysis",
+
+  // Header texts
+  "suggestion": "Suggestion",
+  "of_initiatives": "of Initiatives",
+  "initiatives": "Initiatives",
+
+  // Optional: Additional descriptive texts
+  "revise_initiatives_subtitle": "Update your initiatives based on new insights",
+  "add_initiatives_subtitle": "Add initiatives to achieve your selected key results",
+
+  // For the journey/flow context
+  "adaptation_screen": "Adaptation Screen",
+  "market_changes": "Market Changes",
+  "adaptive_initiative": "Adaptive Initiative",
+  // For contextual challenge flow
+  "contextual_challenge_flow": "Contextual Challenge Flow",
+  "adjust_initiatives_for_changes": "Adjust your initiatives to address market changes",
+  "third_initiative_placeholder": "Add adaptive initiative here...",
+"key_result_for_evaluation":"Key Result Random\nOne from Selected Key Results",
+  "describe_strategic_actions":"Describe Your Strategic Action",
+  // For normal flow
+  "normal_flow": "Normal Flow",
+  "based_on_selected_key_results": "Based on your selected key results",
+"ready_to_start":"Ready To Start",
+  // Status messages
+  "initiatives_updated_successfully": "Initiatives updated successfully",
+  "analysis_submitted_successfully": "Analysis submitted successfully",
+
+  // Tooltips/hints
+  "initiative_tooltip": "An initiative is a concrete action that helps achieve your key result",
+  "key_result_based_initiative": "This initiative should directly support your selected key result",
+// Existing strings you might need
+  'suggestion': 'Suggestion',
+  'of_initiatives': 'of Initiatives',
+  'add_initiatives_subtitle': 'Add strategic initiatives to achieve your key results',
+  'first_initiative': 'First Initiative',
+  'second_initiative': 'Second Initiative',
+  'submitting': 'Submitting...',
+  'submit_analysis': 'Submit Analysis',
+  'selected_key_result': 'Selected Key Result',
+  'modify': 'Modify',
+  'select_new_objective_for_challenge': 'Select a new objective to adapt to the market challenge',
+  'save_changes': 'Save Changes',
+  'adapting_to_challenge': 'Adapting to Challenge',
+  'objective_updated_successfully': 'Objective updated successfully',
 // Screen Titles
   "mini_simulation": "Mini-Simulation",
   "remaining_time": "Remaining Time",
@@ -12,7 +106,10 @@ final Map<String, String> en = {
   "draw_strategy_subtitle": "Pick your card to define your mission strategy.",
   "begin_mission": "Begin Mission",
   "load_game_data": "Load Game Data",
-
+  "email_or_password_incorrect": "Email or password is incorrect",
+  "network_error": "Network error. Please check your connection",
+  "login_failed": "Login failed. Please try again",
+  "password_reset_coming": "Password reset feature coming soon",
   "logistics_desc":"Logistic Descriptions select to continue",
   "public_sector_desc":"Public Sector and Government Sectors is the industry select to continue",
   "retail_desc":"Retail and Ecommerence",
@@ -30,7 +127,38 @@ final Map<String, String> en = {
   "objective_alignment": "Objective Alignment",
   "key_result_quality": "Key Result Quality",
   "okr_evaluation_feedback": "OKR Evaluation Feedback",
-  
+  "retry_count_display":"Retry Count Display",
+  "try_again":"Try Again",
+  // Analysis Screen Strings
+  'initiative_rejected': 'Initiative Rejected',
+  'initiative_needs_improvement': 'Your initiative needs improvement to meet the strategic objectives.',
+  'retry_count': 'Retry Count',
+  'suggest_improve_initiatives': 'Please refine your initiatives and try again.',
+  'try_again': 'Try Again',
+  'max_retries_reached': 'Maximum Retries Reached',
+  'max_retries_exceeded': 'You have reached the maximum number of attempts (3).',
+  'please_try_different_objectives': 'Please try with different objectives or initiatives.',
+  'understand': 'Understand',
+  'retry': 'Retry',
+  'of': 'of',
+  'analyzing': 'Analyzing...',
+  'loading_analysis': 'Analyzing initiatives...',
+  'check_contextual_challenge': 'Check Contextual Challenge',
+  'proceed_to_results': 'Proceed to Results',
+  'continue': 'Continue',
+  'relevance_threshold': 'Relevance Threshold',
+
+// Decision Status
+  'accepted': 'Accepted',
+  'rejected': 'Rejected',
+  'review_required': 'Review Required',
+
+// Game Modes
+
+
+// Navigation
+  'navigating_to_results': 'Navigating to Results',
+  'navigating_to_objectives': 'Returning to Objectives',
 // Language Screen
   "choose_language": "Choose Your Language",
   "language_subtitle": "Select your preferred language for the app",

@@ -118,96 +118,137 @@ class MissionScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 25.h),
 
-                        /// ✅ Buttons
+                        // ✅ Buttons with Circular Progress
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: CustomButton(
-                            text: "begin_campaign".tr,
-                            backgroundColor: AppColors.primaryRed,
-                            icon: Icons.play_arrow,
-                              // In CampaignModeScreen - update the onStart method
-                              onPressed: () async {
-                                print('🎯 Org A Start button pressed');
+                          child: StatefulBuilder(
+                            builder: (context, setState) {
+                              bool _isStartingCampaign = false;
 
-                                // ✅ First verify game mode
-                                final savedMode = await SharedPrefs.getGameMode();
-                                print('📋 Current saved game mode: $savedMode');
+                              return _isStartingCampaign
+                                  ? Container(
+                                width: double.infinity,
+                                height: 50.h,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryRed.withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(25.r),
+                                ),
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 24.w,
+                                    height: 24.w,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              )
+                                  : CustomButton(
+                                text: "begin_campaign".tr,
+                                backgroundColor: AppColors.primaryRed,
+                                icon: Icons.play_arrow,
+                                onPressed: () async {
+                                  setState(() {
+                                    _isStartingCampaign = true;
+                                  });
 
-                                if (savedMode != 'campaign') {
-                                  print('❌ Game mode mismatch! Expected: campaign, Got: $savedMode');
-                                  Get.snackbar(
-                                    "Error".tr,
-                                    "Game mode not set to campaign".tr,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                  return;
-                                }
+                                  print('🎯 Org A Start button pressed');
 
-                                // Get the controller instance
-                                final controller = Get.find<RoleSelectionController>();
+                                  try {
+                                    // ✅ First verify game mode
+                                    final savedMode = await SharedPrefs.getGameMode();
+                                    print('📋 Current saved game mode: $savedMode');
 
-                                final selectedRoleIndex = SharedPrefs.getSelectedRoleIndex();
-                                print('👤 Selected role index: $selectedRoleIndex');
+                                    if (savedMode != 'campaign') {
+                                      print('❌ Game mode mismatch! Expected: campaign, Got: $savedMode');
+                                      Get.snackbar(
+                                        "Error".tr,
+                                        "Game mode not set to campaign".tr,
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                      return;
+                                    }
 
-                                if (selectedRoleIndex == -1) {
-                                  Get.snackbar(
-                                    "Error".tr,
-                                    "No role selected".tr,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                  return;
-                                }
+                                    // Get the controller instance
+                                    final controller = Get.find<RoleSelectionController>();
 
-                                final roleData = controller.roles[selectedRoleIndex];
-                                final language = Get.locale?.languageCode ?? "en";
+                                    final selectedRoleIndex = SharedPrefs.getSelectedRoleIndex();
+                                    print('👤 Selected role index: $selectedRoleIndex');
 
-                                print("🚀 Sending API request - role: ${roleData['role']}, language: $language");
+                                    if (selectedRoleIndex == -1) {
+                                      Get.snackbar(
+                                        "Error".tr,
+                                        "No role selected".tr,
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                      return;
+                                    }
 
-                                // ✅ Call the API and wait for response
-                                final response = await controller.postRoleAndLanguage(
-                                  roleData['role'].toString(),
-                                  language,
-                                );
+                                    final roleData = controller.roles[selectedRoleIndex];
+                                    final language = Get.locale?.languageCode ?? "en";
 
-                                if (response != null) {
-                                  print("✅ API Response received: ${response.keys}");
-                                  print("📝 Response data: $response");
+                                    print("🚀 Sending API request - role: ${roleData['role']}, language: $language");
 
-                                  // ✅ Save the description in SharedPreferences
-                                  final description = response['description'] ?? response['name'] ?? 'No description available';
-                                  await SharedPrefs.saveMissionDescription(description);
-                                  print('💾 Mission description saved: $description');
+                                    // ✅ Call the API and wait for response
+                                    final response = await controller.postRoleAndLanguage(
+                                      roleData['role'].toString(),
+                                      language,
+                                    );
 
-                                  // ✅ Create organization data for campaign mode
-                                  final organizationData = {
-                                    'titleKey': 'organization_a',
-                                    'descriptionKey': 'startup_phase_level1',
-                                    'icon': Icons.business,
-                                  };
+                                    if (response != null) {
+                                      print("✅ API Response received: ${response.keys}");
+                                      print("📝 Response data: $response");
 
-                                  // ✅ Save organization for campaign mode
-                                  await SharedPrefs.saveSelectedIndustry(organizationData);
+                                      // ✅ Save the description in SharedPreferences
+                                      final description = response['description'] ?? response['name'] ?? 'No description available';
+                                      await SharedPrefs.saveMissionDescription(description);
+                                      print('💾 Mission description saved: $description');
 
-                                  // ✅ Navigate to Strategy Selection with both role and organization
-                                  print('🎬 Navigating to Strategy Selection with campaign data');
-                                  Get.toNamed(
-                                    AppRoutes.selectStrategy,
-                                    arguments: {
-                                      'selectedRole': roleData,
-                                      'selectedIndustry': organizationData,
-                                      'isCampaignMode': true, // ✅ Flag to indicate campaign mode
-                                    },
-                                  );
-                                } else {
-                                  print('❌ API returned null response');
-                                  Get.snackbar(
-                                    "Error".tr,
-                                    "Failed to load mission details".tr,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                }
-                              },
+                                      // ✅ Create organization data for campaign mode
+                                      final organizationData = {
+                                        'titleKey': 'organization_a',
+                                        'descriptionKey': 'startup_phase_level1',
+                                        'icon': Icons.business,
+                                      };
 
+                                      // ✅ Save organization for campaign mode
+                                      await SharedPrefs.saveSelectedIndustry(organizationData);
+
+                                      // ✅ Navigate to Strategy Selection with both role and organization
+                                      print('🎬 Navigating to Strategy Selection with campaign data');
+                                      Get.toNamed(
+                                        AppRoutes.selectStrategy,
+                                        arguments: {
+                                          'selectedRole': roleData,
+                                          'selectedIndustry': organizationData,
+                                          'isCampaignMode': true, // ✅ Flag to indicate campaign mode
+                                        },
+                                      );
+                                    } else {
+                                      print('❌ API returned null response');
+                                      Get.snackbar(
+                                        "Error".tr,
+                                        "Failed to load mission details".tr,
+                                        snackPosition: SnackPosition.BOTTOM,
+                                      );
+                                    }
+                                  } catch (e) {
+                                    print('❌ Error starting campaign: $e');
+                                    Get.snackbar(
+                                      "Error".tr,
+                                      "Failed to start campaign: ${e.toString()}",
+                                      snackPosition: SnackPosition.BOTTOM,
+                                    );
+                                  } finally {
+                                    // ✅ REMOVED the mounted check - just set the state
+                                    setState(() {
+                                      _isStartingCampaign = false;
+                                    });
+                                  }
+                                },
+                              );
+                            },
                           ),
                         ),
                         SizedBox(height: 12.h),

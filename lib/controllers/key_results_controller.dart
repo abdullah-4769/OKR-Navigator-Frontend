@@ -206,4 +206,5 @@ class KeyResultsController extends GetxController {
     final convertedResults = getSelectedKeyResults();
     print('   Converted results count: ${convertedResults.length}');
   }
+
 }

@@ -9,6 +9,7 @@ class CustomInitiativeInput extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController descController;
   final String mode; // 'solo' or 'team'
+  final bool isEnabled; // ✅ NEW: Added isEnabled parameter
 
   const CustomInitiativeInput({
     super.key,
@@ -16,6 +17,7 @@ class CustomInitiativeInput extends StatelessWidget {
     required this.titleController,
     required this.descController,
     this.mode = 'solo',
+    this.isEnabled = true, // ✅ NEW: Default to true
   });
 
   @override
@@ -71,24 +73,38 @@ class CustomInitiativeInput extends StatelessWidget {
                 /// Title Field
                 TextField(
                   controller: titleController,
+                  enabled: isEnabled, // ✅ Use isEnabled parameter
                   decoration: InputDecoration(
                     hintText: 'enter_initiative_name'.tr,
-                    hintStyle: TextStyle(fontSize: width * 0.035,
+                    hintStyle: TextStyle(
+                      fontSize: width * 0.035,
                       fontFamily: 'Gotham',
                       fontWeight: FontWeight.w900,
-                    color: AppColors.grey),
+                      color: isEnabled ? AppColors.grey : AppColors.grey.withOpacity(0.5), // ✅ Adjust hint color when disabled
+                    ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: width * 0.03,
                       vertical: height * 0.015,
-
                     ),
                     border: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(AppDimensions.d10.r),
+                      borderRadius: BorderRadius.circular(AppDimensions.d10.r),
                       borderSide: BorderSide(
                         color: AppColors.grey.withValues(alpha: 0.3),
                       ),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppDimensions.d10.r),
+                      borderSide: BorderSide(
+                        color: isEnabled
+                            ? AppColors.grey.withValues(alpha: 0.3)
+                            : AppColors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                    filled: !isEnabled, // ✅ Show filled background when disabled
+                    fillColor: !isEnabled ? AppColors.grey : null,
+                  ),
+                  style: TextStyle(
+                    color: isEnabled ? Colors.black : Colors.black54, // ✅ Adjust text color when disabled
                   ),
                 ),
                 SizedBox(height: AppDimensions.d12.h),
@@ -96,24 +112,39 @@ class CustomInitiativeInput extends StatelessWidget {
                 /// Description Field
                 TextField(
                   controller: descController,
+                  enabled: isEnabled, // ✅ Use isEnabled parameter
                   maxLines: 3,
                   decoration: InputDecoration(
                     hintText: 'describe_initiative_help'.tr,
-                    hintStyle: TextStyle(fontSize: width * 0.035,
-                        fontFamily: 'Gotham',
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.grey),
+                    hintStyle: TextStyle(
+                      fontSize: width * 0.035,
+                      fontFamily: 'Gotham',
+                      fontWeight: FontWeight.w900,
+                      color: isEnabled ? AppColors.grey : AppColors.grey.withOpacity(0.5), // ✅ Adjust hint color when disabled
+                    ),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: width * 0.03,
                       vertical: height * 0.02,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.circular(AppDimensions.d10.r),
+                      borderRadius: BorderRadius.circular(AppDimensions.d10.r),
                       borderSide: BorderSide(
                         color: AppColors.grey.withValues(alpha: 0.3),
                       ),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppDimensions.d10.r),
+                      borderSide: BorderSide(
+                        color: isEnabled
+                            ? AppColors.grey.withValues(alpha: 0.3)
+                            : AppColors.grey.withOpacity(0.2),
+                      ),
+                    ),
+                    filled: !isEnabled, // ✅ Show filled background when disabled
+                    fillColor: !isEnabled ? AppColors.grey : null,
+                  ),
+                  style: TextStyle(
+                    color: isEnabled ? Colors.black : Colors.black54, // ✅ Adjust text color when disabled
                   ),
                 ),
               ],

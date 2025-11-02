@@ -25,7 +25,7 @@ class CampaignProgressService {
   // Get current level
   static Future<int> getCurrentLevel() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(_keyCurrentLevel) ?? 1;
+    return prefs.getInt(_keyCurrentLevel) ?? 2;
   }
 
   // Check if level is completed

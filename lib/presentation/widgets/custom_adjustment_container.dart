@@ -69,7 +69,7 @@ class CustomAdjustmentContainer extends StatelessWidget {
                 ),
                 child: Icon(icon, color: AppColors.white, size: AppDimensions.d20.w),
               ),
-              SizedBox(width: AppDimensions.d12.w),
+              SizedBox(width: AppDimensions.d8.w),
 
               // Title + Description
               Expanded(
@@ -122,7 +122,7 @@ class CustomAdjustmentContainer extends StatelessWidget {
                       children: [
                         Icon(Icons.edit,
                             size: AppDimensions.d14.w, color: Colors.white),
-                        SizedBox(width: 4.w),
+                        SizedBox(width: 6.w),
                         Text(
                           actionText!,
                           style: TextStyle(

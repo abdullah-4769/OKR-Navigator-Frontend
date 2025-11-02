@@ -21,7 +21,20 @@ class RegisterController extends GetxController {
 
   // Loading State
   final isLoading = false.obs;
+  final RxBool isPasswordVisible = false.obs;
+  final RxBool isConfirmPasswordVisible = false.obs;
 
+
+
+  // Toggle password visibility
+  void togglePasswordVisibility() {
+    isPasswordVisible.value = !isPasswordVisible.value;
+  }
+
+  // Toggle confirm password visibility
+  void toggleConfirmPasswordVisibility() {
+    isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+  }
   bool validateRegisterForm() => formKey.currentState?.validate() ?? false;
 
   Future<void> register() async {

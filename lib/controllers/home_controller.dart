@@ -11,6 +11,7 @@ class HomeController extends GetxController {
   late PageController pageController;
   final RxInt selectedCardIndex = 0.obs;
 
+
   final List<Map<String, dynamic>> cards = [
     {
       'titleTop': 'Start',
@@ -44,9 +45,20 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _clearPreviousGameData();
     _initializePageController();
+
   }
 
+
+  Future<void> _clearPreviousGameData() async {
+    try {
+      await SharedPrefs.clearGameSessionData();
+      print('🔄 Home screen: Cleared previous game data for fresh start');
+    } catch (e) {
+      print('❌ Error clearing game data: $e');
+    }
+  }
   void _initializePageController() {
     pageController = PageController(
       viewportFraction: 0.85,
@@ -118,6 +130,7 @@ class HomeController extends GetxController {
       print('❌ Error saving challenge mode: $e');
     }
   }
+
 
   @override
   void onClose() {
