@@ -44,7 +44,7 @@ class RoleSelectionScreen extends StatelessWidget {
                         CustomHeader(
                           title: trKey('select'),
                           highlightedText: trKey('role'),
-                          onBackTap: () => Get.offAllNamed(AppRoutes.pricingScreen),
+                          onBackTap: () => Get.back(),
                         ),
 
                         // ✅ Welcome Section

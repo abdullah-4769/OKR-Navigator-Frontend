@@ -412,14 +412,14 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
     }
     return 'submit_analysis'.tr;
   }
-
-  // ✅ Handle submission based on source
+// In _handleSubmit method
   void _handleSubmit(SuggestionInitiativesViewModel viewModel) {
     if (_isModifyFromContextual) {
       // For contextual challenge - just navigate to adaptation screen
       Get.toNamed(AppRoutes.contextualChallenge);
     } else {
-      // Normal submission flow
+      // Normal submission flow - mark initiatives step as complete
+      journeyController.completeStep(3);
       viewModel.submitInitiatives(widget.selectedKeyResults);
     }
   }

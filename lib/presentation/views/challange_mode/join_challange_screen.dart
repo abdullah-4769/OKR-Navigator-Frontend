@@ -114,8 +114,8 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
                       highlightedText: "Challenge",
                       onBackTap: Get.back,
                     ),
-                    SizedBox(height: 10.h),
-                    _buildUserInfoCard(),
+                  //  SizedBox(height: 10.h),
+                    //_buildUserInfoCard(),
                     SizedBox(height: 10.h),
                     CustomScoreCard(
                       title: '',

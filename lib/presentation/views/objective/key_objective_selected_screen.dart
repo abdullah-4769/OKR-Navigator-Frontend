@@ -97,7 +97,7 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
     // Clear previous selection for retry/modify scenarios
     if (_isRetryFromAnalysis || _isModifyFromContextual) {
       controller.clearSelection();
-      journeyController.progress.value = 20; // Reset progress
+      //journeyController.progress.value = 20; // Reset progress
     }
 
     // Set up objectives listener - safely after build
@@ -490,7 +490,7 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'Generating objectives...',
+                  'Choosing Objectives for You...',
                   style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 14.sp,
@@ -532,14 +532,18 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: Column(
         children: [
-          SizedBox(height: 2.h), // ✅ REDUCED: Less top spacing
+          SizedBox(height: 2.h), //  Less top spacing
           Container(
-            decoration: BoxDecoration(color: AppColors.white),
+            decoration: BoxDecoration(color: AppColors.white,
+            borderRadius: BorderRadius.circular(12.r),
+             border: Border.all(color: AppColors.primaryRed, width: 2.w)
+
+            ),
             constraints: BoxConstraints(maxHeight: 400.h),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Scrollbar(
-                controller: _scrollController, // ✅ ADDED: Scroll controller
+                controller: _scrollController,
                 thumbVisibility: true,
                 trackVisibility: true,
                 thickness: 6.w, // ✅ REDUCED: Thinner scrollbar
@@ -615,14 +619,13 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
           description: _safeTranslate(descriptionKey, fallback: 'Available'),
           icon: _getObjectiveIcon(index),
           isSelected: isSelected,
+          // In _buildObjectiveItem method
           onTap: () {
             controller.selectObjective(obj);
             if (controller.isSelected(obj)) {
-              journeyController.progress.value = 40;
-              journeyController.completeStep(0);
+              journeyController.completeStep(1); // Mark objective step as complete
             } else {
-              journeyController.progress.value = 20;
-              journeyController.completedSteps[0] = false;
+              journeyController.uncompleteStep(1); // Mark objective step as incomplete
             }
           },
           // ✅ ADD: Remove internal padding if CustomIndustryContainer has too much

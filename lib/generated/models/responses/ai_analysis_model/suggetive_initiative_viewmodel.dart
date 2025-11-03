@@ -44,7 +44,40 @@ class SuggestionInitiativesViewModel extends GetxController {
     isCampaignMode.value = savedMode == 'campaign';
     print('🎮 SuggestionInitiativesViewModel - Game Mode: $savedMode, Is Campaign: ${isCampaignMode.value}');
   }
+  /// ✅ NEW: Save strategy and objective data to SharedPreferences for challenge mode
+  Future<void> _saveStrategyAndObjectiveToPrefs() async {
+    try {
+      // Try to get from controllers first
+      final strategyController = Get.find<StrategySelectionController>();
+      final objectiveController = Get.find<KeyObjectiveController>();
 
+      final strategy = strategyController.selectedStrategy.value;
+      final objective = objectiveController.selectedObjective.value;
+
+      // Save strategy to SharedPreferences
+      if (strategy != null && strategy.title != null) {
+        await SharedPrefs.saveSelectedStrategy({
+          'id': strategy.id,
+          'title': strategy.title,
+          //'description': strategy.description,
+        });
+        print('💾 Saved strategy to SharedPreferences: ${strategy.title}');
+      }
+
+      // Save objective to SharedPreferences
+      if (objective != null && objective.title != null) {
+        await SharedPrefs.saveSelectedObjective({
+          'id': objective.id,
+          'title': objective.title,
+          'description': objective.description,
+        });
+        print('💾 Saved objective to SharedPreferences: ${objective.title}');
+      }
+
+    } catch (e) {
+      print('⚠️ Error saving strategy/objective to SharedPreferences: $e');
+    }
+  }
   // 🔹 LOAD SAVED INITIATIVES FROM SHAREDPREFERENCES
   void _loadSavedInitiatives() {
     final savedInitiatives = SharedPrefs.getInitiatives();
@@ -130,20 +163,66 @@ class SuggestionInitiativesViewModel extends GetxController {
       // 🔹 SAVE INITIATIVES BEFORE SUBMISSION (final save)
       await saveInitiativesToStorage();
 
-      // Fetch controller data
-      final strategyController = Get.find<StrategySelectionController>();
-      final objectiveController = Get.find<KeyObjectiveController>();
-      final languageController = Get.find<LanguageController>();
+      // ✅ FIXED: Save strategy/objective to SharedPreferences for challenge mode
+      await _saveStrategyAndObjectiveToPrefs();
 
-      final strategyTitle = strategyController.selectedStrategy.value?.title;
-      final objectiveTitle = objectiveController.selectedObjective.value?.title;
+      // ✅ FIXED: Get strategy and objective data with multiple fallbacks
+      String strategyTitle = '';
+      String objectiveTitle = '';
+      final languageController = Get.find<LanguageController>();
       final language = languageController.selectedLanguage.value.name;
 
-      print('Strategy Title: $strategyTitle');
-      print('Objective Title: $objectiveTitle');
+      // METHOD 1: Try to get from SharedPreferences first (most reliable)
+      final savedStrategy = await SharedPrefs.getSelectedStrategy();
+      final savedObjective = await SharedPrefs.getSelectedObjective();
+
+      if (savedStrategy != null && savedStrategy['title'] != null) {
+        strategyTitle = savedStrategy['title'].toString();
+        print('🎯 Strategy from SharedPreferences: $strategyTitle');
+      }
+
+      if (savedObjective != null && savedObjective['title'] != null) {
+        objectiveTitle = savedObjective['title'].toString();
+        print('🎯 Objective from SharedPreferences: $objectiveTitle');
+      }
+
+      // METHOD 2: If still empty, try to get from controllers
+      if (strategyTitle.isEmpty) {
+        try {
+          final strategyController = Get.find<StrategySelectionController>();
+          strategyTitle = strategyController.selectedStrategy.value?.title ?? '';
+          print('🎯 Strategy from Controller: $strategyTitle');
+        } catch (e) {
+          print('⚠️ Strategy controller not available: $e');
+        }
+      }
+
+      if (objectiveTitle.isEmpty) {
+        try {
+          final objectiveController = Get.find<KeyObjectiveController>();
+          objectiveTitle = objectiveController.selectedObjective.value?.title ?? '';
+          print('🎯 Objective from Controller: $objectiveTitle');
+        } catch (e) {
+          print('⚠️ Objective controller not available: $e');
+        }
+      }
+
+      // METHOD 3: Final fallback - use default values
+      if (strategyTitle.isEmpty) {
+        strategyTitle = 'Strategic Partnerships'; // Default strategy
+        print('⚠️ Using default strategy: $strategyTitle');
+      }
+
+      if (objectiveTitle.isEmpty) {
+        objectiveTitle = 'Establish Local Partnerships'; // Default objective
+        print('⚠️ Using default objective: $objectiveTitle');
+      }
+
+      print('Final Strategy Title: $strategyTitle');
+      print('Final Objective Title: $objectiveTitle');
       print('Language: $language');
 
-      if (strategyTitle == null || objectiveTitle == null) {
+      if (strategyTitle.isEmpty || objectiveTitle.isEmpty) {
         print('Validation failed: Strategy or Objective is null');
         apiResponse.value = ApiResponse.error('Required data not found');
         Get.snackbar(
@@ -169,10 +248,16 @@ class SuggestionInitiativesViewModel extends GetxController {
           industryOrOrganization = 'organization_a';
         }
       } else {
-        // Solo Mode - Get industry data from arguments
+        // Solo Mode - Get industry data from arguments or SharedPreferences
         final args = Get.arguments as Map<String, dynamic>?;
         final selectedIndustry = args?['selectedIndustry'] as Map<String, dynamic>?;
-        industryOrOrganization = selectedIndustry?['titleKey']?.toString() ?? '';
+        if (selectedIndustry != null && selectedIndustry['titleKey'] != null) {
+          industryOrOrganization = selectedIndustry['titleKey'].toString();
+        } else {
+          // Try to get from SharedPreferences as fallback
+          final industryData = SharedPrefs.getSelectedIndustry();
+          industryOrOrganization = industryData?['titleKey']?.toString() ?? 'technology';
+        }
         print('🎯 Solo Mode: Using industry - $industryOrOrganization');
       }
 
@@ -206,11 +291,8 @@ class SuggestionInitiativesViewModel extends GetxController {
 
       // Compare with Status.completed
       if (response.status == Status.completed && response.data != null) {
-        print('Success: API response received successfully');
-
-        // 🔹 OPTIONAL: Clear initiatives after successful submission
-        // Uncomment the line below if you want to clear initiatives after successful submission
-        // await clearSavedInitiatives();
+       // print('✅ Evaluation successful: ${response.data?.overallScore}');
+        print('📦 API Response Data: ${response.data?.toJson()}');
 
         Get.snackbar(
           'success'.tr,
@@ -234,7 +316,6 @@ class SuggestionInitiativesViewModel extends GetxController {
             backgroundColor: AppColors.primaryGreen,
             colorText: Colors.white,
           );
-          //Get.back();
         } else {
           // Normal flow - go to analysis screen
           print('➡️ Navigating to AI Analysis screen');
@@ -244,7 +325,7 @@ class SuggestionInitiativesViewModel extends GetxController {
           );
         }
       } else {
-        print('Error: API response validation failed');
+        print('❌ Error: API response validation failed');
         print('Status: ${response.status}, Data: ${response.data}, Message: ${response.message}');
         Get.snackbar(
           'error'.tr,
@@ -256,7 +337,7 @@ class SuggestionInitiativesViewModel extends GetxController {
         );
       }
     } catch (e) {
-      print('Exception caught: $e');
+      print('❌ Exception caught: $e');
       apiResponse.value = ApiResponse.error(e.toString());
       Get.snackbar(
         'error'.tr,
@@ -271,6 +352,178 @@ class SuggestionInitiativesViewModel extends GetxController {
       print('isSubmitting reset to: ${isSubmitting.value}');
     }
   }
+
+  // Future<void> submitInitiatives(List<KeyResult> selectedKeyResults) async {
+  //   print('Submitting initiatives...');
+  //   print('Selected Key Results: $selectedKeyResults');
+  //   print('Is Campaign Mode: ${isCampaignMode.value}');
+  //   print('Source - Modify from Contextual: $_isModifyFromContextual');
+  //
+  //   // Input validation
+  //   if (firstInitiativeTitle.text.trim().isEmpty ||
+  //       firstInitiativeDesc.text.trim().isEmpty ||
+  //       secondInitiativeTitle.text.trim().isEmpty ||
+  //       secondInitiativeDesc.text.trim().isEmpty) {
+  //     print('Validation failed: One or more input fields are empty');
+  //     Get.snackbar(
+  //       'error'.tr,
+  //       'fill_initiatives'.tr,
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //       duration: const Duration(seconds: 3),
+  //     );
+  //     return;
+  //   }
+  //
+  //   try {
+  //     isSubmitting.value = true;
+  //     apiResponse.value = ApiResponse.loading();
+  //
+  //     // 🔹 SAVE INITIATIVES BEFORE SUBMISSION (final save)
+  //     await saveInitiativesToStorage();
+  //
+  //     // Fetch controller data
+  //     final strategyController = Get.find<StrategySelectionController>();
+  //     final objectiveController = Get.find<KeyObjectiveController>();
+  //     final languageController = Get.find<LanguageController>();
+  //
+  //     final strategyTitle = strategyController.selectedStrategy.value?.title;
+  //     final objectiveTitle = objectiveController.selectedObjective.value?.title;
+  //     final language = languageController.selectedLanguage.value.name;
+  //
+  //     print('Strategy Title: $strategyTitle');
+  //     print('Objective Title: $objectiveTitle');
+  //     print('Language: $language');
+  //
+  //     if (strategyTitle == null || objectiveTitle == null) {
+  //       print('Validation failed: Strategy or Objective is null');
+  //       apiResponse.value = ApiResponse.error('Required data not found');
+  //       Get.snackbar(
+  //         'error'.tr,
+  //         'Required data not found',
+  //         snackPosition: SnackPosition.BOTTOM,
+  //         backgroundColor: Colors.red,
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 3),
+  //       );
+  //       return;
+  //     }
+  //
+  //     // ✅ Handle Campaign Mode - Get organization data
+  //     String industryOrOrganization = '';
+  //     if (isCampaignMode.value) {
+  //       final organizationData = SharedPrefs.getSelectedIndustry();
+  //       if (organizationData != null) {
+  //         industryOrOrganization = organizationData['titleKey']?.toString() ?? 'organization_a';
+  //         print('🎯 Campaign Mode: Using organization - $industryOrOrganization');
+  //       } else {
+  //         print('⚠️ Campaign Mode: No organization data found, using default');
+  //         industryOrOrganization = 'organization_a';
+  //       }
+  //     } else {
+  //       // Solo Mode - Get industry data from arguments
+  //       final args = Get.arguments as Map<String, dynamic>?;
+  //       final selectedIndustry = args?['selectedIndustry'] as Map<String, dynamic>?;
+  //       industryOrOrganization = selectedIndustry?['titleKey']?.toString() ?? '';
+  //       print('🎯 Solo Mode: Using industry - $industryOrOrganization');
+  //     }
+  //
+  //     final initiatives = [
+  //       '${firstInitiativeTitle.text.trim()} - ${firstInitiativeDesc.text.trim()}',
+  //       '${secondInitiativeTitle.text.trim()} - ${secondInitiativeDesc.text.trim()}',
+  //     ];
+  //
+  //     print('Initiatives: $initiatives');
+  //     print('Industry/Organization: $industryOrOrganization');
+  //
+  //     // API call
+  //     final response = await _repository.evaluateInitiatives(
+  //       strategy: strategyTitle,
+  //       objective: objectiveTitle,
+  //       initiatives: initiatives,
+  //       keyResults: selectedKeyResults,
+  //       language: language,
+  //       industry: industryOrOrganization, // ✅ Pass industry/organization to API
+  //     );
+  //
+  //     print('API Response Status: ${response.status}');
+  //     print('API Response Data: ${response.data?.toJson()}');
+  //     print('API Response Message: ${response.message}');
+  //
+  //     // Check status
+  //     print('Is Status.completed: ${response.status == Status.completed}');
+  //     print('Is Data Not Null: ${response.data != null}');
+  //
+  //     apiResponse.value = response;
+  //
+  //     // Compare with Status.completed
+  //     if (response.status == Status.completed && response.data != null) {
+  //       print('Success: API response received successfully');
+  //
+  //       // 🔹 OPTIONAL: Clear initiatives after successful submission
+  //       // Uncomment the line below if you want to clear initiatives after successful submission
+  //       // await clearSavedInitiatives();
+  //
+  //       Get.snackbar(
+  //         'success'.tr,
+  //         'Initiatives evaluated successfully',
+  //         snackPosition: SnackPosition.BOTTOM,
+  //         backgroundColor: Colors.green,
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 2),
+  //       );
+  //
+  //       await Future.delayed(const Duration(milliseconds: 500));
+  //
+  //       // ✅ DIFFERENT NAVIGATION BASED ON SOURCE
+  //       if (_isModifyFromContextual) {
+  //         // Return to contextual challenge screen after successful submission
+  //         print('🔄 Returning to Contextual Challenge screen');
+  //         Get.back(); // Go back to contextual challenge
+  //         Get.snackbar(
+  //           'Success',
+  //           'Initiatives revised successfully',
+  //           backgroundColor: AppColors.primaryGreen,
+  //           colorText: Colors.white,
+  //         );
+  //         //Get.back();
+  //       } else {
+  //         // Normal flow - go to analysis screen
+  //         print('➡️ Navigating to AI Analysis screen');
+  //         Get.toNamed(
+  //           AppRoutes.aiAnalysisShowScreen,
+  //           arguments: response.data,
+  //         );
+  //       }
+  //     } else {
+  //       print('Error: API response validation failed');
+  //       print('Status: ${response.status}, Data: ${response.data}, Message: ${response.message}');
+  //       Get.snackbar(
+  //         'error'.tr,
+  //         response.message ?? 'Failed to process API response',
+  //         snackPosition: SnackPosition.BOTTOM,
+  //         backgroundColor: Colors.red,
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 3),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print('Exception caught: $e');
+  //     apiResponse.value = ApiResponse.error(e.toString());
+  //     Get.snackbar(
+  //       'error'.tr,
+  //       'Error: ${e.toString()}',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //       duration: const Duration(seconds: 3),
+  //     );
+  //   } finally {
+  //     isSubmitting.value = false;
+  //     print('isSubmitting reset to: ${isSubmitting.value}');
+  //   }
+  // }
 
   EvaluateInitiativeModel? get evaluationResult => apiResponse.value.data;
 

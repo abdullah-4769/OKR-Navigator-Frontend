@@ -443,7 +443,7 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
                               Get.back();
                             } else {
                               // Normal navigation back
-                              Get.offAllNamed(AppRoutes.keyObjectiveScreen);
+                              Get.toNamed(AppRoutes.keyObjectiveScreen);
                             }
                           },
                           showDashboardIcon: true,
@@ -511,7 +511,7 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
                                           ),
                                           SizedBox(width: 12.w),
                                           Text(
-                                            'Generating key results...',
+                                            'Please Wait ...',
                                             style: TextStyle(
                                               fontSize: _getSubtitleFontSize(screenWidth, isTablet, isDesktop),
                                               color: AppColors.primaryRed,
@@ -603,11 +603,13 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
                                         valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryRed),
                                       ),
                                       SizedBox(height: 16.h),
-                                      Text(
-                                        'Generating key results...',
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          color: AppColors.textSecondary,
+                                      Center(
+                                        child: Text(
+                                          'Generating key results based on your Objective...',
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: AppColors.textSecondary,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -873,12 +875,20 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
       description: _safeTranslate(item.description, fallback: 'Available for the selected one'),
       icon: randomIcon,
       isSelected: keyResultsViewModel.isSelected(originalIndex),
+      // In _buildKeyResultItem method
       onTap: () {
         keyResultsViewModel.toggleSelection(originalIndex);
         if (keyResultsViewModel.isSelected(originalIndex)) {
           constellationController.addIcon(randomIcon);
         } else {
           constellationController.removeIcon(randomIcon);
+        }
+
+        // Update journey progress based on key results selection
+        if (keyResultsViewModel.isSelectionComplete) {
+          journeyController.completeStep(2); // Mark key results step as complete
+        } else {
+          journeyController.uncompleteStep(2); // Mark key results step as incomplete
         }
       },
       showTag1: true,

@@ -91,29 +91,29 @@ class CustomOKRConstellation extends StatelessWidget {
                   child: _buildIconCircle(icons[2]),
                 ),
 
-              /// ➕ Plus button (half visible at bottom)
-              if (controller.showPlusButton)
-                Positioned(
-                  bottom: -30.h, // half outside container
-                  child: Container(
-                    width: 60.w,
-                    height: 60.w,
-                    decoration: BoxDecoration(
-                      color: AppColors.softRed,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primaryRed, // border color
-                        width: 3,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      color: AppColors.primaryRed,
-                      size: 30.sp,
-                      weight: 550,
-                    ),
-                  ),
-                ),
+              // /// ➕ Plus button (half visible at bottom)
+              // if (controller.showPlusButton)
+              //   Positioned(
+              //     bottom: -30.h, // half outside container
+              //     child: Container(
+              //       width: 60.w,
+              //       height: 60.w,
+              //       decoration: BoxDecoration(
+              //         color: AppColors.softRed,
+              //         shape: BoxShape.circle,
+              //         border: Border.all(
+              //           color: AppColors.primaryRed, // border color
+              //           width: 3,
+              //         ),
+              //       ),
+              //       child: Icon(
+              //         Icons.add,
+              //         color: AppColors.primaryRed,
+              //         size: 30.sp,
+              //         weight: 550,
+              //       ),
+              //     ),
+              //   ),
             ],
           );
         }),

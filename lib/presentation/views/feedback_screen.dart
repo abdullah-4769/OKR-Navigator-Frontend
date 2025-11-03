@@ -149,16 +149,16 @@ class FeedbackScreen extends StatelessWidget {
         _markLevelComplete();
       }
 
-      // ✅ FIXED: Pass selectedKeyResults to ContextualCAdjustmentScreen
+      //  Pass selectedKeyResults to ContextualCAdjustmentScreen
       switch (savedMode) {
         case 'solo':
         case 'challenge':
           Get.to(
                 () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
             arguments: {
-              'selectedKeyResults': selectedKeyResults, // ✅ PASS THIS
-              'challengeData': await _getChallengeData(), // Add if you have this
-              'existingInitiatives': await _getExistingInitiatives(), // Add if you have this
+              'selectedKeyResults': selectedKeyResults,
+              'challengeData': await _getChallengeData(),
+              'existingInitiatives': await _getExistingInitiatives(),
             },
           );
           break;
@@ -168,9 +168,11 @@ class FeedbackScreen extends StatelessWidget {
           break;
         default:
           Get.to(
-                () => ContextualCAdjustmentScreen(),
+                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
             arguments: {
               'selectedKeyResults': selectedKeyResults,
+              'challengeData': await _getChallengeData(),
+              'existingInitiatives': await _getExistingInitiatives(),
             },
           );
           break;
@@ -178,9 +180,11 @@ class FeedbackScreen extends StatelessWidget {
     } catch (e) {
       print('❌ Error in navigation: $e');
       Get.to(
-            () => ContextualCAdjustmentScreen(),
+            () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
         arguments: {
           'selectedKeyResults': selectedKeyResults,
+          'challengeData': await _getChallengeData(),
+          'existingInitiatives': await _getExistingInitiatives(),
         },
       );
     }

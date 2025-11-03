@@ -23,8 +23,7 @@ class StrategySelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ RESET CONTROLLER STATE WHEN SCREEN IS BUILT
-    // This ensures backcard is shown when entering the screen
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.resetToBackCard();
     });
@@ -130,14 +129,13 @@ class StrategySelectionScreen extends StatelessWidget {
                             ),
                             child: CustomButton2(
                               text: 'begin_mission'.tr,
+                              // In StrategySelectionScreen build method
                               onPressed: controller.canBeginMission
                                   ? () {
-                                journeyController.setStep(0, true);
-                                controller.beginMission(
-                                  selectedRole,
-                                  selectedIndustry,
-                                );
+                                journeyController.completeStep(0); // Mark strategy step as complete
+                                controller.beginMission(selectedRole, selectedIndustry);
                               }
+
                                   : null,
                             ),
                           ),
