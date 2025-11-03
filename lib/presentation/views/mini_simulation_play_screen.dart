@@ -183,11 +183,11 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                                       () => CustomIndustryContainer(
                                     title: _safeTranslate(
                                       item['title'],
-                                      fallback: 'Unknown Title',
+                                      fallback: 'Title',
                                     ),
                                     description: _safeTranslate(
                                       item['description'],
-                                      fallback: 'No description',
+                                      fallback: 'Start the next to get rewarded',
                                     ),
                                     icon: item['icon'] ?? Icons.rocket,
                                     isSelected: keyResultsController.isSelected(index), // ✅ Use index

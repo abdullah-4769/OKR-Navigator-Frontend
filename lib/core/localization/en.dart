@@ -698,7 +698,7 @@ final Map<String, String> en = {
   "choose": "Choose",
 
   "Unknown": "Unknown",
-  "No description": "No description available",
+  "No description": "Lets Play next step",
 
   "generate_revenue_stream": "Generate significant revenue stream within first 12 months of launch",
   "revenue": "Revenue",
@@ -782,7 +782,6 @@ final Map<String, String> en = {
   "Unknown Title": "Unknown Title",
 
 
-  "No description available": "No description available",
 
 
   'technology': 'Technology',

@@ -34,6 +34,9 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
   final JourneyController journeyController = Get.find<JourneyController>();
   final StrategySelectionController strategyController = Get.find<StrategySelectionController>();
 
+  // ✅ ADD: Scroll controller for the objectives list
+  final ScrollController _scrollController = ScrollController();
+
   // ✅ Track initialization state and source
   bool _isInitialized = false;
   bool _hasShownMessage = false;
@@ -59,6 +62,13 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeScreen();
     });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _scrollController.dispose(); // ✅ DISPOSE: Scroll controller
+    super.dispose();
   }
 
   void _initializeScreen() {
@@ -103,9 +113,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
     // Load objectives if needed
     _loadObjectivesIfNeeded();
   }
-// ============================================
-// REPLACE _loadObjectivesIfNeeded() method
-// ============================================
 
   void _loadObjectivesIfNeeded() {
     final args = Get.arguments as Map<String, dynamic>?;
@@ -133,10 +140,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       }
     }
   }
-
-// ============================================
-// ALSO UPDATE _fetchObjectives to show appropriate message
-// ============================================
 
   Future<void> _fetchObjectives(
       Map<String, dynamic>? selectedRole,
@@ -174,11 +177,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       print('❌ Error fetching objectives: $e');
       SnackbarHelper.error('Failed to load objectives');
     }
-  }
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
   }
 
   String _safeTranslate(String? key, {String fallback = ''}) {
@@ -526,134 +524,58 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       );
     });
   }
-  // // ✅ SAFE: Build objectives content without nested reactive calls
-  // Widget _buildObjectivesContent() {
-  //   return Obx(() {
-  //     if (controller.loading.value && controller.objectives.isEmpty) {
-  //       return const Center(child: CircularProgressIndicator());
-  //     }
-  //     if (controller.objectives.isEmpty) {
-  //       return Center(
-  //         child: Text(
-  //           'No objectives available',
-  //           style: TextStyle(
-  //             color: AppColors.textSecondary,
-  //             fontSize: 16.sp,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //     return _buildObjectivesList(
-  //       MediaQuery.of(Get.context!).size.width,
-  //       MediaQuery.of(Get.context!).size.width > 600,
-  //     );
-  //   });
-  // }
-
-  // ... rest of your existing methods remain the same (_buildObjectivesList, _getObjectiveIcon, etc.)
-  // [Keep all your existing responsive methods and list building methods]
-
-
 
   Widget _buildObjectivesList(double screenWidth, bool isTablet) {
     final maxWidth = screenWidth > 1200 ? 1200.0 : screenWidth;
 
     return Container(
       constraints: BoxConstraints(maxWidth: maxWidth),
-      // REMOVE the background container styling to eliminate double borders
       child: Column(
         children: [
-          SizedBox(height: 16.h),
+          SizedBox(height: 2.h), // ✅ REDUCED: Less top spacing
           Container(
+            decoration: BoxDecoration(color: AppColors.white),
             constraints: BoxConstraints(maxHeight: 400.h),
-            child: Scrollbar(
-              thumbVisibility: true,
-              trackVisibility: true,
-              thickness: 8.w,
-              radius: Radius.circular(10.r),
-              child: Obx(() => isTablet && screenWidth > 800
-                  ? GridView.builder(
-                shrinkWrap: true,
-                physics: const AlwaysScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.2,
-                  crossAxisSpacing: AppDimensions.d16.w,
-                  mainAxisSpacing: AppDimensions.d16.h,
-                ),
-                itemCount: filteredObjectives.length,
-                itemBuilder: (context, index) => _buildObjectiveItem(index),
-              )
-                  : ListView.builder(
-                shrinkWrap: true,
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: filteredObjectives.length,
-                itemBuilder: (context, index) => Padding(
-                  padding: EdgeInsets.only(bottom: AppDimensions.d16.h),
-                  child: _buildObjectiveItem(index),
-                ),
-              )),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Scrollbar(
+                controller: _scrollController, // ✅ ADDED: Scroll controller
+                thumbVisibility: true,
+                trackVisibility: true,
+                thickness: 6.w, // ✅ REDUCED: Thinner scrollbar
+                radius: Radius.circular(20.r),
+                child: Obx(() => isTablet && screenWidth > 800
+                    ? GridView.builder(
+                  controller: _scrollController, // ✅ ADDED: Scroll controller
+                  shrinkWrap: true,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.2,
+                    crossAxisSpacing: 8.w, // ✅ REDUCED: Less spacing between grid items
+                    mainAxisSpacing: 8.h,  // ✅ REDUCED: Less spacing between grid items
+                  ),
+                  itemCount: filteredObjectives.length,
+                  itemBuilder: (context, index) => _buildObjectiveItem(index),
+                )
+                    : ListView.builder(
+                  controller: _scrollController, // ✅ ADDED: Scroll controller
+                  shrinkWrap: true,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(bottom: 8.h), // ✅ ADDED: Bottom padding for scroll
+                  itemCount: filteredObjectives.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: EdgeInsets.only(bottom: 8.h), // ✅ REDUCED: Less spacing between list items
+                    child: _buildObjectiveItem(index),
+                  ),
+                )),
+              ),
             ),
           ),
         ],
       ),
     );
   }
-  // Widget _buildObjectivesList(double screenWidth, bool isTablet) {
-  //   final maxWidth = screenWidth > 1200 ? 1200.0 : screenWidth;
-  //
-  //   return Container(
-  //     constraints: BoxConstraints(maxWidth: maxWidth),
-  //     decoration: BoxDecoration(
-  //       color: AppColors.white,
-  //       borderRadius: BorderRadius.circular(12.r),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.1),
-  //           blurRadius: 8.r,
-  //           offset: Offset(0, 2.h),
-  //         ),
-  //       ],
-  //     ),
-  //     padding: EdgeInsets.all(16.w),
-  //     child: Column(
-  //       children: [
-  //         SizedBox(height: 16.h),
-  //         Container(
-  //           constraints: BoxConstraints(maxHeight: 400.h),
-  //           child: Scrollbar(
-  //             thumbVisibility: true,
-  //             trackVisibility: true,
-  //             thickness: 8.w,
-  //             radius: Radius.circular(10.r),
-  //             child: Obx(() => isTablet && screenWidth > 800
-  //                 ? GridView.builder(
-  //               shrinkWrap: true,
-  //               physics: const AlwaysScrollableScrollPhysics(),
-  //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //                 crossAxisCount: 2,
-  //                 childAspectRatio: 1.2,
-  //                 crossAxisSpacing: AppDimensions.d16.w,
-  //                 mainAxisSpacing: AppDimensions.d16.h,
-  //               ),
-  //               itemCount: filteredObjectives.length,
-  //               itemBuilder: (context, index) => _buildObjectiveItem(index),
-  //             )
-  //                 : ListView.builder(
-  //               shrinkWrap: true,
-  //               physics: const AlwaysScrollableScrollPhysics(),
-  //               itemCount: filteredObjectives.length,
-  //               itemBuilder: (context, index) => Padding(
-  //                 padding: EdgeInsets.only(bottom: AppDimensions.d16.h),
-  //                 child: _buildObjectiveItem(index),
-  //               ),
-  //             )),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   IconData _getObjectiveIcon(int index) {
     final icons = [
@@ -680,17 +602,17 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       final isSelected = controller.isSelected(obj);
 
       return Container(
-        margin: EdgeInsets.only(bottom: AppDimensions.d16.h),
+        margin: EdgeInsets.only(bottom: 2.h), // ✅ REDUCED: Less bottom margin
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? AppColors.primaryRed : Colors.transparent,
-            width: 3.0,
+            color: isSelected ? Colors.transparent : Colors.transparent,
+            //width: 2.0, // ✅ REDUCED: Thinner border
           ),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: CustomIndustryContainer(
-          title: _safeTranslate(titleKey, fallback: 'Unknown'),
-          description: _safeTranslate(descriptionKey, fallback: 'No description available'),
+          title: _safeTranslate(titleKey, fallback: 'Title'),
+          description: _safeTranslate(descriptionKey, fallback: 'Available'),
           icon: _getObjectiveIcon(index),
           isSelected: isSelected,
           onTap: () {
@@ -703,6 +625,8 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
               journeyController.completedSteps[0] = false;
             }
           },
+          // ✅ ADD: Remove internal padding if CustomIndustryContainer has too much
+         // padding: EdgeInsets.all(12.w), // Adjust as needed
         ),
       );
     });

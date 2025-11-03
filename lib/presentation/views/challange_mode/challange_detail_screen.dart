@@ -68,12 +68,12 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
 
   bool get isWeb =>
       deviceType == DeviceType.largeDesktop ||
-      deviceType == DeviceType.ultraWide;
+          deviceType == DeviceType.ultraWide;
 
   bool get isDesktop =>
       deviceType == DeviceType.desktop ||
-      deviceType == DeviceType.largeDesktop ||
-      deviceType == DeviceType.ultraWide;
+          deviceType == DeviceType.largeDesktop ||
+          deviceType == DeviceType.ultraWide;
 
   double getResponsiveFont({
     required double mobile,
@@ -230,8 +230,21 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
               ],
             ),
             child: Center(
-              // child: Image.asset('assets/images/backcard_img.png'),
-              child: Image.asset('assets/images/backcard_img.png'),
+              child: Image.asset(
+                controller.selectedCardIndex.value == -1
+                    ? 'assets/images/backcard_img.png'
+                    : controller.cardAssets[controller.selectedCardIndex.value],
+                key: ValueKey<int>(controller.selectedCardIndex.value),
+                height: getResponsiveHeight(
+                  mobile: 350,
+                  tablet: 420,
+                  desktop: 480,
+                  largeDesktop: 540,
+                  ultraWide: 600,
+                  landscapeAdjustment: 0.7,
+                ),
+                fit: BoxFit.contain,
+              ),
             ),
           ),
         ),
@@ -319,6 +332,7 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
     );
   }
 
+
   Widget _buildVSSection() {
     final vsController = Get.put(ShowChallengersVsViewModel());
 
@@ -327,7 +341,9 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
 
       if (response.status == Status.loading) {
         return Center(
-          child: CircularProgressIndicator(color: const Color(0xff24387F)),
+          child: CircularProgressIndicator(
+            color: const Color(0xff24387F),
+          ),
         );
       }
 
@@ -365,9 +381,7 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
 
         // Extract player data based on your API response
         final player1 = players[0] as Map<String, dynamic>;
-        final player2 = players.length > 1
-            ? players[1] as Map<String, dynamic>
-            : null;
+        final player2 = players.length > 1 ? players[1] as Map<String, dynamic> : null;
 
         return Padding(
           padding: EdgeInsets.symmetric(
@@ -549,7 +563,6 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
       );
     }
   }
-
   //
   // // ✅ Start challenge game - goes to role selection then solo flow
   // void _startChallengeGame() {
@@ -571,9 +584,7 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
       if (response.status == Status.completed) {
         final players = response.data as List<dynamic>;
         final player1 = players[0] as Map<String, dynamic>;
-        final player2 = players.length > 1
-            ? players[1] as Map<String, dynamic>
-            : null;
+        final player2 = players.length > 1 ? players[1] as Map<String, dynamic> : null;
 
         // Save challenge data to use in results screen
         // You can use SharedPreferences or GetStorage for this
@@ -584,9 +595,7 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
         //   'challengeId': 'your_challenge_id_here',
         // });
 
-        print(
-          '🎯 Challenge context saved: ${player1['name']} vs ${player2?['name'] ?? 'Waiting'}',
-        );
+        print('🎯 Challenge context saved: ${player1['name']} vs ${player2?['name'] ?? 'Waiting'}');
       }
     } catch (e) {
       print('❌ Error saving challenge context: $e');
@@ -623,6 +632,15 @@ class _GradientBorderPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+
+
+
+
+
+
+
+
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';

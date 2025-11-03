@@ -2,7 +2,7 @@
 
 class ApiConstants {
   // ✅ Change this to your backend URL
-  static const String baseUrl = 'http://54.145.244.15:3000';
+  static const String baseUrl = 'https://okr-navigator-backend.onrender.com';
 
   // Endpoints
   static const String challenges = '/challenges';
@@ -60,7 +60,7 @@ class ApiConstants {
   }
 
   static String getLatestGameScore(String userId) {
-    return '$baseUrl/solo-score/user/6e48d5ac-85a6-4595-8738-4d3aa4a8a6fd/latest';
+    return '$baseUrl/solo-score/user/f40e85cb-a4b9-4053-bae2-506bae93f5d1/latest';
   }
   // static String getLatestGameScore(String userId) {
   //   return '$baseUrl/solo-score/user/$userId/latest';

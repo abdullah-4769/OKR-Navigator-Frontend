@@ -114,11 +114,11 @@ class ChooseIndustryScreen extends StatelessWidget {
 
                                       final title = titleKey != null
                                           ? titleKey.tr
-                                          : 'Unknown Industry';
+                                          : 'Choosed Industry ';
                                       final description =
                                       descriptionKey != null
                                           ? descriptionKey.tr
-                                          : 'No description available';
+                                          : 'Lets Play and gets about the selected Industry';
 
                                       return Padding(
                                         padding: EdgeInsets.only(

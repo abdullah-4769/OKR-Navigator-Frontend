@@ -22,6 +22,7 @@ import 'package:game_app/presentation/views/team_mode/team_strategy_selection.da
 import 'package:game_app/presentation/views/team_mode/team_industry_choose_screen.dart';
 
 // ✅ Use aliases to avoid name conflicts
+import '../../generated/models/responses/key_results/key_results_response.dart';
 import '../views/campaign_mode_views/campaign_role_selection_screen.dart';
 import '../views/campaign_mode_views/campaign_suggestion_initiative_screen.dart';
 import '../views/campaign_mode_views/final_certification_screen.dart';
@@ -161,6 +162,46 @@ class AppRoutes {
     GetPage(
       name: AppRoutes.campaignFinalCertificationScreen,
       page: () => CampaignFinalCertificationScreen(),
+    ),
+
+
+    GetPage(
+      name: suggestionInitiativeScreen,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>?;
+        final dynamic keyResultsData = args?['selectedKeyResults'];
+
+        // Convert List<dynamic> to List<KeyResult>
+        List<KeyResult> selectedKeyResults = [];
+
+        if (keyResultsData != null && keyResultsData is List) {
+          selectedKeyResults = keyResultsData.map((item) {
+            // Handle both Map<String, dynamic> and dynamic types
+            if (item is Map<String, dynamic>) {
+              return KeyResult(
+                id: item['id'] ?? 1,
+                title: item['title']?.toString(),
+                description: item['description']?.toString(),
+                // tag1: item['tag1']?.toString(),
+                // tag2: item['tag2']?.toString(),
+              );
+            } else {
+              // Fallback for other types
+              return KeyResult(
+                id: 0,
+                title: 'Increase renewable energy usage',
+                description: 'Transition 50% of energy sources to renewables by year-end',
+              );
+            }
+          }).toList();
+        }
+
+        print('🔄 Converted ${selectedKeyResults.length} key results for SuggestionInitiativesScreen');
+
+        return SuggestionInitiativesScreen(
+          selectedKeyResults: selectedKeyResults,
+        );
+      },
     ),
 
     GetPage(
@@ -368,15 +409,15 @@ class AppRoutes {
 
     GetPage(name: roleSelection, page: () => RoleSelectionScreen()),
     GetPage(name: gameCompleteScreen, page: () => const GameCompleteScreen()),
-    GetPage(
-      name: suggestionInitiativeScreen,
-      page: () {
-        final args = Get.arguments as Map<String, dynamic>?;
-        return SuggestionInitiativesScreen(
-          selectedKeyResults: args?['selectedKeyResults'] ?? [],
-        );
-      },
-    ),
+    // GetPage(
+    //   name: suggestionInitiativeScreen,
+    //   page: () {
+    //     final args = Get.arguments as Map<String, dynamic>?;
+    //     return SuggestionInitiativesScreen(
+    //       selectedKeyResults: args?['selectedKeyResults'] ?? [],
+    //     );
+    //   },
+    // ),
   ];
 }
 

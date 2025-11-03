@@ -8,7 +8,7 @@ class KeyResultsLatestRepository {
   static const bool useMockData = false;
 
   // Update with your actual API base URL
-  static const String baseUrl = 'http://54.145.244.15:3000'; // Replace with your actual API URL
+  static const String baseUrl = 'https://okr-navigator-backend.onrender.com'; // Replace with your actual API URL
 
   // Method to create request
   KeyResultsLatestRequest createRequest({

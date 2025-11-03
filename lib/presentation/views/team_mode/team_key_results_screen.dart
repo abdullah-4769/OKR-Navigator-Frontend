@@ -173,8 +173,8 @@ final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMo
                                 return Padding(
                                   padding: EdgeInsets.symmetric(vertical: 8.h),
                                   child: CustomIndustryContainer(
-                                    title: item.title ?? 'Unknown',
-                                    description: item.description ?? 'No description',
+                                    title: item.title ?? 'Title',
+                                    description: item.description ?? 'We will have to take that challenge carefully',
                                     icon: Icons.key, // replace with proper icon if needed
                                     isSelected: controller.isSelected(index),
                                     onTap: () {

@@ -163,13 +163,14 @@ class FeedbackScreen extends StatelessWidget {
           );
           break;
         case 'campaign':
+
           Get.offAllNamed(AppRoutes.campaignModeScreen);
           break;
         default:
           Get.to(
                 () => ContextualCAdjustmentScreen(),
             arguments: {
-              'selectedKeyResults': selectedKeyResults, // ✅ PASS THIS
+              'selectedKeyResults': selectedKeyResults,
             },
           );
           break;
