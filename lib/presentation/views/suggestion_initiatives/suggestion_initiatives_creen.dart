@@ -41,6 +41,7 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
   @override
   void initState() {
     super.initState();
+
     _loadDisplayData();
   }
 
@@ -375,13 +376,13 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
           numberText: 'first_initiative'.tr,
           titleController: viewModel.firstInitiativeTitle,
           descController: viewModel.firstInitiativeDesc,
-          isEnabled: false, // Make read-only for viewing
+         // isEnabled: false, // Make read-only for viewing
         ),
         CustomInitiativeInput(
           numberText: 'second_initiative'.tr,
           titleController: viewModel.secondInitiativeTitle,
           descController: viewModel.secondInitiativeDesc,
-          isEnabled: false, // Make read-only for viewing
+         // isEnabled: false, // Make read-only for viewing
         ),
       ],
     );

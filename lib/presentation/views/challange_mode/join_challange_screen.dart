@@ -7,6 +7,7 @@ import '../../../core/app_colors.dart';
 import '../../../data/response/status.dart';
 import '../../../services/shared_preference.dart';
 import '../../../view_model/challange_view_models/challange_create_view_model.dart';
+import '../../../view_model/challenge_create_view_model.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
