@@ -23,9 +23,13 @@ final RxBool isChallengeMode = false.obs;
 final RxList<Map<String, dynamic>> industries = <Map<String, dynamic>>[].obs;
 final RxInt selectedIndustry = 0.obs;
 
+// --- MODIFIED STATE FOR ATTEMPTS (Kept for demonstration, reset logic moved) ---
+final RxInt attempts = 0.obs;
+final int maxAttempts = 5; 
+
 // Constructor
 TeamSuggestionInitiativesController({required this.keyResults});
-
+// ... (other fields) ...
 final firstInitiativeTitle = TextEditingController();
 final firstInitiativeDesc = TextEditingController();
 final secondInitiativeTitle = TextEditingController();
@@ -133,9 +137,11 @@ Get.snackbar('error'.tr, 'fill_initiatives'.tr, snackPosition: SnackPosition.BOT
 return;
 }
 
-try {
-isSubmitting.value = true; // 1. SET TRUE AT START
+// Do not reset isSubmitting until we have the final logic outcome
+isSubmitting.value = true; 
 log('TeamSuggestionInitiativesController: Submission started. isSubmitting=${isSubmitting.value}');
+
+try {
 
 // Gather data for API call
 final strategyTitle = Get.find<TeamStrategySelectionController>().selectedStrategy.value;
@@ -156,16 +162,24 @@ final response = await Get.find<StrategyRepository>().submitInitiatives( //
  language: language,
 );
 
+final int score = response.score ?? 0;
+
+// --- MODIFIED LOGIC: REMOVED SCORE < 80 REDIRECTION/ATTEMPTS HERE ---
+// The final check and redirection is now performed on the next screen (TeamAIAnalysisScreen)
+
 // Store initiatives in challenge controller for display
 Get.find<TeamContextualChallengeController>().finalInitiatives.assignAll(initiatives);
 
 aiFeedback.value = response.message ?? 'initiatives_submitted_successfully'.tr;
 SnackbarHelper.success(response.message ?? 'Initiatives submitted.'); 
 
-// --- Navigation Logic ---
-// --- Navigation Logic ---
+// Reset attempts on successful submission of data (not required for game flow success)
+attempts.value = 0; 
+
+
+// --- Navigation Logic: Always proceed to Analysis Screen ---
 if (isChallengeMode.value) {
-  log("TeamSuggestionInitiativesController: Challenge Mode detected. Navigating back to Contextual Challenge screen.");
+  log("TeamSuggestionInitiativesController: Challenge Mode detected. Navigating back to Contextual Challenge screen to resume flow.");
 
   // Reset submitting flag
   isSubmitting.value = false; 
@@ -184,7 +198,7 @@ if (isChallengeMode.value) {
 }
 
 else {
- // NORMAL FLOW
+ // NORMAL FLOW: Go to Analysis Screen (where the score check for < 80 will occur on button press)
   isSubmitting.value = false; // Reset for normal flow success
   await Get.toNamed(
   AppRoutes.teamaiAnalysisScreen, 
@@ -193,7 +207,7 @@ else {
 }
 } catch (e) {
   log('TeamSuggestionInitiativesController: Submission failed: $e');
-  // ✅ FIX 3: Guaranteed Reset on Error
+  // ✅ Guaranteed Reset on Error
   isSubmitting.value = false;
   Get.snackbar(
    'error'.tr,

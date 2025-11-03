@@ -477,7 +477,7 @@ class AppRoutes {
     ),
     GetPage(
       name: AppRoutes.teamGameCompleteScreen,
-      page: () => const TeamGameCompleteScreen(),
+      page: () =>  TeamGameCompleteScreen(),
     ),
     GetPage(
       name: AppRoutes.customAIAnalysisScreen2,

@@ -1,3 +1,5 @@
+// lib/presentation/views/team_mode/team_contextual_adjustment_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -49,7 +51,7 @@ class TeamContextualAdjustmentScreen extends StatelessWidget {
 
                       SizedBox(height: height * 0.02),
 
-                      /// Proposed Adjustments Box (Read Only)
+                      /// Proposed Adjustments Box (Editable Content)
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
                         child: Container(
@@ -93,7 +95,7 @@ class TeamContextualAdjustmentScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 14.h),
 
-                              /// Revised Key Result
+                              /// Revised Key Result (Dynamic Text)
                               Text(
                                 "revised_key_result".tr,
                                 style: Theme.of(context)
@@ -116,7 +118,8 @@ class TeamContextualAdjustmentScreen extends StatelessWidget {
                                   color: Colors.grey.shade50,
                                 ),
                                 child: Text(
-                                  controller.revisedKeyResult.value,
+                                  // Display the single random KR
+                                  controller.revisedKeyResult.value.tr,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -128,7 +131,7 @@ class TeamContextualAdjustmentScreen extends StatelessWidget {
 
                               SizedBox(height: 16.h),
 
-                              /// Additional Strategic Actions
+                              /// Additional Strategic Actions (User Input)
                               Text(
                                 "additional_strategic_actions".tr,
                                 style: Theme.of(context)
@@ -140,26 +143,28 @@ class TeamContextualAdjustmentScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 6.h),
-                              Obx(() => Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(12.w),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: AppColors.grey.withOpacity(0.4),
+                              // Replace the read-only container with a TextField
+                              TextField(
+                                controller: controller.additionalActions,
+                                maxLines: 5,
+                                decoration: InputDecoration(
+                                  hintText: "Describe your additional actions to counter the challenge...".tr,
+                                  contentPadding: EdgeInsets.all(12.w),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColors.grey.withOpacity(0.4)),
+                                    borderRadius: BorderRadius.circular(12.r),
                                   ),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  color: Colors.grey.shade50,
-                                ),
-                                child: Text(
-                                  controller.additionalActions.value,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                    color: AppColors.textSecondary,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColors.primaryRed, width: 2),
+                                    borderRadius: BorderRadius.circular(12.r),
                                   ),
+                                  fillColor: Colors.white,
+                                  filled: true,
                                 ),
-                              )),
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.black,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -180,10 +185,9 @@ class TeamContextualAdjustmentScreen extends StatelessWidget {
     child: Obx(() => CustomButton(
         icon: Icons.send,
         text: controller.isSubmittingFinal.value ? 'submitting'.tr : 'submit_adaptations'.tr,
-        // ✅ FIX: Wrap the asynchronous function in a synchronous lambda
+        // Wrap the asynchronous function in a synchronous lambda
         onPressed: () => controller.submitFinalAdjustment(), 
         
-        // This flag automatically handles the button's visual state (graying out/spinner)
         isLoading: controller.isSubmittingFinal.value,
     )),
 ),

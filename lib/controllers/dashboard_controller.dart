@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import '../data/repositories/storage_repository.dart';
+import '../data/repositories/strategy_repository.dart';
 import '../services/notification_service.dart';
 import '../utils/snackbar_helper.dart';
 import 'team_mode_controller/create_team_controller.dart';
@@ -151,24 +152,70 @@ class DashboardController extends GetxController {
         teamId = createTeamController.createdTeamId.value;
       }
       
-      if (teamId != null) {
-        final response = await _dio.get(
-          '${_getBaseUrl()}/final-team-score/team/$teamId/rewards-summary',
-        );
+      if (teamId == null) {
+        log('Dashboard: Team ID not found. Cannot load rewards.');
+        isLoadingTeamRewards.value = false;
+        return;
+      }
 
-        if (response.statusCode == 200) {
-          final data = response.data;
-          totalBadges.value = data['totalBadges'] ?? 0;
-          totalTrophies.value = data['totalTrophies'] ?? 0;
-          teamSuccessRate.value = (data['successRate'] ?? 0).toDouble();
-          teamLevelFromAPI.value = data['teamLevel'] ?? 0;
-          
-          // Load team members
-          if (data['members'] != null) {
-            final List<dynamic> members = data['members'];
-            teamMembers.assignAll(members.cast<Map<String, dynamic>>());
-          }
+      // Log request
+      log('🔵 DASHBOARD REWARDS REQUEST:');
+      log('URL: GET /final-team-score/team/$teamId/rewards-summary');
+      
+      try {
+        // Use StrategyRepository method for consistency
+        final StrategyRepository strategyRepo = Get.find<StrategyRepository>();
+        final data = await strategyRepo.getTeamRewardsSummary(teamId);
+
+        // Log response
+        log('🟢 DASHBOARD REWARDS RESPONSE:');
+        log('RESPONSE: $data');
+
+        // Validate response
+        if (data.isEmpty) {
+          throw Exception('Empty response from server');
         }
+
+        // Map response data
+        totalBadges.value = (data['totalBadges'] as num? ?? 0).toInt();
+        totalTrophies.value = (data['totalTrophies'] as num? ?? 0).toInt();
+        teamSuccessRate.value = (data['successRate'] as num? ?? 0).toDouble();
+        teamLevelFromAPI.value = (data['teamLevel'] as num? ?? 0).toInt();
+        
+        // Load team members
+        if (data['members'] != null) {
+          final List<dynamic> members = data['members'] as List;
+          teamMembers.assignAll(members.cast<Map<String, dynamic>>());
+        } else {
+          teamMembers.clear();
+        }
+
+        log('Dashboard rewards loaded successfully');
+
+      } on DioException catch (e) {
+        // Handle specific API errors
+        log('🔴 DASHBOARD REWARDS ERROR:');
+        log('STATUS CODE: ${e.response?.statusCode}');
+        log('ERROR RESPONSE: ${e.response?.data}');
+
+        if (e.response?.statusCode == 404) {
+          // Team hasn't completed games yet - this is OK, show empty state
+          log('Team has no rewards data yet (404). Showing empty dashboard.');
+          totalBadges.value = 0;
+          totalTrophies.value = 0;
+          teamSuccessRate.value = 0.0;
+          teamLevelFromAPI.value = 1;
+          teamMembers.clear();
+          // Don't show error for 404 - it's expected for new teams
+        } else if (e.response?.statusCode == 401) {
+          SnackbarHelper.error('Unauthorized. Please login again.');
+          // Optionally navigate to login
+        } else {
+          SnackbarHelper.error('Failed to load team rewards: ${e.response?.data?['message'] ?? e.message}');
+        }
+      } catch (e) {
+        log('🔴 DASHBOARD REWARDS UNEXPECTED ERROR: $e');
+        SnackbarHelper.error('Failed to load team rewards');
       }
     } catch (e) {
       log('Error loading team rewards summary: $e');

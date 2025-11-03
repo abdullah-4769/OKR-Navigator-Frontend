@@ -7,6 +7,7 @@ import 'package:game_app/generated/models/requests/team_mode/edit_team_request.d
 import 'package:game_app/services/notification_service.dart';
 import 'package:get/get.dart';
 import 'dart:developer';
+import 'package:dio/dio.dart';
 
 import '../../presentation/routes/app_routes.dart';
 import '../../generated/network.dart';
@@ -50,7 +51,7 @@ class CreateTeamController extends GetxController {
   ].obs;
 static const int maxTeamSize = 5; 
 
-  Future<void> joinTeam() async {//
+  Future<void> joinTeam() async {
     final token = teamCodeController.text.trim();
     final user = _storageRepository.getUser();
     final userId = user?.id;
@@ -69,29 +70,23 @@ static const int maxTeamSize = 5;
       isJoiningTeam.value = true;
       final request = JoinTeamRequest(token: token, userId: userId);
       
-      // ----------------------------------------------
-      // 1. PRE-JOIN VALIDATION: Check if team is full (requires fetching details via the token/API)
-      //    We can check the team details first to get the current member count.
-      // ----------------------------------------------
-      final tempTeamLobbyResponse = await _teamRepository.joinTeam(request); // Use joinTeam for validation first
+      // Log request
+      log('🔵 JOIN TEAM REQUEST:');
+      log('URL: POST /team/join');
+      log('REQUEST: ${request.toJson()}');
 
-      if (tempTeamLobbyResponse.totalMembers != null && tempTeamLobbyResponse.totalMembers! >= maxTeamSize) {
-         // Check if the current user is already counted (which they should be, or if they are the 6th member)
-         final isAlreadyMember = tempTeamLobbyResponse.members?.any((m) => m.userId == userId) ?? false;
-
-         if (!isAlreadyMember) {
-             SnackbarHelper.error("Team is already full (Max $maxTeamSize players allowed).");
-             return;
-         }
-      }
-
-      final response = await _teamRepository.joinTeam(request); // Re-run the join request
+      // Attempt to join the team
+      final response = await _teamRepository.joinTeam(request);
+      
+      // Log successful response
+      log('🟢 JOIN TEAM RESPONSE:');
+      log('RESPONSE: ${response.toString()}');
 
       if (response.id != null) {
         createdTeamId.value = response.id;
         SnackbarHelper.success("Joined existing team: ${response.title ?? 'Team'}!");
         
-        // 2. WebSocket Call: POST /ws/join-team
+        // WebSocket Call: POST /ws/join-team
         try {
           await _teamRepository.joinWsTeam(token, userId);
           log('Successfully joined WebSocket team room');
@@ -107,12 +102,84 @@ static const int maxTeamSize = 5;
           notificationType: 'TEAM_JOIN',
         );
 
+        // Navigate to team lobby
         Get.toNamed(AppRoutes.teamLobby);
       } else {
         SnackbarHelper.error(response.title ?? "Failed to join team. Invalid token or user ID.");
       }
+    } on DioException catch (e) {
+      // Log error response
+      log('🔴 JOIN TEAM ERROR:');
+      log('STATUS CODE: ${e.response?.statusCode}');
+      log('ERROR RESPONSE: ${e.response?.data}');
+      
+      final errorData = e.response?.data;
+      final errorMessage = errorData is Map 
+          ? (errorData['message']?.toString() ?? '')
+          : errorData?.toString() ?? '';
+      
+      // Check if user is already a member of the team
+      if (e.response?.statusCode == 400 && 
+          errorMessage.toLowerCase().contains('already a member')) {
+        log('ℹ️ User is already a member - handling gracefully');
+        SnackbarHelper.info("You are already part of this team.");
+        
+        // Try to extract team ID from error response
+        int? teamId;
+        
+        // Check if error response contains team info
+        if (errorData is Map) {
+          // Try various possible keys for team ID
+          if (errorData['teamId'] != null) {
+            teamId = int.tryParse(errorData['teamId'].toString());
+          } else if (errorData['id'] != null) {
+            teamId = int.tryParse(errorData['id'].toString());
+          } else if (errorData['team'] != null && errorData['team'] is Map) {
+            final team = errorData['team'] as Map;
+            if (team['id'] != null) {
+              teamId = int.tryParse(team['id'].toString());
+            } else if (team['teamId'] != null) {
+              teamId = int.tryParse(team['teamId'].toString());
+            }
+          }
+        }
+        
+        // If we got a team ID, use it and navigate
+        if (teamId != null) {
+          createdTeamId.value = teamId;
+          log('✅ Extracted team ID from error response: $teamId');
+          Get.toNamed(AppRoutes.teamLobby);
+        } else {
+          // Try to get team details by attempting the join again or using token
+          // Since user is already a member, we'll try to fetch their team memberships
+          // For now, if no teamId in error, we'll still navigate and let lobby handle it
+          // The lobby controller will need teamId, so we need to find another way
+          log('⚠️ Could not extract team ID from error response');
+          log('⚠️ Attempting to get team details using existing user team memberships...');
+          
+          // Note: If the API doesn't provide teamId in error response,
+          // we might need an additional endpoint to get team by token/userId
+          // For now, we'll show the info message but note that navigation requires teamId
+          SnackbarHelper.warning("Unable to navigate automatically. Please use your existing team from the lobby.");
+        }
+      } 
+      // Handle team full error
+      else if (e.response?.statusCode == 400 && 
+               (errorMessage.toLowerCase().contains('team is full') || 
+                errorMessage.toLowerCase().contains('full'))) {
+        SnackbarHelper.error("Team is already full (Max $maxTeamSize players allowed).");
+      }
+      // Handle other errors
+      else {
+        final displayMessage = errorMessage.isNotEmpty 
+            ? errorMessage 
+            : "Network error or invalid team data.";
+        SnackbarHelper.error(displayMessage);
+      }
     } catch (e) {
-      log('Join team error: $e');
+      log('🔴 JOIN TEAM UNEXPECTED ERROR: $e');
+      log('ERROR TYPE: ${e.runtimeType}');
+      
       // Catch specific server error if the server implements max size validation
       if (e.toString().contains('Team is full')) { 
          SnackbarHelper.error("Team is already full (Max $maxTeamSize players allowed).");
