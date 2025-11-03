@@ -85,6 +85,7 @@ import '../data/repositories/team_repository.dart';
 import '../generated/network.dart';
 import '../repository/campaign_mode/certification_evaluation_repo.dart';
 import '../repository/campaign_mode/certification_repository.dart';
+
 import '../services/campaign/certificate_evaluation_service.dart';
 import '../services/campaign/certification_api_service.dart';
 import '../services/campaign/certification_evaluation_viewmodel.dart';
@@ -95,6 +96,7 @@ import '../view_model/challenge_view_model/innovative_view_model.dart';
 import '../view_model/key_result_latest_view_model.dart';
 import '../view_model/key_results_view_mode.dart' hide KeyResultsLatestViewModel;
 import '../view_model/key_results_view_model/key_results_view_model.dart';
+
 import 'localization/localization_services.dart';
 
 class AppBindings extends Bindings {
@@ -181,7 +183,6 @@ class AppBindings extends Bindings {
     Get.lazyPut(() => InnovativeStrategiesRepository());
 
     Get.lazyPut(() => InnovativeStrategiesViewModel());
-
 
 
 

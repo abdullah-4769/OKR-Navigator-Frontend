@@ -5,7 +5,55 @@ import 'package:flutter/material.dart';
 /// 🎯 SharedPreferences Wrapper - Complete Version
 class SharedPrefs {
   static SharedPreferences? _prefs;
+// Add this to your SharedPrefs class
+  static Future<void> clearGameSessionData() async {
+    print('🧹 Clearing all game session data for fresh start...');
 
+    // Clear strategy selection
+    await _prefs?.remove(keySelectedStrategy);
+
+    // Clear objective selection
+    await _prefs?.remove(keySelectedObjective);
+
+    // Clear role selection
+    await _prefs?.remove(keySelectedRole);
+    await _prefs?.remove(keySelectedRoleIndex);
+
+    // Clear industry selection
+    await _prefs?.remove(keySelectedIndustryTitle);
+    await _prefs?.remove(keySelectedIndustryDesc);
+    await _prefs?.remove(keySelectedIndustryIcon);
+
+    // Clear mission & initiatives
+    await _prefs?.remove(keyMissionDescription);
+    await _prefs?.remove(keyFirstInitiativeTitle);
+    await _prefs?.remove(keyFirstInitiativeDesc);
+    await _prefs?.remove(keySecondInitiativeTitle);
+    await _prefs?.remove(keySecondInitiativeDesc);
+
+    // Clear adaptation data
+    await _prefs?.remove(keyRevisedKeyResult);
+    await _prefs?.remove(keyStrategicActions);
+    await _prefs?.remove(keyAdaptationNotes);
+    await clearAdaptationAnalysisData();
+
+    // Clear evaluation data
+    await clearEvaluationData();
+
+    // Clear campaign data
+    await _prefs?.remove(keyCampaignSuggestionName);
+    await _prefs?.remove(keyCampaignSuggestionDesc);
+    await _prefs?.remove(keyCampaignScenario);
+
+    // Clear challenge data
+    await _prefs?.remove(keyCurrentChallengeData);
+    await _prefs?.remove(keyChallengeResults);
+
+    // Keep these: userId, userName, gameMode (so user doesn't have to login again)
+    // Keep certification data if you want to preserve certificate progress
+
+    print('✅ Game session data cleared successfully');
+  }
   /// Initialize SharedPreferences (call once in main.dart)
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -665,7 +713,63 @@ class SharedPrefs {
   //   await _prefs?.remove(keySelectedStrategy);
   //   print('🧹 Cleared selected strategy');
   // }
+// Add these to your SharedPrefs class with DIFFERENT NAMES
 
+// 🔹 ADAPTATION DATA METHODS (NEW NAMES)
+  static const String keyAdaptationAnalysisData = 'adaptation_analysis_data';
+
+  static Future<void> saveAdaptationAnalysisData(Map<String, dynamic> data) async {
+    try {
+      final jsonString = jsonEncode(data);
+      await _prefs?.setString(keyAdaptationAnalysisData, jsonString);
+      print('💾 Saved adaptation analysis data');
+    } catch (e) {
+      print('❌ Error saving adaptation analysis data: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getAdaptationAnalysisData() async {
+    try {
+      final jsonString = _prefs?.getString(keyAdaptationAnalysisData);
+      if (jsonString != null) {
+        return jsonDecode(jsonString) as Map<String, dynamic>;
+      }
+      return null;
+    } catch (e) {
+      print('❌ Error getting adaptation analysis data: $e');
+      return null;
+    }
+  }
+
+  static Future<void> clearAdaptationAnalysisData() async {
+    await _prefs?.remove(keyAdaptationAnalysisData);
+    print('🧹 Cleared adaptation analysis data');
+  }
+
+// 🔹 OBJECTIVE SELECTION METHODS
+  static const String keySelectedObjective = 'selectedObjective';
+
+  static Future<void> saveSelectedObjective(Map<String, dynamic> objective) async {
+    final jsonString = jsonEncode(objective);
+    await _prefs?.setString(keySelectedObjective, jsonString);
+    print('💾 Saved Selected Objective: ${objective['title']}');
+  }
+
+  static Future<Map<String, dynamic>?> getSelectedObjective() async {
+    final jsonString = _prefs?.getString(keySelectedObjective);
+    if (jsonString == null) return null;
+    try {
+      return Map<String, dynamic>.from(jsonDecode(jsonString));
+    } catch (e) {
+      print('❌ Error parsing selected objective: $e');
+      return null;
+    }
+  }
+
+  static Future<void> clearSelectedObjective() async {
+    await _prefs?.remove(keySelectedObjective);
+    print('🧹 Cleared selected objective');
+  }
 // 🔹 ROLE SELECTION
   static const String keySelectedRole = 'selectedRole';
 

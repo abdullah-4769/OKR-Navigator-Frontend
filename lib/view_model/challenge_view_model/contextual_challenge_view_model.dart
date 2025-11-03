@@ -119,4 +119,7 @@ class ChallengeViewModel extends GetxController {
 
   String get marketDisruptionTitle => challengeTitle.value;
   String get marketDisruptionDescription => challengeText.value;
+
+
+
 }

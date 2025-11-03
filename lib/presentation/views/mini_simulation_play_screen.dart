@@ -75,7 +75,7 @@ class MiniSimulationPlayScreen extends StatelessWidget {
 
                       /// TIMER
                       Obx(
-                        () => Center(
+                            () => Center(
                           child: CustomCircularTimer(
                             remainingSeconds: controller.remainingSeconds.value,
                             totalSeconds: 300,
@@ -107,7 +107,7 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                           child: KeyChallengeCard(
                             title: "Key Challenge:",
                             description:
-                                "Increase market share by 15% while improving cross-departmental efficiency by 25% within 12 months.",
+                            "Increase market share by 15% while improving cross-departmental efficiency by 25% within 12 months.",
                           ),
                         ),
                       ),
@@ -130,7 +130,7 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                             ),
                             SizedBox(height: AppDimensions.d12.h),
                             Obx(
-                              () => CustomProgressPath(
+                                  () => CustomProgressPath(
                                 currentStep: controller.currentStep.value,
                                 stepLabels: [
                                   'strategy_selection',
@@ -146,7 +146,7 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                       SizedBox(height: AppDimensions.d24.h),
 
                       /// SELECTED KEY RESULTS COUNTER
-                    //  const CustomSelectedKeyResultsContainer(),
+                      //  const CustomSelectedKeyResultsContainer(),
                       SizedBox(height: AppDimensions.d16.h),
 
                       /// KEY RESULTS GRID
@@ -183,11 +183,11 @@ class MiniSimulationPlayScreen extends StatelessWidget {
                                       () => CustomIndustryContainer(
                                     title: _safeTranslate(
                                       item['title'],
-                                      fallback: 'Unknown Title',
+                                      fallback: 'Title',
                                     ),
                                     description: _safeTranslate(
                                       item['description'],
-                                      fallback: 'No description',
+                                      fallback: 'Start the next to get rewarded',
                                     ),
                                     icon: item['icon'] ?? Icons.rocket,
                                     isSelected: keyResultsController.isSelected(index), // ✅ Use index

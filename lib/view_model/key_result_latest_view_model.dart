@@ -27,6 +27,10 @@ class KeyResultsLatestViewModel extends GetxController {
   // Check if index is selected
   bool isSelected(int index) => selectedIndices.contains(index);
 
+  void clearSelection() {
+    selectedIndices.clear(); // ✅ Just clear the indices list
+    print('🧹 Cleared key results selection');
+  }
   // Toggle selection
   void toggleSelection(int index) {
     if (isSelected(index)) {

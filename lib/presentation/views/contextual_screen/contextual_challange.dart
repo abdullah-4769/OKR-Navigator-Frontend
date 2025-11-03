@@ -58,7 +58,7 @@ class ContextualChallengeScreen extends StatelessWidget {
                         subtitle: ''.tr,
                         onBackTap: () => Get.toNamed(AppRoutes.aiAnalysisShowScreen),
                       ),
-                      SizedBox(height: height * 0.025),
+                      SizedBox(height: height * 0.001),
 
                       /// Adapt Strategy Text
                       Center(
@@ -157,8 +157,7 @@ class ContextualChallengeScreen extends StatelessWidget {
                                 description: 'development_new_markets'.tr,
                               ),
                               Divider(height: 20.h, color: AppColors.grey.withOpacity(0.4)),
-
-                              /// Objective
+                              /// Objective Section - Update the onActionTap
                               CustomAdjustmentContainer(
                                 icon: Icons.flag,
                                 iconColor: AppColors.primaryRed,
@@ -167,7 +166,11 @@ class ContextualChallengeScreen extends StatelessWidget {
                                 actionText: 'modify'.tr,
                                 actionColor: AppColors.primaryBlue,
                                 onActionTap: () {
-                                  // TODO: open objective editing dialog
+                                  // Navigate to objective screen for modification (not retry)
+                                  Get.toNamed(
+                                    AppRoutes.keyObjectiveScreen,
+                                    parameters: {'source': 'contextual_challenge'}, // ✅ Different parameter
+                                  );
                                 },
                               ),
                               Divider(height: 20.h, color: AppColors.grey.withOpacity(0.4)),
@@ -175,6 +178,7 @@ class ContextualChallengeScreen extends StatelessWidget {
                               /// Key Results - ✅ CONDITIONAL LOGIC
                               // In ContextualChallengeScreen - Update the Key Results section:
 
+                              // In ContextualChallengeScreen, update the Key Results section:
                               Obx(() {
                                 final keyResultsController = Get.find<KeyResultsController>();
                                 final hasCompletedSelection = keyResultsController.isSelectionComplete();
@@ -193,20 +197,23 @@ class ContextualChallengeScreen extends StatelessWidget {
                                       ? '${'view'.tr} ($selectedCount)'
                                       : 'select_adjust'.tr,
                                   actionColor: hasCompletedSelection ? AppColors.primaryGreen : AppColors.primaryBlue,
-                                  // suffixIcon: hasCompletedSelection ? Icons.check_circle : Icons.add_circle_outline,
                                   onActionTap: () {
                                     print('🔘 Key Results action tapped - Complete: $hasCompletedSelection');
                                     if (hasCompletedSelection) {
                                       _showSelectedKeyResultsDialog(context);
                                     } else {
-                                      Get.toNamed(AppRoutes.keyResultsScreen);
+                                      // Navigate to key results screen for modification
+                                      Get.toNamed(
+                                        AppRoutes.keyResultsScreen,
+                                        parameters: {'source': 'contextual_challenge'}, // ✅ Different parameter
+                                      );
                                     }
                                   },
                                 );
                               }),
                               Divider(height: 20.h, color: AppColors.grey.withOpacity(0.4)),
 
-                              /// Initiatives
+                              /// Initiatives Section
                               CustomAdjustmentContainer(
                                 icon: Icons.rocket_launch,
                                 iconColor: AppColors.primaryRed,
@@ -214,8 +221,11 @@ class ContextualChallengeScreen extends StatelessWidget {
                                 actionText: 'revise'.tr,
                                 actionColor: AppColors.primaryBlue,
                                 onActionTap: () {
-                                  final strategyId = 4;
-                                  _showInnovativeStrategiesDialog(context, strategyId: strategyId);
+                                  // Navigate to initiatives screen for revision
+                                  Get.toNamed(
+                                    AppRoutes.suggestionInitiativeScreen,
+                                    parameters: {'source': 'contextual_challenge'},
+                                  );
                                 },
                               ),
                             ],

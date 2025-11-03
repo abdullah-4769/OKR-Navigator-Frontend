@@ -1,4 +1,4 @@
-import 'dart:convert';
+ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:game_app/controllers/language_controller.dart';
@@ -22,7 +22,19 @@ class KeyObjectiveController extends GetxController {
     // Ensure dependencies are available
     _validateDependencies();
   }
+  // Add this method to clear all data
+  void clearAllData() {
+    objectives.clear();
+    selectedObjective.value = null;
+    loading.value = false;
+    print('🧹 KeyObjectiveController - all data cleared');
+  }
 
+  // Your existing clearSelection method
+  void clearSelection() {
+    selectedObjective.value = null;
+    log('🧹 Objective selection cleared');
+  }
   // Validate that required controllers are registered
   void _validateDependencies() {
     try {
@@ -120,13 +132,12 @@ class KeyObjectiveController extends GetxController {
     await getObjectives(role, organization);
   }
 
-  // ✅ Clear selection (useful when navigating back)
-  void clearSelection() {
-    selectedObjective.value = null;
-    log('🧹 Objective selection cleared');
-  }
+// // ✅ Clear selection (useful when navigating back)
+// void clearSelection() {
+//   selectedObjective.value = null;
+//   log('🧹 Objective selection cleared');
+// }
 }
-
 
 
 

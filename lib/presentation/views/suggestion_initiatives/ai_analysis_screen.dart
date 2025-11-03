@@ -109,15 +109,47 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
   //   }
   // }
 
+// Replace the _runAdaptationAnalysis method in AIAnalysisShowScreen
+
   Future<void> _runAdaptationAnalysis(dynamic adaptationRequest) async {
     try {
-      await _viewModel.submitAdaptationAnalysis(adaptationRequest as AdaptationAnalysisRequest?);
+      if (adaptationRequest == null) {
+        print('❌ Adaptation request is null');
+        return;
+      }
+
+      // Check if it's already an AdaptationAnalysisRequest object
+      if (adaptationRequest is AdaptationAnalysisRequest) {
+        print('✅ Calling submitAdaptationAnalysis with extracted fields');
+        await _viewModel.submitAdaptationAnalysis(
+          strategy: adaptationRequest.strategy,
+          objective: adaptationRequest.objective,
+          keyResult: adaptationRequest.keyResult,
+          challenge: adaptationRequest.challenge,
+          proposal: adaptationRequest.proposal,
+        );
+      }
+      // Check if it's a Map
+      else if (adaptationRequest is Map<String, dynamic>) {
+        print('✅ Calling submitAdaptationAnalysis from Map');
+        await _viewModel.submitAdaptationAnalysis(
+          strategy: adaptationRequest['strategy'] ?? '',
+          objective: adaptationRequest['objective'] ?? '',
+          keyResult: adaptationRequest['keyResult'] ?? '',
+          challenge: adaptationRequest['challenge'] ?? '',
+          proposal: adaptationRequest['proposal'] ?? '',
+        );
+      }
+      else {
+        print('❌ Unknown adaptationRequest type: ${adaptationRequest.runtimeType}');
+      }
+
       print('✅ Adaptation analysis completed');
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ Error running adaptation analysis: $e');
+      print('Stack trace: $stackTrace');
     }
   }
-
 
 
   //// In AIAnalysisShowScreen class, replace _navigateBasedOnGameMode with:
@@ -667,7 +699,4 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
       ),
     );
   }
-
-
-
 }

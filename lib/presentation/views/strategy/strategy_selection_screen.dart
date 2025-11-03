@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,6 @@ import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/custom_journey_map.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
-
 class StrategySelectionScreen extends StatelessWidget {
   StrategySelectionScreen({super.key});
 
@@ -23,7 +23,12 @@ class StrategySelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Get arguments from GetX instead of constructor
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.resetToBackCard();
+    });
+
+    // ✅ Get arguments from GetX
     final args = Get.arguments as Map<String, dynamic>?;
     final selectedRole = args?['selectedRole'] as Map<String, dynamic>?;
     final selectedIndustry = args?['selectedIndustry'] as Map<String, dynamic>?;
@@ -98,7 +103,7 @@ class StrategySelectionScreen extends StatelessWidget {
 
                         SizedBox(height: height * 0.03),
 
-                        // Cards Section - This uses your CustomCardPagerBuilder
+                        // Cards Section
                         CustomCardPagerBuilder(controller: controller),
 
                         SizedBox(height: height * 0.03),
@@ -124,14 +129,13 @@ class StrategySelectionScreen extends StatelessWidget {
                             ),
                             child: CustomButton2(
                               text: 'begin_mission'.tr,
+                              // In StrategySelectionScreen build method
                               onPressed: controller.canBeginMission
                                   ? () {
-                                journeyController.setStep(0, true);
-                                controller.beginMission(
-                                  selectedRole,
-                                  selectedIndustry,
-                                );
+                                journeyController.completeStep(0); // Mark strategy step as complete
+                                controller.beginMission(selectedRole, selectedIndustry);
                               }
+
                                   : null,
                             ),
                           ),
@@ -161,6 +165,9 @@ class StrategySelectionScreen extends StatelessWidget {
 
 
 
+
+
+
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:get/get.dart';
@@ -169,6 +176,7 @@ class StrategySelectionScreen extends StatelessWidget {
 // import '../../../controllers/strategy_selection_controller.dart';
 // import '../../../core/app_colors.dart';
 // import '../../../core/app_dimensions.dart';
+// import '../../../services/shared_preference.dart';
 // import '../../routes/app_routes.dart';
 // import '../../widgets/custom_button2.dart';
 // import '../../widgets/custom_cards_pagebuilder.dart';
@@ -211,10 +219,17 @@ class StrategySelectionScreen extends StatelessWidget {
 //
 //                         // 🔹 Custom Header
 //                         CustomHeader(
-//                           title: 'select'.tr,
-//                           highlightedText: 'strategy'.tr,
-//                           onBackTap: () =>
-//                               Get.offAllNamed(AppRoutes.chooseIndustry),
+//                           title: 'this'.tr,
+//                           highlightedText: 'given'.tr,
+//                           onBackTap: () {
+//                             // ✅ Navigate back based on game mode
+//                             final gameMode = SharedPrefs.getGameMode();
+//                             if (gameMode == 'campaign') {
+//                               Get.offAllNamed(AppRoutes.missionScreen);
+//                             } else {
+//                               Get.offAllNamed(AppRoutes.chooseIndustry);
+//                             }
+//                           },
 //                         ),
 //
 //                         SizedBox(height: height * 0.01),
@@ -244,7 +259,6 @@ class StrategySelectionScreen extends StatelessWidget {
 //                                   color: AppColors.textSecondary,
 //                                   fontFamily: 'Gotham',
 //                                   height: 1.4,
-//
 //                                 ),
 //                                 textAlign: TextAlign.center,
 //                               ),
@@ -254,7 +268,7 @@ class StrategySelectionScreen extends StatelessWidget {
 //
 //                         SizedBox(height: height * 0.03),
 //
-//                         // Cards Section
+//                         // Cards Section - This uses your CustomCardPagerBuilder
 //                         CustomCardPagerBuilder(controller: controller),
 //
 //                         SizedBox(height: height * 0.03),
@@ -280,7 +294,7 @@ class StrategySelectionScreen extends StatelessWidget {
 //                             ),
 //                             child: CustomButton2(
 //                               text: 'begin_mission'.tr,
-//                               onPressed: controller.isCardRevealed.value
+//                               onPressed: controller.canBeginMission
 //                                   ? () {
 //                                 journeyController.setStep(0, true);
 //                                 controller.beginMission(
@@ -302,7 +316,7 @@ class StrategySelectionScreen extends StatelessWidget {
 //
 //               // 🔹 Floating Navbar
 //               Positioned(
-//                 right: width * -0.07,
+//                 right: width * -0.14,
 //                 top: height * 0.50,
 //                 child: const CustomHomeNavBar(),
 //               ),
@@ -313,3 +327,4 @@ class StrategySelectionScreen extends StatelessWidget {
 //     );
 //   }
 // }
+//

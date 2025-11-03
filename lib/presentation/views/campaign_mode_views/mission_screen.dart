@@ -15,15 +15,24 @@ import '../../widgets/custom_home_navbar.dart';
 
 import '../../widgets/team_mode_widgets/section_card.dart'; // ✅ use SectionCard
 
-class MissionScreen extends StatelessWidget {
+class MissionScreen extends StatefulWidget {
   static const String routeName = "/mission";
-
 
   MissionScreen({super.key});
 
   @override
+  State<MissionScreen> createState() => _MissionScreenState();
+}
+
+class _MissionScreenState extends State<MissionScreen> {
+  final MissionScreenController controller = Get.put(MissionScreenController());
+  final RoleSelectionController roleController = Get.find<RoleSelectionController>();
+
+  // ✅ ADD: State variable for loading
+  bool _isStartingCampaign = false;
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(MissionScreenController());
     ScreenUtil.init(context);
     final size = MediaQuery.of(context).size;
     final width = size.width;
@@ -73,7 +82,6 @@ class MissionScreen extends StatelessWidget {
                           child: CustomIndustryCard(
                             orgTitle: controller.industryTitle.value,
                             subTitle: controller.industrySubtitle.value,
-
                             bottomTitle: controller.bottomTitle.value,
                             strategyText: "strategy_cards".tr,
                             challengeText: "Object_Results".tr,
@@ -118,96 +126,33 @@ class MissionScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 25.h),
 
-                        /// ✅ Buttons
+                        // ✅ Buttons with Circular Progress
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: CustomButton(
+                          child: _isStartingCampaign
+                              ? Container(
+                            width: double.infinity,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryRed.withOpacity(0.7),
+                              borderRadius: BorderRadius.circular(25.r),
+                            ),
+                            child: Center(
+                              child: SizedBox(
+                                width: 24.w,
+                                height: 24.w,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                              : CustomButton(
                             text: "begin_campaign".tr,
                             backgroundColor: AppColors.primaryRed,
                             icon: Icons.play_arrow,
-                              // In CampaignModeScreen - update the onStart method
-                              onPressed: () async {
-                                print('🎯 Org A Start button pressed');
-
-                                // ✅ First verify game mode
-                                final savedMode = await SharedPrefs.getGameMode();
-                                print('📋 Current saved game mode: $savedMode');
-
-                                if (savedMode != 'campaign') {
-                                  print('❌ Game mode mismatch! Expected: campaign, Got: $savedMode');
-                                  Get.snackbar(
-                                    "Error".tr,
-                                    "Game mode not set to campaign".tr,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                  return;
-                                }
-
-                                // Get the controller instance
-                                final controller = Get.find<RoleSelectionController>();
-
-                                final selectedRoleIndex = SharedPrefs.getSelectedRoleIndex();
-                                print('👤 Selected role index: $selectedRoleIndex');
-
-                                if (selectedRoleIndex == -1) {
-                                  Get.snackbar(
-                                    "Error".tr,
-                                    "No role selected".tr,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                  return;
-                                }
-
-                                final roleData = controller.roles[selectedRoleIndex];
-                                final language = Get.locale?.languageCode ?? "en";
-
-                                print("🚀 Sending API request - role: ${roleData['role']}, language: $language");
-
-                                // ✅ Call the API and wait for response
-                                final response = await controller.postRoleAndLanguage(
-                                  roleData['role'].toString(),
-                                  language,
-                                );
-
-                                if (response != null) {
-                                  print("✅ API Response received: ${response.keys}");
-                                  print("📝 Response data: $response");
-
-                                  // ✅ Save the description in SharedPreferences
-                                  final description = response['description'] ?? response['name'] ?? 'No description available';
-                                  await SharedPrefs.saveMissionDescription(description);
-                                  print('💾 Mission description saved: $description');
-
-                                  // ✅ Create organization data for campaign mode
-                                  final organizationData = {
-                                    'titleKey': 'organization_a',
-                                    'descriptionKey': 'startup_phase_level1',
-                                    'icon': Icons.business,
-                                  };
-
-                                  // ✅ Save organization for campaign mode
-                                  await SharedPrefs.saveSelectedIndustry(organizationData);
-
-                                  // ✅ Navigate to Strategy Selection with both role and organization
-                                  print('🎬 Navigating to Strategy Selection with campaign data');
-                                  Get.toNamed(
-                                    AppRoutes.selectStrategy,
-                                    arguments: {
-                                      'selectedRole': roleData,
-                                      'selectedIndustry': organizationData,
-                                      'isCampaignMode': true, // ✅ Flag to indicate campaign mode
-                                    },
-                                  );
-                                } else {
-                                  print('❌ API returned null response');
-                                  Get.snackbar(
-                                    "Error".tr,
-                                    "Failed to load mission details".tr,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                }
-                              },
-
+                            onPressed: _startCampaign, // ✅ Use separate method
                           ),
                         ),
                         SizedBox(height: 12.h),
@@ -240,16 +185,130 @@ class MissionScreen extends StatelessWidget {
       ),
     );
   }
+
+  // ✅ ADD: Separate method for starting campaign
+  Future<void> _startCampaign() async {
+    if (_isStartingCampaign) return; // Prevent multiple clicks
+
+    setState(() {
+      _isStartingCampaign = true;
+    });
+
+    print('🎯 Org A Start button pressed');
+
+    try {
+      // ✅ First verify game mode
+      final savedMode = await SharedPrefs.getGameMode();
+      print('📋 Current saved game mode: $savedMode');
+
+      if (savedMode != 'campaign') {
+        print('❌ Game mode mismatch! Expected: campaign, Got: $savedMode');
+        Get.snackbar(
+          "Error".tr,
+          "Game mode not set to campaign".tr,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
+      final selectedRoleIndex = SharedPrefs.getSelectedRoleIndex();
+      print('👤 Selected role index: $selectedRoleIndex');
+
+      if (selectedRoleIndex == -1) {
+        Get.snackbar(
+          "Error".tr,
+          "No role selected".tr,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
+      final roleData = roleController.roles[selectedRoleIndex];
+      final language = Get.locale?.languageCode ?? "en";
+
+      print("🚀 Sending API request - role: ${roleData['role']}, language: $language");
+
+      // ✅ Call the API and wait for response
+      final response = await roleController.postRoleAndLanguage(
+        roleData['role'].toString(),
+        language,
+      );
+
+      if (response != null) {
+        print("✅ API Response received: ${response.keys}");
+        print("📝 Response data: $response");
+
+        // ✅ Save the description in SharedPreferences
+        final description = response['description'] ?? response['name'] ?? 'No description available';
+        await SharedPrefs.saveMissionDescription(description);
+        print('💾 Mission description saved: $description');
+
+        // ✅ Create organization data for campaign mode
+        final organizationData = {
+          'titleKey': 'organization_a',
+          'descriptionKey': 'startup_phase_level1',
+          'icon': Icons.business,
+        };
+
+        // ✅ Save organization for campaign mode
+        await SharedPrefs.saveSelectedIndustry(organizationData);
+
+        // ✅ Navigate to Strategy Selection with both role and organization
+        print('🎬 Navigating to Strategy Selection with campaign data');
+        Get.toNamed(
+          AppRoutes.selectStrategy,
+          arguments: {
+            'selectedRole': roleData,
+            'selectedIndustry': organizationData,
+            'isCampaignMode': true, // ✅ Flag to indicate campaign mode
+          },
+        );
+      } else {
+        print('❌ API returned null response');
+        Get.snackbar(
+          "Error".tr,
+          "Failed to load mission details".tr,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print('❌ Error starting campaign: $e');
+      Get.snackbar(
+        "Error".tr,
+        "Failed to start campaign: ${e.toString()}",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      // ✅ Reset loading state
+      if (mounted) {
+        setState(() {
+          _isStartingCampaign = false;
+        });
+      }
+    }
+  }
 }
 
-// this is old we have new
+
+
+
+
+
+
+
+
+
+
+
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:game_app/presentation/routes/app_routes.dart';
 // import 'package:game_app/presentation/widgets/custom_button.dart';
 // import 'package:get/get.dart';
 // import '../../../controllers/campaign_mode_controllers/mission_screen_controller.dart';
+// import '../../../controllers/role_selection_controller.dart';
 // import '../../../core/app_colors.dart';
+// import '../../../services/shared_preference.dart';
 // import '../../widgets/campaign_mode_widgets/custom_industry_card.dart';
 // import '../../widgets/campaign_mode_widgets/organization_path_card.dart';
 // import '../../widgets/screens_unique_parts/custom_background.dart';
@@ -260,12 +319,13 @@ class MissionScreen extends StatelessWidget {
 //
 // class MissionScreen extends StatelessWidget {
 //   static const String routeName = "/mission";
-//   final controller = Get.put(MissionScreenController());
+//
 //
 //   MissionScreen({super.key});
 //
 //   @override
 //   Widget build(BuildContext context) {
+//     final controller = Get.put(MissionScreenController());
 //     ScreenUtil.init(context);
 //     final size = MediaQuery.of(context).size;
 //     final width = size.width;
@@ -283,7 +343,7 @@ class MissionScreen extends StatelessWidget {
 //                   physics: const BouncingScrollPhysics(),
 //                   padding: EdgeInsets.only(bottom: height * 0.02),
 //                   child: Obx(
-//                     () => Column(
+//                         () => Column(
 //                       crossAxisAlignment: CrossAxisAlignment.center,
 //                       children: [
 //                         /// Header
@@ -315,9 +375,10 @@ class MissionScreen extends StatelessWidget {
 //                           child: CustomIndustryCard(
 //                             orgTitle: controller.industryTitle.value,
 //                             subTitle: controller.industrySubtitle.value,
+//
 //                             bottomTitle: controller.bottomTitle.value,
-//                             strategyText: "strategy".tr,
-//                             challengeText: "challenge".tr,
+//                             strategyText: "strategy_cards".tr,
+//                             challengeText: "Object_Results".tr,
 //                             imagePath: "assets/images/role_icon.png",
 //                             isUnlocked: true,
 //                             onStart: controller.onStartMission,
@@ -359,15 +420,136 @@ class MissionScreen extends StatelessWidget {
 //                         ),
 //                         SizedBox(height: 25.h),
 //
-//                         /// ✅ Buttons
+//                         // ✅ Buttons with Circular Progress
 //                         Padding(
 //                           padding: EdgeInsets.symmetric(horizontal: 16.w),
-//                           child: CustomButton(
-//                             text: "begin_campaign".tr,
-//                             backgroundColor: AppColors.primaryRed,
-//                             icon: Icons.play_arrow,
-//                             onPressed: () {
-//                               Get.toNamed(AppRoutes.campaignStrategySelection);
+//                           child: StatefulBuilder(
+//                             builder: (context, setState) {
+//                               bool _isStartingCampaign = false;
+//
+//                               return _isStartingCampaign
+//                                   ? Container(
+//                                 width: double.infinity,
+//                                 height: 50.h,
+//                                 decoration: BoxDecoration(
+//                                   color: AppColors.primaryRed.withOpacity(0.7),
+//                                   borderRadius: BorderRadius.circular(25.r),
+//                                 ),
+//                                 child: Center(
+//                                   child: SizedBox(
+//                                     width: 24.w,
+//                                     height: 24.w,
+//                                     child: CircularProgressIndicator(
+//                                       strokeWidth: 3,
+//                                       color: Colors.white,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               )
+//                                   : CustomButton(
+//                                 text: "begin_campaign".tr,
+//                                 backgroundColor: AppColors.primaryRed,
+//                                 icon: Icons.play_arrow,
+//                                 onPressed: () async {
+//                                   setState(() {
+//                                     _isStartingCampaign = true;
+//                                   });
+//
+//                                   print('🎯 Org A Start button pressed');
+//
+//                                   try {
+//                                     // ✅ First verify game mode
+//                                     final savedMode = await SharedPrefs.getGameMode();
+//                                     print('📋 Current saved game mode: $savedMode');
+//
+//                                     if (savedMode != 'campaign') {
+//                                       print('❌ Game mode mismatch! Expected: campaign, Got: $savedMode');
+//                                       Get.snackbar(
+//                                         "Error".tr,
+//                                         "Game mode not set to campaign".tr,
+//                                         snackPosition: SnackPosition.BOTTOM,
+//                                       );
+//                                       return;
+//                                     }
+//
+//                                     // Get the controller instance
+//                                     final controller = Get.find<RoleSelectionController>();
+//
+//                                     final selectedRoleIndex = SharedPrefs.getSelectedRoleIndex();
+//                                     print('👤 Selected role index: $selectedRoleIndex');
+//
+//                                     if (selectedRoleIndex == -1) {
+//                                       Get.snackbar(
+//                                         "Error".tr,
+//                                         "No role selected".tr,
+//                                         snackPosition: SnackPosition.BOTTOM,
+//                                       );
+//                                       return;
+//                                     }
+//
+//                                     final roleData = controller.roles[selectedRoleIndex];
+//                                     final language = Get.locale?.languageCode ?? "en";
+//
+//                                     print("🚀 Sending API request - role: ${roleData['role']}, language: $language");
+//
+//                                     // ✅ Call the API and wait for response
+//                                     final response = await controller.postRoleAndLanguage(
+//                                       roleData['role'].toString(),
+//                                       language,
+//                                     );
+//
+//                                     if (response != null) {
+//                                       print("✅ API Response received: ${response.keys}");
+//                                       print("📝 Response data: $response");
+//
+//                                       // ✅ Save the description in SharedPreferences
+//                                       final description = response['description'] ?? response['name'] ?? 'No description available';
+//                                       await SharedPrefs.saveMissionDescription(description);
+//                                       print('💾 Mission description saved: $description');
+//
+//                                       // ✅ Create organization data for campaign mode
+//                                       final organizationData = {
+//                                         'titleKey': 'organization_a',
+//                                         'descriptionKey': 'startup_phase_level1',
+//                                         'icon': Icons.business,
+//                                       };
+//
+//                                       // ✅ Save organization for campaign mode
+//                                       await SharedPrefs.saveSelectedIndustry(organizationData);
+//
+//                                       // ✅ Navigate to Strategy Selection with both role and organization
+//                                       print('🎬 Navigating to Strategy Selection with campaign data');
+//                                       Get.toNamed(
+//                                         AppRoutes.selectStrategy,
+//                                         arguments: {
+//                                           'selectedRole': roleData,
+//                                           'selectedIndustry': organizationData,
+//                                           'isCampaignMode': true, // ✅ Flag to indicate campaign mode
+//                                         },
+//                                       );
+//                                     } else {
+//                                       print('❌ API returned null response');
+//                                       Get.snackbar(
+//                                         "Error".tr,
+//                                         "Failed to load mission details".tr,
+//                                         snackPosition: SnackPosition.BOTTOM,
+//                                       );
+//                                     }
+//                                   } catch (e) {
+//                                     print('❌ Error starting campaign: $e');
+//                                     Get.snackbar(
+//                                       "Error".tr,
+//                                       "Failed to start campaign: ${e.toString()}",
+//                                       snackPosition: SnackPosition.BOTTOM,
+//                                     );
+//                                   } finally {
+//                                     // ✅ REMOVED the mounted check - just set the state
+//                                     setState(() {
+//                                       _isStartingCampaign = false;
+//                                     });
+//                                   }
+//                                 },
+//                               );
 //                             },
 //                           ),
 //                         ),

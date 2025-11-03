@@ -1,4 +1,3 @@
-// base_strategy_controller.dart
 import 'package:get/get_core/src/get_main.dart';
 
 import '../presentation/routes/app_routes.dart';
@@ -8,6 +7,7 @@ import 'package:get/get.dart';
 
 // base_strategy_controller.dart
 abstract class BaseStrategyController extends GetxController {
+
   /// Back card asset
   final String backCardAsset = 'assets/images/backcard_img.png';
 

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
+import 'package:game_app/presentation/views/suggestion_Initiatives/suggestion_initiatives_creen.dart';
 import 'package:get/get.dart';
 import 'package:game_app/generated/models/responses/key_results/key_results_response.dart' as key_result_models;
 import '../../generated/models/requests/campaign_mode/feedback_evaluation_model.dart';
@@ -13,6 +14,7 @@ import '../widgets/custom_home_navbar.dart';
 import '../widgets/game_complete_widgets/custom_score_card.dart';
 import '../widgets/screens_unique_parts/custom_background.dart';
 import '../widgets/screens_unique_parts/custom_header.dart';
+import 'contextual_screen/contextual_c_adjsutment_screen.dart';
 
 class FeedbackScreen extends StatelessWidget {
   final List<key_result_models.KeyResult> selectedKeyResults;
@@ -136,37 +138,116 @@ class FeedbackScreen extends StatelessWidget {
     } catch (e) {
       print('❌ Error marking level complete: $e');
     }
-  }
 
-// Call this method when user completes the feedback screen
-// Add this to your Continue button logic or when evaluation is successful
+  }
+// In FeedbackScreen - update the _navigateBasedOnGameMode method
   void _navigateBasedOnGameMode() async {
     try {
       final savedMode = await SharedPrefs.getGameMode();
 
       if (savedMode == 'campaign') {
-        // Mark level as complete before navigating
-        _markLevelComplete();       }
+        _markLevelComplete();
+      }
 
-      // Rest of your navigation logic...
+      //  Pass selectedKeyResults to ContextualCAdjustmentScreen
       switch (savedMode) {
         case 'solo':
         case 'challenge':
-          Get.toNamed(AppRoutes.suggestionInitiativeScreen);
+          Get.to(
+                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
+            arguments: {
+              'selectedKeyResults': selectedKeyResults,
+              'challengeData': await _getChallengeData(),
+              'existingInitiatives': await _getExistingInitiatives(),
+            },
+          );
           break;
         case 'campaign':
-        // Go back to campaign screen to show updated progress
+
           Get.offAllNamed(AppRoutes.campaignModeScreen);
           break;
         default:
-          Get.toNamed(AppRoutes.suggestionInitiativeScreen);
+          Get.to(
+                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
+            arguments: {
+              'selectedKeyResults': selectedKeyResults,
+              'challengeData': await _getChallengeData(),
+              'existingInitiatives': await _getExistingInitiatives(),
+            },
+          );
           break;
       }
     } catch (e) {
       print('❌ Error in navigation: $e');
-      Get.toNamed(AppRoutes.suggestionInitiativeScreen);
+      Get.to(
+            () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
+        arguments: {
+          'selectedKeyResults': selectedKeyResults,
+          'challengeData': await _getChallengeData(),
+          'existingInitiatives': await _getExistingInitiatives(),
+        },
+      );
     }
   }
+
+// Helper methods to get additional data if needed
+  Future<Map<String, dynamic>> _getChallengeData() async {
+    try {
+      // Get challenge data from SharedPreferences or wherever you store it
+      return await SharedPrefs.getCurrentChallengeData() ?? {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  Future<List<Map<String, String>>> _getExistingInitiatives() async {
+    try {
+      // Get existing initiatives from SharedPreferences or ViewModel
+      final initiatives = SharedPrefs.getInitiatives();
+      return [
+        {
+          'title': initiatives['firstTitle'] ?? '',
+          'description': initiatives['firstDesc'] ?? '',
+        },
+        {
+          'title': initiatives['secondTitle'] ?? '',
+          'description': initiatives['secondDesc'] ?? '',
+        },
+      ];
+    } catch (e) {
+      return [];
+    }
+  }
+  //
+// // Call this method when user completes the feedback screen
+// // Add this to your Continue button logic or when evaluation is successful
+//   void _navigateBasedOnGameMode() async {
+//     try {
+//       final savedMode = await SharedPrefs.getGameMode();
+//
+//       if (savedMode == 'campaign') {
+//         // Mark level as complete before navigating
+//         _markLevelComplete();       }
+//
+//       // Rest of your navigation logic...
+//       switch (savedMode) {
+//         case 'solo':
+//         case 'challenge':
+//           Get.toNamed(AppRoutes.suggestionInitiativeScreen);
+//           break;
+//         case 'campaign':
+//         // Go back to campaign screen to show updated progress
+//           Get.offAllNamed(AppRoutes.campaignModeScreen);
+//           break;
+//         default:
+//           Get.toNamed(AppRoutes.suggestionInitiativeScreen);
+//           break;
+//       }
+//     } catch (e) {
+//       print('❌ Error in navigation: $e');
+//       Get.toNamed(AppRoutes.suggestionInitiativeScreen);
+//     }
+//   }
 
   Widget _buildScoreBreakdown(FeedbackEvaluationModel feedback) {
     final breakdown = feedback.breakdown;
@@ -436,287 +517,3 @@ class FeedbackScreen extends StatelessWidget {
   }
 }
 
-
-
-
-
-//
-// class FeedbackScreen extends StatelessWidget {
-//   const FeedbackScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) => Scaffold(
-//       body: CustomBackground(
-//         child: Column(
-//           children: [
-//             // Custom Header
-//             CustomHeader(
-//               title: 'Select',
-//              highlightedText: "Key Results", onBackTap: () { Get.back(); },
-//             ),
-//
-//             // Scrollable Content
-//             Expanded(
-//               child: SingleChildScrollView(
-//                 padding: EdgeInsets.symmetric(horizontal: 24.w),
-//                 child: Column(
-//                   children: [
-//                     SizedBox(height: 20.h),
-//
-//                     CustomScoreCard(title: 'Excellent strategy',
-//                     score:87,
-//                     showBackground: false,),
-//
-//                     SizedBox(height: 24.h),
-//                     //
-//                     // // Excellent Strategy Text
-//                     // Text(
-//                     //   'Excellent Strategy!',
-//                     //   style: TextStyle(
-//                     //     fontFamily: 'GothamBold',
-//                     //     fontSize: 28.sp,
-//                     //     fontWeight: FontWeight.bold,
-//                     //     color: const Color(0xFF1E3A8A),
-//                     //   ),
-//                     // ),
-//
-//
-//                     // Score Breakdown Cards
-//                     _buildScoreBreakdown(),
-//
-//                     SizedBox(height: 24.h),
-//
-//                     // Back Home Button
-//                    // _buildBackHomeButton(),
-//
-//                     SizedBox(height: 24.h),
-//
-//                     // Stage 2 Feedback Card
-//                     _buildFeedbackCard(),
-//
-//                     SizedBox(height: 24.h),
-//
-//                     // Start Certification Test Button
-//                     _buildCertificationButton(),
-//
-//                     SizedBox(height: 40.h),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//
-//   Widget _buildScoreBreakdown() {
-//     final scores = [
-//       {'score': '35/40', 'label': 'Context Analysis'},
-//       {'score': '32/40', 'label': 'Adaptability'},
-//       {'score': '30/40', 'label': 'Execution'},
-//     ];
-//
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//       children: scores.map((item) {
-//         return Expanded(
-//           child: Container(
-//             margin: EdgeInsets.symmetric(horizontal: 6.w),
-//             padding: EdgeInsets.symmetric(vertical: 20.h),
-//             decoration: BoxDecoration(
-//               color: const Color(0xFFF5F5F5),
-//               borderRadius: BorderRadius.circular(16.r),
-//               border: Border.all(
-//                 color: const Color(0xFFE0E0E0),
-//                 width: 1,
-//               ),
-//             ),
-//             child: Column(
-//               children: [
-//                 Text(
-//                   item['score']!,
-//                   style: TextStyle(
-//                     fontFamily: 'GothamBold',
-//                     fontSize: 24.sp,
-//                     fontWeight: FontWeight.bold,
-//                     color: const Color(0xFF1E3A8A),
-//                   ),
-//                 ),
-//                 SizedBox(height: 8.h),
-//                 Text(
-//                   item['label']!,
-//                   textAlign: TextAlign.center,
-//                   style: TextStyle(
-//                     fontFamily: 'Gotham',
-//                     fontSize: 12.sp,
-//                     color: Colors.black87,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         );
-//       }).toList(),
-//     );
-//   }
-//
-//
-//   Widget _buildFeedbackCard() {
-//     return Container(
-//       padding: EdgeInsets.all(20.w),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(20.r),
-//         border: Border.all(
-//           color: const Color(0xFFCC4A2E),
-//           width: 2,
-//         ),
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           // Header
-//           Row(
-//             children: [
-//               Container(
-//                 padding: EdgeInsets.all(8.w),
-//                 decoration: const BoxDecoration(
-//                   color: Color(0xFFCC4A2E),
-//                   shape: BoxShape.circle,
-//                 ),
-//                 child: Icon(
-//                   Icons.thumb_up,
-//                   color: Colors.white,
-//                   size: 20.sp,
-//                 ),
-//               ),
-//               SizedBox(width: 12.w),
-//               Text(
-//                 'Stage 2 Feedback',
-//                 style: TextStyle(
-//                   fontFamily: 'GothamBold',
-//                   fontSize: 18.sp,
-//                   fontWeight: FontWeight.bold,
-//                   color: const Color(0xFF1E3A8A),
-//                 ),
-//               ),
-//             ],
-//           ),
-//
-//           SizedBox(height: 20.h),
-//
-//           // Contextual Analysis - Perfect
-//           _buildFeedbackItem(
-//             title: 'Contextual Analysis',
-//             rating: 'Perfect',
-//             ratingColor: const Color(0xFFCC4A2E),
-//             description:
-//             'Strong understanding of market changes and their impact on OKR priorities. Quick identification of critical pivot points.',
-//           ),
-//
-//           SizedBox(height: 16.h),
-//
-//           // Strategic Adjustments - Good
-//           _buildFeedbackItem(
-//             title: 'Strategic Adjustments',
-//             rating: 'Good',
-//             ratingColor: const Color(0xFF4CAF50),
-//             description:
-//             'Masterful rebalancing of resources and timeline adjustments. Your pivots maintained team alignment while addressing new challenges.',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildFeedbackItem({
-//     required String title,
-//     required String rating,
-//     required Color ratingColor,
-//     required String description,
-//   }) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Text(
-//               title,
-//               style: TextStyle(
-//                 fontFamily: 'GothamBold',
-//                 fontSize: 16.sp,
-//                 fontWeight: FontWeight.bold,
-//                 color: Colors.black87,
-//               ),
-//             ),
-//             Text(
-//               rating,
-//               style: TextStyle(
-//                 fontFamily: 'GothamBold',
-//                 fontSize: 16.sp,
-//                 fontWeight: FontWeight.bold,
-//                 color: ratingColor,
-//               ),
-//             ),
-//           ],
-//         ),
-//         SizedBox(height: 8.h),
-//         Text(
-//           description,
-//           style: TextStyle(
-//             fontFamily: 'Gotham',
-//             fontSize: 14.sp,
-//             color: Colors.black54,
-//             height: 1.5,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildCertificationButton() {
-//     return GestureDetector(
-//       onTap: () {
-//         // Navigate to certification test
-//       },
-//       child: Container(
-//         width: double.infinity,
-//         padding: EdgeInsets.symmetric(vertical: 16.h),
-//         decoration: BoxDecoration(
-//           color: const Color(0xFFCC4A2E),
-//           borderRadius: BorderRadius.circular(50.r),
-//           boxShadow: [
-//             BoxShadow(
-//               color: const Color(0xFFCC4A2E).withOpacity(0.3),
-//               blurRadius: 10,
-//               offset: const Offset(0, 5),
-//             ),
-//           ],
-//         ),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Icon(
-//               Icons.play_arrow,
-//               color: Colors.white,
-//               size: 24.sp,
-//             ),
-//             SizedBox(width: 8.w),
-//             Text(
-//               'Start Certification Test',
-//               style: TextStyle(
-//                 fontFamily: 'GothamBold',
-//                 fontSize: 16.sp,
-//                 fontWeight: FontWeight.bold,
-//                 color: Colors.white,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-//
