@@ -44,7 +44,7 @@ class _CustomAIStrategyContainerState extends State<CustomAIStrategyContainer> {
             /// Robot Icon
             Center(
               child: SvgPicture.asset(
-                'assets/images/robot.svg',
+                'assets/images/robort.png',
                 height: AppDimensions.d90.h,
                 width: AppDimensions.d80.w,
               ),

@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _clearGameData();
+
     // Reset page controller when screen is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
       c.resetPageController();

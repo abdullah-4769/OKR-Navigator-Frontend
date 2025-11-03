@@ -20,7 +20,7 @@ class Assets {
   static const String imagesBadge = 'assets/images/badge.png';
   static const String imagesCampaign = 'assets/images/campaign.svg';
   static const String imagesCampaignImage = 'assets/images/campaign_image.png';
-  static const String imagesCard1 = 'assets/images/backcard_img.png';
+  static const String imagesCard1 = 'assets/images/card_1.png';
   static const String imagesCeo = 'assets/images/ceo.svg';
   static const String imagesCertificate = 'assets/images/certificate.svg';
   static const String imagesCertificateImage = 'assets/images/certificate_image.png';
@@ -45,6 +45,7 @@ class Assets {
   static const String imagesPersondashboard = 'assets/images/persondashboard.svg';
   static const String imagesProgressTrack = 'assets/images/progress_track.png';
   static const String imagesRight = 'assets/images/right.svg';
+  static const String imagesRobort = 'assets/images/robort.png';
   static const String imagesRobortarrow = 'assets/images/robortarrow.png';
   static const String imagesRobot = 'assets/images/robot.svg';
   static const String imagesRoleIcon = 'assets/images/role_icon.png';
@@ -59,6 +60,11 @@ class Assets {
   static const String imagesStrategy1 = 'assets/images/strategy1.png';
   static const String imagesStrategy2 = 'assets/images/strategy2.png';
   static const String imagesStrategy3 = 'assets/images/strategy3.png';
+  static const String imagesStrategy4 = 'assets/images/strategy4.png';
+  static const String imagesStrategy5 = 'assets/images/strategy5.png';
+  static const String imagesStrategy6 = 'assets/images/strategy6.png';
+  static const String imagesStrategy7 = 'assets/images/strategy7.png';
+  static const String imagesStrategy8 = 'assets/images/strategy8.png';
   static const String imagesTeam = 'assets/images/team.svg';
   static const String imagesTeamImage = 'assets/images/team_image.png';
   static const String imagesTeamImagee = 'assets/images/team_imagee.svg';

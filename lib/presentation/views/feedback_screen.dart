@@ -149,7 +149,6 @@ class FeedbackScreen extends StatelessWidget {
         _markLevelComplete();
       }
 
-      //  Pass selectedKeyResults to ContextualCAdjustmentScreen
       switch (savedMode) {
         case 'solo':
         case 'challenge':
@@ -190,10 +189,9 @@ class FeedbackScreen extends StatelessWidget {
     }
   }
 
-// Helper methods to get additional data if needed
   Future<Map<String, dynamic>> _getChallengeData() async {
     try {
-      // Get challenge data from SharedPreferences or wherever you store it
+
       return await SharedPrefs.getCurrentChallengeData() ?? {};
     } catch (e) {
       return {};

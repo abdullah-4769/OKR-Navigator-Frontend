@@ -111,13 +111,13 @@ class _CampaignModeScreenState extends State<CampaignModeScreen> with WidgetsBin
   void _showUnlockMessages(Map<String, dynamic> status) {
     if (status['level2Unlocked'] as bool && !(status['level2Completed'] as bool)) {
       Future.delayed(Duration(milliseconds: 500), () {
-        Get.snackbar(
-          "🎉 Level 2 Unlocked!".tr,
-          "You can now start Organization B".tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.primaryGreen,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   "🎉 Level 2 Unlocked!".tr,
+        //   "You can now start Organization B".tr,
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: AppColors.primaryGreen,
+        //   colorText: Colors.white,
+        // );
       });
     }
 

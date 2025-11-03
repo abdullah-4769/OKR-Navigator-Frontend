@@ -22,6 +22,7 @@ class CustomShareButton extends StatefulWidget {
   final double borderRadius;
   final String? shareText;
   final String? fileName;
+  final VoidCallback? onPressed;
   final Function()? onError; // Callback for error handling
 
   const CustomShareButton({
@@ -37,7 +38,7 @@ class CustomShareButton extends StatefulWidget {
     this.borderRadius = AppDimensions.d30,
     this.shareText,
     this.fileName,
-    this.onError,
+    this.onError, this.onPressed,
   });
 
   @override
