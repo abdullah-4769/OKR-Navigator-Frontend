@@ -51,7 +51,6 @@ class GameModeScreen extends StatelessWidget {
 
                       SizedBox(height: AppDimensions.d10.h),
 
-                      /// Cards Carousel (Adaptive height)
                       SizedBox(
                         height: cardHeight,
                         width: size.width,

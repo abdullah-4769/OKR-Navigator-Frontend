@@ -31,7 +31,6 @@ class CampaignKeyResultScreen extends StatelessWidget {
   );
   final JourneyController journeyController = Get.find<JourneyController>();
 
-  // Helper method to safely get translated text
   String _safeTranslate(String? key, {String fallback = ''}) {
     if (key == null) return fallback;
     try {

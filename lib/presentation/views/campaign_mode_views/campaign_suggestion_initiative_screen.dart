@@ -34,7 +34,6 @@ class CampaignSuggestionInitiativesScreen extends StatelessWidget {
         child: SafeArea(
           child: Stack(
             children: [
-              /// 🔹 Main Content
               Positioned.fill(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),

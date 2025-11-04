@@ -31,7 +31,6 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
   final JourneyController journeyController = Get.find<JourneyController>();
   final viewModel = Get.put(SuggestionInitiativesViewModel());
 
-  // ✅ Track source
   final bool _isModifyFromContextual = Get.parameters['source'] == 'contextual_challenge';
   final bool _isNormalFlow = !Get.parameters.containsKey('source');
 

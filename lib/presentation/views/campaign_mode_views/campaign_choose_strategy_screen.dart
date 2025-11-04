@@ -231,7 +231,6 @@
 //                   ),
 //                 ),
 //
-//                 /// ----------- Floating Home Nav -------------
 //                 Positioned(
 //                   right: screenWidth * -0.07000001,
 //                   top: MediaQuery.of(context).size.height * 0.50,

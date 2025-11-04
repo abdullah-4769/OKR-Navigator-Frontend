@@ -318,7 +318,6 @@ class ScoreboardScreen extends StatelessWidget {
 
                       SizedBox(height: AppDimensions.d14.h),
 
-                      /// User Achievement Banner
                       if (controller.userDetails.value != null)
                         Center(
                           child: Padding(

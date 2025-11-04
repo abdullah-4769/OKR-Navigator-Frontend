@@ -18,7 +18,6 @@ import 'data/repositories/storage_repository.dart'; // ✅ Add this
 import 'generated/network.dart'; // ✅ For DioClient
 import 'presentation/routes/app_routes.dart';
 
-// Firebase background handler
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();

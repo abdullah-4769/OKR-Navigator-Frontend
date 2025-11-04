@@ -12,7 +12,6 @@ import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/custom_svg.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 
-// ✅ Global trKey
 String trKey(Object? key) => key != null ? key.toString().tr : '';
 
 class CampaignRoleSelectionScreen extends StatelessWidget {

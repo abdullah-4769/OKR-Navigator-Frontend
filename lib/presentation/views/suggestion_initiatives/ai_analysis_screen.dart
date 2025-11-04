@@ -1,4 +1,3 @@
-// lib/view_model/challange_view_models/adaptation_ai_analysis-viewmodel.dart
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

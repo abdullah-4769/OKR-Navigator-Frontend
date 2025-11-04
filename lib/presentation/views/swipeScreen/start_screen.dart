@@ -139,7 +139,7 @@ class _SwipeToStartState extends State<SwipeToStart> {
   @override
   Widget build(BuildContext context) {
     final double containerWidth =
-        MediaQuery.of(context).size.width - 48.w; // Considering padding
+        MediaQuery.of(context).size.width - 48.w;
     final double arrowSize = 50.w;
 
     return GestureDetector(

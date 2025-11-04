@@ -192,6 +192,7 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
     );
   }
 
+
   Widget _buildErrorState() {
     return Column(
       children: [

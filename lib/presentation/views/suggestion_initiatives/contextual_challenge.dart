@@ -1,4 +1,3 @@
-// lib/presentation/screens/ai_analysis/ai_analysis_show_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
