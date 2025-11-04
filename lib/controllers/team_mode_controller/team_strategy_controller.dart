@@ -2,7 +2,6 @@
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
-import '../../core/api_constants.dart';
 import '../../data/repositories/storage_repository.dart';
 import '../../services/notification_service.dart';
 import '../../utils/snackbar_helper.dart';
@@ -46,7 +45,7 @@ class TeamStrategyController extends GetxController {
 
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/game/team-strategy',
         data: {
@@ -64,9 +63,9 @@ class TeamStrategyController extends GetxController {
         strategyTitle.value = data['title'] ?? '';
         fileUrl.value = data['fileUrl'] ?? '';
         selectedStrategy.value = strategyTitle.value;
-        
+
         SnackbarHelper.success('Strategy loaded successfully');
-        
+
         // Send notification about strategy selection
         _sendStrategyNotification();
       }
@@ -87,7 +86,7 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/objectives/generate',
         data: {
@@ -120,7 +119,7 @@ class TeamStrategyController extends GetxController {
   Future<Map<String, dynamic>> fetchObjectivesByStrategyId() async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.get(
         '${_getBaseUrl()}/objectives/fetch-strategy-id-based',
         queryParameters: {'strategyId': strategyId.value},
@@ -143,7 +142,7 @@ class TeamStrategyController extends GetxController {
   Future<Map<String, dynamic>> fetchObjectivesForChallenge() async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.get(
         '${_getBaseUrl()}/objectives/fetch-objective-for-challenge',
         queryParameters: {'strategyId': strategyId.value},
@@ -170,7 +169,7 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/key-result/batch',
         data: {
@@ -201,7 +200,7 @@ class TeamStrategyController extends GetxController {
   Future<Map<String, dynamic>> fetchKeyResultsByStrategy() async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.get(
         '${_getBaseUrl()}/key-result/by-strategy',
         queryParameters: {'strategyId': strategyId.value},
@@ -230,7 +229,7 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/team/keyresuts/evaluate',
         data: {
@@ -268,7 +267,7 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/keywordbase-innovative',
         data: {
@@ -299,7 +298,7 @@ class TeamStrategyController extends GetxController {
   Future<List<Map<String, dynamic>>> fetchInnovativeIdeasByStrategy() async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.get(
         '${_getBaseUrl()}/keywordbase-innovative/strategy/${strategyId.value}',
       );
@@ -327,7 +326,7 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/team/evaluate-initiatives',
         data: {
@@ -364,7 +363,7 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/challenge',
         data: {
@@ -401,7 +400,7 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/team-challenges/evaluation',
         data: {
@@ -442,13 +441,13 @@ class TeamStrategyController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
-      
+
       final user = _storageRepository.getUser();
       if (user == null) {
         SnackbarHelper.error('User not found');
         return;
       }
-      
+
       final response = await _dio.post(
         '${_getBaseUrl()}/final-team-score',
         data: {
@@ -470,7 +469,7 @@ class TeamStrategyController extends GetxController {
 
       if (response.statusCode == 200) {
         SnackbarHelper.success('Team score submitted successfully');
-        
+
         // Send notification about score submission
         _sendScoreSubmissionNotification(score);
       }
@@ -487,7 +486,7 @@ class TeamStrategyController extends GetxController {
   Future<Map<String, dynamic>> getFinalTeamScore() async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.get(
         '${_getBaseUrl()}/final-team-score/${teamId.value}/summary',
       );
@@ -509,7 +508,7 @@ class TeamStrategyController extends GetxController {
   Future<Map<String, dynamic>> getUserFinalScoreInTeam(String userId) async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.get(
         '${_getBaseUrl()}/final-team-score/${teamId.value}/user/$userId/score',
       );
@@ -531,7 +530,7 @@ class TeamStrategyController extends GetxController {
   Future<Map<String, dynamic>> getTeamRewardsSummary() async {
     try {
       isLoading.value = true;
-      
+
       final response = await _dio.get(
         '${_getBaseUrl()}/final-team-score/team/${teamId.value}/rewards-summary',
       );
@@ -547,11 +546,12 @@ class TeamStrategyController extends GetxController {
     }
     return {};
   }
-// Helper methods
-  String _getBaseUrl() {
-    return ApiConstants.baseUrl;
-  }
 
+  // Helper methods
+  String _getBaseUrl() {
+    // Replace with your actual API base URL
+    return 'http://54.145.244.15:3000';
+  }
 
   void _sendStrategyNotification() {
     final user = _storageRepository.getUser();

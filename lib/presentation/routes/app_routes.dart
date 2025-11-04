@@ -313,7 +313,7 @@ class AppRoutes {
 
     GetPage(
       name: AppRoutes.teamGameCompleteScreen,
-      page: () => const TeamGameCompleteScreen(),
+      page: () =>  TeamGameCompleteScreen(),
     ),
 
     GetPage(

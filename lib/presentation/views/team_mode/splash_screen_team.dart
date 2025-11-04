@@ -50,11 +50,11 @@ class SplashScreenTeam extends StatelessWidget {
                     CustomSvg(
                       semanticsLabel: 'mask_group'.tr,
                       assetPath: 'assets/images/teamteam.png',
-                      height: isPortrait ? height * 0.22 : height * 0.4,
-                      width: isPortrait ? width * 0.55 : width * 0.35,
+                      height: isPortrait ? height * 0.26 : height * 0.6,
+                      width: isPortrait ? width * 0.59 : width * 0.39,
                     ),
 
-                    SizedBox(height: height * 0.02),
+                    SizedBox(height: height * 0.002),
 
                     /// Title
                     Padding(

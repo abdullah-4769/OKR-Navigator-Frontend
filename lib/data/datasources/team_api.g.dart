@@ -29,11 +29,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<Team>(
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/team/${teamId}',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/team/${teamId}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -57,11 +57,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<TeamLobbyResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/team/join',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/team/join',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -84,11 +84,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<TeamLobbyResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/team/${teamId}/details',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/team/${teamId}/details',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -104,9 +104,9 @@ class _TeamApi implements TeamApi {
 
   @override
   Future<AddMemberResponse> addMember(
-      int teamId,
-      AddMemberRequest request,
-      ) async {
+    int teamId,
+    AddMemberRequest request,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -115,11 +115,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<AddMemberResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/team/${teamId}/add-member',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/team/${teamId}/add-member',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -142,11 +142,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<List<AssignRoleResponse>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/team/${teamId}/members',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/team/${teamId}/members',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<List<dynamic>>(_options);
@@ -155,8 +155,8 @@ class _TeamApi implements TeamApi {
       _value = _result.data!
           .map(
             (dynamic i) =>
-            AssignRoleResponse.fromJson(i as Map<String, dynamic>),
-      )
+                AssignRoleResponse.fromJson(i as Map<String, dynamic>),
+          )
           .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -167,9 +167,9 @@ class _TeamApi implements TeamApi {
 
   @override
   Future<UpdateTeamMemberResponse> updateMemberRole(
-      int teamId,
-      UpdateTeamMemberRequest request,
-      ) async {
+    int teamId,
+    UpdateTeamMemberRequest request,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -178,11 +178,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<UpdateTeamMemberResponse>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/team/${teamId}/update-role',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/team/${teamId}/update-role',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -206,11 +206,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<void>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/ws/invite',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/ws/invite',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     await _dio.fetch<void>(_options);
@@ -226,11 +226,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<void>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/ws/join-team',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/ws/join-team',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     await _dio.fetch<void>(_options);
@@ -246,11 +246,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<void>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/ws/message',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/ws/message',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     await _dio.fetch<void>(_options);
@@ -266,11 +266,11 @@ class _TeamApi implements TeamApi {
     final _options = _setStreamType<void>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        '/notifications/send',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            '/notifications/send',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     await _dio.fetch<void>(_options);

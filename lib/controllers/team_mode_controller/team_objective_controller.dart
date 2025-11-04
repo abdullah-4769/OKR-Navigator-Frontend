@@ -72,6 +72,12 @@ class TeamObjectiveController extends GetxController {
       loading.value = false;
     }
   }
+  
+  /// Return all objective titles (for generating comprehensive Key Results)
+  List<String> getAllObjectiveTitles() {
+    return objectives.map((obj) => obj.title ?? '').where((title) => title.isNotEmpty).toList();
+  }
+
   /// Select / Deselect objective
   void selectObjective(Objective objective) {
     if (selectedObjective.value == objective) {

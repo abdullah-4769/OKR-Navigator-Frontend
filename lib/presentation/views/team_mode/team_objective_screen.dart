@@ -251,6 +251,8 @@ class TeamObjectiveScreen extends StatelessWidget {
                                         // Update journey status
                                         journeyController.completeStep(0);
                                         
+                                        final List<String> objectiveTitles = controller.getAllObjectiveTitles();
+                                        
                                         if (isChallengeMode) {
                                             // ✅ CHALLENGE FLOW FIX: Go directly back to the screen that opened this (Contextual Challenge)
                                             Get.back(); 
@@ -258,6 +260,9 @@ class TeamObjectiveScreen extends StatelessWidget {
                                             // 1. NORMAL FLOW: Proceed to Key Results screen
                                             Get.toNamed(
                                               AppRoutes.teamKeyResultScreen,
+                                              arguments: {
+                                                  'objectiveTitles': objectiveTitles,
+                                              }
                                             );
                                         }
                                     }

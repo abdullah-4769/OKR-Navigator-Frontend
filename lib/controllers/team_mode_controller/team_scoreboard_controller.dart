@@ -1,15 +1,15 @@
 import 'package:get/get.dart';
-import 'package:game_app/utils/snackbar_helper.dart';
+import 'package:game_app/utils/snackbar_helper.dart'; 
 import 'dart:developer';
 import 'package:game_app/data/repositories/strategy_repository.dart';
-import 'package:game_app/controllers/team_mode_controller/create_team_controller.dart';
+import 'package:game_app/controllers/team_mode_controller/create_team_controller.dart'; 
 
 class TeamScoreboardController extends GetxController {
   final RxString selectedTimeFrame = 'Today'.obs;
   final List<String> timeFrames = ['Today', 'This Week', 'This Month'];
 
   final RxList<Map<String, dynamic>> leaderboard = <Map<String, dynamic>>[].obs;
-
+  
   // Dependencies
   final StrategyRepository _strategyRepository = Get.find<StrategyRepository>();
   final CreateTeamController _createTeamController = Get.find<CreateTeamController>();
@@ -18,25 +18,25 @@ class TeamScoreboardController extends GetxController {
   void onInit() {
     super.onInit();
     // Load leaderboard data for the initial timeframe
-    fetchLeaderboard();
+    fetchLeaderboard(); 
   }
-
+  
   // Method to fetch real leaderboard data from API
   Future<void> fetchLeaderboard() async {
     try {
       log('Fetching leaderboard for: ${selectedTimeFrame.value}');
-
+      
       final teamId = _createTeamController.createdTeamId.value;
       if (teamId == null) {
         // SnackbarHelper.error('Team ID not found. Cannot load leaderboard.');
         // leaderboard.clear();
         return;
       }
-
+      
       // API Call: GET /final-team-score/team/{teamId}/rewards-summary
       // This endpoint should return leaderboard data based on timeframe
       final leaderboardData = await _strategyRepository.getTeamRewardsSummary(teamId);
-
+      
       // Map API response to leaderboard format
       final teamsData = leaderboardData['teams'] as List? ?? [];
       final mappedLeaderboard = teamsData.asMap().entries.map((entry) {
@@ -61,10 +61,10 @@ class TeamScoreboardController extends GetxController {
           'highlighted': false,
         };
       }).toList();
-
+      
       leaderboard.assignAll(mappedLeaderboard);
       SnackbarHelper.success('Team Leaderboard loaded for ${selectedTimeFrame.value}!');
-
+      
     } catch (e) {
       log('Leaderboard fetch error: $e');
       SnackbarHelper.error('Failed to load leaderboard data.');

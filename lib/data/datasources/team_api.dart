@@ -34,10 +34,10 @@ abstract class TeamApi {
   // 4. Add Team Member (POST /team/{teamId}/add-member)
   @POST('/team/{teamId}/add-member')
   Future<AddMemberResponse> addMember(
-      @Path('teamId') int teamId,
-      @Body() AddMemberRequest request,
-      );
-
+    @Path('teamId') int teamId,
+    @Body() AddMemberRequest request,
+  );
+  
   // 5. Get Team Members to assign role (GET /team/{teamId}/members)
   @GET('/team/{teamId}/members')
   Future<List<AssignRoleResponse>> getTeamMembers(@Path('teamId') int teamId);
@@ -45,11 +45,11 @@ abstract class TeamApi {
   // 6. Update Team Member Role (POST /team/{teamId}/update-role)
   @POST('/team/{teamId}/update-role')
   Future<UpdateTeamMemberResponse> updateMemberRole(
-      @Path('teamId') int teamId,
-      @Body() UpdateTeamMemberRequest request,
-      );
+    @Path('teamId') int teamId,
+    @Body() UpdateTeamMemberRequest request,
+  );
 
-
+  
   @POST('/ws/invite')
   Future<void> sendWsInvite(@Body() Map<String, dynamic> body);
 
@@ -60,27 +60,7 @@ abstract class TeamApi {
   // 10. Send Message to Team (POST /ws/message)
   @POST('/ws/message')
   Future<void> sendWsMessage(@Body() Map<String, dynamic> body);
-  @POST('/notifications/send')
+
+  @POST('/notifications/send') 
   Future<void> sendNotification(@Body() Map<String, dynamic> body);
 }
-
-
-
-
-
-
-
-// import 'package:dio/dio.dart';
-// import 'package:retrofit/retrofit.dart';
-//
-// import '../../generated/models/responses/team_mode/team_lobby_response.dart';
-//
-// part 'team_api.g.dart';
-//
-// @RestApi()
-// abstract class TeamApi {
-//   factory TeamApi(Dio dio, {String baseUrl}) = _TeamApi;
-//
-//   @GET('/team/{id}/details')
-//   Future<TeamLobbyResponse> getTeamDetails(@Path('id') int teamId);
-// }

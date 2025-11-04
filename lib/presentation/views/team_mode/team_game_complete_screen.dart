@@ -1,15 +1,18 @@
+// lib/presentation/views/team_mode/team_game_complete_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:game_app/presentation/views/team_mode/team_member_card.dart';
 import 'package:get/get.dart';
+import 'dart:typed_data';
+import 'dart:io';
 
 import '../../../controllers/team_mode_controller/team_game_complete_controller.dart';
 import '../../../controllers/team_mode_controller/team_strategic_architect_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_home_navbar.dart';
-import '../../widgets/custom_journey_map.dart';
 import '../../widgets/custom_objective_container.dart';
 import '../../widgets/game_complete_widgets/achievement_summary.dart';
 import '../../widgets/game_complete_widgets/custom_score_card.dart';
@@ -20,14 +23,18 @@ import '../../widgets/screens_unique_parts/custom_header.dart';
 import '../../widgets/team_mode_widgets/custom_view_widget.dart';
 
 class TeamGameCompleteScreen extends StatelessWidget {
- const TeamGameCompleteScreen({super.key});
+  TeamGameCompleteScreen({super.key});
+
+  final TeamGameCompleteController controller = Get.put(TeamGameCompleteController());
+  
+  // GlobalKey for screenshot capture
+  final GlobalKey _screenshotKey = GlobalKey();
 
  @override
  Widget build(BuildContext context) {
   final size = MediaQuery.of(context).size;
   final width = size.width;
   final height = size.height;
-  final TeamGameCompleteController controller = Get.put(TeamGameCompleteController());
 
   // 📝 Access RxLists directly (they are already observables)
   final badgesList = controller.badges;
@@ -36,19 +43,22 @@ class TeamGameCompleteScreen extends StatelessWidget {
   final breakdownList = controller.breakdownItems;
   final achievementsList = controller.achievements;
 
+
   return Scaffold(
    backgroundColor: Colors.white,
    body: CustomBackground(
     child: OrientationBuilder(
      builder: (context, orientation) => Stack(
       children: [
-       /// Scrollable content
+       /// Scrollable content - Wrapped in RepaintBoundary for screenshot
        Positioned.fill(
-        child: SingleChildScrollView(
-         physics: const BouncingScrollPhysics(),
-         padding: EdgeInsets.only(bottom: height * 0.015),
-         child: Column(
-          children: [
+        child: RepaintBoundary(
+         key: _screenshotKey,
+         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.only(bottom: height * 0.015),
+          child: Column(
+           children: [
 
 
            /// Header
@@ -64,12 +74,12 @@ class TeamGameCompleteScreen extends StatelessWidget {
            /// Score Card
            Obx(() => CustomScoreCard(
             score: controller.score.value,
+      
             title: "strategic_master".tr,
             description: "ex_team_strategy".tr,
            )),
-
+           
            SizedBox(height: height * 0.025),
-
            /// View Individual Score Button
            Padding(
             padding: const EdgeInsets.all(12.0),
@@ -78,7 +88,7 @@ class TeamGameCompleteScreen extends StatelessWidget {
              subtitle: "your_initiative".tr,
              trailingIcon: Icons.play_arrow_rounded,
              onPressed: () {
-               Get.put(TeamStrategicArchitectController()); // Initialize controller
+               Get.put(TeamStrategicArchitectController.getOrPut()); // Ensure controller is initialized
                Get.toNamed(AppRoutes.teamStrategicArchitectScreen2);
              },
             ),
@@ -87,22 +97,39 @@ class TeamGameCompleteScreen extends StatelessWidget {
            SizedBox(height: height * 0.025),
 
            /// Team Members - DYNAMIC LIST INTEGRATION
-           Obx(() => Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-             children: controller.memberData.map((member) => TeamMemberCard(
-              name: member['name'].toString(),
-              role: member['role'].toString(),
-              level: member['level'] as int,
-              score: member['score'] as int,
-              isCurrentUser: member['isCurrentUser'] as bool,
-              status: member['status'].toString(),
-              badge: member['badge']?.toString() ?? "",
-              trophy: member['trophy']?.toString() ?? "",
-              title: member['title']?.toString() ?? "",
-             )).toList(),
-            ),
-           )),
+           Obx(() { // <--- MODIFIED LOGIC START
+                if (controller.memberData.isEmpty && controller.score.value == 0) { // Only show loading if score is 0 AND members haven't loaded
+                     return Center(
+                         child: Padding(
+                             padding: EdgeInsets.symmetric(vertical: 30.h),
+                             child: Column(
+                                 children: [
+                                     CircularProgressIndicator(color: AppColors.primaryRed),
+                                     SizedBox(height: 10.h),
+                                     Text("Loading team results...".tr, style: Theme.of(context).textTheme.bodyMedium),
+                                 ],
+                             )
+                         )
+                     );
+                }
+               
+                return Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                        children: controller.memberData.map((member) => TeamMemberCard(
+                            name: member['name'].toString(),
+                            role: member['role'].toString(),
+                            level: member['level'] as int,
+                            score: member['score'] as int,
+                            isCurrentUser: member['isCurrentUser'] as bool,
+                            status: member['status'].toString(),
+                            badge: member['badge']?.toString() ?? "",
+                            trophy: member['trophy']?.toString() ?? "",
+                            title: member['title']?.toString() ?? "",
+                        )).toList(),
+                    ),
+                );
+            }), // <--- MODIFIED LOGIC END
 
            SizedBox(height: height * 0.025),
 
@@ -146,23 +173,6 @@ class TeamGameCompleteScreen extends StatelessWidget {
              trophyName: trophyValue.value.isNotEmpty ? trophyValue.value.tr : "Silver".tr, 
             ),
            ),
-
-           SizedBox(height: height * 0.025),
-
-           /// Journey Map
-          //  CustomJourneyMap(
-          //   progress: 100.0,
-          //   steps: const [
-          //    "Strategy Selection",
-          //    "Objective Alignment",
-          //    "Key Results",
-          //    "Initiatives",
-          //    "Results"
-          //   ],
-          //   completedSteps: const [true, true, true, true, true],
-          //   // onToggle: controller.toggleJourneyDetails,
-          //   showDetails: true,
-          //  ),
 
            SizedBox(height: height * 0.025),
 
@@ -213,6 +223,7 @@ class TeamGameCompleteScreen extends StatelessWidget {
          ),
         ),
        ),
+       ),
 
        /// Home Navbar
        Positioned(
@@ -226,6 +237,4 @@ class TeamGameCompleteScreen extends StatelessWidget {
    ),
   );
  }
-
-
 }

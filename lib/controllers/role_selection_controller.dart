@@ -115,9 +115,10 @@ class RoleSelectionController extends GetxController {
     // Navigate based on the game mode
     switch (savedGameMode) {
       case 'team':
-      // Team mode flow
+
+        final selectedRole = roles[selectedIndex.value];
         Get.toNamed(
-          AppRoutes.assignRoleScreen,
+          AppRoutes.chooseIndustry,
           arguments: {'selectedRole': selectedRole},
         );
         break;
