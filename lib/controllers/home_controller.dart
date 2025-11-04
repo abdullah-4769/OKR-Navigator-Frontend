@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../presentation/routes/app_routes.dart';
 import '../services/shared_preference.dart';
+import 'journey_controller.dart';
 
 class HomeController extends GetxController {
   late PageController pageController;
@@ -47,10 +48,20 @@ class HomeController extends GetxController {
     super.onInit();
     _clearPreviousGameData();
     _initializePageController();
-
+    _resetJourneyProgress();
   }
 
-
+  void _resetJourneyProgress() {
+    try {
+      // Get the JourneyController and reset progress
+      final journeyController = Get.find<JourneyController>();
+      journeyController.resetProgress();
+      print('🔄 Home screen: Journey progress reset to zero');
+    } catch (e) {
+      print('⚠️ JourneyController not found or error resetting: $e');
+      // If JourneyController isn't initialized yet, it will be reset when created
+    }
+  }
   Future<void> _clearPreviousGameData() async {
     try {
       await SharedPrefs.clearGameSessionData();

@@ -31,7 +31,7 @@ class HomeNavBarController extends GetxController {
   /// Navigate home if expanded
   void navigateHome() {
     hideNavBar();
-    Get.offAllNamed(AppRoutes.home);
+    Get.offAllNamed(AppRoutes.home); // ✅ Make sure this matches your actual home route
   }
 
   @override

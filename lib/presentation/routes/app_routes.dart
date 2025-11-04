@@ -35,6 +35,7 @@ import '../views/challange_mode/game_result_screen.dart';
 import '../views/challange_mode/join_challange_screen.dart';
 import '../views/key_results/key_results_screen.dart' as solo;
 import '../views/key_results/key_results_screen.dart';
+import '../views/score_board_screen(1).dart';
 import '../views/team_mode/create_team_screen.dart';
 import '../views/team_mode/custom_ai_analysis_screen2.dart';
 import '../views/team_mode/team_ai_analysis_screen.dart';
@@ -55,7 +56,7 @@ import '../views/mini_simulation_play_screen.dart';
 import '../views/objective/key_objective_selected_screen.dart';
 import '../views/pricing_screen/pricing_screen.dart';
 import '../views/roles/role_selection_screen.dart';
-import '../views/score_board_screen.dart';
+
 import '../views/screens_after_complete_game/startegy_journey_screen.dart';
 import '../views/strategy/strategy_selection_screen.dart' hide KeyObjectiveSelectedScreen;
 import '../views/suggestion_Initiatives/ai_analysis_screen.dart';

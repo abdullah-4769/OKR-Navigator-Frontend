@@ -123,13 +123,13 @@ class _CampaignModeScreenState extends State<CampaignModeScreen> with WidgetsBin
 
     if (status['level3Unlocked'] as bool && !(status['level3Completed'] as bool)) {
       Future.delayed(Duration(milliseconds: 800), () {
-        Get.snackbar(
-          "🎉 Level 3 Unlocked!".tr,
-          "You can now start Organization C".tr,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: AppColors.primaryBlue,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   "🎉 Level 3 Unlocked!".tr,
+        //   "You can now start Organization C".tr,
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: AppColors.primaryBlue,
+        //   colorText: Colors.white,
+        // );
       });
     }
   }

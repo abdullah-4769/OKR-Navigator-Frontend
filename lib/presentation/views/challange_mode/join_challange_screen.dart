@@ -253,6 +253,7 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
     );
   }
 // Build challengers section based on API state - FIXED: Use invitationResponse
+// Build challengers section based on API state - FIXED: Use invitationResponse
   Widget _buildChallengersSection() {
     final status = _viewModel.invitationResponse.value.status;
 
@@ -290,6 +291,48 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
               ElevatedButton(
                 onPressed: () => _viewModel.fetchInvitations(),
                 child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // ✅ ADD THIS: Check if filteredChallengers is empty and show professional message
+    if (_viewModel.filteredChallengers.value.isEmpty) {
+      return Container(
+        height: 280.h,
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.group_outlined,
+                color: Colors.grey.shade400,
+                size: 60.sp,
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                'No Challenges Yet',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Text(
+                  'When someone challenges you, they will appear here. Share your invite code to get started!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.grey.shade500,
+                    height: 1.4,
+                  ),
+                ),
               ),
             ],
           ),

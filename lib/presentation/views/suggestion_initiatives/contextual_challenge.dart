@@ -160,7 +160,7 @@ class ContextualChallenge extends StatelessWidget {
                 children: [
                   // Robot Image
                   SvgPicture.asset(
-                    "assets/images/robot.svg",
+                    "assets/images/robort.png",
                     height: 100.h,
                     width: 100.w,
                   ),
@@ -287,7 +287,7 @@ class ContextualChallenge extends StatelessWidget {
         child: Column(
           children: [
             SvgPicture.asset(
-              "assets/images/robot.svg",
+              "assets/images/robort.png",
               height: 100.h,
               width: 100.w,
             ),

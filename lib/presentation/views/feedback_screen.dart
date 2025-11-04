@@ -163,7 +163,14 @@ class FeedbackScreen extends StatelessWidget {
           break;
         case 'campaign':
 
-          Get.offAllNamed(AppRoutes.campaignModeScreen);
+          Get.to(
+                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
+            arguments: {
+              'selectedKeyResults': selectedKeyResults,
+              'challengeData': await _getChallengeData(),
+              'existingInitiatives': await _getExistingInitiatives(),
+            },
+          );
           break;
         default:
           Get.to(

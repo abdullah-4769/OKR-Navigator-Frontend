@@ -353,105 +353,105 @@ class PersonalDashboardScreen extends StatelessWidget {
 
   /// ✅ recent games card
   Widget _gamesCard(BuildContext context, List<Map<String, String>> games) => Container(
-    margin: EdgeInsets.symmetric(vertical: 6.h),
-    padding: EdgeInsets.all(AppDimensions.d12.w),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(AppDimensions.d18.r),
-      border: Border.all(color: AppColors.grey.withOpacity(0.28)),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.03),
-          blurRadius: 6,
-          offset: const Offset(0, 3),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        Row(
-          children: [
-            CircleAvatar(
-              radius: AppDimensions.d18.r,
-              backgroundColor: AppColors.primaryBlue,
-              child: const Icon(Icons.history, color: Colors.white),
-            ),
-            SizedBox(width: AppDimensions.d12.w),
-            Expanded(
-              child: Text(
-                'recent_games'.tr,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryBlue,
-                ),
+      margin: EdgeInsets.symmetric(vertical: 6.h),
+      padding: EdgeInsets.all(AppDimensions.d12.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppDimensions.d18.r),
+        border: Border.all(color: AppColors.grey.withOpacity(0.28)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: AppDimensions.d18.r,
+                backgroundColor: AppColors.primaryBlue,
+                child: const Icon(Icons.history, color: Colors.white),
               ),
-            ),
-            const Icon(Icons.arrow_forward_ios,
-                size: 18, color: Colors.grey),
-          ],
-        ),
-        SizedBox(height: AppDimensions.d12.h),
-
-        ...games.map((g) => Column(
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.softRed,
-                  child: Icon(Icons.person, color: AppColors.primaryRed),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        g['titleKey']!.tr,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primaryBlue,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        g['date'] ?? '',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  '${g['score']} ${'score'.tr}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(
+              SizedBox(width: AppDimensions.d12.w),
+              Expanded(
+                child: Text(
+                  'recent_games'.tr,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.primaryBlue,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios,
+                  size: 18, color: Colors.grey),
+            ],
+          ),
+          SizedBox(height: AppDimensions.d12.h),
+
+          ...games.map((g) => Column(
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.softRed,
+                      child: Icon(Icons.person, color: AppColors.primaryRed),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            g['titleKey']!.tr,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primaryBlue,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            g['date'] ?? '',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '${g['score']} ${'score'.tr}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryBlue,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+                Divider(
+                  color: AppColors.grey.withOpacity(0.2),
+                  height: 14.h,
                 ),
               ],
-            ),
-            Divider(
-              color: AppColors.grey.withOpacity(0.2),
-              height: 14.h,
-            ),
-          ],
-        )).toList(),
-      ],
-    ),
-  );
+            )).toList(),
+        ],
+      ),
+    );
 }
 
 
