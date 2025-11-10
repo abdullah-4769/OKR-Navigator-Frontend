@@ -18,147 +18,131 @@ class SplashScreen2 extends StatefulWidget {
 class _SplashScreen2State extends State<SplashScreen2> {
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    // Initialize ScreenUtil for responsiveness
+    ScreenUtil.init(context, designSize: const Size(375, 812));
 
-    return OrientationBuilder(
-      builder: (context, orientation) => Scaffold(
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration:  BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-              ),
-            ),
-            child: SafeArea(
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: AppDimensions.d50.h),
-
-                        // Top Logo
-                        CustomSvg(
-                          semanticsLabel: 'okr_logo'.tr,
-                          assetPath: 'assets/images/okrnev.svg',
-                          height: AppDimensions.d70.h,
-                          width: AppDimensions.d90.w,
-                        ),
-
-                        SizedBox(height: AppDimensions.d24.h),
-
-                        // Mask Image
-                        CommonImage(
-                          semanticsLabel: 'mask_group'.tr,
-                          assetPath: 'assets/images/start_screen_img.png',
-                          height: 190.h,
-                          width: 200.w,
-                        ),
-
-                        SizedBox(height: AppDimensions.d20.h),
-
-                        // Title - Using Theme
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppDimensions.d16.w,
-                          ),
-                          child: Center(
-                            child: Text(
-                              'splash2_title'.tr,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineLarge
-                                  ?.copyWith(
-                                color: AppColors.primaryBlue,
-                                fontWeight: FontWeight.w900, // Keep bold
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: AppDimensions.d16.h),
-
-                        // Subtitle - Using Theme
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: AppDimensions.d12.w,
-                          ),
-                          child: Center(
-                            child: Text(
-                              'splash2_subtitle'.tr,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(
-                                color: AppColors.black,
-                                height: 1.5,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: screenHeight * 0.269),
-
-                        // Bottom Logo
-                        Center(
-                          child: CustomSvg(
-                            assetPath: 'assets/images/logo.svg',
-                            width: AppDimensions.d30.w,
-                            height: AppDimensions.d30.h,
-                            semanticsLabel: '',
-                          ),
-                        ),
-                        SizedBox(height: AppDimensions.d20.h),
-                      ],
-                    ),
-                  ),
-
-                  // Left Arrow
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: screenWidth * 0.00,
-                        bottom: screenHeight * 0.15,
-                      ),
-                      child: CustomCurvedArrow(
-                        isLeft: true,
-                        onTap: () => Get.offAllNamed(AppRoutes.splash1),
-                        width: AppDimensions.d55.w,
-                        height: AppDimensions.d130.h,
-                      ),
-                    ),
-                  ),
-
-                  // Right Arrow
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        right: screenWidth * 0.00,
-                        bottom: screenHeight * 0.15,
-                      ),
-                      child: CustomCurvedArrow(
-                        isLeft: false,
-                        onTap: () => Get.toNamed(AppRoutes.home),
-                        width: AppDimensions.d55.w,
-                        height: AppDimensions.d130.h,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
           ),
         ),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 50.h),
+
+                    // Top Logo
+                    CustomSvg(
+                      semanticsLabel: 'okr_logo'.tr,
+                      assetPath: 'assets/images/okrnev.svg',
+                      height: 70.h,
+                      width: 90.w,
+                    ),
+
+                    SizedBox(height: 24.h),
+
+                    // Mask Image
+                    CommonImage(
+                      semanticsLabel: 'mask_group'.tr,
+                      assetPath: 'assets/images/start_screen_img.png',
+                      height: 190.h,
+                      width: 200.w,
+                    ),
+
+                    SizedBox(height: 20.h),
+
+                    // Title - Using Theme
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Center(
+                        child: Text(
+                          'splash2_title'.tr,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge
+                              ?.copyWith(
+                            color: AppColors.primaryBlue,
+                            fontWeight: FontWeight.w900,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    // Subtitle - Using Theme
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                      child: Center(
+                        child: Text(
+                          'splash2_subtitle'.tr,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(
+                            color: AppColors.black,
+                            height: 1.5,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 0.269.sh), // Responsive height using screen percentage
+
+                    // Bottom Logo
+                    Center(
+                      child: CustomSvg(
+                        assetPath: 'assets/images/logo.svg',
+                        width: 30.w,
+                        height: 30.h,
+                        semanticsLabel: '',
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
+                ),
+              ),
+
+              // Left Arrow - Fixed positioning
+              Positioned(
+                left: 0,
+                bottom: 0.15.sh, // Responsive positioning
+                child: CustomCurvedArrow(
+                  isLeft: true,
+                  onTap: () => Get.offAllNamed(AppRoutes.splash1),
+                  width: 55.w,
+                  height: 130.h,
+                ),
+              ),
+
+              // Right Arrow - Fixed positioning
+              Positioned(
+                right: 0,
+                bottom: 0.15.sh, // Responsive positioning
+                child: CustomCurvedArrow(
+                  isLeft: false,
+                  onTap: () => Get.toNamed(AppRoutes.home),
+                  width: 55.w,
+                  height: 130.h,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

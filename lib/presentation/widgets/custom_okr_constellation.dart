@@ -15,116 +15,104 @@ class CustomOKRConstellation extends StatelessWidget {
     Get.find<OKRConstellationController>();
 
     return Container(
-      width: double.infinity.w,
-      margin: EdgeInsets.symmetric(horizontal: AppDimensions.d10.w),
-      padding: EdgeInsets.all(AppDimensions.d12.w),
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 10.w),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(AppDimensions.d18.r),
+        borderRadius: BorderRadius.circular(18.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.08),
+            color: Colors.black.withOpacity(0.08),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      child: SizedBox(
-        height: 200.h, // increased height for text space
-        child: Obx(() {
-          final icons = controller.selectedIcons;
+        child: SizedBox(
+          height: 240.h, // Increased height for better spacing
+          child: Obx(() {
+            final icons = controller.selectedIcons;
 
-          return Stack(
-            clipBehavior: Clip.none, // allow + button overflow
-            alignment: Alignment.center,
-            children: [
-              /// 🚀 Rocket in center
-              Container(
-                width: 70.w,
-                height: 70.w,
-                decoration: const BoxDecoration(
-                  color: AppColors.primaryRed,
-                  shape: BoxShape.circle,
+            return Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                /// 🚀 Rocket in center with text attached below
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    /// Rocket Icon
+                    Container(
+                      width: 70.w,
+                      height: 70.h,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primaryRed,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.rocket_launch,
+                        color: Colors.white,
+                        size: 36.sp,
+                      ),
+                    ),
+
+                    /// 🔵 Text directly below rocket with proper spacing
+                    SizedBox(height: 8.h), // Space between rocket and text
+                    Text(
+                      'launch_product'.tr,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontFamily: 'Gotham-Bold',
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryBlue,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                child: Icon(
-                  Icons.rocket_launch,
-                  color: Colors.white,
-                  size: 36.sp,
-                ),
-              ),
-              // SizedBox(height: 8.h),
-              /// 🔵 Text below rocket, above plus
-              Positioned(
-                bottom: 40.h, // place between rocket and plus
-                child: Text(
-                  'launch_product'.tr,
-                  style: TextStyle(
-                    fontSize: AppDimensions.d16.sp,
-                    fontFamily: 'Gotham-Bold',
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primaryBlue,
+
+                /// 1st icon - top-left
+                if (icons.isNotEmpty)
+                  Positioned(
+                    top: 10.h,
+                    left: 10.w,
+                    child: _buildIconCircle(icons[0]),
                   ),
-                ),
-              ),
 
-              /// 1st icon - top-left
-              if (icons.isNotEmpty)
-                Positioned(
-                  top: 15.h,
-                  left: 30.w,
-                  child: _buildIconCircle(icons[0]),
-                ),
+                /// 2nd icon - top-right
+                if (icons.length > 1)
+                  Positioned(
+                    top: 10.h,
+                    right: 10.w,
+                    child: _buildIconCircle(icons[1]),
+                  ),
 
-              /// 2nd icon - top-right
-              if (icons.length > 1)
-                Positioned(
-                  top: 15.h,
-                  right: 30.w,
-                  child: _buildIconCircle(icons[1]),
-                ),
+                /// 3rd icon - bottom-left
+                if (icons.length > 2)
+                  Positioned(
+                    bottom: 10.h, // Adjusted since text is now part of the column
+                    left: 10.w,
+                    child: _buildIconCircle(icons[2]),
+                  ),
 
-              /// 3rd icon - bottom-left
-              if (icons.length > 2)
-                Positioned(
-                  bottom: 30.h,
-                  left: 30.w,
-                  child: _buildIconCircle(icons[2]),
-                ),
-
-              // /// ➕ Plus button (half visible at bottom)
-              // if (controller.showPlusButton)
-              //   Positioned(
-              //     bottom: -30.h, // half outside container
-              //     child: Container(
-              //       width: 60.w,
-              //       height: 60.w,
-              //       decoration: BoxDecoration(
-              //         color: AppColors.softRed,
-              //         shape: BoxShape.circle,
-              //         border: Border.all(
-              //           color: AppColors.primaryRed, // border color
-              //           width: 3,
-              //         ),
-              //       ),
-              //       child: Icon(
-              //         Icons.add,
-              //         color: AppColors.primaryRed,
-              //         size: 30.sp,
-              //         weight: 550,
-              //       ),
-              //     ),
-              //   ),
-            ],
-          );
-        }),
-      ),
-    );
+                /// 4th icon - bottom-right
+                if (icons.length > 3)
+                  Positioned(
+                    bottom: 10.h, // Adjusted since text is now part of the column
+                    right: 10.w,
+                    child: _buildIconCircle(icons[3]),
+                  ),
+              ],
+            );
+          }),
+        ),);
   }
 
   /// 🔵 Reusable circle icon widget
   Widget _buildIconCircle(IconData icon) => Container(
     width: 60.w,
-    height: 60.w,
+    height: 60.h,
     decoration: const BoxDecoration(
       color: AppColors.primaryBlue,
       shape: BoxShape.circle,

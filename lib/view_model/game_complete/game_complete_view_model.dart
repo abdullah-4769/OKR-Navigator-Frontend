@@ -35,9 +35,13 @@ class GameCompleteViewModel extends GetxController {
       errorMessage('');
       apiDebugInfo('');
 
+      // final response = await _repository.getLatestGameScore(userId);
+      // print('📥 [ViewModel] Raw API Response: $response');
+      // print('📥 [ViewModel] Response type: ${response.runtimeType}');
+      // ✅ FIXED: Use the passed userId directly, not from somewhere else
       final response = await _repository.getLatestGameScore(userId);
       print('📥 [ViewModel] Raw API Response: $response');
-      print('📥 [ViewModel] Response type: ${response.runtimeType}');
+
 
       // Store debug info for display
       apiDebugInfo.value = 'Raw Response: ${jsonEncode(response)}';

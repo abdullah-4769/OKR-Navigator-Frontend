@@ -19,20 +19,3 @@ class AppUrls {
 
 
 
-
-
-// class AppUrls{
-//   static const String baseUrl = 'http://192.168.43.101:3000';
-//   //..........Auth................//
-//   static const String signUpUrl = '/auth/register';
-//   static const String loginUrl = '/auth/login';
-//
-//
-//   static const String keyWordbaseinnovative = '/keywordbase-innovative/strategy/';
-//   static const String randomStrategy = '/game/random-strategy';
-//   static const String objectivesGenerate = '/objectives/generate';
-//   static const String keyResultsByStrategy = '/key-result/by-strategy';
-//   static const String evaluateInitiative = '/evaluate-initiatives';
-//   static const String finalOker = '/final-okr-evaluation';
-//   static const String gameComplete = '/solo-score/user/4/latest';
-// }

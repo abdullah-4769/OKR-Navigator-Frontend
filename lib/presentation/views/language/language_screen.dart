@@ -38,19 +38,19 @@ class LanguageScreen extends StatelessWidget {
 
           // Responsive typography
           final titleStyle =
-              (theme.textTheme.headlineLarge ?? const TextStyle(fontSize: 22))
-                  .copyWith(
-                    fontSize: _getResponsiveTitleSize(screenWidth, isLandscape),
-                    fontWeight: FontWeight.w600,
-                  );
+          (theme.textTheme.headlineLarge ?? const TextStyle(fontSize: 22))
+              .copyWith(
+            fontSize: _getResponsiveTitleSize(screenWidth, isLandscape),
+            fontWeight: FontWeight.w600,
+          );
 
           final tileTitleStyle =
-              (theme.textTheme.bodyLarge ?? const TextStyle(fontSize: 16))
-                  .copyWith(fontSize: _getResponsiveTileSize(screenWidth));
+          (theme.textTheme.bodyLarge ?? const TextStyle(fontSize: 16))
+              .copyWith(fontSize: _getResponsiveTileSize(screenWidth));
 
           final tileSubtitleStyle =
-              (theme.textTheme.bodyMedium ?? const TextStyle(fontSize: 14))
-                  .copyWith(fontSize: _getResponsiveSubtitleSize(screenWidth));
+          (theme.textTheme.bodyMedium ?? const TextStyle(fontSize: 14))
+              .copyWith(fontSize: _getResponsiveSubtitleSize(screenWidth));
 
           return CustomBackground(
             child: SafeArea(
@@ -139,11 +139,11 @@ class LanguageScreen extends StatelessWidget {
 
   /// 🔹 Title section with responsive image and text
   Widget _buildTitleSection(
-    double screenHeight,
-    double screenWidth,
-    TextStyle titleStyle,
-    bool isLandscape,
-  ) {
+      double screenHeight,
+      double screenWidth,
+      TextStyle titleStyle,
+      bool isLandscape,
+      ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -175,12 +175,12 @@ class LanguageScreen extends StatelessWidget {
 
   /// 🔹 Language list with responsive layout
   Widget _buildLanguageList(
-    LanguageController controller,
-    TextStyle tileTitleStyle,
-    TextStyle tileSubtitleStyle,
-    double screenWidth,
-    bool isTablet,
-  ) {
+      LanguageController controller,
+      TextStyle tileTitleStyle,
+      TextStyle tileSubtitleStyle,
+      double screenWidth,
+      bool isTablet,
+      ) {
     final languages = SupportedLanguage.values;
 
     // For tablets and larger screens in landscape, use grid layout
@@ -213,26 +213,36 @@ class LanguageScreen extends StatelessWidget {
       children: languages
           .map(
             (lang) => _buildLanguageTile(
-              lang,
-              controller,
-              tileTitleStyle,
-              tileSubtitleStyle,
-              screenWidth,
-            ),
-          )
+          lang,
+          controller,
+          tileTitleStyle,
+          tileSubtitleStyle,
+          screenWidth,
+        ),
+      )
           .toList(),
     );
   }
 
   /// 🔹 Continue button with responsive width
-  Widget _buildContinueButton(double screenWidth, bool isTablet) => SizedBox(
-    width: isTablet ? 300 : double.infinity,
-    child: CustomButton(
-      text: 'continue'.tr,
-      onPressed: () => Get.offAllNamed(AppRoutes.register),
-      backgroundColor: AppColors.primaryRed,
-    ),
-  );
+  Widget _buildContinueButton(double screenWidth, bool isTablet) {
+    final from = Get.parameters['from']; // ✅ Check if redirected from a screen
+
+    return SizedBox(
+      width: isTablet ? 300 : double.infinity,
+      child: CustomButton(
+        text: 'continue'.tr,
+        onPressed: () {
+          if (from != null && from.isNotEmpty && from != AppRoutes.language) {
+            Get.offAllNamed(from); // ✅ Return to previous screen
+          } else {
+            Get.offAllNamed(AppRoutes.register); // Default navigation
+          }
+        },
+        backgroundColor: AppColors.primaryRed,
+      ),
+    );
+  }
 
   /// 🔹 Bottom logo with responsive sizing
   Widget _buildBottomLogo(double screenWidth) => Center(
@@ -246,12 +256,12 @@ class LanguageScreen extends StatelessWidget {
 
   /// 🔹 Language tile widget with responsive design
   Widget _buildLanguageTile(
-    SupportedLanguage supportedLang,
-    LanguageController controller,
-    TextStyle tileTitleBase,
-    TextStyle tileSubtitleBase,
-    double screenWidth,
-  ) => Obx(() {
+      SupportedLanguage supportedLang,
+      LanguageController controller,
+      TextStyle tileTitleBase,
+      TextStyle tileSubtitleBase,
+      double screenWidth,
+      ) => Obx(() {
     final isSelected = controller.selectedLanguage.value == supportedLang;
 
     return Container(
@@ -265,12 +275,12 @@ class LanguageScreen extends StatelessWidget {
         color: isSelected ? AppColors.selectedBg : AppColors.white,
         boxShadow: isSelected
             ? [
-                BoxShadow(
-                  color: AppColors.primaryRed.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ]
+          BoxShadow(
+            color: AppColors.primaryRed.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ]
             : null,
       ),
       child: ListTile(
@@ -301,10 +311,10 @@ class LanguageScreen extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           child: isSelected
               ? const Icon(
-                  Icons.check_circle,
-                  color: AppColors.primaryRed,
-                  key: ValueKey('selected'),
-                )
+            Icons.check_circle,
+            color: AppColors.primaryRed,
+            key: ValueKey('selected'),
+          )
               : const SizedBox.shrink(key: ValueKey('unselected')),
         ),
         onTap: () => controller.changeLanguage(supportedLang),
@@ -363,10 +373,10 @@ class LanguageScreen extends StatelessWidget {
 
   /// Get responsive image height
   double _getResponsiveImageHeight(
-    double screenHeight,
-    double screenWidth,
-    bool isLandscape,
-  ) {
+      double screenHeight,
+      double screenWidth,
+      bool isLandscape,
+      ) {
     if (isLandscape) {
       return screenHeight * 0.08;
     }

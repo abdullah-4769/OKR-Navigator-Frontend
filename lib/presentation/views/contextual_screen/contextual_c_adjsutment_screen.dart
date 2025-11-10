@@ -529,13 +529,56 @@ class _ContextualCAdjustmentScreenState extends State<ContextualCAdjustmentScree
 
                       // ✅ TEST BUTTON - For debugging navigation
                       SizedBox(height: height * 0.02),
+                      // Update the test button to actually save data
+                      // ✅ TEST BUTTON - For debugging navigation (USES REAL DYNAMIC DATA)
+                      SizedBox(height: height * 0.02),
                       Center(
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: height * 0.05.h),
                           child: CustomButton(
-                            text: "Test Navigation by Mode",
+                            text: "Test Save Real Data & Navigate",
                             backgroundColor: AppColors.primaryGreen,
-                            onPressed: _testNavigationBasedOnMode,
+                            onPressed: () async {
+                              print('🧪 TEST BUTTON: Starting REAL DATA test flow...');
+
+                              try {
+                                // 1. First run a quick adaptation analysis to get REAL data
+                                final strategy = await _getDefaultStrategy();
+                                final objective = await _getDefaultObjective();
+
+                                print('🧪 Running quick adaptation analysis for REAL data...');
+                                await adaptationViewModel.submitAdaptationAnalysis(
+                                  strategy: strategy,
+                                  objective: objective,
+                                  keyResult: 'Test Key Result',
+                                  challenge: 'Market Adaptation Challenge',
+                                  proposal: 'Strategic market analysis and adaptation plan',
+                                );
+
+                                // 2. Wait for analysis to complete and data to be saved
+                                await Future.delayed(Duration(seconds: 2));
+
+                                // 3. Check if we have real data
+                                if (adaptationViewModel.hasData) {
+                                  final realScore = adaptationViewModel.evaluationData.value!.score;
+                                  final realFeedback = adaptationViewModel.evaluationData.value!.feedback;
+                                  print('✅ REAL DATA OBTAINED - Score: $realScore, Feedback: $realFeedback');
+                                } else {
+                                  print('⚠️ No real data from analysis, using test save');
+                                  await adaptationViewModel.saveTestScoreToDatabase();
+                                }
+
+                                // 4. Then navigate
+                                await _testNavigationBasedOnMode();
+
+                                print('✅ TEST BUTTON: Real data test flow completed');
+                              } catch (e) {
+                                print('❌ Error in test flow: $e');
+                                // Fallback: save test score and navigate
+                                await adaptationViewModel.saveTestScoreToDatabase();
+                                await _testNavigationBasedOnMode();
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -615,7 +658,22 @@ class _ContextualCAdjustmentScreenState extends State<ContextualCAdjustmentScree
       return 'CEO Strategy';
     }
   }
+  /// Save a test score for debugging
+  Future<void> _saveTestScore() async {
+    try {
+      print('🧪 Starting test score save...');
 
+      // Get the adaptation view model
+      final adaptationViewModel = Get.find<AdaptationAIAnalysisViewModel>();
+
+      // Call the test method from the view model
+      await adaptationViewModel.saveTestScoreToDatabase();
+
+      print('✅ Test score save completed');
+    } catch (e) {
+      print('❌ Error in test score save: $e');
+    }
+  }
   Future<String> _getDefaultObjective() async {
     try {
       final objectiveData = await SharedPrefs.getSelectedObjective();
@@ -626,384 +684,3 @@ class _ContextualCAdjustmentScreenState extends State<ContextualCAdjustmentScree
   }
 }
 
-
-
-
-
-
-
-
-// // Update your ContextualCAdjustmentScreen
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:get/get.dart';
-// import '../../../core/app_colors.dart';
-// import '../../../core/app_dimensions.dart';
-// import '../../../services/shared_preference.dart';
-//
-// import '../../../view_model/challange_view_models/adaptation_ai_analysis-viewmodel.dart';
-// import '../../routes/app_routes.dart';
-// import '../../widgets/custom_button.dart';
-// import '../../widgets/custom_home_navbar.dart';
-// import '../../widgets/screens_unique_parts/custom_background.dart';
-// import '../../widgets/screens_unique_parts/custom_header.dart';
-// import '../../widgets/custom_ai_strategy_container.dart';
-//
-// class ContextualCAdjustmentScreen extends StatelessWidget {
-//   const ContextualCAdjustmentScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final size = MediaQuery.of(context).size;
-//     final width = size.width;
-//     final height = size.height;
-//
-//     // Initialize the view model
-//     final adaptationViewModel = Get.put(AdaptationAIAnalysisViewModel());
-//
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: CustomBackground(
-//         child: OrientationBuilder(
-//           builder: (context, orientation) => Stack(
-//             children: [
-//               Positioned.fill(
-//                 child: SingleChildScrollView(
-//                   physics: const BouncingScrollPhysics(),
-//                   padding: EdgeInsets.only(bottom: height * 0.015),
-//                   child: Column(
-//                     children: [
-//                       CustomHeader(
-//                         title: 'contextual'.tr,
-//                         highlightedText: 'adjustment'.tr,
-//                         subtitle: '',
-//                         onBackTap: () => Get.toNamed(AppRoutes.aiAnalysisShowScreen),
-//                       ),
-//
-//                       SizedBox(height: height * 0.0025),
-//
-//                       Center(
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(8.0),
-//                           child: Text(
-//                             "refine_strategy_address_challenge".tr,
-//                             style: Theme.of(context)
-//                                 .textTheme
-//                                 .bodyLarge
-//                                 ?.copyWith(
-//                               fontWeight: FontWeight.bold,
-//                               color: AppColors.black,
-//                             ),
-//                             textAlign: TextAlign.center,
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(height: height * 0.025),
-//
-//                       // Your existing adjustment container...
-//                       Padding(
-//                         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-//                         child: Container(
-//                           width: double.infinity,
-//                           padding: EdgeInsets.all(AppDimensions.d16.w),
-//                           decoration: BoxDecoration(
-//                             borderRadius: BorderRadius.circular(12.r),
-//                             border: Border.all(
-//                               color: AppColors.grey.withOpacity(0.4),
-//                             ),
-//                             color: Colors.white,
-//                           ),
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Text(
-//                                 "revised_key_result".tr,
-//                                 style: Theme.of(context)
-//                                     .textTheme
-//                                     .bodyLarge
-//                                     ?.copyWith(
-//                                   fontWeight: FontWeight.bold,
-//                                   color: AppColors.primaryRed,
-//                                 ),
-//                               ),
-//                               SizedBox(height: 4.h),
-//                               Text(
-//                                 "adjust_revenue_target_question".tr,
-//                                 style: Theme.of(context)
-//                                     .textTheme
-//                                     .bodyMedium
-//                                     ?.copyWith(
-//                                   color: AppColors.textSecondary,
-//                                 ),
-//                               ),
-//                               SizedBox(height: 8.h),
-//                               Text(
-//                                 "additional_strategic_actions".tr,
-//                                 style: Theme.of(context)
-//                                     .textTheme
-//                                     .bodyLarge
-//                                     ?.copyWith(
-//                                   fontWeight: FontWeight.bold,
-//                                   color: AppColors.primaryRed,
-//                                 ),
-//                               ),
-//                               SizedBox(height: 4.h),
-//                               Text(
-//                                 "new_initiatives_question".tr,
-//                                 style: Theme.of(context)
-//                                     .textTheme
-//                                     .bodyMedium
-//                                     ?.copyWith(
-//                                   color: AppColors.textSecondary,
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//
-//                       SizedBox(height: height * 0.004),
-//                       const CustomAIStrategyContainer(),
-//                       SizedBox(height: height * 0.004),
-//
-//                       // Updated Submit Button with Real API Call
-//                       Center(
-//                         child: Padding(
-//                           padding: EdgeInsets.symmetric(
-//                             vertical: width * 0.05.w,
-//                             horizontal: height * 0.05.h,
-//                           ),
-//                           child: Obx(() => CustomButton(
-//                             text: adaptationViewModel.isSubmitting.value
-//                                 ? 'submitting'.tr
-//                                 : 'submit_adaptations'.tr,
-//                             onPressed: adaptationViewModel.isSubmitting.value
-//                                 ? () {}
-//                                 : () async {
-//                               // Save sample adaptation data (replace with real user input)
-//                               await SharedPrefs.saveAdaptationData(
-//                                 revisedKeyResult: "Adjust Q4 revenue target from \$2M to \$1.8M due to market volatility",
-//                                 strategicActions: "Implement cost optimization measures and explore new market segments",
-//                                 adaptationNotes: "Market analysis indicates 10% lower growth projections for Q4",
-//                               );
-//
-//                               // Submit to API
-//                               await adaptationViewModel.submitAdaptationAnalysis();
-//
-//                               // Navigate to results screen
-//                               if (adaptationViewModel.hasData) {
-//                                 Get.toNamed(
-//                                   AppRoutes.aiAnalysisShowScreen,
-//                                   arguments: {
-//                                     'source': 'challenge_adjustment',
-//                                     'analysisData': adaptationViewModel.evaluationData.value,
-//                                   },
-//                                 );
-//                               }
-//                             },
-//                           )),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//               Positioned(
-//                 right: width * -0.07,
-//                 top: height * 0.5,
-//                 child: const CustomHomeNavBar(),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-//
-//
-// //both main problem last time we are facing is here ..
-//
-//
-// //import 'package:flutter/material.dart';
-// // import 'package:flutter_screenutil/flutter_screenutil.dart';
-// // import 'package:get/get.dart';
-// //
-// // import '../../../core/app_colors.dart';
-// // import '../../../core/app_dimensions.dart';
-// // import '../../routes/app_routes.dart';
-// // import '../../widgets/custom_button.dart';
-// // import '../../widgets/custom_home_navbar.dart';
-// // import '../../widgets/custom_journey_map.dart';
-// // import '../../widgets/screens_unique_parts/custom_background.dart';
-// // import '../../widgets/screens_unique_parts/custom_header.dart';
-// // import '../../widgets/custom_ai_strategy_container.dart';
-// // import '../../../controllers/journey_controller.dart';
-// //
-// // class ContextualCAdjustmentScreen extends StatelessWidget {
-// //   const ContextualCAdjustmentScreen({super.key});
-// //
-// //   @override
-// //   Widget build(BuildContext context) {
-// //
-// //
-// //     final size = MediaQuery.of(context).size;
-// //     final width = size.width;
-// //     final height = size.height;
-// //
-// //     return Scaffold(
-// //       backgroundColor: Colors.white,
-// //       body: CustomBackground(
-// //         child: OrientationBuilder(
-// //           builder: (context, orientation) => Stack(
-// //               children: [
-// //                 /// Scrollable Content
-// //                 Positioned.fill(
-// //                   child: SingleChildScrollView(
-// //                     physics: const BouncingScrollPhysics(),
-// //                     padding: EdgeInsets.only(bottom: height * 0.015),
-// //                     child: Column(
-// //                       children: [
-// //
-// //
-// //                         /// Header
-// //                         CustomHeader(
-// //                           title: 'contextual'.tr,
-// //                           highlightedText: 'adjustment'.tr,
-// //                           subtitle: ''.tr,
-// //                           onBackTap: () =>
-// //                               Get.toNamed(AppRoutes.aiAnalysisShowScreen),
-// //                         ),
-// //
-// //                         SizedBox(height: height * 0.0025),
-// //
-// //                         Center(
-// //                           child: Padding(
-// //                             padding: const EdgeInsets.all(8.0),
-// //                             child: Text(
-// //                               "refine_strategy_address_challenge".tr,
-// //                               style: Theme.of(context)
-// //                                   .textTheme
-// //                                   .bodyLarge
-// //                                   ?.copyWith(
-// //                                 fontWeight: FontWeight.bold,
-// //                                 color: AppColors.black,
-// //                               ),
-// //                               textAlign: TextAlign.center,
-// //                             ),
-// //                           ),
-// //                         ),
-// //                         SizedBox(height: height * 0.025),
-// //                         /// Single Main Adjustment Container
-// //                         Padding(
-// //                           padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-// //                           child: Container(
-// //                             width: double.infinity,
-// //                             padding: EdgeInsets.all(AppDimensions.d16.w),
-// //                             decoration: BoxDecoration(
-// //                               borderRadius: BorderRadius.circular(12.r),
-// //                               border: Border.all(
-// //                                 color: AppColors.grey.withOpacity(0.4),
-// //                               ),
-// //                               color: Colors.white,
-// //                             ),
-// //                             child: Column(
-// //                               crossAxisAlignment: CrossAxisAlignment.start,
-// //                               children: [
-// //                                 /// Revised Key Result
-// //                                 Text(
-// //                                   "revised_key_result".tr,
-// //                                   style: Theme.of(context)
-// //                                       .textTheme
-// //                                       .bodyLarge
-// //                                       ?.copyWith(
-// //                                     fontWeight: FontWeight.bold,
-// //                                     color: AppColors.primaryRed,
-// //                                   ),
-// //                                 ),
-// //                                 SizedBox(height: 4.h),
-// //                                 Text(
-// //                                   "adjust_revenue_target_question".tr,
-// //                                   style: Theme.of(context)
-// //                                       .textTheme
-// //                                       .bodyMedium
-// //                                       ?.copyWith(
-// //                                     color: AppColors.textSecondary,
-// //                                   ),
-// //                                 ),
-// //
-// //                                 SizedBox(height: 8.h),
-// //
-// //                                 /// Additional Strategic Actions
-// //                                 Text(
-// //                                   "additional_strategic_actions".tr,
-// //                                   style: Theme.of(context)
-// //                                       .textTheme
-// //                                       .bodyLarge
-// //                                       ?.copyWith(
-// //                                     fontWeight: FontWeight.bold,
-// //                                     color: AppColors.primaryRed,
-// //                                   ),
-// //                                 ),
-// //                                 SizedBox(height: 4.h),
-// //                                 Text(
-// //                                   "new_initiatives_question".tr,
-// //                                   style: Theme.of(context)
-// //                                       .textTheme
-// //                                       .bodyMedium
-// //                                       ?.copyWith(
-// //                                     color: AppColors.textSecondary,
-// //                                   ),
-// //                                 ),
-// //                               ],
-// //                             ),
-// //                           ),
-// //                         ),
-// //
-// //                         SizedBox(height: height * 0.004),
-// //
-// //
-// //
-// //                         /// AI Strategy Analysis Box
-// //                         const CustomAIStrategyContainer(),
-// //
-// //                         SizedBox(height: height * 0.004),
-// //
-// //                         /// Propose Adjustment Button
-// //                         Center(
-// //                           child: Padding(
-// //                             padding: EdgeInsets.symmetric(
-// //                               vertical: width * 0.05.w,
-// //                               horizontal: height * 0.05.h,
-// //                             ),
-// //                             child: CustomButton(
-// //                               text: 'submit_adaptations'.tr,
-// //                               onPressed: () {
-// //                                 Get.toNamed(AppRoutes.gameCompleteScreen);
-// //                               },
-// //                             ),
-// //                           ),
-// //                         ),
-// //                       ],
-// //                     ),
-// //                   ),
-// //                 ),
-// //
-// //                 /// Home Navbar
-// //                 Positioned(
-// //                   right: width * -0.07,
-// //                   top: height * 0.5,
-// //                   child: const CustomHomeNavBar(),
-// //                 ),
-// //               ],
-// //             ),
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }
-//
-//
-//
-//

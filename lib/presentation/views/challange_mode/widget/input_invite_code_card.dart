@@ -103,7 +103,7 @@ class InputInviteCodeCard extends StatelessWidget {
               );
             } else if (response.status == Status.completed) {
 
-              Get.to(ChallengeDetailsScreen());
+              Get.off(() => ChallengeDetailsScreen());
               print('InputInviteCodeCard: Displaying success message');
               // return Text(
               //   "Joined successfully ✅",

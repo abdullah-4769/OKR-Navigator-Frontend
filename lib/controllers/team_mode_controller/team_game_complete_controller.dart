@@ -241,7 +241,7 @@ class TeamGameCompleteController extends GetxController {
       log('Error fetching team final score: $e', stackTrace: s);
       // Only show error and use fallback if initial data wasn't set
       if (!_hasInitialScoreData) {
-        SnackbarHelper.error('Failed to load team results. Using fallback data.');
+        SnackbarHelper.error('Failed to load team results. Using data.');
         _useFallbackData();
       } else {
         // If initial data exists, just log the error but don't overwrite the score

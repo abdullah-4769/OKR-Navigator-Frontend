@@ -47,7 +47,7 @@ class TeamKeyResultsController extends GetxController {
     log('KR Fetch: Attempting to fetch with Strategy ID: $strategyId, Objectives Count: ${objectiveTitles.length}'); 
 
     if (strategyId == null || strategyTitle == null || objectiveTitles.isEmpty) {
-     log('KR Fetch: FAILED - Missing critical data. Using fallback.');
+     log('KR Fetch: FAILED - Missing critical data.');
      SnackbarHelper.error('Missing Strategy/Objectives. Cannot fetch Key Results.');
      
      // Fallback to minimal KRs if data is missing
@@ -76,8 +76,8 @@ class TeamKeyResultsController extends GetxController {
       
       // 5. Check results
       if (generatedKeyResults.isEmpty) {
-        log('KR Fetch: API returned empty list after generation. Using fallback list.');
-        SnackbarHelper.warning('No key results generated. Using fallback list.');
+        log('KR Fetch: API returned empty list after generation. Using list.');
+        SnackbarHelper.warning('No key results generated. Using list.');
 
         // Fallback data structure 
         keyResults.assignAll([

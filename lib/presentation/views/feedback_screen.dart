@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
-import 'package:game_app/presentation/views/suggestion_Initiatives/suggestion_initiatives_creen.dart';
 import 'package:get/get.dart';
 import 'package:game_app/generated/models/responses/key_results/key_results_response.dart' as key_result_models;
 import '../../generated/models/requests/campaign_mode/feedback_evaluation_model.dart';
@@ -14,7 +13,6 @@ import '../widgets/custom_home_navbar.dart';
 import '../widgets/game_complete_widgets/custom_score_card.dart';
 import '../widgets/screens_unique_parts/custom_background.dart';
 import '../widgets/screens_unique_parts/custom_header.dart';
-import 'contextual_screen/contextual_c_adjsutment_screen.dart';
 
 class FeedbackScreen extends StatelessWidget {
   final List<key_result_models.KeyResult> selectedKeyResults;
@@ -69,18 +67,18 @@ class FeedbackScreen extends StatelessWidget {
                       return Column(
                         children: [
                           CustomScoreCard(
-                            title: feedback.title,
+                            title: "",
                             score: feedback.overallScore,
                             showBackground: false,
                           ),
                           SizedBox(height: 4.h),
                           Padding(
-                            padding: EdgeInsets.all(16.w),
+                            padding: EdgeInsets.all(8.w),
                             child: _buildScoreBreakdown(feedback),
                           ),
                           SizedBox(height: 4.h),
                           Padding(
-                            padding: EdgeInsets.all(16.w),
+                            padding: EdgeInsets.all(12.w),
                             child: _buildFeedbackCard(feedback),
                           ),
                           SizedBox(height: 24.h),
@@ -138,122 +136,37 @@ class FeedbackScreen extends StatelessWidget {
     } catch (e) {
       print('❌ Error marking level complete: $e');
     }
-
   }
-// In FeedbackScreen - update the _navigateBasedOnGameMode method
+
+// Call this method when user completes the feedback screen
+// Add this to your Continue button logic or when evaluation is successful
   void _navigateBasedOnGameMode() async {
     try {
       final savedMode = await SharedPrefs.getGameMode();
 
       if (savedMode == 'campaign') {
-        _markLevelComplete();
-      }
+        // Mark level as complete before navigating
+        _markLevelComplete();       }
 
+      // Rest of your navigation logic...
       switch (savedMode) {
         case 'solo':
         case 'challenge':
-          Get.to(
-                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
-            arguments: {
-              'selectedKeyResults': selectedKeyResults,
-              'challengeData': await _getChallengeData(),
-              'existingInitiatives': await _getExistingInitiatives(),
-            },
-          );
+          Get.toNamed(AppRoutes.suggestionInitiativeScreen);
           break;
         case 'campaign':
-
-          Get.to(
-                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
-            arguments: {
-              'selectedKeyResults': selectedKeyResults,
-              'challengeData': await _getChallengeData(),
-              'existingInitiatives': await _getExistingInitiatives(),
-            },
-          );
+        // Go back to campaign screen to show updated progress
+          Get.offAllNamed(AppRoutes.campaignModeScreen);
           break;
         default:
-          Get.to(
-                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
-            arguments: {
-              'selectedKeyResults': selectedKeyResults,
-              'challengeData': await _getChallengeData(),
-              'existingInitiatives': await _getExistingInitiatives(),
-            },
-          );
+          Get.toNamed(AppRoutes.suggestionInitiativeScreen);
           break;
       }
     } catch (e) {
       print('❌ Error in navigation: $e');
-      Get.to(
-            () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
-        arguments: {
-          'selectedKeyResults': selectedKeyResults,
-          'challengeData': await _getChallengeData(),
-          'existingInitiatives': await _getExistingInitiatives(),
-        },
-      );
+      Get.toNamed(AppRoutes.suggestionInitiativeScreen);
     }
   }
-
-  Future<Map<String, dynamic>> _getChallengeData() async {
-    try {
-
-      return await SharedPrefs.getCurrentChallengeData() ?? {};
-    } catch (e) {
-      return {};
-    }
-  }
-
-  Future<List<Map<String, String>>> _getExistingInitiatives() async {
-    try {
-      // Get existing initiatives from SharedPreferences or ViewModel
-      final initiatives = SharedPrefs.getInitiatives();
-      return [
-        {
-          'title': initiatives['firstTitle'] ?? '',
-          'description': initiatives['firstDesc'] ?? '',
-        },
-        {
-          'title': initiatives['secondTitle'] ?? '',
-          'description': initiatives['secondDesc'] ?? '',
-        },
-      ];
-    } catch (e) {
-      return [];
-    }
-  }
-  //
-// // Call this method when user completes the feedback screen
-// // Add this to your Continue button logic or when evaluation is successful
-//   void _navigateBasedOnGameMode() async {
-//     try {
-//       final savedMode = await SharedPrefs.getGameMode();
-//
-//       if (savedMode == 'campaign') {
-//         // Mark level as complete before navigating
-//         _markLevelComplete();       }
-//
-//       // Rest of your navigation logic...
-//       switch (savedMode) {
-//         case 'solo':
-//         case 'challenge':
-//           Get.toNamed(AppRoutes.suggestionInitiativeScreen);
-//           break;
-//         case 'campaign':
-//         // Go back to campaign screen to show updated progress
-//           Get.offAllNamed(AppRoutes.campaignModeScreen);
-//           break;
-//         default:
-//           Get.toNamed(AppRoutes.suggestionInitiativeScreen);
-//           break;
-//       }
-//     } catch (e) {
-//       print('❌ Error in navigation: $e');
-//       Get.toNamed(AppRoutes.suggestionInitiativeScreen);
-//     }
-//   }
-
   Widget _buildScoreBreakdown(FeedbackEvaluationModel feedback) {
     final breakdown = feedback.breakdown;
 
@@ -280,14 +193,14 @@ class FeedbackScreen extends StatelessWidget {
         ),
         SizedBox(height: 12.h),
 
-        // Breakdown scores
+        // FIXED: Breakdown scores - Use Wrap or Flexible to prevent overflow
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: scores.map((item) {
-            return Expanded(
+            return Flexible( // FIX: Use Flexible to allow wrapping
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 6.w),
-                padding: EdgeInsets.symmetric(vertical: 20.h),
+                margin: EdgeInsets.symmetric(horizontal: 4.w), // Reduced margin
+                padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 4.w), // Reduced padding
                 decoration: BoxDecoration(
                   color: const Color(0xFFF5F5F5),
                   borderRadius: BorderRadius.circular(16.r),
@@ -297,25 +210,28 @@ class FeedbackScreen extends StatelessWidget {
                   ),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       item['score']!,
                       style: TextStyle(
                         fontFamily: 'GothamBold',
-                        fontSize: 20.sp, // Slightly smaller
+                        fontSize: 18.sp, // Slightly smaller font
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF1E3A8A),
                       ),
                     ),
-                    SizedBox(height: 8.h),
+                    SizedBox(height: 6.h),
                     Text(
                       item['label']!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Gotham',
-                        fontSize: 10.sp, // Smaller font
+                        fontSize: 9.sp, // Smaller font
                         color: Colors.black87,
                       ),
+                      maxLines: 2, // Allow text to wrap
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -387,7 +303,7 @@ class FeedbackScreen extends StatelessWidget {
 
           // Strategy Alignment
           _buildFeedbackItem(
-            title: 'Strategy Alignment',
+            title: 'strategy_alignment'.tr,
             rating: breakdown.strategyAlignment.title,
             ratingColor: _getRatingColor(breakdown.strategyAlignment.title),
             description: breakdown.strategyAlignment.suggestion,
@@ -397,7 +313,7 @@ class FeedbackScreen extends StatelessWidget {
 
           // Objective Alignment
           _buildFeedbackItem(
-            title: 'Objective Alignment',
+            title: 'objective_alignment'.tr,
             rating: breakdown.objectiveAlignment.title,
             ratingColor: _getRatingColor(breakdown.objectiveAlignment.title),
             description: breakdown.objectiveAlignment.suggestion,
@@ -407,7 +323,7 @@ class FeedbackScreen extends StatelessWidget {
 
           // Key Result Quality
           _buildFeedbackItem(
-            title: 'Key Result Quality',
+            title: 'key_result_quality'.tr,
             rating: breakdown.keyResultQuality.title,
             ratingColor: _getRatingColor(breakdown.keyResultQuality.title),
             description: breakdown.keyResultQuality.suggestion,
@@ -457,7 +373,7 @@ class FeedbackScreen extends StatelessWidget {
               rating,
               style: TextStyle(
                 fontFamily: 'GothamBold',
-                fontSize: 16.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
                 color: ratingColor,
               ),
@@ -507,7 +423,7 @@ class FeedbackScreen extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             Text(
-              'Start Certification Test',
+              'start_certification_test'.tr,
               style: TextStyle(
                 fontFamily: 'GothamBold',
                 fontSize: 16.sp,
@@ -521,5 +437,4 @@ class FeedbackScreen extends StatelessWidget {
     );
   }
 }
-
 

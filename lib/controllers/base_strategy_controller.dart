@@ -12,7 +12,7 @@ abstract class BaseStrategyController extends GetxController {
   /// Back card asset
   final String backCardAsset = 'assets/images/backcard_img.png';
 
-  /// ✅ FIXED: Add cardAssets for UI compatibility
+  // Add cardAssets for UI compatibility
   List<String> get cardAssets => [backCardAsset] + strategyCardAssets;
 
   /// List of 8 strategy card assets
@@ -25,6 +25,7 @@ abstract class BaseStrategyController extends GetxController {
     'assets/images/strategy6.png',
     'assets/images/strategy7.png',
     'assets/images/strategy8.png',
+
   ];
 
   /// Reactive properties

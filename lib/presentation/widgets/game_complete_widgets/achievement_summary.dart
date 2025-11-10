@@ -55,9 +55,9 @@ class AchievementSummary extends StatelessWidget {
 
           SizedBox(height: 12.h),
 
-          /// Achievements list with divider
+          /// Achievements list with divider and dynamic icons
           ...List.generate(achievements.length, (index) {
-            final a = achievements[index];
+            final achievement = achievements[index];
             return Column(
               children: [
                 Row(
@@ -65,16 +65,12 @@ class AchievementSummary extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(top: 2.h),
-                      child: Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: isSmallScreen ? 18.sp : 20.sp,
-                      ),
+                      child: _getAchievementIcon(achievement, isSmallScreen),
                     ),
                     SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
-                        a,
+                        achievement,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontSize: isSmallScreen ? 14.sp : 16.sp,
                           height: 1.4,
@@ -100,6 +96,70 @@ class AchievementSummary extends StatelessWidget {
           }),
         ],
       ),
+    );
+  }
+
+  /// Get dynamic icon based on achievement text
+  Widget _getAchievementIcon(String achievement, bool isSmallScreen) {
+    final achievementLower = achievement.toLowerCase();
+
+    // Define icon mapping based on achievement content
+    if (achievementLower.contains('strategic master') ||
+        achievementLower.contains('master')) {
+      return Icon(
+        Icons.workspace_premium,
+        color: Colors.amber,
+        size: isSmallScreen ? 18.sp : 20.sp,
+      );
+    } else if (achievementLower.contains('architect') ||
+        achievementLower.contains('excellence')) {
+      return Icon(
+        Icons.star,
+        color: Colors.yellow[700],
+        size: isSmallScreen ? 18.sp : 20.sp,
+      );
+    } else if (achievementLower.contains('thinker') ||
+        achievementLower.contains('thinking')) {
+      return Icon(
+        Icons.lightbulb,
+        color: Colors.orange,
+        size: isSmallScreen ? 18.sp : 20.sp,
+      );
+    } else if (achievementLower.contains('adapted') ||
+        achievementLower.contains('challenge')) {
+      return Icon(
+        Icons.auto_awesome,
+        color: Colors.purple,
+        size: isSmallScreen ? 18.sp : 20.sp,
+      );
+    } else if (achievementLower.contains('cycle') ||
+        achievementLower.contains('completed')) {
+      return Icon(
+        Icons.check_circle,
+        color: Colors.green,
+        size: isSmallScreen ? 18.sp : 20.sp,
+      );
+    } else if (achievementLower.contains('badge') ||
+        achievementLower.contains('earned')) {
+      return Icon(
+        Icons.verified,
+        color: AppColors.primaryBlue,
+        size: isSmallScreen ? 18.sp : 20.sp,
+      );
+    } else if (achievementLower.contains('trophy') ||
+        achievementLower.contains('reward')) {
+      return Icon(
+        Icons.emoji_events,
+        color: Colors.amber[700],
+        size: isSmallScreen ? 18.sp : 20.sp,
+      );
+    }
+
+    // Default icon for any other achievements
+    return Icon(
+      Icons.check_circle,
+      color: Colors.green,
+      size: isSmallScreen ? 18.sp : 20.sp,
     );
   }
 }

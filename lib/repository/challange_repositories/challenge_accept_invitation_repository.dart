@@ -43,7 +43,7 @@ class ChallengeAcceptInvitationRepository {
 
 
 
-
+//
 // // lib/repository/challange_repositories/challenge_accept_invitation_repository.dart
 // import 'package:shared_preferences/shared_preferences.dart';
 // import '../../data/network/network_api_services.dart';
@@ -55,7 +55,7 @@ class ChallengeAcceptInvitationRepository {
 //   Future<List<dynamic>> getPlayerInvitations(String userId) async {
 //     try {
 //       final response = await _apiService.getGetApiResponse(
-//         'http://192.168.43.101:3000/challenges/invitations/$userId',
+//         'https://okr-navigator-backend.onrender.com/challenges/invitations/$userId',
 //       );
 //       return response is List ? response : [];
 //     } catch (e) {
@@ -71,7 +71,7 @@ class ChallengeAcceptInvitationRepository {
 //       );
 //
 //       final response = await _apiService.getPatchApiResponse(
-//         'http://192.168.43.101:3000/challenges/invitation/$challengeId/respond',
+//         'https://okr-navigator-backend.onrender.com/invitation/$challengeId/respond',
 //         request.toJson(),
 //       );
 //

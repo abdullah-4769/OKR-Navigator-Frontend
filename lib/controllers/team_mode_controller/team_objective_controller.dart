@@ -51,7 +51,7 @@ class TeamObjectiveController extends GetxController {
     } catch (e, s) {
       log('Error fetching team objectives: $e', stackTrace: s);
       // It is now safe to show a Snackbar because this function is only called when the screen is active.
-      SnackbarHelper.error('Failed to load team objectives. Using fallback data.');
+      SnackbarHelper.error('Failed to load team objectives. Using data.');
 
       // Fallback to static data
       objectives.assignAll([

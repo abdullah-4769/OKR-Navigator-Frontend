@@ -66,6 +66,7 @@ class MyApp extends StatelessWidget {
     designSize: const Size(375, 812),
     minTextAdapt: true,
     splitScreenMode: true,
+    useInheritedMediaQuery: true, // Add this for better responsiveness
     builder: (context, child) => Obx(() => GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Game App',

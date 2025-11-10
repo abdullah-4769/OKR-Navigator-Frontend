@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 
 import '../../data/repositories/score_board_repo.dart';
-import '../../generated/models/responses/dashboard_for_all/dashboard_all.dart';enum GameMode { solo, team, campaign, challenge }
+import '../../generated/models/responses/dashboard_for_all/dashboard_all.dart';
+
+enum GameMode { solo, team, campaign, challenge }
 
 class ScoreboardController extends GetxController {
   final ScoreboardRepository _repository = ScoreboardRepository();
@@ -20,13 +22,13 @@ class ScoreboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('🔹 ScoreboardController initialized');
+    print('ScoreboardController initialized');
     fetchScoreboard();
   }
 
   void changeMode(GameMode mode) {
     selectedMode.value = mode;
-    print('🔹 Mode changed to: ${getModeName()}');
+    print('Mode changed to: ${getModeName()}');
     fetchScoreboard();
   }
 
@@ -38,7 +40,7 @@ class ScoreboardController extends GetxController {
       remaining.clear();
       userDetails.value = null;
 
-      print('🚀 Fetching scoreboard for mode: ${getModeName()}');
+      print('Fetching scoreboard for mode: ${getModeName()}');
 
       switch (selectedMode.value) {
         case GameMode.solo:
@@ -55,76 +57,101 @@ class ScoreboardController extends GetxController {
           break;
       }
 
-      print('✅ Scoreboard fetch complete for ${getModeName()}');
-      print('🏅 Top 3 count: ${topThree.length}');
-      print('📋 Remaining count: ${remaining.length}');
+      print('Scoreboard fetch complete for ${getModeName()}');
+      print('Top 3 count: ${topThree.length}');
+      print('Remaining count: ${remaining.length}');
       if (userDetails.value != null) {
-        print('👤 User details fetched: ${userDetails.value}');
+        print('User details fetched: ${userDetails.value}');
       } else {
-        print('⚠️ No user details found.');
+        print('No user details found.');
       }
 
     } catch (e) {
       errorMessage.value = e.toString();
-      print('❌ Error fetching scoreboard for ${getModeName()}: $e');
+      print('Error fetching scoreboard for ${getModeName()}: $e');
     } finally {
       isLoading.value = false;
-      print('🕒 Loading state set to false for ${getModeName()}');
+      print('Loading state set to false for ${getModeName()}');
     }
   }
 
+  // ======================= FETCH METHODS WITH SORTING =======================
   Future<void> _fetchSoloScoreboard() async {
-    print('📡 Calling getSoloScoreboard API for userId: $userId');
+    print('Calling getSoloScoreboard API for userId: $userId');
     final data = await _repository.getSoloScoreboard(userId);
     if (data != null) {
-      print('✅ Solo API success: received data');
       topThree.value = data.topThree ?? [];
       remaining.value = data.remaining ?? [];
       userDetails.value = data.userDetails;
+      _sortAndAssignPlayers(); // <-- SORT HERE
     } else {
-      print('⚠️ Solo API returned null data');
+      print('Solo API returned null data');
     }
   }
 
   Future<void> _fetchTeamScoreboard() async {
-    print('📡 Calling getTeamScoreboard API for userId: $userId');
+    print('Calling getTeamScoreboard API for userId: $userId');
     final data = await _repository.getTeamScoreboard(userId);
     if (data != null) {
-      print('✅ Team API success: received data');
       topThree.value = data.topThree ?? [];
       remaining.value = data.remaining ?? [];
       userDetails.value = data.userDetails;
+      _sortAndAssignPlayers(); // <-- SORT HERE
     } else {
-      print('⚠️ Team API returned null data');
+      print('Team API returned null data');
     }
   }
 
   Future<void> _fetchCampaignScoreboard() async {
-    print('📡 Calling getCampaignScoreboard API for campaignId: $campaignId');
+    print('Calling getCampaignScoreboard API for campaignId: $campaignId');
     final data = await _repository.getCampaignScoreboard(campaignId);
     if (data != null) {
-      print('✅ Campaign API success: received data');
       topThree.value = data.topThree ?? [];
       remaining.value = data.remaining ?? [];
       userDetails.value = data.userDetails;
+      _sortAndAssignPlayers(); // <-- SORT HERE
     } else {
-      print('⚠️ Campaign API returned null data');
+      print('Campaign API returned null data');
     }
   }
 
   Future<void> _fetchChallengeScoreboard() async {
-    print('📡 Calling getChallengeScoreboard API for userId: $userId');
+    print('Calling getChallengeScoreboard API for userId: $userId');
     final data = await _repository.getChallengeScoreboard(userId);
     if (data != null) {
-      print('✅ Challenge API success: received data');
       topThree.value = data.topThree ?? [];
       remaining.value = data.remaining ?? [];
       userDetails.value = data.userDetails;
+      _sortAndAssignPlayers(); // <-- SORT HERE
     } else {
-      print('⚠️ Challenge API returned null data');
+      print('Challenge API returned null data');
     }
   }
 
+  // ======================= SORTING LOGIC =======================
+  void _sortAndAssignPlayers() {
+    final allPlayers = <PlayerModel>[];
+    allPlayers.addAll(topThree);
+    allPlayers.addAll(remaining);
+
+    // Sort by totalScore DESC (null-safe)
+    allPlayers.sort((a, b) {
+      final scoreA = a.totalScore ?? 0;
+      final scoreB = b.totalScore ?? 0;
+      return scoreB.compareTo(scoreA);
+    });
+
+    // Re-assign top 3 and remaining
+    topThree.assignAll(allPlayers.take(3).toList());
+    remaining.assignAll(allPlayers.skip(3).toList());
+
+    // Optional: Re-compute rank if backend doesn't send it
+    for (int i = 0; i < allPlayers.length; i++) {
+      allPlayers[i].rank = i + 1;
+    }
+  }
+
+  // ======================= GETTERS =======================
   List<PlayerModel> get allPlayers {
     final List<PlayerModel> all = [];
     all.addAll(topThree);
@@ -146,76 +173,3 @@ class ScoreboardController extends GetxController {
   }
 }
 
-// controllers/scoreboard_controller.dart
-/*import 'package:get/get.dart';
-
-class ScoreboardController extends GetxController {
-  final RxString selectedTimeFrame = 'Today'.obs;
-  final List<String> timeFrames = ['Solo', 'Team', 'Campaign','Challenge'];
-
-  final RxList<Map<String, dynamic>> leaderboard = <Map<String, dynamic>>[
-    {
-      'rank': 3,
-      'name': 'You',
-      'level': 1,
-      'points': 2000,
-      'highlighted': true,
-    },
-    {
-      'rank': 4,
-      'name': 'Adam',
-      'level': 5,
-      'points': 2000,
-      'highlighted': false,
-    },
-    {
-      'rank': 5,
-      'name': 'Warner',
-      'level': 8,
-      'points': 2000,
-      'highlighted': false,
-    },
-    {
-      'rank': 6,
-      'name': 'Tasha',
-      'level': 3,
-      'points': 2000,
-      'highlighted': false,
-    },
-    {
-      'rank': 7,
-      'name': 'Liam',
-      'level': 4,
-      'points': 2000,
-      'highlighted': false,
-    },
-    {
-      'rank': 8,
-      'name': 'Maya',
-      'level': 6,
-      'points': 2000,
-      'highlighted': false,
-    },
-    {
-      'rank': 9,
-      'name': 'Jordan',
-      'level': 2,
-      'points': 2000,
-      'highlighted': false,
-    },
-    {
-      'rank': 10,
-      'name': 'Sofia',
-      'level': 7,
-      'points': 2000,
-      'highlighted': false,
-    },
-  ].obs;
-
-  final List<int> scores = [110, 570, 480, 390, 420, 510, 330, 600];
-
-  void changeTimeFrame(String timeframe) {
-    selectedTimeFrame.value = timeframe;
-    // In a real app, you would fetch new data based on the selected timeframe
-  }
-}*/

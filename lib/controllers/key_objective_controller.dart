@@ -80,7 +80,7 @@ class KeyObjectiveController extends GetxController {
 
     } catch (e, s) {
       log('❌ Error fetching objectives: $e', stackTrace: s);
-      SnackbarHelper.error('Failed to load objectives. Using fallback data.');
+      SnackbarHelper.error('Failed to load objectives. Using data.');
 
       // Fallback to static data
       objectives.assignAll([
@@ -97,7 +97,7 @@ class KeyObjectiveController extends GetxController {
           description: 'gain_significant_presence',
         ),
       ]);
-      log('🔄 Using fallback objectives: ${objectives.length} items');
+      log('🔄 Using objectives: ${objectives.length} items');
     } finally {
       loading.value = false;
     }

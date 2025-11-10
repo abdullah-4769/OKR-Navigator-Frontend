@@ -149,13 +149,19 @@ class ContextualChallengeScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              /// Current Strategy
-                              CustomAdjustmentContainer(
-                                icon: Icons.track_changes,
-                                iconColor: AppColors.primaryRed,
-                                title: 'current_strategy'.tr,
-                                description: 'development_new_markets'.tr,
-                              ),
+                              /// Current Strategy - Show from SharedPreferences
+                              Obx(() {
+                                final strategy = controller.selectedStrategy.value;
+                                final strategyTitle = strategy?['title'] ?? 'current_strategy'.tr;
+                                final strategyDescription = strategy?['description'] ?? 'development_new_markets'.tr;
+
+                                return CustomAdjustmentContainer(
+                                  icon: Icons.track_changes,
+                                  iconColor: AppColors.primaryRed,
+                                  title: 'current_strategy'.tr,
+                                  description: strategyDescription,
+                                );
+                              }),
                               Divider(height: 20.h, color: AppColors.grey.withOpacity(0.4)),
                               /// Objective Section - Update the onActionTap
                               CustomAdjustmentContainer(

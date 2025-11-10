@@ -65,16 +65,16 @@ class CustomTextField extends StatelessWidget {
       counterText: '',
       hintText: hint,
       hintStyle: TextStyle(
-        fontSize: AppDimensions.d12.sp,
-        color: AppColors.textSecondary,
-        fontFamily: 'GothamMedium',
-        fontWeight: FontWeight.w400
+          fontSize: AppDimensions.d12.sp,
+          color: AppColors.textSecondary,
+          fontFamily: 'GothamMedium',
+          fontWeight: FontWeight.w400
       ),
       prefixIcon: prefixIcon != null
           ? Padding(
-              padding: EdgeInsets.all(AppDimensions.d12.w),
-              child: prefixIcon,
-            )
+        padding: EdgeInsets.all(AppDimensions.d12.w),
+        child: prefixIcon,
+      )
           : null,
       suffixIcon: suffixIcon,
       filled: true,
@@ -122,7 +122,9 @@ class CustomTextField extends StatelessWidget {
         fontSize: AppDimensions.d12.sp,
         color: AppColors.error,
         fontFamily: 'Gotham',
+        height: 1.2, // Added line height for better readability
       ),
+      errorMaxLines:4 , // Added this line to allow multiple lines for error messages
     ),
   );
 }

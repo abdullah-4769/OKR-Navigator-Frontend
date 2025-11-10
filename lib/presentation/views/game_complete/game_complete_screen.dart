@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/controllers/journey_controller.dart';
@@ -31,7 +30,6 @@ class GameCompleteScreen extends StatelessWidget {
     final JourneyController journeyController = Get.find<JourneyController>();
 
     // Use Get.put to create or reuse existing instance
-    // onInit will automatically fetch data
     final GameCompleteViewModel viewModel = Get.put(GameCompleteViewModel());
 
     // Get user ID and mode from SharedPreferences
@@ -41,6 +39,14 @@ class GameCompleteScreen extends StatelessWidget {
     print('🎮 [Screen] GameCompleteScreen loaded');
     print('   - User ID: $userId');
     print('   - Game Mode: $savedMode');
+
+    // Auto-fetch data when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userId != null && userId.isNotEmpty) {
+        print('🚀 Auto-fetching game data for user: $userId');
+        viewModel.fetchLatestGameScore(userId);
+      }
+    });
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -470,3 +476,10 @@ ${gameData.scor ?? "Great performance!"}
     );
   }
 }
+
+
+
+
+
+
+
