@@ -1,0 +1,250 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import '../../../core/app_assets.dart';
+import '../../../core/app_colors.dart';
+import '../../../core/app_dimensions.dart';
+import '../../routes/app_routes.dart';
+import '../../widgets/common_image.dart';
+import '../../widgets/custom_svg.dart';
+
+class StartScreen extends StatelessWidget {
+  const StartScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Screen Size
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        return Scaffold(
+          backgroundColor: AppColors.white,
+          body: Stack(
+            children: [
+              // Background gradient
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration:  BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
+                  ),
+                ),
+              ),
+
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppDimensions.d24.w),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height -
+                            MediaQuery.of(context).padding.top -
+                            MediaQuery.of(context).padding.bottom,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Logo
+                            Column(
+                              children: [
+                                CustomSvg(
+                                  assetPath: AppAssets.okrLogo,
+                                  width: AppDimensions.d90.w,
+                                  height: AppDimensions.d80.h,
+                                  semanticsLabel: '',
+                                ),
+                                SizedBox(height: AppDimensions.d16.h),
+                              ],
+                            ),
+                            SizedBox(height: AppDimensions.d20.h),
+
+                            // MaskGroup SVG
+                            CommonImage(
+                              assetPath: 'assets/images/start_screen_img.png',
+                              width: AppDimensions.d180.w,
+                              height: AppDimensions.d200.h,
+                              semanticsLabel: '',
+                            ),
+
+                            SizedBox(height: AppDimensions.d40.h),
+
+                            // Welcome Title → Using Theme
+                            Text(
+                              'welcome_to_okr_navigator'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayMedium
+                                  ?.copyWith(color: AppColors.primaryBlue),
+                              textAlign: TextAlign.center,
+                            ),
+
+                            SizedBox(height: AppDimensions.d16.h),
+
+                            // Description → Using Theme
+                            Text(
+                              'start_screen_description'.tr,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                color: AppColors.black,
+                                height: 1.5,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+
+                            SizedBox(height: AppDimensions.d40.h),
+
+                            // Swipe to Start Button
+                            SwipeToStart(
+                              onSwipeComplete: () {
+                                Get.offAllNamed(AppRoutes.splash1);
+                              },
+                            ),
+
+                            SizedBox(height: AppDimensions.d40.h),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ---------------- SwipeToStart Widget ----------------
+class SwipeToStart extends StatefulWidget {
+  final VoidCallback onSwipeComplete;
+  const SwipeToStart({super.key, required this.onSwipeComplete});
+
+  @override
+  State<SwipeToStart> createState() => _SwipeToStartState();
+}
+
+class _SwipeToStartState extends State<SwipeToStart> {
+  double _dragPosition = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final double containerWidth =
+        MediaQuery.of(context).size.width - 48.w; // Considering padding
+    final double arrowSize = 50.w;
+
+    return GestureDetector(
+      onHorizontalDragUpdate: (details) {
+        setState(() {
+          _dragPosition += details.delta.dx;
+          if (_dragPosition < 0) _dragPosition = 0;
+          if (_dragPosition > containerWidth - arrowSize) {
+            _dragPosition = containerWidth - arrowSize;
+          }
+        });
+      },
+      onHorizontalDragEnd: (details) {
+        if (_dragPosition >= containerWidth - arrowSize - 5) {
+          widget.onSwipeComplete();
+        } else {
+          setState(() => _dragPosition = 0);
+        }
+      },
+      child: Stack(
+        alignment: Alignment.centerLeft,
+        children: [
+          // Background container
+          Container(
+            height: 60.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.lightGrey,
+              borderRadius: BorderRadius.circular(30.r),
+            ),
+          ),
+
+          // Base Text (Black) → Theme applied
+          Positioned.fill(
+            child: Center(
+              child: Text(
+                'swipe_to_start'.tr,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+
+          // Progress Fill Container
+          Positioned(
+            left: 0,
+            child: Container(
+              height: 60.h,
+              width: _dragPosition + arrowSize,
+              decoration: BoxDecoration(
+                color: AppColors.primaryRed,
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+            ),
+          ),
+
+          // Overlay Text (White)
+          Positioned.fill(
+            child: ClipRect(
+              clipper: _TextClipper(width: _dragPosition + arrowSize),
+              child: Center(
+                child: Text(
+                  'swipe_to_start'.tr,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // Circular Arrow Button
+          Positioned(
+            left: _dragPosition,
+            child: Container(
+              width: arrowSize,
+              height: arrowSize,
+              decoration: BoxDecoration(
+                color: AppColors.primaryRed,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.primaryRed, width: 2.w),
+              ),
+              child: const Icon(
+                Icons.arrow_forward_rounded,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Custom Clipper for Overlay Text
+class _TextClipper extends CustomClipper<Rect> {
+  final double width;
+  _TextClipper({required this.width});
+
+  @override
+  Rect getClip(Size size) => Rect.fromLTWH(0, 0, width, size.height);
+
+  @override
+  bool shouldReclip(_TextClipper oldClipper) => oldClipper.width != width;
+}
