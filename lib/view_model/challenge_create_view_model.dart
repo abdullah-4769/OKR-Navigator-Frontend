@@ -12,11 +12,15 @@ import '../../repository/challange_repositories/challange_create_repository.dart
 import '../../repository/challange_repositories/challenge_accept_invitation_repository.dart';
 import '../../repository/challange_repositories/challenge_send__invite_repostory.dart';
 import '../../services/shared_preference.dart';
+import '../../services/notification_service.dart';
+import '../../data/repositories/storage_repository.dart';
 
 class ChallengeCreateViewModel extends GetxController {
   final ChallengeRepository _repository = ChallengeRepository();
   final ChallengeAcceptInvitationRepository _invitationRepository = ChallengeAcceptInvitationRepository();
   final ChallengeSendInviteRepository _sendInviteRepository = ChallengeSendInviteRepository();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
 
   final isChallengeCreated = false.obs;
 
@@ -176,9 +180,22 @@ class ChallengeCreateViewModel extends GetxController {
       if (kDebugMode) print("Response received: $response");
 
       // Remove the challenger from the list
+      final challenger = filteredChallengers.firstWhereOrNull((c) => c['id'] == invitationId);
+      final hostUserId = challenger?['hostId']?.toString() ?? challenger?['userId']?.toString();
+      final playerName = _storageRepository.getUser()?.name ?? 'A player';
+
       filteredChallengers.value = filteredChallengers.where(
               (challenger) => challenger['id'] != invitationId
       ).toList();
+
+      // 🔔 NOTIFICATION: Send challenge invitation response notification
+      if (hostUserId != null && hostUserId.isNotEmpty) {
+        _notificationService.sendChallengeInvitationResponse(
+          playerName: playerName,
+          hostUserId: hostUserId,
+          isAccepted: accept,
+        );
+      }
 
       if (accept) {
         Get.snackbar(

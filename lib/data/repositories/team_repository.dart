@@ -21,8 +21,52 @@ class TeamRepository {
   }
 
   // 2. Join Team (POST /team/join)
+  // Handles both wrapped response { "message": "...", "team": {...} } and direct response
+  // Also handles cases where members might be an array of strings (user IDs) instead of objects
   Future<TeamLobbyResponse> joinTeam(JoinTeamRequest request) async {
-    return _teamApi.joinTeam(request);
+    final response = await dio.post(
+      '/team/join',
+      data: request.toJson(),
+    );
+    final responseData = response.data;
+    
+    // Handle wrapped response: { "message": "...", "team": {...} }
+    Map<String, dynamic> teamData;
+    if (responseData is Map<String, dynamic>) {
+      if (responseData.containsKey('team')) {
+        final teamObj = responseData['team'];
+        if (teamObj is Map<String, dynamic>) {
+          teamData = Map<String, dynamic>.from(teamObj);
+        } else {
+          teamData = Map<String, dynamic>.from(responseData);
+        }
+      } else {
+        // If not wrapped, use response data directly
+        teamData = Map<String, dynamic>.from(responseData);
+      }
+    } else {
+      teamData = <String, dynamic>{};
+    }
+    
+    // Handle case where members might be an array of strings (user IDs) instead of objects
+    if (teamData['members'] != null && teamData['members'] is List) {
+      final membersList = teamData['members'] as List;
+      if (membersList.isNotEmpty && membersList.first is String) {
+        // Convert array of strings to array of member objects
+        final hostId = teamData['hostId'] as String?;
+        final convertedMembers = membersList.map<Map<String, dynamic>>((userId) {
+          return <String, dynamic>{
+            'userId': userId,
+            'role': userId == hostId ? 'HOST' : 'PLAYER',
+          };
+        }).toList();
+        teamData['members'] = convertedMembers;
+      }
+    }
+    
+    // Create TeamLobbyResponse from the processed data
+    final teamLobbyResponse = TeamLobbyResponse.fromJson(teamData);
+    return teamLobbyResponse;
   }
 
   // 3. Get Team Details (GET /team/{id}/details)

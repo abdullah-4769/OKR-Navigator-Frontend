@@ -4,6 +4,7 @@ class KeyResultResponse {
   final int? strategyId;
   final List<Text>? text;
   final DateTime? expiresAt;
+  final List<KeyResult>? topLevelKeyResults;
 
   KeyResultResponse({
     this.id,
@@ -11,6 +12,7 @@ class KeyResultResponse {
     this.strategyId,
     this.text,
     this.expiresAt,
+    this.topLevelKeyResults, 
   });
 
   factory KeyResultResponse.fromJson(Map<String, dynamic> json) =>
@@ -24,6 +26,12 @@ class KeyResultResponse {
         expiresAt: json['expiresAt'] == null
             ? null
             : DateTime.parse(json['expiresAt']),
+        // --- NEW MAPPING TO CAPTURE TOP-LEVEL FIELD ---
+        topLevelKeyResults: json['keyResults'] == null
+            ? []
+            : List<KeyResult>.from(
+                json['keyResults']!.map((x) => KeyResult.fromJson(x)),
+              ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +42,9 @@ class KeyResultResponse {
         ? []
         : List<dynamic>.from(text!.map((x) => x.toJson())),
     'expiresAt': expiresAt?.toIso8601String(),
+    'keyResults': topLevelKeyResults == null 
+        ? []
+        : List<dynamic>.from(topLevelKeyResults!.map((x) => x.toJson())),
   };
 }
 
@@ -52,8 +63,8 @@ class Text {
     keyResults: json['keyResults'] == null
         ? []
         : List<KeyResult>.from(
-      json['keyResults']!.map((x) => KeyResult.fromJson(x)),
-    ),
+            json['keyResults']!.map((x) => KeyResult.fromJson(x)),
+          ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -99,9 +110,9 @@ class EvaluateKeyResultsResponse {
       );
 
   Map<String, dynamic> toJson() => {
-    'normalizedScore': normalizedScore,
-    'explanation': explanation,
-  };
+        'normalizedScore': normalizedScore,
+        'explanation': explanation,
+      };
 }
 class AddInnovativeResponse {
   final bool? success;
@@ -116,9 +127,9 @@ class AddInnovativeResponse {
       );
 
   Map<String, dynamic> toJson() => {
-    'success': success,
-    'message': message,
-  };
+        'success': success,
+        'message': message,
+      };
 }
 class InnovativeIdea {
   final String? title;
@@ -133,9 +144,9 @@ class InnovativeIdea {
       );
 
   Map<String, dynamic> toJson() => {
-    'title': title,
-    'description': description,
-  };
+        'title': title,
+        'description': description,
+      };
 }
 
 class InnovativeIdeasResponse {
@@ -148,102 +159,11 @@ class InnovativeIdeasResponse {
         ideas: json['ideas'] == null
             ? []
             : List<InnovativeIdea>.from(
-          json['ideas'].map((x) => InnovativeIdea.fromJson(x)),
-        ),
+                json['ideas'].map((x) => InnovativeIdea.fromJson(x)),
+              ),
       );
 
   Map<String, dynamic> toJson() => {
-    'ideas': ideas?.map((x) => x.toJson()).toList(),
-  };
+        'ideas': ideas?.map((x) => x.toJson()).toList(),
+      };
 }
-
-
-
-
-// class KeyResultResponse {
-//   final int? id;
-//   final int? objectiveId;
-//   final int? strategyId;
-//   final List<Text>? text;
-//   final DateTime? expiresAt;
-//
-//   KeyResultResponse({
-//     this.id,
-//     this.objectiveId,
-//     this.strategyId,
-//     this.text,
-//     this.expiresAt,
-//   });
-//
-//   factory KeyResultResponse.fromJson(Map<String, dynamic> json) =>
-//       KeyResultResponse(
-//         id: json['id'],
-//         objectiveId: json['objectiveId'],
-//         strategyId: json['strategyId'],
-//         text: json['text'] == null
-//             ? []
-//             : List<Text>.from(json['text']!.map((x) => Text.fromJson(x))),
-//         expiresAt: json['expiresAt'] == null
-//             ? null
-//             : DateTime.parse(json['expiresAt']),
-//       );
-//
-//   Map<String, dynamic> toJson() => {
-//     'id': id,
-//     'objectiveId': objectiveId,
-//     'strategyId': strategyId,
-//     'text': text == null
-//         ? []
-//         : List<dynamic>.from(text!.map((x) => x.toJson())),
-//     'expiresAt': expiresAt?.toIso8601String(),
-//   };
-// }
-//
-// class Text {
-//   final String? role;
-//   final String? strategy;
-//   final String? objective;
-//   final List<KeyResult>? keyResults;
-//
-//   Text({this.role, this.strategy, this.objective, this.keyResults});
-//
-//   factory Text.fromJson(Map<String, dynamic> json) => Text(
-//     role: json['role'],
-//     strategy: json['strategy'],
-//     objective: json['objective'],
-//     keyResults: json['keyResults'] == null
-//         ? []
-//         : List<KeyResult>.from(
-//             json['keyResults']!.map((x) => KeyResult.fromJson(x)),
-//           ),
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     'role': role,
-//     'strategy': strategy,
-//     'objective': objective,
-//     'keyResults': keyResults == null
-//         ? []
-//         : List<dynamic>.from(keyResults!.map((x) => x.toJson())),
-//   };
-// }
-//
-// class KeyResult {
-//   final int? id;
-//   final String? title;
-//   final String? description;
-//
-//   KeyResult({this.id, this.title, this.description});
-//
-//   factory KeyResult.fromJson(Map<String, dynamic> json) => KeyResult(
-//     id: json['id'],
-//     title: json['title'],
-//     description: json['description'],
-//   );
-//
-//   Map<String, dynamic> toJson() => {
-//     'id': id,
-//     'title': title,
-//     'description': description,
-//   };
-// }

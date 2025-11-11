@@ -6,9 +6,13 @@ import '../../data/repositories/game_complete_repo.dart';
 import '../../generated/models/responses/game_complete_model/game_complete_model.dart';
 import '../../presentation/widgets/game_complete_widgets/performance_breakdown.dart';
 import '../../services/shared_preference.dart';
+import '../../services/notification_service.dart';
+import '../../data/repositories/storage_repository.dart';
 
 class GameCompleteViewModel extends GetxController {
   final GameCompleteRepository _repository = GameCompleteRepository();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
 
   var isLoading = false.obs;
   var gameCompleteData = Rxn<GameCompleteModel>();
@@ -89,6 +93,9 @@ class GameCompleteViewModel extends GetxController {
       }
 
       gameCompleteData.value = gameData;
+      
+      // 🔔 NOTIFICATION: Send solo mode evaluation completed notification
+      _sendSoloModeNotification(gameData);
 
     } catch (e) {
       print('❌ [ViewModel] Error: $e');
@@ -184,5 +191,34 @@ class GameCompleteViewModel extends GetxController {
     if (score >= 80) return "strategic_architect".tr;
     if (score >= 70) return "strategic_thinker".tr;
     return "emerging_strategist".tr;
+  }
+
+  /// Send solo mode notification based on game result
+  Future<void> _sendSoloModeNotification(GameCompleteModel gameData) async {
+    try {
+      final savedMode = await SharedPrefs.getGameMode();
+      if (savedMode != 'solo') return; // Only send for solo mode
+      
+      final playerName = _storageRepository.getUser()?.name ?? 'Player';
+      final score = gameData.score ?? 0;
+      
+      // Determine if evaluation passed (score >= 70) or failed
+      if (score >= 70) {
+        // Evaluation completed successfully
+        await _notificationService.sendSoloEvaluationCompleted(
+          playerName: playerName,
+          level: 1, // You may want to track actual level
+        );
+      } else {
+        // Evaluation failed - need to get remaining attempts from somewhere
+        // For now, using a default value
+        await _notificationService.sendSoloEvaluationFailed(
+          playerName: playerName,
+          remainingAttempts: 2, // You may want to track actual remaining attempts
+        );
+      }
+    } catch (e) {
+      print('❌ Error sending solo mode notification: $e');
+    }
   }
 }

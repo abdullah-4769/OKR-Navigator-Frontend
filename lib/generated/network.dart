@@ -50,7 +50,7 @@ class DioClient extends GetxService {
         validateStatus: (_) => true,
         baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 20),
+        receiveTimeout: const Duration(seconds: 60), // Increased to 60 seconds for batch operations (key results, initiatives)
       )
       ..interceptors.add(
         InterceptorsWrapper(

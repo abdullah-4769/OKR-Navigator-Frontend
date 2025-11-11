@@ -12,7 +12,6 @@ import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 import '../../widgets/team_mode_widgets/custom_view_widget.dart';
-import '../../widgets/team_mode_widgets/feedback_card.dart';
 import '../../widgets/team_mode_widgets/section_card.dart';
 import '../../widgets/team_mode_widgets/stat_card.dart';
 import '../../widgets/team_mode_widgets/sucess_rate_bar.dart';
@@ -119,30 +118,6 @@ class TeamDashboardScreen extends StatelessWidget {
                           ),
                         ),
 
-                        /// Feedback Section - DYNAMIC
-                        SizedBox(height: 10.h),
-                        Padding(
-                          padding:  EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'peer_feedback'.tr,
-                              style: TextStyle(
-                                  color: AppColors.primaryRed,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.sp),
-                            ),
-                          ),
-                        ),
-
-                        // List of feedback cards - DYNAMIC
-                        ...controller.feedbackList
-                            .map((f) => Padding(
-                              padding:  EdgeInsets.symmetric(horizontal: 12.w),
-                              child: FeedbackCard(data: f),
-                            ))
-                            .toList(),
-
                         SizedBox(height: 10.h),
                         /// Bottom buttons (ViewWidget is mostly static wrapper)
                         Padding(
@@ -152,18 +127,6 @@ class TeamDashboardScreen extends StatelessWidget {
                             subtitle: 'plan_new_session'.tr, // Assuming plan_new_session is a valid key
                             onPressed: () {},
                             trailingIcon: Icons.schedule_send_outlined,
-                          ),
-                        ),
-                        
-                        /// Recent Games - DYNAMIC
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: SectionCard(
-                            title: 'recent_games'.tr,
-                            icon: Icons.videogame_asset,
-                            borderColor: AppColors.primaryRed,
-                            items: controller.recentGames.toList(), // DYNAMIC list
-                            showScore: true,
                           ),
                         ),
 

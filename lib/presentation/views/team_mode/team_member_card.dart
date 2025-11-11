@@ -14,6 +14,9 @@ class TeamMemberCard extends StatelessWidget {
   final String badge;
   final String trophy;
   final String title;
+  final String? avatar; // Avatar path from API or team selection
+  final String? userId; // User ID for navigation
+  final VoidCallback? onViewTap; // Callback for View button
 
   const TeamMemberCard({
     super.key,
@@ -26,6 +29,9 @@ class TeamMemberCard extends StatelessWidget {
     this.badge = "",
     this.trophy = "",
     this.title = "",
+    this.avatar,
+    this.userId,
+    this.onViewTap,
   });
 
   @override
@@ -52,7 +58,7 @@ class TeamMemberCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Avatar with border
+          // Avatar with border - Display team avatar if available
           Container(
             padding: EdgeInsets.all(AppDimensions.d4.w),
             decoration: BoxDecoration(
@@ -74,14 +80,17 @@ class TeamMemberCard extends StatelessWidget {
                     ? AppColors.primaryRed.withOpacity(0.1)
                     : AppColors.grey.withOpacity(0.05),
               ),
-              child: Center(
-                child: SvgPicture.asset(
-                  'assets/images/solo.svg',
-                  height: AppDimensions.d50.w,
-                  width: AppDimensions.d50.w,
-                  color: isCurrentUser ? AppColors.primaryRed : AppColors.grey,
-                ),
-              ),
+              child: avatar != null && avatar!.isNotEmpty
+                  ? ClipOval(
+                      child: Image.asset(
+                        avatar!,
+                        height: AppDimensions.d40.w,
+                        width: AppDimensions.d40.w,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => _buildDefaultAvatar(),
+                      ),
+                    )
+                  : _buildDefaultAvatar(),
             ),
           ),
           SizedBox(width: AppDimensions.d12.w),
@@ -126,21 +135,24 @@ class TeamMemberCard extends StatelessWidget {
                 ),
                 SizedBox(height: AppDimensions.d4.h),
               ],
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppDimensions.d8.w,
-                  vertical: AppDimensions.d4.h,
-                ),
-                decoration: BoxDecoration(
-                  color: _getStatusColor(status),
-                  borderRadius: BorderRadius.circular(AppDimensions.d12.r),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: AppDimensions.d10.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+              GestureDetector(
+                onTap: status.toLowerCase() == "view" && onViewTap != null ? onViewTap : null,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppDimensions.d8.w,
+                    vertical: AppDimensions.d4.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _getStatusColor(status),
+                    borderRadius: BorderRadius.circular(AppDimensions.d12.r),
+                  ),
+                  child: Text(
+                    status,
+                    style: TextStyle(
+                      fontSize: AppDimensions.d10.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -149,6 +161,17 @@ class TeamMemberCard extends StatelessWidget {
         ],
       ),
     );
+
+  Widget _buildDefaultAvatar() {
+    return Center(
+      child: SvgPicture.asset(
+        'assets/images/solo.svg',
+        height: AppDimensions.d50.w,
+        width: AppDimensions.d50.w,
+        color: isCurrentUser ? AppColors.primaryRed : AppColors.grey,
+      ),
+    );
+  }
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {

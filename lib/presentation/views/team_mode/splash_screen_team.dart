@@ -19,7 +19,7 @@ class SplashScreenTeam extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity, 
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -49,7 +49,7 @@ class SplashScreenTeam extends StatelessWidget {
                     /// Mask SVG
                     CustomSvg(
                       semanticsLabel: 'mask_group'.tr,
-                      assetPath: 'assets/images/teamteam.png',
+                      assetPath: 'assets/images/team.svg',
                       height: isPortrait ? height * 0.22 : height * 0.4,
                       width: isPortrait ? width * 0.55 : width * 0.35,
                     ),
@@ -127,7 +127,7 @@ class SplashScreenTeam extends StatelessWidget {
                   ),
                   child: CustomCurvedArrow(
                     isLeft: false,
-                    onTap: () => Get.toNamed(AppRoutes.createTeam),
+                    onTap: () => Get.toNamed(AppRoutes.teamIndustryChooseScreen),
                     width: width * 0.15,
                     height: height * 0.2,
                   ),

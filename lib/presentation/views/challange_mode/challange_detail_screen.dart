@@ -6,6 +6,8 @@ import '../../../core/app_colors.dart';
 import '../../../data/response/status.dart';
 import '../../../services/shared_preference.dart';
 import '../../../view_model/challange_view_models/show_challengers_vs_viewmodel.dart';
+import '../../../services/notification_service.dart';
+import '../../../data/repositories/storage_repository.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/global_widgets/arrow_bubble_button.dart';
@@ -293,23 +295,42 @@ class _ResponsiveChallengeDetails extends StatelessWidget {
     try {
       final vsController = Get.find<ShowChallengersVsViewModel>();
       final response = vsController.challengers.value;
+      final notificationService = Get.find<FirebaseNotificationService>();
+      final storageRepository = Get.find<StorageRepository>();
+      final hostName = storageRepository.getUser()?.name ?? 'Host';
 
       // Always save challenge mode and proceed
       await SharedPrefs.saveGameMode('challenge');
       print('✅ Saved game mode: challenge');
 
       // Try to get challenge ID if available
+      List<String> participantUserIds = [];
       if (response.status == Status.completed) {
         final players = response.data as List<dynamic>? ?? [];
         if (players.isNotEmpty && players[0]['challengeId'] != null) {
           final challengeId = players[0]['challengeId'].toString();
           await SharedPrefs.saveChallengeId(challengeId);
           print('✅ Saved challenge ID: $challengeId');
+          
+          // Extract participant user IDs for notification
+          participantUserIds = players
+              .map((p) => p['userId']?.toString() ?? p['id']?.toString())
+              .where((id) => id != null && id.isNotEmpty)
+              .toList()
+              .cast<String>();
         } else {
           print('⚠️ No challenge ID found, using default');
         }
       } else {
         print('⚠️ Using fallback challenge data');
+      }
+
+      // 🔔 NOTIFICATION: Send challenge started notification
+      if (participantUserIds.isNotEmpty) {
+        notificationService.sendChallengeStarted(
+          hostName: hostName,
+          participantUserIds: participantUserIds,
+        );
       }
 
       // Navigate to role selection

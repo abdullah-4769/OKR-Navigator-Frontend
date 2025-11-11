@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Required for SvgPicture
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import '../../../generated/models/responses/strategy/generate_intiatives_response.dart'; // Import API response model
+import '../../../generated/models/responses/strategy/generate_intiatives_response.dart'; 
+import '../../../utils/snackbar_helper.dart';
 
 import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../core/app_colors.dart';
@@ -22,13 +24,15 @@ class TeamAIAnalysisScreen extends StatelessWidget {
  String _safeTranslate(String? key, {String fallback = ''}) {
   if (key == null) return fallback;
   try {
+   // Use raw string if it contains a space, assuming it's dynamic text
+   if (key.contains(' ')) return key;
    return key.tr;
   } catch (e) {
    return fallback;
   }
  }
 
-// 💡 NEW: Dynamic Analysis Container Widget
+// 💡 MODIFIED: _buildAnalysisContainer logic to handle dynamic decision based on score
 Widget _buildAnalysisContainer({
     required int percentage,
     required String decision,
@@ -40,8 +44,8 @@ Widget _buildAnalysisContainer({
 
     final bool isHighScore = percentage >= 80;
     final bool isMediumScore = percentage >= 50 && percentage < 80;
-    final bool isAccepted = decision.toLowerCase() == 'accepted' || isHighScore;
-
+    
+    // Set colors based on score threshold
     if (isHighScore) {
       dynamicBarColor = const Color(0xff8DC046);
       statusIcon = Icons.sentiment_very_satisfied;
@@ -52,6 +56,12 @@ Widget _buildAnalysisContainer({
       dynamicBarColor = Colors.red.shade400;
       statusIcon = Icons.sentiment_dissatisfied;
     }
+
+    // Set the decision text based on the score (as requested)
+    final String displayDecision = isHighScore 
+        ? decision.tr // Use the decision from API if available (e.g. "Accepted")
+        : ('Rejected'.tr + ' - ' + 'Re-evaluate Strategy'.tr);
+
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -131,7 +141,7 @@ Widget _buildAnalysisContainer({
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            isAccepted ? Icons.lightbulb : Icons.warning_amber_rounded,
+                            isHighScore ? Icons.lightbulb : Icons.warning_amber_rounded,
                             color: dynamicBarColor,
                             size: 24.sp,
                           ),
@@ -139,7 +149,7 @@ Widget _buildAnalysisContainer({
                         SizedBox(width: 12.w),
                         Expanded(
                           child: Text(
-                            decision,
+                            displayDecision,
                             style: TextStyle(
                               color: Colors.black87,
                               fontSize: 20.sp,
@@ -171,25 +181,20 @@ Widget _buildAnalysisContainer({
   final screenWidth = MediaQuery.of(context).size.width;
   final screenHeight = MediaQuery.of(context).size.height;
 
-    // [FIX 1: DEFENSIVE CASTING] Safely retrieve and cast arguments
+    // Safely retrieve and cast arguments
     final args = Get.arguments;
     GenerateInitiativesResponse? evaluationData;
     bool castSuccessful = false;
 
-    // Only attempt to cast if the argument is the expected API response type
     if (args is GenerateInitiativesResponse) {
         evaluationData = args;
         castSuccessful = true;
-    } else {
-        // Fallback for when no valid arguments are received (e.g., direct navigation or error)
-        // This prevents the crashing loop by safely skipping the cast.
     }
     
-    // 2. Extract dynamic data with fallbacks
-    final hasData = castSuccessful; // Use cast success for logic
+    // Extract dynamic data with fallbacks
+    final hasData = castSuccessful; 
     final score = evaluationData?.score ?? 0;
     final decision = evaluationData?.decision ?? 'Analysis Pending';
-    // Provide a more helpful error message if data is missing
     final explanation = evaluationData?.explanation ?? 'Analysis data is missing or invalid. Please re-submit initiatives.'; 
 
     // Determine colors for the fallback CustomInfoContainer if used
@@ -280,15 +285,35 @@ Widget _buildAnalysisContainer({
 
             SizedBox(height: AppDimensions.d25.h),
 
-            /// ------------ BUTTON ------------
+            /// ------------ BUTTON: Score Check and Redirect Logic (FIXED) ------------
             Padding(
              padding: EdgeInsets.symmetric(horizontal: 20.w),
              child: CustomButton(
               text: _safeTranslate('check_contextual_challenge'),
-                            // FIX 2: Enable button only if we received valid data
-              onPressed: hasData 
-                                ? () => Get.toNamed(AppRoutes.teamContextualChallengeScreen)
-                                : () {}, // Pass empty function when disabled
+              // FIX: Always pass a non-nullable VoidCallback. Control active/disabled state via isLoading.
+              onPressed: () {
+                  if (!hasData) {
+                      // Safety net if button is tapped while supposed to be disabled
+                      SnackbarHelper.warning("Please wait for analysis to complete.");
+                      return; 
+                  }
+                  
+                  if (score >= 80) {
+                      // Successful flow: proceed to challenge
+                      Get.toNamed(AppRoutes.teamContextualChallengeScreen);
+                  } else {
+                      // Failed flow: show message and redirect back to Objective screen
+                      SnackbarHelper.warning(
+                          'Score too low (${score}%). Returning to Objective selection to re-evaluate your strategy.'
+                      );
+                      // Redirect back to Objective Screen
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                          Get.offAllNamed(AppRoutes.teamObjectiveSelectionScreen);
+                      });
+                  }
+              },
+              // Use isLoading to visually disable the button when hasData is false/loading
+              isLoading: !hasData, 
              ),
             ),
 
@@ -310,4 +335,4 @@ Widget _buildAnalysisContainer({
     ),
    ));
  }
-}
+} 

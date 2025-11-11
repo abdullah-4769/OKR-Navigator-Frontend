@@ -2,30 +2,30 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:game_app/data/repositories/team_repository.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
-
-import '../../core/api_constants.dart';
 import '../../data/repositories/storage_repository.dart';
-import '../../data/repositories/team_repository.dart';
 import '../../services/notification_service.dart';
 import '../../utils/snackbar_helper.dart';
-import 'create_team_controller.dart';
+import 'create_team_controller.dart'; 
 
 class TeamChatController extends GetxController {
   final StorageRepository _storageRepository = Get.find<StorageRepository>();
   final TeamRepository _teamRepository = Get.find<TeamRepository>();
-  final FirebaseNotificationService _notificationService =
-  Get.find<FirebaseNotificationService>();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
   final Dio _dio = Dio();
 
+  // TextEditingController for message input
   final TextEditingController messageController = TextEditingController();
 
+  // WebSocket connection
   WebSocketChannel? _channel;
   StreamSubscription? _subscription;
 
+  // Observable variables
   final RxList<Map<String, dynamic>> chatMessages = <Map<String, dynamic>>[].obs;
   final RxBool isConnected = false.obs;
   final RxBool isLoading = false.obs;
@@ -34,6 +34,7 @@ class TeamChatController extends GetxController {
   final RxString teamName = 'Team Alpha'.obs;
   final RxList<Map<String, dynamic>> teamMembers = <Map<String, dynamic>>[].obs;
 
+  // Quick responses
   final RxList<String> quickResponses = <String>[
     "Let's align our OKRs!",
     "Starting my objectives now",
@@ -46,12 +47,14 @@ class TeamChatController extends GetxController {
     super.onInit();
     _initializeTeamData();
     _loadTeamMembers();
+    // connect(); // Removed synchronous call
   }
-
+  
   @override
   void onReady() {
     super.onReady();
-    connect();
+    // ✅ Deferred connection call
+    connect(); 
   }
 
   @override
@@ -61,36 +64,42 @@ class TeamChatController extends GetxController {
     super.onClose();
   }
 
+  /// Initialize team data
   void _initializeTeamData() {
+    // Get team data from CreateTeamController
     if (Get.isRegistered<CreateTeamController>()) {
       final createTeamController = Get.find<CreateTeamController>();
       final teamId = createTeamController.createdTeamId.value;
+      
       if (teamId != null) {
         _loadTeamToken(teamId);
       }
     }
   }
 
+  /// Load team token
   Future<void> _loadTeamToken(int teamId) async {
     try {
-      teamToken.value = 'ABC123'; // Should come from actual team data
+      teamToken.value = 'ABC123'; // This should come from team data
     } catch (e) {
       log('Error loading team token: $e');
     }
   }
 
+  /// Load team members
   Future<void> _loadTeamMembers() async {
     try {
       isLoading.value = true;
+      
       int? teamId;
       if (Get.isRegistered<CreateTeamController>()) {
         final createTeamController = Get.find<CreateTeamController>();
         teamId = createTeamController.createdTeamId.value;
       }
-
+      
       if (teamId != null) {
         final response = await _dio.get(
-          '${ApiConstants.baseUrl}/team/$teamId/details', // ✅ Use ApiConstants
+          '${_getBaseUrl()}/team/$teamId/details',
         );
 
         if (response.statusCode == 200) {
@@ -109,15 +118,24 @@ class TeamChatController extends GetxController {
     }
   }
 
+  /// Connect to WebSocket
   Future<void> connect() async {
     final user = _storageRepository.getUser();
-    if (user == null || teamToken.value.isEmpty) return;
+
+    // FIX: Suppress error if not logged in (e.g., during Splash/Login screens)
+    if (user == null) { 
+      return; 
+    }
+    if (teamToken.value.isEmpty) {
+      // SnackbarHelper.error('Team token not found');
+      return;
+    }
 
     try {
       isLoading.value = true;
-
+      
       _channel = IOWebSocketChannel.connect(
-        'ws://${ApiConstants.baseUrl.split("://")[1]}/ws?teamToken=${teamToken.value}', // ✅ WebSocket URL from ApiConstants
+        'ws://54.145.244.15:3000/ws?teamToken=${teamToken.value}',
       );
 
       _subscription = _channel!.stream.listen(
@@ -128,27 +146,31 @@ class TeamChatController extends GetxController {
 
       isConnected.value = true;
       SnackbarHelper.success('Connected to team chat');
-
+      
       await _loadPreviousMessages();
+      
     } catch (e) {
       log('Error connecting to WebSocket: $e');
-      SnackbarHelper.error('Failed to connect to team chat');
+      SnackbarHelper.error('Failed to connect to team chat'); // This line is now safe
       isConnected.value = false;
     } finally {
       isLoading.value = false;
     }
   }
 
+  /// Disconnect from WebSocket
   void _disconnect() {
     _subscription?.cancel();
     _channel?.sink.close();
     isConnected.value = false;
   }
 
+  /// Handle incoming messages
   void _handleMessage(dynamic message) {
     try {
       final data = jsonDecode(message);
-
+      
+      // Add message to list with proper structure for ChatWidget
       chatMessages.add({
         'id': data['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
         'name': data['userName'] ?? 'Unknown',
@@ -158,27 +180,32 @@ class TeamChatController extends GetxController {
         'timestamp': data['timestamp'] ?? DateTime.now().toIso8601String(),
         'isCurrentUser': data['userId'] == _storageRepository.getUser()?.id,
       });
-
+      
+      // Send notification for new messages (if not from current user)
       if (data['userId'] != _storageRepository.getUser()?.id) {
         _sendMessageNotification(data['userName'], data['message']);
       }
+      
     } catch (e) {
       log('Error handling message: $e');
     }
   }
 
+  /// Handle WebSocket errors
   void _handleError(dynamic error) {
     log('WebSocket error: $error');
     SnackbarHelper.error('Connection error');
     isConnected.value = false;
   }
 
+  /// Handle WebSocket disconnect
   void _handleDisconnect() {
     log('WebSocket disconnected');
     isConnected.value = false;
     SnackbarHelper.warning('Disconnected from team chat');
   }
 
+  /// Send message - main method used by the screen
   Future<void> sendChatMessage() async {
     final message = messageController.text.trim();
     if (message.isEmpty) {
@@ -199,6 +226,7 @@ class TeamChatController extends GetxController {
         return;
       }
 
+      // Send message via WebSocket
       _channel?.sink.add(jsonEncode({
         'teamToken': teamToken.value,
         'userId': user.id,
@@ -209,8 +237,12 @@ class TeamChatController extends GetxController {
         'timestamp': DateTime.now().toIso8601String(),
       }));
 
+      // Also send via API for persistence
       await _teamRepository.sendWsMessage(teamToken.value, message);
+      
+      // Clear input
       messageController.clear();
+      
     } catch (e) {
       log('Error sending message: $e');
       SnackbarHelper.error('Failed to send message');
@@ -219,23 +251,24 @@ class TeamChatController extends GetxController {
     }
   }
 
+  /// Send quick response
   void sendQuickResponse(String response) {
     messageController.text = response;
     sendChatMessage();
   }
 
+  /// Load previous messages
   Future<void> _loadPreviousMessages() async {
     try {
+      // Sample messages with proper structure for ChatWidget
       chatMessages.assignAll([
         {
           'id': '1',
           'name': 'You',
           'role': 'CEO',
           'level': 5,
-          'message':
-          'Team, I got "Development of New Products" strategy. Perfect for our goal!',
-          'timestamp':
-          DateTime.now().subtract(const Duration(minutes: 10)).toIso8601String(),
+          'message': 'Team, I got "Development of New Products" strategy. Perfect for our goal!',
+          'timestamp': DateTime.now().subtract(const Duration(minutes: 10)).toIso8601String(),
           'isCurrentUser': true,
         },
         {
@@ -243,10 +276,8 @@ class TeamChatController extends GetxController {
           'name': 'Johnson',
           'role': 'Manager',
           'level': 5,
-          'message':
-          'Nice! I chose "Digital Transformation Initiative". These strategies complement each other well.',
-          'timestamp':
-          DateTime.now().subtract(const Duration(minutes: 8)).toIso8601String(),
+          'message': 'Nice! I chose "Digital Transformation Initiative". These strategies complement each other well.',
+          'timestamp': DateTime.now().subtract(const Duration(minutes: 8)).toIso8601String(),
           'isCurrentUser': false,
         },
         {
@@ -255,8 +286,7 @@ class TeamChatController extends GetxController {
           'role': 'Strategist',
           'level': 5,
           'message': 'Let\'s start the game!',
-          'timestamp':
-          DateTime.now().subtract(const Duration(minutes: 5)).toIso8601String(),
+          'timestamp': DateTime.now().subtract(const Duration(minutes: 5)).toIso8601String(),
           'isCurrentUser': false,
         },
       ]);
@@ -265,14 +295,13 @@ class TeamChatController extends GetxController {
     }
   }
 
+  /// Send message notification
   void _sendMessageNotification(String userName, String message) {
     final user = _storageRepository.getUser();
     if (user != null) {
       _notificationService.sendNotification(
         title: 'New message from $userName',
-        body: message.length > 50
-            ? '${message.substring(0, 50)}...'
-            : message,
+        body: message.length > 50 ? '${message.substring(0, 50)}...' : message,
         notificationType: NotificationType.teamPlayerProgress,
         recipientUserId: user.id!,
         teamId: Get.find<CreateTeamController>().createdTeamId.value,
@@ -283,5 +312,12 @@ class TeamChatController extends GetxController {
         },
       );
     }
+  }
+
+  // ... rest of your methods remain the same
+
+  /// Helper method to get base URL
+  String _getBaseUrl() {
+    return 'http://54.145.244.15:3000';
   }
 }

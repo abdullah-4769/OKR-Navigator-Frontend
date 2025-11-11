@@ -47,18 +47,18 @@ class TeamAchievementsController extends GetxController {
             ? _createTeamController.teamNameController.text
             : "Team Alpha (ID: $teamId)";
 
-        // 2. API Call: GET /final-team-score/team/{teamId}/rewards-summary
-        final rewardsData = await _strategyRepository.getTeamRewardsSummary(teamId);
+        // 2. API Call: GET /final-team-score/successrate/{teamId}
+        final rewardsData = await _strategyRepository.getTeamSuccessRate(teamId);
         
-        // 3. Update Observables with Real API Data
+        // 3. Update Observables with Real API Data from new endpoint structure
         points.value = (rewardsData['totalPoints'] as num? ?? 0).toInt();
-        badges.value = (rewardsData['totalBadges'] as num? ?? 0).toInt();
-        trophies.value = (rewardsData['totalTrophies'] as num? ?? 0).toInt();
-        games.value = (rewardsData['gamesPlayed'] as num? ?? 0).toInt();
-        teamLevel.value = (rewardsData['teamLevel'] as num? ?? 1).toInt();
+        badges.value = (rewardsData['budgetCount'] as num? ?? 0).toInt();
+        trophies.value = (rewardsData['trophyCount'] as num? ?? 0).toInt();
+        games.value = (rewardsData['totalPoints'] as num? ?? 0).toInt(); // Using totalPoints as games count
+        teamLevel.value = (rewardsData['level'] as num? ?? 1).toInt();
         
-        // Map recent achievements from API response
-        final achievementsList = rewardsData['recentAchievements'] as List? ?? [];
+        // Map recent achievements from playerAchievements array
+        final achievementsList = rewardsData['playerAchievements'] as List? ?? [];
         recentAchievements.assignAll(achievementsList.map((e) => e.toString()).toList());
         
         // Map recent games from API response

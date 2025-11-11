@@ -1,5 +1,5 @@
+import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:game_app/utils/snackbar_helper.dart';
 import 'team_game_complete_controller.dart'; // Dependency on the screen that fetched final data
 
 class TeamStrategyJourneyController extends GetxController {
@@ -22,24 +22,46 @@ class TeamStrategyJourneyController extends GetxController {
   }
 
   void _loadJourneyData() async {
-    // Awaiting a brief moment ensures the asynchronous data loading in TeamGameCompleteController has likely finished.
-    // In production, robust architecture would use listeners or state management signals.
-    await 100.milliseconds; 
+    // Wait a brief moment to ensure TeamGameCompleteController has loaded data
+    await Future.delayed(const Duration(milliseconds: 500));
     
-    // Check if the source controller has processed the API response (score > 0 implies data load attempted)
+    // Check if the source controller has processed the API response
+    // Only use real API data - no fallback
     if (_completeController.score.value == 0 && _completeController.breakdownItems.isEmpty) {
-        // Fallback or wait for data. Use a placeholder message for now.
-        _useFallbackData();
+        // No data available yet - show empty state or wait
+        log('Journey: Waiting for game complete data to load...');
+        // Retry after delay
+        Future.delayed(const Duration(seconds: 1), () {
+          if (_completeController.score.value > 0 || _completeController.breakdownItems.isNotEmpty) {
+            _loadJourneyData(); // Retry
+          } else {
+            log('Journey: No data available - showing empty state');
+            strengths.clear();
+            growthOpportunities.clear();
+            achievements.clear();
+          }
+        });
         return;
     }
 
-    // --- Data Mapping from TeamGameCompleteController's API results ---
+    // --- Data Mapping from TeamGameCompleteController's REAL API results ---
     
-    // 1. Map Achievements (which already came from the API/fallback in TCC)
-    achievements.assignAll(_completeController.achievements);
+    // 1. Map Achievements from API (only if available)
+    if (_completeController.achievements.isNotEmpty) {
+      achievements.assignAll(_completeController.achievements);
+    } else {
+      achievements.clear();
+    }
 
-    // 2. Map Strengths and Opportunities based on the Performance Breakdown
-    _mapFeedbackFromBreakdown(_completeController.breakdownItems);
+    // 2. Map Strengths and Opportunities based on REAL Performance Breakdown from API
+    if (_completeController.breakdownItems.isNotEmpty) {
+      _mapFeedbackFromBreakdown(_completeController.breakdownItems);
+    } else {
+      strengths.clear();
+      growthOpportunities.clear();
+    }
+
+    log('Journey data loaded from API: ${strengths.length} strengths, ${growthOpportunities.length} opportunities');
   }
 
   void _mapFeedbackFromBreakdown(List<Map<String, dynamic>> breakdown) {
@@ -65,39 +87,8 @@ class TeamStrategyJourneyController extends GetxController {
           }
       }
       
-      // Fallback if the breakdown items were empty for some reason
-      if (strengths.isEmpty && growthOpportunities.isEmpty) {
-          _useFallbackData();
-      }
-  }
-
-  void _useFallbackData() {
-    // Reverts to static placeholder data on API failure or empty results
-    strengths.assignAll([
-      {
-        "title": "strategic_alignment".tr,
-        "subtitle": "excellent_connection_between_strategy_and_objectives".tr,
-        "success": true
-      },
-      {
-        "title": "initiative_quality".tr,
-        "subtitle": "well_defined_and_actionable_initiatives".tr,
-        "success": true
-      },
-    ]);
-
-    growthOpportunities.assignAll([
-      {
-        "title": "metrics_precision".tr,
-        "subtitle": "consider_more_specific_and_measurable_key_results".tr,
-        "success": true
-      },
-    ]);
-
-    achievements.assignAll([
-      "completed_strategic_cycle".tr,
-      "adapted_market_challenge".tr,
-    ]);
+      // If breakdown items were empty, lists remain empty (no fallback data)
+      // This ensures we only show real API data
   }
 
   void resetJourney() {

@@ -2,7 +2,6 @@
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
-import '../../core/api_constants.dart';
 import '../../data/repositories/storage_repository.dart';
 import '../../services/notification_service.dart';
 import '../../utils/snackbar_helper.dart';
@@ -526,14 +525,14 @@ class TeamStrategyController extends GetxController {
     return {};
   }
 
-  /// Get Team Rewards Summary
-  /// GET /final-team-score/team/2/rewards-summary
-  Future<Map<String, dynamic>> getTeamRewardsSummary() async {
+  /// Get Team Success Rate
+  /// GET /final-team-score/successrate/{teamId}
+  Future<Map<String, dynamic>> getTeamSuccessRate() async {
     try {
       isLoading.value = true;
       
       final response = await _dio.get(
-        '${_getBaseUrl()}/final-team-score/team/${teamId.value}/rewards-summary',
+        '${_getBaseUrl()}/final-team-score/successrate/${teamId.value}',
       );
 
       if (response.statusCode == 200) {
@@ -547,11 +546,12 @@ class TeamStrategyController extends GetxController {
     }
     return {};
   }
-// Helper methods
-  String _getBaseUrl() {
-    return ApiConstants.baseUrl;
-  }
 
+  // Helper methods
+  String _getBaseUrl() {
+    // Replace with your actual API base URL
+    return 'http://54.145.244.15:3000';
+  }
 
   void _sendStrategyNotification() {
     final user = _storageRepository.getUser();

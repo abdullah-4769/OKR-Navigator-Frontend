@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:game_app/presentation/views/suggestion_Initiatives/suggestion_initiatives_creen.dart';
+import 'package:game_app/presentation/views/team_mode/team_suggestion_initiatives_screen.dart';
 import 'package:get/get.dart';
 import 'package:game_app/generated/models/responses/key_results/key_results_response.dart' as key_result_models;
 import '../../generated/models/requests/campaign_mode/feedback_evaluation_model.dart';
 import '../../services/shared_preference.dart';
 import '../../view_model/campaign_mode/feedback_evaluation_view_model.dart';
+import '../../controllers/team_mode_controller/team_suggestion_initiative_controller.dart';
 import '../widgets/campaign_mode_widgets/campaign_progress_service.dart';
+import '../../services/notification_service.dart';
+import '../../data/repositories/storage_repository.dart';
 import '../widgets/custom_button2.dart';
 import '../widgets/custom_home_navbar.dart';
 import '../widgets/game_complete_widgets/custom_score_card.dart';
@@ -134,49 +138,94 @@ class FeedbackScreen extends StatelessWidget {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
+        
+        // 🔔 NOTIFICATION: Send campaign level unlocked notification
+        _sendCampaignLevelUnlockedNotification(currentLevel);
       }
     } catch (e) {
       print('❌ Error marking level complete: $e');
     }
 
   }
+
+  /// Send campaign level unlocked notification
+  Future<void> _sendCampaignLevelUnlockedNotification(int completedLevel) async {
+    try {
+      final notificationService = Get.find<FirebaseNotificationService>();
+      final storageRepository = Get.find<StorageRepository>();
+      final playerName = storageRepository.getUser()?.name ?? 'Player';
+      final playerUserId = storageRepository.getUser()?.id;
+      
+      if (playerUserId == null) return;
+      
+      // Get next level (unlocked level)
+      final nextLevel = completedLevel + 1;
+      
+      if (nextLevel <= 3) {
+        // Send level unlocked notification
+        await notificationService.sendCampaignLevelUnlocked(
+          playerName: playerName,
+          level: nextLevel,
+          playerUserId: playerUserId,
+        );
+      }
+      
+      // If level 3 was completed, send certification complete notification
+      if (completedLevel == 3) {
+        await notificationService.sendCampaignCertificationComplete(
+          playerName: playerName,
+          playerUserId: playerUserId,
+        );
+      }
+    } catch (e) {
+      print('❌ Error sending campaign notification: $e');
+    }
+  }
 // In FeedbackScreen - update the _navigateBasedOnGameMode method
   void _navigateBasedOnGameMode() async {
     try {
-      final savedMode = await SharedPrefs.getGameMode();
+final savedMode = await SharedPrefs.getGameMode(); 
+print('DEBUG: Game Mode from SharedPrefs: $savedMode');
+   if (savedMode == 'campaign') {
+    _markLevelComplete();
+   }
 
-      if (savedMode == 'campaign') {
-        _markLevelComplete();
-      }
-
-      //  Pass selectedKeyResults to ContextualCAdjustmentScreen
-      switch (savedMode) {
-        case 'solo':
-        case 'challenge':
-          Get.to(
-                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
-            arguments: {
-              'selectedKeyResults': selectedKeyResults,
-              'challengeData': await _getChallengeData(),
-              'existingInitiatives': await _getExistingInitiatives(),
-            },
-          );
-          break;
-        case 'campaign':
-
-          Get.offAllNamed(AppRoutes.campaignModeScreen);
-          break;
-        default:
-          Get.to(
-                () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
-            arguments: {
-              'selectedKeyResults': selectedKeyResults,
-              'challengeData': await _getChallengeData(),
-              'existingInitiatives': await _getExistingInitiatives(),
-            },
-          );
-          break;
-      }
+   // Ab savedMode mein correct string value hogi, aur switch theek se kaam karega
+   switch (savedMode) {
+    case 'solo':
+    case 'challenge':
+     Get.to(
+        () => SuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
+      arguments: {
+       'selectedKeyResults': selectedKeyResults,
+       'challengeData': await _getChallengeData(),
+       'existingInitiatives': await _getExistingInitiatives(),
+      },
+     );
+     break;
+    case 'campaign':
+     Get.offAllNamed(AppRoutes.campaignModeScreen);
+     break;
+    case 'team':
+     // ✅ Navigate to team initiative screen with selectedKeyResults
+     Get.toNamed(
+       AppRoutes.teamSuggestionInitiativeScreen,
+       arguments: {
+         'selectedKeyResults': selectedKeyResults,
+       },
+     );
+     break;
+    default:
+     Get.to(
+        () => TeamSuggestionInitiativesScreen(selectedKeyResults: selectedKeyResults),
+      arguments: {
+       'selectedKeyResults': selectedKeyResults,
+       'challengeData': await _getChallengeData(),
+       'existingInitiatives': await _getExistingInitiatives(),
+      },
+     );
+     break;
+   }
     } catch (e) {
       print('❌ Error in navigation: $e');
       Get.to(

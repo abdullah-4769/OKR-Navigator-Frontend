@@ -174,7 +174,25 @@ class TeamObjectiveScreen extends StatelessWidget {
 
                           /// --------- OBJECTIVES LIST ----------
                           Obx(
-  () => Column(
+  () {
+    if (controller.loading.value) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 40.h),
+        child: Column(
+          children: [
+            CircularProgressIndicator(
+              color: AppColors.primaryRed,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Loading objectives...'.tr,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      );
+    }
+    return Column(
     children: List.generate(
       controller.objectives.length,
       (index) {
@@ -213,7 +231,8 @@ class TeamObjectiveScreen extends StatelessWidget {
         );
       },
     ),
-  ),
+  );
+  },
 ),
 
 
@@ -251,6 +270,8 @@ class TeamObjectiveScreen extends StatelessWidget {
                                         // Update journey status
                                         journeyController.completeStep(0);
                                         
+                                        final List<String> objectiveTitles = controller.getAllObjectiveTitles();
+                                        
                                         if (isChallengeMode) {
                                             // ✅ CHALLENGE FLOW FIX: Go directly back to the screen that opened this (Contextual Challenge)
                                             Get.back(); 
@@ -258,6 +279,9 @@ class TeamObjectiveScreen extends StatelessWidget {
                                             // 1. NORMAL FLOW: Proceed to Key Results screen
                                             Get.toNamed(
                                               AppRoutes.teamKeyResultScreen,
+                                              arguments: {
+                                                  'objectiveTitles': objectiveTitles,
+                                              }
                                             );
                                         }
                                     }

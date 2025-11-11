@@ -154,21 +154,18 @@ class DashboardController extends GetxController {
       
       if (teamId != null) {
         final response = await _dio.get(
-          '${_getBaseUrl()}/final-team-score/team/$teamId/rewards-summary',
+          '${_getBaseUrl()}/final-team-score/successrate/$teamId',
         );
 
         if (response.statusCode == 200) {
           final data = response.data;
-          totalBadges.value = data['totalBadges'] ?? 0;
-          totalTrophies.value = data['totalTrophies'] ?? 0;
+          totalBadges.value = data['budgetCount'] ?? 0;
+          totalTrophies.value = data['trophyCount'] ?? 0;
           teamSuccessRate.value = (data['successRate'] ?? 0).toDouble();
-          teamLevelFromAPI.value = data['teamLevel'] ?? 0;
+          teamLevelFromAPI.value = data['level'] ?? 0;
           
-          // Load team members
-          if (data['members'] != null) {
-            final List<dynamic> members = data['members'];
-            teamMembers.assignAll(members.cast<Map<String, dynamic>>());
-          }
+          // Clear team members as they're not in the new API response
+          teamMembers.clear();
         }
       }
     } catch (e) {

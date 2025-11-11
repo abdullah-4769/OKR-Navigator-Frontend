@@ -47,84 +47,49 @@ class TeamDashboardController extends GetxController {
 
       teamId.value = currentTeamId;
       
-      // 1. API Call: GET /final-team-score/team/{teamId}/rewards-summary
+      // 1. API Call: GET /final-team-score/successrate/{teamId}
       Map<String, dynamic> apiResponse;
       try {
-        apiResponse = await _strategyRepository.getTeamRewardsSummary(currentTeamId);
+        apiResponse = await _strategyRepository.getTeamSuccessRate(currentTeamId);
       } catch (e) {
         // Handle 404 error - team hasn't completed games yet
         if (e.toString().contains('404') || e.toString().contains('Not Found')) {
-          log('Team has no rewards data yet. Showing default dashboard.');
+          log('Team has no success rate data yet. Showing default dashboard.');
           _showEmptyDashboard();
           return;
         }
         rethrow; // Re-throw if it's a different error
       }
       
-      // 2. Map API Response Data
+      // 2. Map API Response Data from new endpoint structure
+      // Response structure: {teamId, teamName, averageScore, averageRemainingTime, totalPoints, trophyCount, budgetCount, playerAchievements, level, successRate}
       successRate.value = (apiResponse['successRate'] as num? ?? 0).toInt(); 
-      teamLevel.value = (apiResponse['teamLevel'] as num? ?? 0).toInt(); 
+      teamLevel.value = (apiResponse['level'] as num? ?? 0).toInt(); 
 
-      badges.value = (apiResponse['totalBadges'] as num? ?? 0).toInt();
-      trophies.value = (apiResponse['totalTrophies'] as num? ?? 0).toInt();
-      games.value = (apiResponse['gamesPlayed'] as num? ?? 0).toInt(); 
+      // Map budgetCount to badges and trophyCount to trophies
+      badges.value = (apiResponse['budgetCount'] as num? ?? 0).toInt();
+      trophies.value = (apiResponse['trophyCount'] as num? ?? 0).toInt();
+      
+      // Use totalPoints for games count (or could be used for total points earned)
+      games.value = (apiResponse['totalPoints'] as num? ?? 0).toInt(); 
 
-      // Update name using data from CreateTeamController (as it holds current context)
-      teamName.value = createTeamController.teamNameController.text.isNotEmpty
-          ? createTeamController.teamNameController.text
-          : apiResponse['teamName']?.toString() ?? "Team ${currentTeamId}";
+      // Update name using API teamName or CreateTeamController
+      teamName.value = apiResponse['teamName']?.toString() ?? 
+          (createTeamController.teamNameController.text.isNotEmpty
+              ? createTeamController.teamNameController.text
+              : "Team ${currentTeamId}");
       
-      // Map team members from the API response
-      final membersData = apiResponse['members'] as List? ?? [];
-      if (membersData.isNotEmpty) {
-        // Store members data for future use if needed
-        log('Team has ${membersData.length} members');
-      }
-      
-      // Map Achievements (Assuming API returns list of achievement objects/strings)
-      achievements.assignAll((apiResponse['achievements'] as List? ?? [])
-          .map((e) => e is String ? {'key': e, 'done': true, 'icon': Icons.emoji_events} : e)
+      // Map Achievements from playerAchievements array
+      final playerAchievements = apiResponse['playerAchievements'] as List? ?? [];
+      achievements.assignAll(playerAchievements
+          .map((e) => e is String 
+              ? {'key': e, 'done': true, 'icon': Icons.emoji_events} 
+              : {'key': e.toString(), 'done': true, 'icon': Icons.emoji_events})
           .toList().cast<Map<String, dynamic>>());
       
-      // Map Feedback List from API response
-      final feedbackData = apiResponse['feedback'] as List? ?? [];
-      feedbackList.assignAll(feedbackData.map((feedback) {
-        if (feedback is Map<String, dynamic>) {
-          return {
-            'name': feedback['name']?.toString() ?? 'Team Member',
-            'role': feedback['role']?.toString() ?? 'Player',
-            'level': (feedback['level'] as num? ?? 1).toInt(),
-            'avatar': feedback['avatar']?.toString() ?? 'assets/images/solop.png',
-            'message': feedback['message']?.toString() ?? 'Great teamwork!',
-            'rating': (feedback['rating'] as num? ?? 4).toInt(),
-          };
-        }
-        return {
-          'name': 'Team Member',
-          'role': 'Player',
-          'level': 1,
-          'avatar': 'assets/images/solop.png',
-          'message': 'Great teamwork!',
-          'rating': 4,
-        };
-      }).toList());
-
-      // Map Recent Games from API response
-      final gamesData = apiResponse['recentGames'] as List? ?? [];
-      recentGames.assignAll(gamesData.map((game) {
-        if (game is Map<String, dynamic>) {
-          return {
-            'title': game['title']?.toString() ?? 'Team Game',
-            'date': game['date']?.toString() ?? 'Recent',
-            'score': (game['score'] as num? ?? 0).toInt(),
-          };
-        }
-        return {
-          'title': 'Team Game',
-          'date': 'Recent',
-          'score': 0,
-        };
-      }).toList());
+      // Clear feedback and recent games as they're not in the new API response
+      feedbackList.clear();
+      recentGames.clear();
       
       log('Team Dashboard data loaded for Team ID: $currentTeamId');
 

@@ -21,7 +21,10 @@ class ChallengeViewModel extends GetxController {
   void onInit() {
     super.onInit();
     print('[ChallengeViewModel] Initialized');
-    fetchChallenge();
+    // Defer fetchChallenge to avoid build-time errors
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchChallenge();
+    });
   }
 
   Future<void> fetchChallenge() async {
@@ -51,13 +54,16 @@ class ChallengeViewModel extends GetxController {
       if (strategyTitle == null || objectiveTitle == null) {
         print('[ChallengeViewModel][ERROR] Missing strategy or objective');
         apiResponse.value = ApiResponse.error('Strategy and Objective required');
-        Get.snackbar(
-          'error'.tr,
-          'Strategy and Objective required',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        // Defer snackbar to avoid build-time errors
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Get.snackbar(
+            'error'.tr,
+            'Strategy and Objective required',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        });
         return;
       }
 
@@ -82,25 +88,31 @@ class ChallengeViewModel extends GetxController {
         print('[ChallengeViewModel] Text: ${challengeText.value}');
       } else {
         print('[ChallengeViewModel][ERROR] Failed to load challenge - ${response.message}');
-        Get.snackbar(
-          'error'.tr,
-          response.message ?? 'Failed to load challenge',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        // Defer snackbar to avoid build-time errors
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Get.snackbar(
+            'error'.tr,
+            response.message ?? 'Failed to load challenge',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        });
       }
     } catch (e, s) {
       print('[ChallengeViewModel][EXCEPTION] $e');
       print('[ChallengeViewModel][STACKTRACE] $s');
       apiResponse.value = ApiResponse.error(e.toString());
-      Get.snackbar(
-        'error'.tr,
-        'Error: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      // Defer snackbar to avoid build-time errors
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.snackbar(
+          'error'.tr,
+          'Error: ${e.toString()}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      });
     } finally {
       isLoading.value = false;
       print('[ChallengeViewModel] Loading set to FALSE');

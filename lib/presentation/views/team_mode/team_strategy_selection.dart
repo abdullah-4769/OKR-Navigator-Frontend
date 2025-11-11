@@ -131,8 +131,27 @@ class TeamStrategySelectionScreen extends StatelessWidget {
 
                             SizedBox(height: height * 0.025),
 
-                            /// Cards Section
-                            CustomCardPagerBuilder(controller: teamController),
+                            /// Cards Section with Loading Indicator
+                            Obx(() {
+                              if (teamController.isLoading.value) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: height * 0.1),
+                                  child: Column(
+                                    children: [
+                                      CircularProgressIndicator(
+                                        color: AppColors.primaryRed,
+                                      ),
+                                      SizedBox(height: height * 0.02),
+                                      Text(
+                                        'Loading strategy...'.tr,
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              return CustomCardPagerBuilder(controller: teamController);
+                            }),
 
                             SizedBox(height: height * 0.025),
 

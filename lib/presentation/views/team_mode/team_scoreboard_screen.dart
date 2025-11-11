@@ -67,7 +67,7 @@ class TeamScoreboardScreen extends StatelessWidget {
                       /// Top Performers/Podium
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: AppDimensions.d8.w),
-                        child: CustomTopPerformerWidget(topThree: [],), // Dynamic mock data via TopPerformerController
+                        child: CustomTopPerformerWidget(), // Dynamic mock data via TopPerformerController
                       ),
 
                       SizedBox(height: AppDimensions.d20.h),

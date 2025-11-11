@@ -157,8 +157,14 @@ class ChooseIndustryScreen extends StatelessWidget {
                               children: [
                                 CustomButton2(
                                   text: 'select_continue'.tr,
-                                  onPressed: () => controller
-                                      .continueWithSelection(selectedRole),
+                                  onPressed: () {
+                                    // If selectedRole is null, it's team mode
+                                    if (selectedRole == null) {
+                                      controller.continueToTeamCreation();
+                                    } else {
+                                      controller.continueWithSelection(selectedRole);
+                                    }
+                                  },
                                 ),
                                 SizedBox(height: screenHeight * 0.015),
                                 Row(

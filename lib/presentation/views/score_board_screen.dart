@@ -103,7 +103,6 @@ class ScoreboardScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                        CustomTopPerformerWidget(
-                         topThree: controller.topThree,
                       ),
                       const SizedBox(height: 20),
                       if (controller.userDetails.value != null)

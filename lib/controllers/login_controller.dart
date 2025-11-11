@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:game_app/data/repositories/auth_repository.dart';
 import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
+import 'package:game_app/services/deep_link_service.dart';
 import 'package:get/get.dart';
 
 import '../../utils/snackbar_helper.dart';
@@ -53,7 +54,22 @@ class LoginController extends GetxController {
 
       SnackbarHelper.success('login_successful'.tr);
 
-      // Navigate to home screen after successful login
+      // Check if there's a pending team token from deep link
+      try {
+        final deepLinkService = Get.find<DeepLinkService>();
+        final pendingToken = deepLinkService.getPendingTeamToken();
+        
+        if (pendingToken != null) {
+          // Join team after login
+          await deepLinkService.handleTeamJoinAfterLogin();
+          return; // Navigation will happen in deep link service
+        }
+      } catch (e) {
+        // Deep link service not found or no pending token, continue normal flow
+        log('No pending team token or deep link service not found: $e');
+      }
+
+      // Navigate to home screen after successful login (normal flow)
       await Get.offAllNamed(AppRoutes.start);
 
     } catch (e, s) {

@@ -7,9 +7,13 @@ import '../../presentation/routes/app_routes.dart';
 import '../../presentation/views/challange_mode/game_result_screen.dart';
 import '../../repository/challange_repositories/challenge_mode_repository.dart';
 import '../../services/shared_preference.dart';
+import '../../services/notification_service.dart';
+import '../../data/repositories/storage_repository.dart';
 
 class GameResultViewModel extends GetxController {
   final ChallengeModeScoreRepository _repo = ChallengeModeScoreRepository();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
+  final StorageRepository _storageRepository = Get.find<StorageRepository>();
 
   var status = ViewStatus.idle.obs;
   var message = ''.obs;
@@ -181,6 +185,9 @@ class GameResultViewModel extends GetxController {
 
       status.value = ViewStatus.completed;
       print('✅ Successfully loaded real challenge results');
+      
+      // 🔔 NOTIFICATION: Send challenge completed notification
+      _sendChallengeCompletedNotification();
     } catch (e, st) {
       print('❌ Error fetching challenge score: $e');
       print('Stack trace: $st');
@@ -188,6 +195,45 @@ class GameResultViewModel extends GetxController {
       // Always fall back to mock data on error
       print('⚠️ Falling back to mock data');
       //await _useMockData(challengeId: finalChallengeId);
+    }
+  }
+
+  /// Send challenge completed notification
+  Future<void> _sendChallengeCompletedNotification() async {
+    try {
+      final primary = primaryPlayer;
+      final opponent = opponents.isNotEmpty ? opponents.first : null;
+      
+      if (primary == null) return;
+      
+      final playerName = primary.name ?? 'Player';
+      final primaryScore = primary.score ?? 0;
+      final opponentScore = opponent?.score ?? 0;
+      final isWinner = primaryScore >= opponentScore;
+      
+      // Get opponent user ID if available
+      final opponentUserId = opponent?.userId;
+      
+      // Send notification to current player
+      final currentUserId = _storageRepository.getUser()?.id;
+      if (currentUserId != null) {
+        await _notificationService.sendChallengeCompleted(
+          playerName: playerName,
+          recipientUserId: currentUserId,
+          isWinner: isWinner,
+        );
+      }
+      
+      // Send notification to opponent if available
+      if (opponentUserId != null && opponentUserId.isNotEmpty) {
+        await _notificationService.sendChallengeCompleted(
+          playerName: opponent?.name ?? 'Opponent',
+          recipientUserId: opponentUserId,
+          isWinner: !isWinner,
+        );
+      }
+    } catch (e) {
+      print('❌ Error sending challenge completed notification: $e');
     }
   }
 

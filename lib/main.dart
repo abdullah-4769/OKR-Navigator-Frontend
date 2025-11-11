@@ -17,6 +17,7 @@ import 'data/repositories/key_results_repo.dart';
 import 'data/repositories/storage_repository.dart'; // ✅ Add this
 import 'generated/network.dart'; // ✅ For DioClient
 import 'presentation/routes/app_routes.dart';
+import 'services/deep_link_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -34,6 +35,9 @@ Future<void> main() async {
 
   // ✅ Register StorageRepository first
   Get.put(StorageRepository(), permanent: true);
+
+  // ✅ Register DeepLinkService
+  Get.put(DeepLinkService(), permanent: true);
 
   // ✅ Then initialize DioClient (async)
   await Get.putAsync(() async => DioClient().init(), permanent: true);

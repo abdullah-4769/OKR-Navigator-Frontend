@@ -33,9 +33,9 @@ class TeamScoreboardController extends GetxController {
         return;
       }
       
-      // API Call: GET /final-team-score/team/{teamId}/rewards-summary
-      // This endpoint should return leaderboard data based on timeframe
-      final leaderboardData = await _strategyRepository.getTeamRewardsSummary(teamId);
+      // API Call: GET /final-team-score/successrate/{teamId}
+      // This endpoint returns team success rate data
+      final leaderboardData = await _strategyRepository.getTeamSuccessRate(teamId);
       
       // Map API response to leaderboard format
       final teamsData = leaderboardData['teams'] as List? ?? [];

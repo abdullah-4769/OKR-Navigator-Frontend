@@ -23,6 +23,7 @@ import 'package:game_app/presentation/views/team_mode/team_industry_choose_scree
 
 // ✅ Use aliases to avoid name conflicts
 import '../../generated/models/responses/key_results/key_results_response.dart';
+import '../../generated/models/responses/key_results/key_results_response.dart' as key_result_models;
 import '../views/campaign_mode_views/campaign_role_selection_screen.dart';
 import '../views/campaign_mode_views/campaign_suggestion_initiative_screen.dart';
 import '../views/campaign_mode_views/final_certification_screen.dart';
@@ -224,9 +225,26 @@ class AppRoutes {
 // Update the FeedbackScreen route
     GetPage(
       name: AppRoutes.feedBackScreen,
-      page: () => FeedbackScreen(
-        selectedKeyResults: Get.arguments ?? [],
-      ),
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>?;
+        final selectedKeyResults = args?['selectedKeyResults'] as List<dynamic>?;
+        if (selectedKeyResults == null || selectedKeyResults.isEmpty) {
+          return FeedbackScreen(selectedKeyResults: []);
+        }
+        // Cast to KeyResult type (using the same import alias as FeedbackScreen)
+        final keyResults = selectedKeyResults
+            .map((e) => e as KeyResult)
+            .toList();
+        // Convert to the type expected by FeedbackScreen (key_result_models.KeyResult)
+        final feedbackKeyResults = keyResults
+            .map((kr) => key_result_models.KeyResult(
+              id: kr.id,
+              title: kr.title,
+              description: kr.description,
+            ))
+            .toList();
+        return FeedbackScreen(selectedKeyResults: feedbackKeyResults);
+      },
     ),
 
     GetPage(
@@ -312,7 +330,7 @@ class AppRoutes {
 
     GetPage(
       name: AppRoutes.teamGameCompleteScreen,
-      page: () => const TeamGameCompleteScreen(),
+      page: () =>  TeamGameCompleteScreen(),
     ),
 
     GetPage(
@@ -345,7 +363,29 @@ class AppRoutes {
     GetPage(name: assignRoleScreen, page: () => AssignRolesScreen()),
     GetPage(
       name: teamSuggestionInitiativeScreen,
-      page: () => TeamSuggestionInitiativesScreen(selectedKeyResults: []),
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>?;
+        final selectedKeyResults = args?['selectedKeyResults'] as List<dynamic>?;
+        if (selectedKeyResults == null || selectedKeyResults.isEmpty) {
+          return TeamSuggestionInitiativesScreen(selectedKeyResults: []);
+        }
+        // Convert to KeyResult type - handle both KeyResult objects and maps
+        final keyResults = selectedKeyResults.map((e) {
+          if (e is KeyResult) {
+            return e;
+          } else if (e is Map<String, dynamic>) {
+            return KeyResult(
+              id: e['id'] as int?,
+              title: e['title']?.toString(),
+              description: e['description']?.toString(),
+            );
+          } else {
+            // Try to cast as KeyResult (handles alias types)
+            return e as KeyResult;
+          }
+        }).toList();
+        return TeamSuggestionInitiativesScreen(selectedKeyResults: keyResults);
+      },
     ),
 
     /// ✅ Solo mode

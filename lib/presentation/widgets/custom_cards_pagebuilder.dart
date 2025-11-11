@@ -420,10 +420,28 @@ class _ResponsiveCardPager extends StatelessWidget {
                         child: child,
                       ),
                     ),
-                child: controller.selectedCardIndex.value == -1
-                    ? Image.asset(
-                  'assets/images/backcard_img.png',
-                  key: const ValueKey<String>('backcard'),
+                child: (() {
+                  // Safely get selectedCardIndex value
+                  final cardIndex = controller.selectedCardIndex is RxInt
+                      ? controller.selectedCardIndex.value
+                      : (controller.selectedCardIndex as int);
+                  return cardIndex == -1
+                      ? Image.asset(
+                    'assets/images/backcard_img.png',
+                    key: const ValueKey<String>('backcard'),
+                    height: getResponsiveHeight(
+                      mobile: 350,
+                      tablet: 420,
+                      desktop: 480,
+                      largeDesktop: 540,
+                      ultraWide: 600,
+                      landscapeAdjustment: 0.7,
+                    ),
+                    fit: BoxFit.contain,
+                  )
+                      : Image.asset(
+                    controller.cardAssets[cardIndex],
+                    key: ValueKey<int>(cardIndex),
                   height: getResponsiveHeight(
                     mobile: 350,
                     tablet: 420,
@@ -433,20 +451,8 @@ class _ResponsiveCardPager extends StatelessWidget {
                     landscapeAdjustment: 0.7,
                   ),
                   fit: BoxFit.contain,
-                )
-                    : Image.asset(
-                  controller.cardAssets[controller.selectedCardIndex.value],
-                  key: ValueKey<int>(controller.selectedCardIndex.value),
-                  height: getResponsiveHeight(
-                    mobile: 350,
-                    tablet: 420,
-                    desktop: 480,
-                    largeDesktop: 540,
-                    ultraWide: 600,
-                    landscapeAdjustment: 0.7,
-                  ),
-                  fit: BoxFit.contain,
-                ),
+                );
+                })(),
               ),
             ),
           ),
@@ -458,7 +464,14 @@ class _ResponsiveCardPager extends StatelessWidget {
   Widget _buildActionButton() {
     return Obx(() {
       // Disable button if card is already revealed or loading
-      bool isDisabled = controller.isCardRevealed.value || controller.loading.value;
+      // Handle both RxBool and bool types safely
+      final isRevealed = controller.isCardRevealed is RxBool 
+          ? controller.isCardRevealed.value 
+          : (controller.isCardRevealed as bool);
+      final isLoading = controller.loading is RxBool 
+          ? controller.loading.value 
+          : (controller.loading as bool);
+      bool isDisabled = isRevealed || isLoading;
 
       return GestureDetector(
         onTap: isDisabled
@@ -514,7 +527,7 @@ class _ResponsiveCardPager extends StatelessWidget {
             ],
           ),
           alignment: Alignment.center,
-          child: controller.loading.value
+          child: isLoading
               ? SizedBox(
             width: getResponsiveFont(
               mobile: 20,

@@ -2,139 +2,179 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../../generated/models/responses/dashboard_for_all/dashboard_all.dart';
+import '../../../controllers/widgets_controllers/top_performer_controller.dart';
+import '../../../core/app_colors.dart';
+import '../../../core/app_dimensions.dart';
 
 class CustomTopPerformerWidget extends StatelessWidget {
-  final List<PlayerModel> topThree;
+  CustomTopPerformerWidget({super.key});
 
-  const CustomTopPerformerWidget({
-    super.key,
-    required this.topThree,
-  });
+  final TopPerformerController controller = Get.put(TopPerformerController());
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isPortrait = size.height > size.width;
 
-    if (topThree.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Text('No top performers available'.tr),
-        ),
-      );
-    }
-
-    // Sort by rank
-    final List<PlayerModel> sortedTop = List.from(topThree);
-    sortedTop.sort((a, b) => (a.rank ?? 0).compareTo(b.rank ?? 0));
-
     return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final maxWidth = constraints.maxWidth;
-          final blockWidth = (maxWidth / 3) - 16.w;
-
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              /// 🥈 2nd Place
-              if (sortedTop.length > 1)
-                Flexible(
-                  child: _buildPodiumTile(
-                    player: sortedTop[1],
-                    rank: 2,
-                    height: isPortrait
-                        ? size.height * 0.20
-                        : size.height * 0.25,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFB0BEC5), Color(0xFF90A4AE)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+      padding: EdgeInsets.all(AppDimensions.d16.w),
+      child: Column(
+        children: [
+          /// 🔥 Timeframe Tabs
+          Obx(
+                () => Container(
+              padding: EdgeInsets.all(6.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(AppDimensions.d16.r),
+                border: Border.all(color: AppColors.grey.withOpacity(0.3)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  {"key": "today", "label": "today".tr},
+                  {"key": "this_week", "label": "this_week".tr},
+                  {"key": "this_month", "label": "this_month".tr},
+                ].map((tab) {
+                  final isSelected =
+                      controller.selectedTimeframe.value == tab["key"];
+                  return GestureDetector(
+                    onTap: () => controller.changeTimeframe(tab["key"]!),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppDimensions.d15.w,
+                        vertical: AppDimensions.d10.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color:
+                        isSelected ? AppColors.primaryRed : Colors.white,
+                        borderRadius:
+                        BorderRadius.circular(AppDimensions.d12.r),
+                      ),
+                      child: Text(
+                        tab["label"]!,
+                        style: TextStyle(
+                          color: isSelected
+                              ? Colors.white
+                              : AppColors.primaryRed,
+                          fontWeight: FontWeight.w600,
+                          fontSize: AppDimensions.d14.sp,
+                        ),
+                      ),
                     ),
-                    width: blockWidth,
-                  ),
-                )
-              else
-                SizedBox(width: blockWidth),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+          SizedBox(height: AppDimensions.d20.h),
 
-              /// 🥇 1st Place
-              if (sortedTop.isNotEmpty)
-                Flexible(
-                  child: _buildPodiumTile(
-                    player: sortedTop[0],
-                    rank: 1,
-                    height: isPortrait
-                        ? size.height * 0.26
-                        : size.height * 0.32,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFFFF176), Color(0xFFFBC02D)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    width: blockWidth,
-                  ),
-                ),
+          /// 🔥 Podium Section
+          Obx(() {
+            if (controller.performers.isEmpty) {
+              return Center(child: Text("No data".tr));
+            }
 
-              /// 🥉 3rd Place
-              if (sortedTop.length > 2)
-                Flexible(
-                  child: _buildPodiumTile(
-                    player: sortedTop[2],
-                    rank: 3,
-                    height: isPortrait
-                        ? size.height * 0.18
-                        : size.height * 0.22,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFFFA726), Color(0xFFEF6C00)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+            final performers = controller.performers;
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final maxWidth = constraints.maxWidth;
+                final blockWidth = (maxWidth / 3) - 16.w;
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    /// 🥈 2nd
+                    Flexible(
+                      child: _buildPodiumTile(
+                        name: performers[1]["name"],
+                        score: performers[1]["score"],
+                        level: performers[1]["level"],
+                        rank: 2,
+                        height: isPortrait
+                            ? size.height * 0.20
+                            : size.height * 0.25,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFB0BEC5), Color(0xFF90A4AE)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        width: blockWidth,
+                      ),
                     ),
-                    width: blockWidth,
-                  ),
-                )
-              else
-                SizedBox(width: blockWidth),
-            ],
-          );
-        },
+
+                    /// 🥇 1st
+                    Flexible(
+                      child: _buildPodiumTile(
+                        name: performers[0]["name"],
+                        score: performers[0]["score"],
+                        level: performers[0]["level"],
+                        rank: 1,
+                        height: isPortrait
+                            ? size.height * 0.26
+                            : size.height * 0.32,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFFFF176), Color(0xFFFBC02D)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        width: blockWidth,
+                      ),
+                    ),
+
+                    /// 🥉 3rd
+                    Flexible(
+                      child: _buildPodiumTile(
+                        name: performers[2]["name"],
+                        score: performers[2]["score"],
+                        level: performers[2]["level"],
+                        rank: 3,
+                        height: isPortrait
+                            ? size.height * 0.18
+                            : size.height * 0.22,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFFFA726), Color(0xFFEF6C00)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        width: blockWidth,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          }),
+        ],
       ),
     );
   }
 
   /// 🔥 Podium Tile Builder
   Widget _buildPodiumTile({
-    required PlayerModel player,
+    required String name,
+    required int score,
+    required int level,
     required int rank,
     required double height,
     required Gradient gradient,
     required double width,
   }) {
-    final name = player.name ?? 'Unknown';
-    final score = player.totalScore ?? 0;
-    final level = player.level ?? '0';
-    final avatarPicId = player.avatarPicId;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         /// Avatar + Rank
         Stack(
           alignment: Alignment.center,
-          clipBehavior: Clip.none,
           children: [
             Container(
               padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: rank == 1 ? Colors.red : Colors.blue,
-                  width: 2.w,
-                ),
+                border: Border.all(color: AppColors.primaryRed, width: 2.w),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -143,53 +183,32 @@ class CustomTopPerformerWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              child: ClipOval(
-                child: SizedBox(
-                  height: 55.w,
-                  width: 55.w,
-                  child: avatarPicId != null && avatarPicId.isNotEmpty
-                      ? Image.network(
-                    avatarPicId,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _buildDefaultAvatar(name, rank);
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: rank == 1 ? Colors.red : Colors.blue,
-                        ),
-                      );
-                    },
-                  )
-                      : _buildDefaultAvatar(name, rank),
-                ),
+              child: SvgPicture.asset(
+                "assets/images/solo.svg",
+                height: AppDimensions.d55.w, // Bigger Avatar
               ),
             ),
             Positioned(
-              bottom: -5,
+              bottom: 0,
               child: Container(
                 padding: EdgeInsets.all(4.w),
                 decoration: BoxDecoration(
-                  color: rank == 1 ? Colors.red : Colors.black87,
+                  color: rank == 1 ? AppColors.primaryRed : Colors.black87,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
                 ),
                 child: Text(
                   "$rank",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 12.sp,
+                    fontSize: AppDimensions.d12.sp,
                   ),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: AppDimensions.d8.h),
 
         /// Podium Block
         Container(
@@ -197,7 +216,7 @@ class CustomTopPerformerWidget extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             gradient: gradient,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(AppDimensions.d12.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.15),
@@ -209,70 +228,34 @@ class CustomTopPerformerWidget extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+
               Center(
                 child: Text(
                   "⭐\n$score",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: AppDimensions.d18.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
-              SizedBox(height: 6.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                child: Text(
-                  name,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              SizedBox(height: 4.h),
+              SizedBox(height: AppDimensions.d6.h),
               Text(
-                "Level $level",
+                name,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.black54,
+                  fontSize: AppDimensions.d14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
                 ),
               ),
+              SizedBox(height: AppDimensions.d4.h),
+
             ],
           ),
         ),
       ],
-    );
-  }
-
-  /// Default Avatar (when image is null or fails to load)
-  Widget _buildDefaultAvatar(String name, int rank) {
-    return Container(
-      color: rank == 1
-          ? Colors.red.withOpacity(0.1)
-          : rank == 2
-          ? Colors.blue.withOpacity(0.1)
-          : Colors.orange.withOpacity(0.1),
-      child: Center(
-        child: Text(
-          name.isNotEmpty ? name[0].toUpperCase() : 'U',
-          style: TextStyle(
-            fontSize: 28.sp,
-            fontWeight: FontWeight.bold,
-            color: rank == 1
-                ? Colors.red
-                : rank == 2
-                ? Colors.blue
-                : Colors.orange,
-          ),
-        ),
-      ),
     );
   }
 }
