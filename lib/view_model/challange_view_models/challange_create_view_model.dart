@@ -336,7 +336,7 @@ class ChallengeCreateViewModel extends GetxController {
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final List<dynamic> data = jsonDecode(response.body);
         final List<Map<String, dynamic>> players = [];
 

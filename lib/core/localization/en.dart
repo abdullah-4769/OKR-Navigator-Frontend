@@ -3003,4 +3003,6 @@ final Map<String, String> en = {
   'campaign_mode_organization': '🚀 Campaign mode: Creating organization data and going to strategy selection',
   'solo_mode_industry': '🎯 Solo mode: Navigating to industry selection',
   'role_api_error': 'Error in controller posting role: {{error}}',
+  'start': 'Start',
+  'challenge': 'Challenge',
 };

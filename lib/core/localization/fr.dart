@@ -1227,7 +1227,7 @@ final Map<String, String> fr = {
   'team_challenge': 'Défi d\'équipe',
   'score': 'Score',
   'this': 'Voici',
-  'given': 'Votre stratégie',
+  'given': 'Stratégie',
 
   // Buttons
   'schedule_async_game': 'Planifier un jeu asynchrone',
@@ -1390,4 +1390,6 @@ final Map<String, String> fr = {
   'team_mode': 'Équipe',
   'campaign_mode': 'Campagne',
   'challenge_mode': 'Défi',
+  'start': 'Commencer',
+  'challenge': 'Défi',
 };

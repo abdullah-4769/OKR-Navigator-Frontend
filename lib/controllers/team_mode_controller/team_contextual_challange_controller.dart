@@ -42,53 +42,101 @@ class TeamContextualChallengeController extends GetxController {
   }
 
   // --- NEW: Fetch challenge from API (POST /challenge) ---
+  // Future<void> fetchChallenge() async {
+  //   isLoadingChallenge.value = true;
+  //   try {
+  //       final strategyTitle = _strategyController.teamStrategyResponse.value?.title;
+  //       final objectiveTitle = _objectiveController.selectedObjective.value?.title;
+  //
+  //       // Use titles of selected key results joined by a delimiter
+  //       final keyResultTitles = _keyResultsController.getSelectedTitles();
+  //       if (keyResultTitles.isEmpty) {
+  //           throw Exception("Key Results not selected yet.");
+  //       }
+  //       final keyResultString = keyResultTitles.join('; ');
+  //
+  //       final language = _languageController.currentLanguage.code;
+  //
+  //       if (strategyTitle == null || objectiveTitle == null) {
+  //           throw Exception("Missing strategy or objective data for challenge generation.");
+  //       }
+  //
+  //       final response = await _strategyRepository.getChallenge(
+  //           strategy: strategyTitle,
+  //           objective: objectiveTitle,
+  //           keyResult: keyResultString,
+  //           previousAttempts: previousAttempts.value,
+  //           language: language,
+  //       );
+  //
+  //       // Update observables with response data
+  //       if (response.title != null && response.text != null) {
+  //           challengeTitle.value = response.title!;
+  //           challengeDescription.value = response.text!;
+  //           SnackbarHelper.success("New challenge loaded!".tr);
+  //       } else {
+  //            throw Exception("Invalid challenge response format or missing fields.");
+  //       }
+  //
+  //   } catch (e) {
+  //       log('Error fetching challenge: $e');
+  //       SnackbarHelper.error('Failed to load challenge: ${e.toString()}');
+  //       // Fallback to static/default data on error
+  //       challengeTitle.value = 'Market Disruption Challenge'.tr;
+  //       challengeDescription.value = 'A major competitor has launched a similar product at 30% lower price point, affecting your market positioning.'.tr;
+  //   } finally {
+  //       isLoadingChallenge.value = false;
+  //   }
+  // }
+// Replace the fetchChallenge() method in team_contextual_challange_controller.dart
+
   Future<void> fetchChallenge() async {
+    // ✅ GUARD: Don't fetch if key results aren't ready yet
+    final keyResultTitles = _keyResultsController.getSelectedTitles();
+    if (keyResultTitles.isEmpty) {
+      log('Skipping challenge fetch: Key Results not selected yet.');
+      return; // Exit silently without throwing error
+    }
+
     isLoadingChallenge.value = true;
     try {
-        final strategyTitle = _strategyController.teamStrategyResponse.value?.title;
-        final objectiveTitle = _objectiveController.selectedObjective.value?.title;
-        
-        // Use titles of selected key results joined by a delimiter
-        final keyResultTitles = _keyResultsController.getSelectedTitles();
-        if (keyResultTitles.isEmpty) {
-            throw Exception("Key Results not selected yet.");
-        }
-        final keyResultString = keyResultTitles.join('; '); 
-        
-        final language = _languageController.currentLanguage.code;
+      final strategyTitle = _strategyController.teamStrategyResponse.value?.title;
+      final objectiveTitle = _objectiveController.selectedObjective.value?.title;
 
-        if (strategyTitle == null || objectiveTitle == null) {
-            throw Exception("Missing strategy or objective data for challenge generation.");
-        }
+      final keyResultString = keyResultTitles.join('; ');
+      final language = _languageController.currentLanguage.code;
 
-        final response = await _strategyRepository.getChallenge(
-            strategy: strategyTitle,
-            objective: objectiveTitle,
-            keyResult: keyResultString,
-            previousAttempts: previousAttempts.value,
-            language: language,
-        );
-        
-        // Update observables with response data
-        if (response.title != null && response.text != null) {
-            challengeTitle.value = response.title!;
-            challengeDescription.value = response.text!;
-            SnackbarHelper.success("New challenge loaded!".tr);
-        } else {
-             throw Exception("Invalid challenge response format or missing fields.");
-        }
+      if (strategyTitle == null || objectiveTitle == null) {
+        throw Exception('Missing strategy or objective data for challenge generation.');
+      }
+
+      final response = await _strategyRepository.getChallenge(
+        strategy: strategyTitle,
+        objective: objectiveTitle,
+        keyResult: keyResultString,
+        previousAttempts: previousAttempts.value,
+        language: language,
+      );
+
+      // Update observables with response data
+      if (response.title != null && response.text != null) {
+        challengeTitle.value = response.title!;
+        challengeDescription.value = response.text!;
+        SnackbarHelper.success("New challenge loaded!".tr);
+      } else {
+        throw Exception("Invalid challenge response format or missing fields.");
+      }
 
     } catch (e) {
-        log('Error fetching challenge: $e');
-        SnackbarHelper.error('Failed to load challenge: ${e.toString()}');
-        // Fallback to static/default data on error
-        challengeTitle.value = 'Market Disruption Challenge'.tr;
-        challengeDescription.value = 'A major competitor has launched a similar product at 30% lower price point, affecting your market positioning.'.tr;
+      log('Error fetching challenge: $e');
+      SnackbarHelper.error('Failed to load challenge: ${e.toString()}');
+      // Fallback to static/default data on error
+      challengeTitle.value = 'Market Disruption Challenge'.tr;
+      challengeDescription.value = 'A major competitor has launched a similar product at 30% lower price point, affecting your market positioning.'.tr;
     } finally {
-        isLoadingChallenge.value = false;
+      isLoadingChallenge.value = false;
     }
   }
-
   /// Propose adjustments for the team's strategy
   void proposeAdjustments() {
     // Increment attempts if user revisits adjustments (useful for challenge grading)

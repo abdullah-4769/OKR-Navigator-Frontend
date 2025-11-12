@@ -17,8 +17,8 @@ dependencies:
   connectivity_plus: ^7.0.0
   shared_preferences: ^2.5.3
   flutter_bloc: ^9.1.1
-  firebase_core: ^4.1.1
-  cloud_firestore: ^6.0.2
+  firebase_core: ^4.2.1
+#  cloud_firestore: ^6.0.2
   dio: ^5.9.0
   path_provider: ^2.1.5
   google_fonts: ^6.3.2
