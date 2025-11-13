@@ -1392,4 +1392,9 @@ final Map<String, String> fr = {
   'challenge_mode': 'Défi',
   'start': 'Commencer',
   'challenge': 'Défi',
+  'edit_profile': 'Modifier le Profil',
+  'want_to_edit': 'Voulez-vous modifier?',
+  'logout': 'Se Déconnecter',
+  'view_manage_profile': 'Consulter et gérer vos informations de profil',
+  'my_profile': 'Mon Profil',
 };

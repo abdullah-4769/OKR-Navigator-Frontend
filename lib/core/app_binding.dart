@@ -69,6 +69,7 @@ import '../controllers/dashboard_controller.dart';
 import '../controllers/home_navbar_controller.dart';
 import '../controllers/key_results_controller.dart';
 import '../controllers/okr_constellation_controller.dart';
+import '../controllers/profile_controller.dart';
 import '../controllers/team_mode_controller/create_team_controller.dart';
 import '../controllers/team_mode_controller/team_chat_controller.dart';
 import '../controllers/team_mode_controller/team_contextual_challange_controller.dart';
@@ -106,6 +107,7 @@ class AppBindings extends Bindings {
     Get.put(HomeNavBarController(), permanent: true);
     // CORE SERVICES - Must be initialized in order
     // These are initialized in main.dart before app starts
+    Get.lazyPut(() => ProfileController(), fenix: true);
     Get.lazyPut(() => CertificationInfoApiService(), fenix: true);
     Get.lazyPut(() => CertificationInfoRepository(), fenix: true);
     Get.lazyPut(() => CertificationInfoViewModel(), fenix: true);
@@ -125,7 +127,7 @@ class AppBindings extends Bindings {
     Get.put(JourneyController(), permanent: true);
     Get.put(StrategySelectionController(), permanent: true);
     Get.put(KeyObjectiveController(), permanent: true);
-
+    Get.lazyPut(()=>LoginController());
     //  LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
     // Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
     Get.lazyPut<OKRConstellationController>(

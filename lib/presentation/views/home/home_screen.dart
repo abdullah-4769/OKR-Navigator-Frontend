@@ -10,6 +10,7 @@ import '../../../controllers/home_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../services/shared_preference.dart';
 import '../../widgets/custom_svg.dart';
+import '../authentication/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -104,11 +105,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(width: 8.w),
-              _circleIcon(
-                child: ClipOval(
-                  child: Image.asset(
-                    "assets/images/solo_image.png",
-                    fit: BoxFit.cover,
+              InkWell(
+                onTap: (){
+                  Get.to(ProfileScreen());
+                },
+                child: _circleIcon(
+                  child: ClipOval(
+                    child: Image.asset(
+                      "assets/images/solo_image.png",
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

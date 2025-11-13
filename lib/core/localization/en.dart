@@ -3005,4 +3005,11 @@ final Map<String, String> en = {
   'role_api_error': 'Error in controller posting role: {{error}}',
   'start': 'Start',
   'challenge': 'Challenge',
+  'edit_profile': 'Edit Profile',
+  'want_to_edit': 'Want to edit?',
+  'logout': 'Logout',
+  'view_manage_profile': 'View and manage your profile information.',
+  'my_profile': 'My Profile',
+
+
 };
