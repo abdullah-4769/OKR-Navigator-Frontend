@@ -1397,4 +1397,6 @@ final Map<String, String> fr = {
   'logout': 'Se Déconnecter',
   'view_manage_profile': 'Consulter et gérer vos informations de profil',
   'my_profile': 'Mon Profil',
+  'continue_with_google': 'Continuer avec Google',
+
 };

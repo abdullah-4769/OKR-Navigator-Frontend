@@ -3010,6 +3010,7 @@ final Map<String, String> en = {
   'logout': 'Logout',
   'view_manage_profile': 'View and manage your profile information.',
   'my_profile': 'My Profile',
+  'continue_with_google': 'Continue with Google',
 
 
 };

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/login_controller.dart';
@@ -160,6 +161,8 @@ class LoginScreen extends StatelessWidget {
                                 fontSize: screenWidth * 0.035,
                                 color: AppColors.primaryRed,
                                 fontWeight: FontWeight.w600,
+                                overflow: TextOverflow.ellipsis
+
                               ),
                             ),
                           ),
@@ -177,6 +180,31 @@ class LoginScreen extends StatelessWidget {
                           backgroundColor: AppColors.primaryRed,
                           height: screenHeight * 0.065,
                         ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.04),
+                      Container(
+                        height: 45.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.border)
+                        ),
+                        child:Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image(image: AssetImage("assets/images/google.png"),height: 20,),
+                            const SizedBox(width: 10),
+                            Text(
+                              "continue_with_google".tr,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+
                       ),
 
                       SizedBox(height: screenHeight * 0.04),

@@ -10,6 +10,8 @@
 // import '../../widgets/custom_svg.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../../controllers/register_controller.dart';
@@ -107,6 +109,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: _getResponsiveSpacing(screenHeight, 0.04),
                       ),
                       _buildSignUpButton(isTablet),
+                      SizedBox(
+                        height: _getResponsiveSpacing(screenHeight, 0.04),
+                      ),
+                      Container(
+                        height: 45.h,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: AppColors.border)
+                        ),
+                        child:Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                        Image(image: AssetImage("assets/images/google.png"),height: 20,),
+                            const SizedBox(width: 10),
+                             Text(
+                              "continue_with_google".tr,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                      ),
                       SizedBox(
                         height: _getResponsiveSpacing(screenHeight, 0.025),
                       ),

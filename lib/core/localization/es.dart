@@ -6,71 +6,9 @@ final Map<String, String> es = {
   "okr_now": "OKR'Now",
   "okr_logo": "Logo OKR",
   "bottom_logo": "Logo de la app",
-  "progress_warning": "Advertencia de Progreso",
-  "progress_warning_desc": "Tu progreso actual se perderá. ¿Estás seguro de que quieres ir a casa?",
-  "cancel": "Cancelar",
-  "yes_go_home": "Sí, Ir a Casa",
-  "success": "Éxito",
-  "redirected_home": "Redirigido a la pantalla de inicio",
-  // Feedback Screen
   "okr": "OKR",
-  "feedback": "Retroalimentación",
-  "no_feedback_data_available": "No hay datos de retroalimentación disponibles",
-  "continue": "Continuar",
-  "level_completed": "¡Nivel Completado!",
-  "organization_completed": "¡Organización ${0} completada!",
-  "score": "Puntuación: ${0}",
-  "strategy_alignment": "Alineación Estratégica",
-  "objective_alignment": "Alineación de Objetivos",
-  "key_result_quality": "Calidad de Resultados Clave",
-  "okr_evaluation_feedback": "Retroalimentación de Evaluación OKR",
-  
-  // Language Screen
-  "choose_language": "Elige tu idioma",
-  "language_subtitle": "Selecciona tu idioma preferido para la aplicación",
-  "continue_button": "Continuar",
-  "english": "Inglés",
-  "spanish": "Español",
-  "french": "Francés",
-  "german": "Alemán",
-  "italian": "Italiano",
-  "afrikaans": "Afrikáans",
-  
-  // Home Screen
   "certificate": "Certificado",
-  
-  // Scoreboard Screen
-  "your": "Tu",
-  "scoreboard": "Tablero de Puntuación",
-  "show_personal_achievements": "Mostrar Logros Personales",
-  "I'm ranked #3 in Strategic Agility this week!": "¡Estoy clasificado #3 en Agilidad Estratégica esta semana!",
-  
-  // Team Initiative Screen
-  "suggestion": "Sugerencia",
-  "of_initiatives": "de Iniciativas",
-  "error": "Error",
-  
-  // Personal Achievements Screen
-  "personal": "Personal",
-  "achievements": "Logros",
-  "strategic_architect": "Arquitecto Estratégico",
-  "level": "Nivel {{num}}",
-  "points": "Puntos",
-  
-  // Final Test Certification Screen
-  "final_test": "Examen Final",
-  "certification": "Certificación",
-  "ai_evaluation_progress": "Progreso de Evaluación IA",
-  "test_completed": "Prueba Completada",
-  
-  // Mini Simulation Screen
-  "mini_simulation": "Mini Simulación",
-  "refine_strategy_address_challenge": "Refina tu estrategia para abordar el desafío",
-  "solve_scenario_minutes": "Resuelve este escenario en solo unos minutos",
-  
-  // Game Complete Screen
-  "game": "Juego",
-  "complete": "Completado",
+  'continue_with_google': 'Continuar con Google',
 
   // AUTHENTICATION & ONBOARDING
   "dont_have_account": "¿No tienes una cuenta?",
@@ -128,6 +66,7 @@ final Map<String, String> es = {
   "german": "Alemán",
   "italian": "Italiano",
   "russian": "Ruso",
+  "afrikaans": "Afrikáans",
 
   // COMMON BUTTONS & STATES
   "continue": "Continuar",
@@ -157,79 +96,645 @@ final Map<String, String> es = {
   "strategic_tips": "Consejos estratégicos",
   "draw_new_strategy": "Dibujar nueva estrategia",
   "tap_to_reveal_strategy": "Toca para revelar tu estrategia",
+  "strategy_revealed": "Estrategia Revelada",
+  "lets_start_mission": "¡Empecemos la misión!",
   "strategy_intro": "Acabas de entrar en una empresa en crisis. Cada decisión puede cambiar su futuro.",
   "strategy_tip1": "Desarrollar e introducir productos innovadores",
   "strategy_tip2": "Enfocarse en expandirse a mercados no explotados para impulsar el crecimiento sostenible y aumentar la participación en el mercado.",
+  "begin_mission": "Comenzar misión",
+  "load_game_data": "Cargar datos del juego",
+  "email_or_password_incorrect": "Correo o contraseña incorrectos",
+  "network_error": "Error de red. Verifica tu conexión",
+  "login_failed": "Error al iniciar sesión. Inténtalo de nuevo",
+  "password_reset_coming": "Función de restablecimiento de contraseña próximamente",
+
+  // INDUSTRY DESCRIPTIONS
+  "logistics_desc": "Descripciones logísticas selecciona para continuar",
+  "public_sector_desc": "Sector público y gubernamental es la industria seleccionada para continuar",
+  "retail_desc": "Comercio minorista y e-commerce",
+  "telecom_desc": "Industria de telecomunicaciones para servicios de telecomunicación",
+  "agriculture_desc": "Sector agrícola para desarrollar o cultivar selecciona",
+  "energy_desc": "Energía y servicios públicos selecciona para continuar",
+
+  // OBJECTIVES & KEY RESULTS
+  "objective": "Objetivo",
+  "selected_objective": "Objetivo seleccionado",
+  "select_key_results": "Seleccionar resultados clave",
+  "choose_3_outcomes": "Elige 3 resultados que harán avanzar tu estrategia",
+  "choose_3_outcomes_retry": "Elige 3 resultados diferentes para mejorar tus iniciativas",
+  "choose_3_outcomes_modify": "Elige 3 resultados para adaptarte al desafío del mercado",
+  "complete_selection": "Selección completada",
+  "save_changes": "Guardar cambios",
+  "available_key_results": "Resultados clave disponibles",
+  "key_results_selected": "resultados clave seleccionados",
+  "select_key_results_to_continue": "Ajusta los resultados clave",
+  "view": "Ver",
+  "select_adjust": "Seleccionar/Ajustar",
+  "adapting_to_challenge": "Adaptándose al desafío",
+  "retry_attempt": "Intento de reintento",
+  "try_again_with": "Intenta de nuevo con",
+  "try_again_with_different": "Intenta de nuevo con diferente",
+
+  // KEY RESULTS
+  "selected_key_result": "Resultado clave seleccionado",
+  "key_results": "Resultados clave",
+  "select_different_objective_retry": "Selecciona un objetivo diferente para mejorar tus iniciativas y reintenta",
+  "please_select_different_objective": "Selecciona un objetivo diferente",
+  "improve_initiatives_retry": "Elige un nuevo objetivo para mejorar la tasa de éxito de las iniciativas",
+  "final_challenge": "Desafío final",
+  "progress_warning": "Advertencia de Progreso",
+  "progress_warning_desc": "Tu progreso actual se perderá. ¿Estás seguro de que quieres volver al inicio?",
+  "yes_go_home": "Sí, ir al inicio",
+  "success": "Éxito",
+  "redirected_home": "Redirigido a la pantalla de inicio",
+  "select": "Seleccionar",
+
+  // INITIATIVES SCREEN
+  "revise": "Revisar",
+  "revise_initiatives_subtitle": "Actualiza tus iniciativas para enfrentar el desafío del mercado",
+  "save_revisions": "Guardar revisiones",
+  "initiatives_revised_successfully": "Iniciativas revisadas exitosamente",
+  "selected_key_results": "Resultados clave seleccionados",
+  "viewing_existing_initiatives": "Viendo tus iniciativas existentes",
+  "hint_third_initiative_adaptation": "Puedes agregar tu 3ª iniciativa adaptable en la siguiente pantalla para responder a cambios del mercado",
+  "continue_to_adaptation": "Continuar hacia la adaptación",
+  "review": "Revisar",
+
+  // INITIATIVE INPUTS
+  "enter_initiative_name": "Ingresa el nombre de la iniciativa",
+  "describe_initiative_help": "Describe cómo esta iniciativa ayudará a alcanzar el resultado clave",
+
+  // SUBMISSION STATES
+  "submitting": "Enviando...",
+  "submit_analysis": "Enviar análisis",
+
+  // HEADER TEXTS
+  "suggestion": "Sugerencia",
+  "of_initiatives": "de Iniciativas",
+  "initiatives": "Iniciativas",
+
+  // ADDITIONAL DESCRIPTIVE TEXTS
+  "add_initiatives_subtitle": "Agrega iniciativas estratégicas para alcanzar tus resultados clave seleccionados",
+
+  // JOURNEY/FLOW CONTEXT
+  "adaptation_screen": "Pantalla de adaptación",
+  "market_changes": "Cambios de mercado",
+  "adaptive_initiative": "Iniciativa adaptable",
+  "contextual_challenge_flow": "Flujo de desafío contextual",
+  "adjust_initiatives_for_changes": "Ajusta tus iniciativas para responder a cambios del mercado",
+  "third_initiative_placeholder": "Agrega aquí una iniciativa adaptable...",
+  "key_result_for_evaluation": "Resultado clave aleatorio\nUno de los resultados clave seleccionados",
+  "describe_strategic_actions": "Describe tu acción estratégica",
+
+  // NORMAL FLOW
+  "normal_flow": "Flujo normal",
+  "based_on_selected_key_results": "Basado en tus resultados clave seleccionados",
+  "ready_to_start": "Listo para comenzar",
+
+  // STATUS MESSAGES
+  "initiatives_updated_successfully": "Iniciativas actualizadas exitosamente",
+  "analysis_submitted_successfully": "Análisis enviado exitosamente",
+
+  // TOOLTIPS/HINTS
+  "initiative_tooltip": "Una iniciativa es una acción concreta que ayuda a alcanzar tu resultado clave",
+  "key_result_based_initiative": "Esta iniciativa debe apoyar directamente tu resultado clave seleccionado",
+
+  // ANALYSIS SCREEN
+  "initiative_rejected": "Iniciativa rechazada",
+  "initiative_needs_improvement": "Tu iniciativa necesita mejora para cumplir con los objetivos estratégicos.",
+  "retry_count": "Número de intentos",
+  "suggest_improve_initiatives": "Por favor, refina tus iniciativas e inténtalo de nuevo.",
+  "try_again": "Intenta de nuevo",
+  "max_retries_reached": "Número máximo de intentos alcanzado",
+  "max_retries_exceeded": "Has alcanzado el número máximo de intentos (3).",
+  "please_try_different_objectives": "Prueba con objetivos o iniciativas diferentes.",
+  "understand": "Entendido",
+  "of": "de",
+  "analyzing": "Analizando...",
+  "loading_analysis": "Analizando iniciativas...",
+
+  // DECISION STATUS
+  "accepted": "Aceptado",
+  "rejected": "Rechazado",
+  "review_required": "Revisión requerida",
+
+  // NAVIGATION
+  "navigating_to_results": "Navegando a resultados",
+  "navigating_to_objectives": "Volver a objetivos",
+
+  // LANGUAGE SCREEN
+  "choose_language": "Elige tu idioma",
+  "language_subtitle": "Selecciona tu idioma preferido para la aplicación",
+  "continue_button": "Continuar",
+
+  // HOME SCREEN
+  "certificate": "Certificado",
+
+  // PERSONAL ACHIEVEMENTS
+  "personal": "Personal",
+  "achievements": "Logros",
+  "strategic_architect": "Arquitecto Estratégico",
+  "level": "Nivel {{num}}",
+  "points": "Puntos",
+
+  // FINAL TEST
+  "final_test": "Examen Final",
+  "certification": "Certificación",
+  "ai_evaluation_progress": "Progreso de Evaluación IA",
+  "test_completed": "Prueba completada!",
+
+  // MINI SIMULATION
+  "mini_simulation": "Mini Simulación",
+  "refine_strategy_address_challenge": "Refina tu estrategia para abordar el desafío",
+  "solve_scenario_minutes": "Resuelve este escenario en solo unos minutos",
+
+  // GAME COMPLETE
+  "game": "Juego",
+  "complete": "Completado",
+
+  // SCOREBOARD
+  "your": "Tu",
+  "scoreboard": "Tablero de Puntuación",
+  "show_personal_achievements": "Mostrar Logros Personales",
+  "I'm ranked #3 in Strategic Agility this week!": "¡Estoy clasificado #3 en Agilidad Estratégica esta semana!",
+
+  // TEAM INITIATIVE
+  "suggestion": "Sugerencia",
+  "of_initiatives": "de Iniciativas",
+  "error": "Error",
+
+  // CREATE TEAM
+  "create": "Crear",
+  "new_team": "Nuevo equipo",
+  "enter_team_name": "Ingresa nombre del equipo",
+  "describe_your_team_mission": "Describe la misión de tu equipo",
+  "choose_team_avatar": "Elige avatar del equipo",
+  "own_industry": "Elige tu industria para el camino OKR.",
+
+  // JOIN EXISTING TEAM
+  "join_existing_team": "Únete a un equipo existente",
+  "enter_team_code": "Código de equipo o enlace de invitación",
+  "join_team": "Unirse al equipo",
+
+  // BUTTONS
+  "continue": "Continuar",
+  "prpceed": "Proceder",
+
+  // SNACKBAR / VALIDATION
+  "success": "Éxito",
+  "error": "Error",
+  "joined_existing_team": "¡Equipo existente unido!",
+  "please_enter_team_name": "Por favor ingresa un nombre de equipo",
+  "please_choose_avatar": "Por favor elige un avatar",
+  "team_created_successfully": "¡Equipo creado exitosamente!",
+  "team_code": "Código de equipo o enlace de invitación",
+  "new_team": "Nuevo equipo",
+
+  // REWARDS
+  "rewards_unlocked": "Recompensas desbloqueadas",
+  "badge": "Insignia",
+  "title": "Título",
+  "trophy": "Trofeo",
+
+  // STRATEGY SELECTION (TEAM)
+  "welcome_team": "¡Bienvenido, Equipo!",
+  "team_strategy_description": "Unan fuerzas y saquen su carta de estrategia para comenzar la misión juntos.",
+
+  // ROLES
+  "assign_roles_title": "Asignar roles",
+  "team_label": "Equipo",
+  "team_alpha": "Equipo Alpha",
+  "time_limit": "Límite de tiempo",
+  "assign_roles_subtitle": "Asigna roles para optimizar el rendimiento del equipo",
+  "team_members": "Miembros del equipo",
+  "pro_tip_title": "Consejo Pro",
+  "pro_tip_description": "Roles diferentes tienen habilidades y perspectivas únicas. Equilibra tu equipo con habilidades complementarias para mejores resultados OKR.",
+  "select_role_hint": "Selecciona un rol...",
+  "begin_mission": "Comenzar la misión",
+  "auto_assign_roles": "Asignar roles automáticamente",
+  "available_roles": "Roles disponibles",
+  "role_ceo": "CEO",
+  "role_strategist": "Estratega",
+  "role_hr_manager": "Gerente de RRHH",
+  "role_analyst": "Analista",
+  "role_team_lead": "Líder de equipo",
+  "role_manager": "Gerente",
+  "level_5": "Nivel 5",
+  "level_3": "Nivel 3",
+
+  // SCENARIO
+  "scenario_techcorp_global": "Escenario TechCorp Global",
+  "scenario_description_full": "TechCorp se está expandiendo a mercados globales y debe alinear su estrategia con innovación, adquisición de clientes y sostenibilidad a largo plazo del mercado.",
+  "key_challenge": "Desafío clave",
+  "challenge_description": "Formula un objetivo, define resultados clave y alinea iniciativas para abordar el desafío de crecimiento global de TechCorp.",
+
+  // PROGRESS PATH
+  "strategy_selection": "Selección de estrategia",
+  "objective_definition": "Definición de objetivo",
+  "key_results_ca": "Resultados clave",
+  "initiatives": "Iniciativas",
+
+  // COMMON / GENERIC
+  "error": "Error",
+  "submitting": "Enviando...",
+  "submit_analysis": "Enviar para análisis IA",
+  "fill_initiatives": "Completa ambas iniciativas antes de enviar.",
+  "initiatives_submitted": "¡Iniciativas enviadas exitosamente!",
+  "profile": "Perfil",
+
+  // SUGGESTION INITIATIVES
+  "suggestion": "Sugerencia",
+  "of_initiatives": "de Iniciativas",
+  "add_initiatives_subtitle": "Propón 2 acciones estratégicas para este resultado clave",
+  "first_initiative": "Primera iniciativa",
+  "second_initiative": "Segunda iniciativa",
+  "enter_initiative_name": "Ingresa el nombre del término...",
+  "describe_initiative": "Describe cómo esta iniciativa ayudará a alcanzar el objetivo...",
+
+  // JOURNEY MAP
+  "strategy_selection": "Selección de estrategia",
+  "objective_selection": "Selección de objetivo",
+  "key_result_selection": "Selección de resultados clave",
+  "initiatives_suggestion": "Sugerencia de iniciativas",
+  "result_performance": "Rendimiento de resultados",
+
+  // AI ANALYSIS
+  "ai_strategic_analysis": "Análisis estratégico de IA",
+  "relevance_threshold": "Umbral de relevancia",
+  "submit_initiatives_ai": "Envía tus iniciativas para análisis de IA",
+  "feedback_appear_here": "Los comentarios aparecerán aquí",
+
+  // TEAM WELCOME
+  "welcome_team": "¡Bienvenido Equipo!",
+  "splash_team_subtitle": "Toda gran misión necesita un equipo sólido. Elige a tus aliados con sabiduría, cada uno jugará un papel crucial para descifrar el código. La colaboración es tu arma secreta.",
+  "draw_team_strategy_subtitle": "Unan fuerzas y saquen su carta de estrategia para comenzar la misión juntos.",
+
+  // TEAM OBJECTIVE
+  "choose": "Elegir",
+  "objective": "Tu objetivo",
+  "selected_strategy": "Estrategia seleccionada",
+  "development_new_markets": "Desarrollo de nuevos mercados",
+  "objective_description": "Enfócate en la expansión hacia mercados no explotados para impulsar el crecimiento sostenible y aumentar la cuota de mercado.",
+  "choose_your_objective": "Elige tu objetivo",
+  "select_one_objective": "Selecciona un objetivo estratégico en el que enfocarte según tu estrategia de desarrollo de mercado",
+  "define_key_results": "Define los resultados clave",
+
+  // OBJECTIVE ITEMS
+  "expand_product_line": "Lanzar 2 nuevas líneas de productos para mercados emergentes",
+  "introduce_new_products": "Desarrollar e introducir productos innovadores adaptados a las nuevas demandas del mercado",
+  "improve_customer_experience": "Conquistar el 25% de cuota de mercado en el segmento objetivo",
+  "enhance_satisfaction": "Alcanzar una penetración significativa del mercado en los segmentos de clientes identificados",
+  "increase_market_share": "Expandirse a 3 nuevos mercados geográficos",
+  "gain_significant_presence": "Establecer una presencia significativa en mercados regionales no explotados en 12 meses",
+
+  // KEY RESULTS DATA
+  "achieve_revenue_new_products": "Alcanzar ingresos de nuevos productos",
+  "revenue_description": "Aumentar los flujos de ingresos introduciendo productos innovadores en el mercado.",
+  "acquire_customers": "Adquirir clientes",
+  "customers_description": "Expandir la base de clientes mediante marketing dirigido y alcance global.",
+  "achieve_market_share": "Alcanzar cuota de mercado",
+  "market_share_description": "Conquistar una mayor cuota de mercado compitiendo eficazmente.",
+  "achieve_customer_satisfaction": "Alcanzar satisfacción del cliente",
+  "satisfaction_description": "Garantizar alta satisfacción del cliente con calidad de servicio mejorada e involucramiento.",
+  "launch_products_faster": "Lanzar productos más rápido",
+  "launch_description": "Reducir el tiempo de salida al mercado optimizando procesos internos y velocidad de ejecución.",
+
+  // AI EVALUATION FOCUS
+  "ai_evaluation_focus": "Enfoque de evaluación IA",
+  "strategy_alignment": "Alineación estratégica",
+  "formulated_objective": "Objetivo formulado",
+  "initiatives_per_rk": "Iniciativas (2 por RC)",
+  "overall_coherence": "Coherencia general",
+  "key_results_count": "Resultados clave (3)",
+
+  // METRICS & TIMEFRAMES
+  "revenue_metric": "Ingresos \$",
+  "customer_growth_metric": "Crecimiento de clientes",
+  "market_share_metric": "Cuota de mercado %",
+  "satisfaction_metric": "Satisfacción",
+  "time_reduction_metric": "Reducción de tiempo %",
+  "twelve_months": "12 meses",
+  "fifteen_months": "15 meses",
+  "eighteen_months": "18 meses",
+  "six_months": "6 meses",
+  "ongoing": "En curso",
+
+  // MINI SIMULATION & CHALLENGES
+  "solve_okr_scenario": "Resuelve un escenario OKR en 5 minutos. Formato express con temporizador y puntuación de precisión.",
+  "remaining_time": "Tiempo restante",
+  "scenario_techcorp_global": "Escenario: TechCorp Global",
+  "scenario_description_full": "Una multinacional tecnológica enfrenta una caída en la cuota de mercado y desafíos de coordinación interna en 3 departamentos: Ventas, Producto y Operaciones.",
+  "key_challenge": "Desafío clave:",
+  "challenge_description": "Aumentar la cuota de mercado en un 15% mejorando la eficiencia interdepartamental en un 25% en 12 meses.",
+  "your_okr_path_progress": "Progreso de tu camino OKR",
+  "key_results_selected": "Resultados clave seleccionados",
+  "more_needed": "faltan más",
+  "next": "Siguiente",
+  "back": "Atrás",
+  "selected": "seleccionado",
+  "step_content_will_appear_here": "El contenido del paso aparecerá aquí",
+
+  // LEADERBOARD
+  "today": "Hoy",
+  "this_week": "Esta semana",
+  "this_month": "Este mes",
+  "points_earned": "Puntos ganados",
+  "level": "Nivel",
+  "leaderboard": "Clasificación",
+  "performance_scores": "Puntuaciones de rendimiento",
+  "strategic_agility": "Agilidad estratégica",
+  "daily": "Diario",
+  "weekly": "Semanal",
+  "monthly": "Mensual",
+  "yearly": "Anual",
+
+  // CONTEXTUAL CHALLENGE
+  "contextual": "Contextual",
+  "challenge": "Desafío",
+  "adapt_strategy_to_challenge": "Adapta tu estrategia para enfrentar nuevos desafíos",
+  "challenge_alert": "Alerta de desafío",
+  "adaptation_required": "Adaptación requerida para tu estrategia",
+  "market_disruption_challenge": "Desafío de disrupción del mercado",
+  "competitor_launched_product": "Un competidor principal lanzó un producto similar a un precio 30% más bajo, afectando tu posicionamiento en el mercado.",
+  "revenue_drop_warning": "Los ingresos previstos podrían caer un 40% si no se actúa",
+  "adapt_you": "Adáptate",
+  "back_home": "Volver al inicio",
+  "readjust_strategy": "Reajusta tu estrategia al desafío. Selecciona los elementos a modificar",
+  "current_strategy": "Estrategia actual",
+  "development_new_markets": "Desarrollo de nuevos mercados",
+  "objective": "Objetivo",
+  "expand_emerging_markets": "Expandirse a mercados emergentes",
+  "key_results": "Resultados clave",
+  "achieve_5m_revenue": "Alcanzar 5M\$ de ingresos de nuevos productos",
+  "needs_adjustment": "Requiere ajuste",
+  "launch_3_markets": "Lanzar en 3 nuevos mercados geográficos",
+  "achieve_15_market_share": "Alcanzar el 15% de cuota de mercado en segmentos objetivo",
+  "initiatives": "Iniciativas",
+  "first_initiative": "Primera iniciativa",
+  "premium_product_degree": "Programa de desarrollo de producto premium",
+  "second_initiative": "Segunda iniciativa",
+  "strategic_market_entry": "Campaña estratégica de entrada al mercado",
+  "propose_adjustments": "Propón ajustes",
+  "propose_adjustment": "Propón un ajuste",
+
+  // FINAL SCORE & ACHIEVEMENTS
+  "final_score": "Puntuación final",
+  "strategic_architect": "Arquitecto Estratégico",
+  "strategic_architect_desc": "¡Excelente pensamiento estratégico y capacidad de adaptación!",
+  "performance_breakdown": "Desglose de rendimiento",
+  "total_points": "Puntos totales",
+  "strategy_selection": "Selección de estrategia",
+  "objective_alignment": "Alineación de objetivos",
+  "key_results_quality": "Calidad de resultados clave",
+  "initiative_relevance": "Relevancia de iniciativas",
+  "challenge_adaptation": "Adaptación al desafío",
+  "rewards_unlocked": "Recompensas desbloqueadas",
+  "badge": "Insignia",
+  "title": "Título",
+  "trophy": "Trofeo",
+  "strategic_thinker": "Pensador Estratégico",
+  "master_adapter": "Maestro de la Adaptación",
+  "silver": "Plata",
+  "achievement_summary": "Resumen de logros",
+  "completed_strategic_cycle": "Ciclo estratégico completado",
+  "adapted_market_challenge": "Adaptado al desafío del mercado",
+  "demonstrated_thinking_excellence": "Demostró excelencia en el pensamiento estratégico",
+  "earned_strategic_architect": "Obtuvo el título de Arquitecto Estratégico",
+  "play_again": "Jugar de nuevo",
+  "view_badges": "Ver insignias",
+  "share_score": "Compartir puntuación",
+  "view_your_journey": "Ver tu viaje",
+  "ex_team_strategy": "¡Excelente estrategia de equipo y habilidades de colaboración!",
+  "view_score": "Ver puntuación individual",
+  "strategic_master": "Maestro Estratégico",
+
+  // GENERAL
+  "personal_dashboard": "Panel personal",
+  "team_level": "Nivel de equipo",
+  "success_rate": "Tasa de éxito",
+  "badges": "Insignias",
+  "trophies": "Trofeos",
+  "games": "Juegos",
+  "recent_achievements": "Logros recientes",
+  "goal_master": "Maestro de Objetivos",
+  "innovation_expert": "Experto en Innovación",
+  "challenge_solver": "Solucionador de Desafíos",
+  "peer_feedback": "Retroalimentación de pares",
+  "send_feedback_to_team": "Enviar retroalimentación al equipo",
+  "recent_games": "Juegos recientes",
+  "solo_campaign": "Campaña individual - Nivel 1",
+  "team_challenge": "Desafío de equipo",
+  "schedule_TG": "Programar un juego de equipo",
+  "launch_c": "Lanzar un desafío",
+  "invite_p": "Invitar a un jugador",
+  "schedule_team_game": "Programar un juego de equipo",
+  "invite_a_player": "Invitar a un jugador",
+  "launch_challenge": "Lanzar desafío",
+  "plan_new_session": "Planificar una nueva sesión con tu equipo",
+  "grow_your_team": "Hacer crecer tu equipo con nuevos miembros",
+  "start_new_challenge": "Iniciar un nuevo desafío de equipo",
+
+  // ONBOARDING
+  "welcome_to_okr_navigator": "Bienvenido a OKR Navigator",
+  "start_screen_description": "Asume el rol de líder estratégico. Ya sea solo, en equipo o en certificación, cada elección que hagas moldeará el camino hacia el éxito organizacional.",
+  "company_crisis_description": "Acabas de entrar en una empresa en crisis. Cada decisión que tomes podría cambiar su futuro.",
+  "choose_role_instruction": "Elige tu rol para comenzar la misión",
+  "first_time_playing": "¿Es tu primera vez jugando?",
+  "watch_tutorial": "Ver tutorial",
+  "strategic_tips": "Consejos estratégicos",
+  "submit_initiatives_info": "Enviar información de iniciativa",
+  "check_contextual_challange": "Verificar el desafío contextual",
+  "enter_initiative_name": "Ingresa el nombre de la iniciativa sugerida",
+  "describe_initiative_help": "Describe el término ingresado",
+  "submit_analysis": "Enviar análisis",
+  "begin_mission": "Comenzar la misión",
+
+  // PRICING
+  "navigator": "Navegador",
+  "navigator_plus": "Navegador+",
+  "master_navigation": "Navegación Maestra",
+  "solo_mode_level_1": "Modo Individual Nivel 1",
+  "ai_feedback_per_day": "1 retroalimentación IA por día",
+  "certified_challenge_per_day": "1 desafío certificado por día",
+  "limited_badges": "Insignias limitadas",
+  "full_solo_mode": "Modo Individual Completo",
+  "weekly_missions": "Misiones semanales",
+  "ai_tips_debrief": "Consejos IA y revisión",
+  "xp_tracking": "Seguimiento de XP",
+  "community_leaderboard": "Clasificación comunitaria",
+  "bonus_mode": "Modo bonus",
+  "all_navigator_plus_features": "Todas las funciones de Navegador+",
+  "official_certificate": "Certificado oficial",
+  "performance_reports": "Informes de rendimiento",
+  "monthly_live_coaching": "Coaching en vivo mensual",
+  "exclusive_badge_sets": "Conjuntos de insignias exclusivas",
+  "level_1_access": "Acceso Nivel 1",
+  "level_2_access": "Acceso Nivel 2",
+  "level_3_access": "Acceso Nivel 3",
+  "single_user": "Usuario único",
+  "multiple_users": "Múltiples usuarios",
+  "select_continue": "Seleccionar & Continuar",
+
+  // ROLE SELECTION
+  "select": "Seleccionar",
+  "role": "Rol",
+  "profile": "Perfil",
+  "welcome_navigator": "Bienvenido Navegador",
+  "company_crisis_description": "Has entrado en un escenario de crisis. Toma decisiones sabias para navegar con éxito.",
+  "choose_role_instruction": "Elige tu rol para continuar",
+  "select_continue": "Continuar",
+  "first_time_playing": "¿Es tu primera vez jugando?",
+  "watch_tutorial": "Ver tutorial",
+
+  // ROLES
+  "navigator": "Navegador",
+  "strategist": "Estratega",
+  "leader": "Líder",
+  "assistant": "Asistente",
+
+  // INDUSTRY SELECTION
+  "choose": "Elegir",
+  "your_industry": "Tu industria",
+  "welcome_role": "¡Bienvenido, {role}!",
+  "entered_company_crisis": "Has entrado en un escenario de crisis.",
+  "technology": "Tecnología",
+  "technology_desc": "Software, SaaS, Productos digitales",
+  "finance_banking": "Finanzas y Banca",
+  "finance_banking_desc": "Inversión, Seguros, Fintech",
+  "healthcare": "Salud",
+  "healthcare_desc": "Médico, Farmacéutico, Tecnología de la Salud",
+  "select_continue": "Seleccionar & Continuar",
+  "first_time_playing": "¿Es tu primera vez jugando?",
+  "watch_tutorial_video": "Ver video tutorial",
+  "select_industry": "Seleccionar industria",
+  "please_select_industry": "Por favor selecciona una industria para continuar",
+  "tutorial": "Tutorial",
+  "open_tutorial_video": "Abrir video tutorial",
+
+  // SNACKBAR MESSAGES
+  "Select Industry": "Seleccionar industria",
+  "Please select an industry to continue": "Por favor selecciona una industria para continuar",
+  "Selected": "Seleccionado",
+  "You selected: {industry}": "Has seleccionado: {industry}",
+  "Tutorial": "Tutorial",
+  "Open tutorial video (to be handled later)": "Abrir video tutorial (se manejará después)",
+
+  // MISC
+  "go_to": "Ir a",
+  "swipe_to_start": "Desliza para comenzar",
+  "game_mode": "Modo de juego",
+  "unknown_mode": "Modo desconocido",
+
+  // HOME DATA
+  "start": "Comenzar",
+  "game": "Juego",
+  "start_game_subtitle": "¡Sumérgete en la acción! Juega solo a tu ritmo o forma un equipo para un desafío estratégico colaborativo.",
+  "tap_to_start": "Toca para comenzar",
+  "join": "Unirse",
+  "challenge": "Desafío",
+  "join_challenge_subtitle": "Acepta una invitación o inicia un duelo. Desafía a amigos o colegas para afinar tus habilidades OKR.",
+  "tap_to_join": "Toca para unirte",
+  "score": "Puntuación",
+  "board": "Tablero",
+  "scoreboard_subtitle": "Monitorea tu rendimiento, ve tu clasificación y celebra hitos con insignias y trofeos.",
+  "tap_to_check": "Toca para verificar",
+
+  // ROLE SELECTION MESSAGES
+  "select_your_role": "Selecciona tu rol",
+  "ceo_title": "CEO",
+  "strategic_visionary": "Visionario Estratégico",
+  "lead_from_top": "Lidera desde arriba",
+  "manager_title": "Gerente",
+  "team_leader": "Líder de equipo",
+  "drive_execution": "Impulsa la ejecución",
+  "strategist_title": "Estratega",
+  "master_planner": "Maestro Planificador",
+  "shape_future": "Moldea el futuro",
+  "hr_manager_title": "Gerente de RRHH",
+  "people_champion": "Campeón de las Personas",
+  "empower_teams": "Empodera equipos",
+  "practitioner_title": "Practicante",
+  "execute_and_improve": "Ejecuta y mejora",
+  "empower_teams_practitioner": "Empodera equipos",
+  "please_select_role": "Por favor selecciona un rol",
+  "select_role_required": "Selecciona un rol para continuar",
+  "role_selection_game_mode": "Modo de juego detectado: {{mode}}",
+  "campaign_mode_organization": "Modo campaña: Creación de datos organizacionales y navegación a selección de estrategia",
+  "solo_mode_industry": "Modo individual: Navegación a selección de industria",
+  "role_api_error": "Error en el controlador al enviar rol: {{error}}",
+
+  // CAMPAIGN
+  "campaign": "Campaña",
+  "show_personal_achievements": "Mostrar mis logros",
+  "solo_mode": "Individual",
+  "team_mode": "Equipo",
+  "campaign_mode": "Campaña",
+  "challenge_mode": "Desafío",
+  "edit_profile": "Editar perfil",
+  "want_to_edit": "¿Quieres editar?",
+  "logout": "Cerrar sesión",
+  "view_manage_profile": "Ver y gestionar información del perfil",
+  "my_profile": "Mi perfil",
+
+  // JOURNEY STEPS
+  "journey": "Viaje",
+  "map": "Mapa",
+  "show_less": "Mostrar menos",
+  "show_progress": "Mostrar progreso",
+  "step_content_placeholder": "El contenido del paso aparecerá aquí",
+
+  // FINAL TEST & CERTIFICATION
+  "final_test": "Examen Final",
+  "certification": "Certificación",
+  "ai_evaluation_progress": "Progreso de Evaluación IA",
+  "test_completed": "¡Prueba completada!",
+  "final_score": "Puntuación final",
+  "silver_level": "Nivel Plata",
+  "achievement": "Logro",
+  "ai_navigator_feedback": "Retroalimentación del Navegador IA",
+  "strengths": "Fortalezas",
+  "excellent_challenge_analysis": "Excelente análisis de desafíos y alineación estratégica. Fuerte comprensión de resultados medibles.",
+  "areas_for_improvement": "Áreas de mejora",
+  "innovative_approaches": "Considera enfoques más innovadores en el diseño de iniciativas. Enfócate en la evaluación del impacto interfuncional.",
+  "retake": "Repetir",
+  "share_result": "Compartir resultado",
+  "downloadable_pdf": "PDF descargable",
+
+  // CONTEXTUAL CHALLENGE ADAPTATION
+  "submit_adaptations": "Enviar adaptaciones",
+  "adjustment": "Ajuste",
+  "refine_strategy_address_challenge": "Refina tu estrategia para abordar el desafío",
+  "revised_key_result": "Resultado clave revisado",
+  "adjust_revenue_target_question": "¿Quieres ajustar el objetivo de ingresos para enfrentar el desafío?",
+  "additional_strategic_actions": "Acciones estratégicas adicionales",
+  "new_initiatives_question": "¿Quieres proponer nuevas iniciativas para superar este desafío?",
+
+  // UNKNOWN
+  "Unknown": "Desconocido",
+  "No description": "Juguemos al siguiente paso",
+
+  // PRICING
+  "Free": "Gratis",
+  "3.99€/month": "3,99€/mes",
+  "9.99€/month": "9,99€/mes",
+
+  // FEEDBACK SCREEN
+  "feedback": "Retroalimentación",
+  "no_feedback_data": "No hay datos de retroalimentación disponibles",
+  "level_completed": "¡Nivel completado!",
+  "organization_completed": "¡Organización ${0} completada!",
+  "score": "Puntuación: ${0}",
+  "strategic_alignment": "Alineación Estratégica",
+  "objective_alignment": "Alineación de Objetivos",
+  "key_results_quality": "Calidad de Resultados Clave",
+  "okr_assessment_feedback": "Retroalimentación de Evaluación OKR",
 
   // AI STRATEGIC ANALYSIS
   "ai_strategic_analysis": "Análisis estratégico de IA",
   "submit_initiatives_ai_analysis": "Enviar tus iniciativas para análisis de IA",
   "feedback_will_appear_here": "Los comentarios aparecerán aquí",
-  "ai_feedback_per_day": "1 comentario de IA por día",
-  "ai_tips_debrief": "Consejos de IA y revisión",
+  "ai_feedback_per_day": "1 retroalimentación IA por día",
+  "ai_tips_debrief": "Consejos IA y revisión",
   "AI has analyzed your initiatives and found them highly relevant! 🚀":
   "¡La IA ha analizado tus iniciativas y las ha encontrado muy relevantes! 🚀",
-
-  // OBJECTIVES & KEY RESULTS
-  "objective": "Objetivo",
-  "selected_objective": "Objetivo seleccionado",
-  "objective_description":
-  "''Desarrollar e introducir productos innovadores\n"
-      "adaptados a las nuevas demandas del mercado en 15\n"
-      "meses''",
-  "select_key_results": "Seleccionar resultados clave",
-  "choose_3_outcomes": "Elige 3 resultados medibles. Construye tu\nconstelación de métricas de éxito",
-  "complete_selection": "Completar selección",
-  "key_results_selected": "Resultados clave seleccionados",
-  "all_key_results_selected": "¡Todos los resultados clave seleccionados!",
-  "one_more_needed": "Falta 1 más",
-  "more_needed": "faltan más",
-
-  // INDUSTRY SELECTION
-  'Select Industry': 'Seleccionar industria',
-  'Please select an industry to continue': 'Por favor selecciona una industria para continuar',
-  'Selected': 'Seleccionado',
-  'You selected:': 'Has seleccionado:',
-  'Technology': 'Tecnología',
-  'Software, SaaS, Digital Products': 'Software, SaaS, Productos digitales',
-  'Finance & Banking': 'Finanzas y Banca',
-  'Investment, Insurance, Fintech': 'Inversión, Seguros, Fintech',
-  'Healthcare': 'Salud',
-  'Medical, Pharma, Health Tech': 'Médico, Farmacéutico, Tecnología de la Salud',
-
-  // GAME MODES
-  "game_mode": "Modo de juego",
-  "unknown_mode": "Modo desconocido",
-  "solo": "Individual",
-  "Solo": "Individual",
-  "Team": "Equipo",
-  "Campaign": "Campaña",
-  "bonus_mode": "Modo bonus",
-  "navigator": "Navegador",
-  "navigator_plus": "Navegador+",
-  "master_navigation": "Navegación maestra",
-
-  // ONBOARDING & MISC SCREENS
-  "welcome_navigator": "¡Bienvenido, Navegador!",
-  "splash1_subtitle": "Has sido reclutado para una misión de alto riesgo. "
-      "Una de nuestras empresas más importantes enfrenta una crisis estratégica "
-      "y necesita tu liderazgo para cambiar las cosas.",
-  "splash2_title": "La empresa está en problemas",
-  "splash2_subtitle": "La productividad está disminuyendo. Los objetivos están desalineados. "
-      "El equipo está perdiendo el enfoque. Solo tú tienes las habilidades "
-      "para aportar claridad, dirección y resultados.",
-
-  // JOURNEY & MAP
-  "journey": "Viaje",
-  "map": "Mapa",
-  "show_less": "Mostrar menos",
-  "show_progress": "Mostrar progreso",
-  "complete": "Completado",
-  "back_home": "Volver al inicio",
-
-  // ERRORS
-  "error": "Error",
-  "fill_initiatives": "Por favor, completa ambas iniciativas antes de enviar.",
-  "initiatives_submitted": "✅ Iniciativas enviadas para análisis de IA.",
-  'show_personal_achievements': 'Show Personal Achievements',
 };
