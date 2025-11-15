@@ -13,7 +13,7 @@ class PricingController extends GetxController {
   final List<Map<String, dynamic>> pricingPlans = [
     {
       'title': 'navigator',
-      'price': 'Free',
+      'price': 'Free'.tr,
       'features': [
         {'text': 'solo_mode_level_1', 'included': true},
         {'text': 'ai_feedback_per_day', 'included': true},

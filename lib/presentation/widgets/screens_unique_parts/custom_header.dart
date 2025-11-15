@@ -73,8 +73,8 @@ class CustomHeader extends StatelessWidget {
                             style: theme.textTheme.displayLarge?.copyWith(
                               color: AppColors.primaryRed,
                               fontSize: orientation == Orientation.portrait
-                                  ? 30.sp
-                                  : 24.sp,
+                                  ? 20.sp
+                                  : 20.sp,
                               height: 1.25,
                             ),
                           ),
@@ -152,7 +152,7 @@ class CustomHeader extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: AppColors.textBlack,
-                      fontSize: orientation == Orientation.portrait ? 14.sp : 12.sp,
+                      fontSize: orientation == Orientation.portrait ? 12.sp : 10.sp,
                       height: 1.2,
                     ),
                   ),

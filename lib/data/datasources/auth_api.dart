@@ -18,4 +18,5 @@ abstract class AuthApi {
   @POST('${AppUrls.signUpUrl}')
   Future<RegisterResponse> register(@Body() RegisterRequest request);
 
+
 }

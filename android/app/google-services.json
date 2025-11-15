@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "1016249703708",
+    "project_id": "okr-navigator-f5b0b",
+    "storage_bucket": "okr-navigator-f5b0b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016249703708:android:7d8d0d2062fb223668eed9",
+        "android_client_info": {
+          "package_name": "com.focush.okrnavigator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016249703708-b9ptocft43d4o49tj9rjf9tud52p1rk6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.focush.okrnavigator",
+            "certificate_hash": "894be8679233f0c4193bb5a303a987c8566380fc"
+          }
+        },
+        {
+          "client_id": "1016249703708-muc5a4jujc06930ir01kc6mg5rrlniop.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7OMpoVLyGbRoaRqEm9oadghIkmZ1HosE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016249703708-muc5a4jujc06930ir01kc6mg5rrlniop.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1016249703708-f9tsumg1roshdhvfarocifjag1o53kpf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.focusrh.gameApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016249703708:android:a6f258c4ca898f9468eed9",
+        "android_client_info": {
+          "package_name": "com.focusrh.okrnavigator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016249703708-muc5a4jujc06930ir01kc6mg5rrlniop.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7OMpoVLyGbRoaRqEm9oadghIkmZ1HosE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016249703708-muc5a4jujc06930ir01kc6mg5rrlniop.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1016249703708-f9tsumg1roshdhvfarocifjag1o53kpf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.focusrh.gameApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

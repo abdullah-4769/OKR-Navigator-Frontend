@@ -41,48 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBcF8B-fKYTAC3QHuWbDccLwZV0vBPSB9g',
-    appId: '1:143899231519:web:8d69b3a80f7e5312cf1c2a',
-    messagingSenderId: '143899231519',
-    projectId: 'okr-navigator-68930',
-    authDomain: 'okr-navigator-68930.firebaseapp.com',
-    storageBucket: 'okr-navigator-68930.firebasestorage.app',
-    measurementId: 'G-DKKYQM9TVD',
+    apiKey: 'AIzaSyDR3KcX2woqs69JHxGiJbsT2os0wTVPORI',
+    appId: '1:1016249703708:web:9dc88eeb29b28aff68eed9',
+    messagingSenderId: '1016249703708',
+    projectId: 'okr-navigator-f5b0b',
+    authDomain: 'okr-navigator-f5b0b.firebaseapp.com',
+    storageBucket: 'okr-navigator-f5b0b.firebasestorage.app',
+    measurementId: 'G-DE0YM7VWJX',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD9uEvdTyioZqAJwGEjvYd6NBW55xdc4Zg',
-    appId: '1:143899231519:android:e4fa23dac5ae520dcf1c2a',
-    messagingSenderId: '143899231519',
-    projectId: 'okr-navigator-68930',
-    storageBucket: 'okr-navigator-68930.firebasestorage.app',
+    apiKey: 'AIzaSyB7OMpoVLyGbRoaRqEm9oadghIkmZ1HosE',
+    appId: '1:1016249703708:android:a6f258c4ca898f9468eed9',
+    messagingSenderId: '1016249703708',
+    projectId: 'okr-navigator-f5b0b',
+    storageBucket: 'okr-navigator-f5b0b.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBSOaPPLUg3GIPebH58Z6XCeyUcFD7U1XM',
-    appId: '1:143899231519:ios:37488bf1e48474a9cf1c2a',
-    messagingSenderId: '143899231519',
-    projectId: 'okr-navigator-68930',
-    storageBucket: 'okr-navigator-68930.firebasestorage.app',
-    iosBundleId: 'com.example.gameApp',
+    apiKey: 'AIzaSyA6AA14VNyhPH1UAnIrKOJLqasO6wYeeUw',
+    appId: '1:1016249703708:ios:58deb6945a2e631568eed9',
+    messagingSenderId: '1016249703708',
+    projectId: 'okr-navigator-f5b0b',
+    storageBucket: 'okr-navigator-f5b0b.firebasestorage.app',
+    iosBundleId: 'com.focusrh.gameApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBSOaPPLUg3GIPebH58Z6XCeyUcFD7U1XM',
-    appId: '1:143899231519:ios:37488bf1e48474a9cf1c2a',
-    messagingSenderId: '143899231519',
-    projectId: 'okr-navigator-68930',
-    storageBucket: 'okr-navigator-68930.firebasestorage.app',
-    iosBundleId: 'com.example.gameApp',
+    apiKey: 'AIzaSyA6AA14VNyhPH1UAnIrKOJLqasO6wYeeUw',
+    appId: '1:1016249703708:ios:58deb6945a2e631568eed9',
+    messagingSenderId: '1016249703708',
+    projectId: 'okr-navigator-f5b0b',
+    storageBucket: 'okr-navigator-f5b0b.firebasestorage.app',
+    iosBundleId: 'com.focusrh.gameApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBcF8B-fKYTAC3QHuWbDccLwZV0vBPSB9g',
-    appId: '1:143899231519:web:a64ab751e6462862cf1c2a',
-    messagingSenderId: '143899231519',
-    projectId: 'okr-navigator-68930',
-    authDomain: 'okr-navigator-68930.firebaseapp.com',
-    storageBucket: 'okr-navigator-68930.firebasestorage.app',
-    measurementId: 'G-DVDK0QGP1F',
+    apiKey: 'AIzaSyDR3KcX2woqs69JHxGiJbsT2os0wTVPORI',
+    appId: '1:1016249703708:web:cd95c8e9d13403c068eed9',
+    messagingSenderId: '1016249703708',
+    projectId: 'okr-navigator-f5b0b',
+    authDomain: 'okr-navigator-f5b0b.firebaseapp.com',
+    storageBucket: 'okr-navigator-f5b0b.firebasestorage.app',
+    measurementId: 'G-96LG8SVGQD',
   );
+
 }

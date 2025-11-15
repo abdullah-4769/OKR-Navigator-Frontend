@@ -26,19 +26,19 @@ class ModeSelectorWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _buildModeButton(
-              'Solo',
+              'Solo'.tr,
               GameMode.solo,
               controller.selectedMode.value == GameMode.solo,
               controller,
             ),
             _buildModeButton(
-              'Team',
+              'Team'.tr,
               GameMode.team,
               controller.selectedMode.value == GameMode.team,
               controller,
             ),
             _buildModeButton(
-              'Campaign',
+              'Campaign'.tr,
               GameMode.campaign,
               controller.selectedMode.value == GameMode.campaign,
               controller,

@@ -14,6 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../../controllers/login_controller.dart';
 import '../../../controllers/register_controller.dart';
 import '../../../core/app_assets.dart';
 import '../../../core/app_colors.dart';
@@ -32,6 +33,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   late final RegisterController controller;
+  final googlelogin = Get.find<LoginController>();
 
   @override
   void initState() {
@@ -112,29 +114,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(
                         height: _getResponsiveSpacing(screenHeight, 0.04),
                       ),
-                      Container(
-                        height: 45.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.border)
-                        ),
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                        Image(image: AssetImage("assets/images/google.png"),height: 20,),
-                            const SizedBox(width: 10),
-                             Text(
-                              "continue_with_google".tr,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                      Obx(() => InkWell(
+                        onTap: googlelogin.isGoogleLoading.value
+                            ? null
+                            : () => googlelogin.loginWithGoogle(),
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          height: 45.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: googlelogin.isGoogleLoading.value
+                                  ? AppColors.border.withOpacity(0.5)
+                                  : AppColors.border,
+                            ),
+                            color: googlelogin.isGoogleLoading.value
+                                ? Colors.grey.shade100
+                                : Colors.white,
+                          ),
+                          child: googlelogin.isGoogleLoading.value
+                              ? const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryRed),
                               ),
                             ),
-                          ],
+                          )
+                              : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/google.png",
+                                height: 20,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.g_mobiledata, size: 24);
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "continue_with_google".tr,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-
-                      ),
+                      )),
                       SizedBox(
                         height: _getResponsiveSpacing(screenHeight, 0.025),
                       ),

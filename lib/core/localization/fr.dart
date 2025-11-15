@@ -642,6 +642,7 @@ final Map<String, String> fr = {
   // Feedback
   'peer_feedback': 'Retour des pairs',
   'send_feedback_to_team': 'Envoyer un retour à l\'équipe',
+  "Free": "Gratuit",
 
   // Recent Games
   'recent_games': 'Jeux récents',
@@ -1304,7 +1305,8 @@ final Map<String, String> fr = {
 
   // ------- pricing pages  ----------//
   'navigator': 'Navigateur',
-  'Free': 'Gratuit',
+
+    "Free": "Gratuit",
   'solo_mode_level_1': 'Mode Solo (Niveau 1)',
   'ai_feedback_per_day': 'Retour IA (1/jour)',
   'certified_challenge_per_day': 'Défi certifié (1/jour)',
@@ -1329,10 +1331,13 @@ final Map<String, String> fr = {
 
   'single_user': 'Utilisateur unique',
   'multiple_users': 'Utilisateurs multiples',
-
+  "perfect": "parfait",
+  "excellent": "excellent",
+  "good": "bon",
+  "average": "moyen",
   'solo': 'Solo',
   'team': 'Équipe',
-  'campaign': 'Campagne',
+  'campaign': 'Parcours Certifiant',
   'no_strategy_selected': 'Aucune Stratégie Sélectionnée',
   'generating_key_results': 'Génération des résultats clés en fonction de votre Objectif...',
   'please_wait': 'Veuillez Patienter...',
@@ -1373,7 +1378,7 @@ final Map<String, String> fr = {
   'hr_manager_title': 'Responsable RH',
   'people_champion': 'Champion des Personnes',
   'empower_teams': 'Autonomiser les équipes',
-  'practitioner_title': 'Pratiquant',
+  'practitioner_title': 'Praticien',
   'execute_and_improve': 'Exécuter et améliorer',
   'empower_teams_practitioner': 'Autonomiser les équipes',
 
@@ -1384,11 +1389,11 @@ final Map<String, String> fr = {
   'campaign_mode_organization': '🚀 Mode campagne : Création des données d\'organisation et navigation vers la sélection de stratégie',
   'solo_mode_industry': '🎯 Mode solo : Navigation vers la sélection d\'industrie',
   'role_api_error': 'Erreur dans le contrôleur lors de l\'envoi du rôle : {{error}}',
-  'campaign': 'Campagne',
+  'campaign': 'Parcours Certifiant',
   'show_personal_achievements': 'Voir Mes Réussites',
   'solo_mode': 'Solo',
   'team_mode': 'Équipe',
-  'campaign_mode': 'Campagne',
+  'campaign_mode': 'Parcours Certifiant',
   'challenge_mode': 'Défi',
   'start': 'Commencer',
   'challenge': 'Défi',

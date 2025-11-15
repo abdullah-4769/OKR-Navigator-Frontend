@@ -334,19 +334,24 @@ class FeedbackScreen extends StatelessWidget {
   }
 
   Color _getRatingColor(String rating) {
-    switch (rating.toLowerCase()) {
-      case 'perfect':
-        return Color(0xFFCC4A2E);
-      case 'excellent':
-        return Color(0xFF4CAF50);
-      case 'good':
-        return Color(0xFF2196F3);
-      case 'average':
-        return Color(0xFFFF9800);
-      default:
-        return Color(0xFF9E9E9E);
+    final r = rating.toLowerCase();
+
+    if (r == 'perfect'.tr.toLowerCase()) {
+      return const Color(0xFFCC4A2E);
     }
+    if (r == 'excellent'.tr.toLowerCase()) {
+      return const Color(0xFF4CAF50);
+    }
+    if (r == 'good'.tr.toLowerCase()) {
+      return const Color(0xFF2196F3);
+    }
+    if (r == 'average'.tr.toLowerCase()) {
+      return const Color(0xFFFF9800);
+    }
+
+    return const Color(0xFF9E9E9E);
   }
+
 
   Widget _buildFeedbackItem({
     required String title,
@@ -361,7 +366,7 @@ class FeedbackScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              title,
+              title.tr,
               style: TextStyle(
                 fontFamily: 'GothamBold',
                 fontSize: 16.sp,
@@ -370,7 +375,7 @@ class FeedbackScreen extends StatelessWidget {
               ),
             ),
             Text(
-              rating,
+              rating.tr,  // Translate to French if locale is FR
               style: TextStyle(
                 fontFamily: 'GothamBold',
                 fontSize: 14.sp,
@@ -378,6 +383,7 @@ class FeedbackScreen extends StatelessWidget {
                 color: ratingColor,
               ),
             ),
+
           ],
         ),
         SizedBox(height: 8.h),
