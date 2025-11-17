@@ -9,6 +9,12 @@ final Map<String, String> es = {
   "okr": "OKR",
   "certificate": "Certificado",
   'continue_with_google': 'Continuar con Google',
+  "phase_retry_test": "Test Phase to Continue",
+  "accepted": "Accepted",
+  "review_required": "Review Required",
+  "rejected": "Rejected",
+
+
 
   // AUTHENTICATION & ONBOARDING
   "dont_have_account": "¿No tienes una cuenta?",

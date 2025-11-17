@@ -15,6 +15,7 @@ class HomeController extends GetxController {
       'subtitle': 'start_game_subtitle'.tr,
       'cta': 'tap_to_start'.tr,
       'bg': 0xFFC34028,
+
       'bg2': 0xFFB23322,
       'icon': 'assets/images/game.svg',
     },

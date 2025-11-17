@@ -250,7 +250,8 @@ class ContextualChallengeScreen extends StatelessWidget {
                           ),
                           child: CustomButton(
                             text: 'propose_adjustment'.tr,
-                            onPressed: () => Get.toNamed(AppRoutes.contextualCAdjustment),
+                            // onPressed: () => Get.toNamed(AppRoutes.contextualCAdjustment),
+                            onPressed: () => Get.toNamed(AppRoutes.gameCompleteScreen),
                           ),
                         ),
                       ),

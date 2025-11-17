@@ -142,6 +142,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildTitleSection(
       ThemeData theme,
       double screenWidth,
+
       bool isPortrait,
       bool isTablet,
       ) {

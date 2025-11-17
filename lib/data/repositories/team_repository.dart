@@ -13,6 +13,7 @@
 // import '../../generated/network.dart';
 //
 // class TeamRepository {
+
 //   final TeamApi _teamApi = TeamApi(dio); // Initialize API client
 //
 //   // 1. Edit Team (PATCH /team/{id})

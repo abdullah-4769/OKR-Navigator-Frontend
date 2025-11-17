@@ -22,6 +22,7 @@ class MiniSimulationScreen extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
       backgroundColor: Colors.white,
       body: CustomBackground(
+
         child: OrientationBuilder(
           builder: (context, orientation) {
             final size = MediaQuery.of(context).size;

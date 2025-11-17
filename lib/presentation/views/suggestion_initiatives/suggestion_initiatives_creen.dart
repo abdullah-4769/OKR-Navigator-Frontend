@@ -179,6 +179,7 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
                             horizontal: _getHorizontalPadding(screenWidth),
                           ),
                           child: CustomObjectiveContainer(
+
                             icon: Icons.flag,
                             title: _getContainerTitle(_displayData!.source).tr,
                             subtitle: _displayData!.title.tr,

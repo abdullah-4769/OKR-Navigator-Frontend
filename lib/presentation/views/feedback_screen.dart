@@ -304,7 +304,7 @@ class FeedbackScreen extends StatelessWidget {
           // Strategy Alignment
           _buildFeedbackItem(
             title: 'strategy_alignment'.tr,
-            rating: breakdown.strategyAlignment.title,
+            rating: breakdown.strategyAlignment.title.tr,
             ratingColor: _getRatingColor(breakdown.strategyAlignment.title),
             description: breakdown.strategyAlignment.suggestion,
           ),
@@ -333,23 +333,25 @@ class FeedbackScreen extends StatelessWidget {
     );
   }
 
+  /// This function keeps logic in English (API values)
+  /// and UI translations are handled separately (.tr)
   Color _getRatingColor(String rating) {
-    final r = rating.toLowerCase();
+    final r = rating.toLowerCase().trim();
 
-    if (r == 'perfect'.tr.toLowerCase()) {
-      return const Color(0xFFCC4A2E);
+    if (r == 'perfect'.tr) {
+      return const Color(0xFFCC4A2E); // Red
     }
-    if (r == 'excellent'.tr.toLowerCase()) {
-      return const Color(0xFF4CAF50);
+    if (r == 'excellent'.tr) {
+      return const Color(0xFF4CAF50); // Green
     }
-    if (r == 'good'.tr.toLowerCase()) {
-      return const Color(0xFF2196F3);
+    if (r == 'good'.tr) {
+      return const Color(0xFF2196F3); // Blue
     }
-    if (r == 'average'.tr.toLowerCase()) {
-      return const Color(0xFFFF9800);
+    if (r == 'average'.tr) {
+      return const Color(0xFFFF9800); // Orange
     }
 
-    return const Color(0xFF9E9E9E);
+    return const Color(0xFF9E9E9E); // Grey (default)
   }
 
 

@@ -28,6 +28,7 @@ class AIAnalysisShowScreen extends StatefulWidget {
   State<AIAnalysisShowScreen> createState() => _AIAnalysisShowScreenState();
 }
 
+
 class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
   late final AdaptationAIAnalysisViewModel _viewModel;
   final int _maxRetries = 3;
@@ -514,7 +515,7 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
                         SizedBox(height: screenHeight * 0.001),
                         SizedBox(height: screenHeight * 0.001),
                         CustomButton(
-                          text: "Test Phase to Continue",
+                          text: "phase_retry_test".tr,
                           onPressed: () {
                             Get.toNamed(AppRoutes.contextualChallenge);
                           },
@@ -539,9 +540,9 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
   }
 
   String _getDecisionFromScore(int score) {
-    if (score >= 80) return 'Accepted';
-    if (score >= 50) return 'Review Required';
-    return 'Rejected';
+    if (score >= 80) return 'Accepted'.tr;
+    if (score >= 50) return 'Review Required'.tr;
+    return 'Rejected'.tr;
   }
 
   String _getHeaderTitle(String source) {

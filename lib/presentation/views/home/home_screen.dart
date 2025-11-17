@@ -226,8 +226,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -284,10 +283,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
 
-  Widget _topBar() {
-    return Padding(
+  Widget _topBar() => Padding(
       padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -303,8 +300,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               // Notification with blink animation
               AnimatedBuilder(
                 animation: _notificationBlinkAnimation,
-                builder: (context, child) {
-                  return Transform.scale(
+                builder: (context, child) => Transform.scale(
                     scale: _notificationBlinkAnimation.value,
                     child: _circleIcon(
                       child: Stack(
@@ -337,8 +333,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
-                  );
-                },
+                  ),
               ),
               SizedBox(width: 8.w),
               InkWell(
@@ -359,10 +354,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ],
       ),
     );
-  }
 
-  Widget _circleIcon({required Widget child}) {
-    return Container(
+  Widget _circleIcon({required Widget child}) => Container(
       height: 46.sp,
       width: 46.sp,
       decoration: BoxDecoration(
@@ -375,29 +368,45 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
       child: Center(child: child),
     );
-  }
 
-  Widget _mainCardsSectionContent() {
-    return Row(
+  Widget _mainCardsSectionContent() => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+
         // Robot arrow with bounce and blink animation
-        Padding(
-          padding: EdgeInsets.only(left: 12.w, bottom: 60.h),
-          child: AnimatedBuilder(
-            animation: Listenable.merge([_robotBounceAnimation, _blinkAnimation]),
-            builder: (context, child) {
-              return Transform.translate(
+        Center(
+          child: Padding(
+            padding: EdgeInsets.only(left: 12.w),
+            child: AnimatedBuilder(
+              animation: Listenable.merge([_robotBounceAnimation, _blinkAnimation]),
+              builder: (context, child) => Transform.translate(
                 offset: Offset(0, -10 * _robotBounceAnimation.value),
                 child: Opacity(
                   opacity: _blinkAnimation.value,
-                  child: Image.asset(
-                    'assets/images/robortarrow.png',
-                    height: 90.h,
-                    fit: BoxFit.contain,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,   // 🔥 Centers image + text vertically
+                    children: [
+                      Image.asset(
+                        'assets/images/robortarrow.png',
+                        height: 90.h,
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Bonus Mode",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          decorationStyle: TextDecorationStyle.wavy
+                        ),
+                      )
+                    ],
                   ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
         Expanded(
@@ -439,7 +448,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         )
       ],
     );
-  }
 
   Widget _verticalDots() => Obx(
         () => Column(

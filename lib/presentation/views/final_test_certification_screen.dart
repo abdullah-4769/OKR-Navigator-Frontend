@@ -24,6 +24,7 @@ class FinalTestCertificationScreen extends StatelessWidget {
         child: OrientationBuilder(
           builder: (context, orientation) {
             final size = MediaQuery.of(context).size;
+
             final isPortrait = orientation == Orientation.portrait;
 
             return Stack(

@@ -118,6 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onTap: googlelogin.isGoogleLoading.value
                             ? null
                             : () => googlelogin.loginWithGoogle(),
+
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           height: 45.h,

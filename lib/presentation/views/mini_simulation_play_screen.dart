@@ -30,6 +30,7 @@ class MiniSimulationPlayScreen extends StatelessWidget {
 
   final OKRConstellationController constellationController = Get.put(
     OKRConstellationController(),
+
   );
 
   String _safeTranslate(String? key, {String fallback = ''}) {

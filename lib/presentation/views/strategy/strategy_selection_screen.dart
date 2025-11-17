@@ -54,8 +54,8 @@ class StrategySelectionScreen extends StatelessWidget {
 
                         // 🔹 Custom Header
                         CustomHeader(
-                          title: 'this'.tr,
-                          highlightedText: 'given'.tr,
+                          title: 'strategy'.tr,
+                          highlightedText: 'selection'.tr,
                           onBackTap: () {
                             // ✅ Navigate back based on game mode
                             final gameMode = SharedPrefs.getGameMode();
@@ -109,17 +109,6 @@ class StrategySelectionScreen extends StatelessWidget {
                         SizedBox(height: height * 0.03),
 
                         // Journey Map
-                        Obx(
-                              () => CustomJourneyMap(
-                            progress: journeyController.progress.value,
-                            steps: journeyController.steps,
-                            completedSteps: journeyController.completedSteps,
-                            onToggle: journeyController.toggleJourneyDetails,
-                            showDetails: journeyController.showDetails.value,
-                          ),
-                        ),
-
-                        SizedBox(height: height * 0.03),
 
                         // Begin Mission Button
                         Obx(
@@ -140,6 +129,19 @@ class StrategySelectionScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        SizedBox(height: height * 0.03),
+
+                        Obx(
+                              () => CustomJourneyMap(
+                            progress: journeyController.progress.value,
+                            steps: journeyController.steps,
+                            completedSteps: journeyController.completedSteps,
+                            onToggle: journeyController.toggleJourneyDetails,
+                            showDetails: journeyController.showDetails.value,
+                          ),
+                        ),
+
+
 
                         SizedBox(height: height * 0.03),
                       ],

@@ -116,7 +116,7 @@ final Map<String, String> fr = {
   'select': 'Sélectionner',
   'strategy': 'Stratégie',
   'profile': 'Profil',
-  'draw_strategy': 'Dessinez votre stratégie',
+  'draw_strategy': 'Révélez votre stratégie',
   'draw_strategy_subtitle': 'Choisissez votre carte pour définir votre stratégie de mission.',
   'begin_mission': 'Commencer la mission',
   'load_game_data': 'Charger les données du jeu',
@@ -562,7 +562,7 @@ final Map<String, String> fr = {
   'competitor_launched_product': 'Un concurrent majeur a lancé un produit similaire à un prix 30% inférieur, affectant votre positionnement sur le marché.',
   'revenue_drop_warning': 'Les revenus projetés pourraient baisser de 40% si aucune action n\'est entreprise',
   'adapt_you': 'Adaptez-vous',
-  'back_home': 'Retour à l\'accueil',
+  'back_home': 'Accueil',
   'readjust_strategy': 'Réajustez votre stratégie au défi. Sélectionnez les éléments à modifier',
   'current_strategy': 'Stratégie actuelle',
   'development_new_markets': 'Développement de nouveaux marchés',
@@ -994,7 +994,7 @@ final Map<String, String> fr = {
 
   // STRATEGY SCREENS
   'strategy': 'Stratégie',
-  'draw_strategy': 'Dessinez votre stratégie',
+  'draw_strategy': 'Révélez votre stratégie',
   'draw_strategy_subtitle': 'Dessinez votre carte stratégique et faites le premier pas pour remodeler l\'avenir de l\'entreprise.',
   'strategy_tips': 'Conseils stratégiques',
   'strategic_tips': 'Conseils stratégiques',
@@ -1114,7 +1114,7 @@ final Map<String, String> fr = {
   'show_less': 'Afficher moins',
   'show_progress': 'Afficher la progression',
 
-  'back_home': 'Retour à l\'accueil',
+  'back_home': 'Accueil',
 
   'submitting': 'Soumission en cours',
 
@@ -1160,7 +1160,7 @@ final Map<String, String> fr = {
   'play_again': 'Rejouer',
   'go_to_dashboard': 'Aller au tableau de bord',
   'bonus_case_study_mode': 'Mode étude de cas bonus',
-  'back_home': 'Retour à l\'accueil',
+  'back_home': 'Accueil',
   'see_progress': 'Voir la progression',
 
   // ---- Strategy Journey Screen ----
@@ -1208,7 +1208,7 @@ final Map<String, String> fr = {
   'dashboard': 'Tableau de bord',
   'level_1_complete': 'Niveau 1 terminé',
   'success_rate': 'Taux de réussite',
-  'back_home': 'Retour à l\'accueil',
+  'back_home': 'Accueil',
 
   // Stats
   'badges': 'Badges',
@@ -1264,7 +1264,9 @@ final Map<String, String> fr = {
   'games': 'Jeux',
   'badges': 'Badges',
   'trophies': 'Trophées',
-  'back_home': 'Retour à l\'accueil',
+  'back_home': 'Accueil',
+  'strategy':'Alignement',
+  'selection': 'Stratégique',
 
   // ---------------------------
   // ACHIEVEMENTS
@@ -1331,10 +1333,17 @@ final Map<String, String> fr = {
 
   'single_user': 'Utilisateur unique',
   'multiple_users': 'Utilisateurs multiples',
-  "perfect": "parfait",
-  "excellent": "excellent",
-  "good": "bon",
-  "average": "moyen",
+  "perfect": "Parfait",
+  "excellent": "Excellent",
+  "good": "Bon",
+  "average": "Moyen",
+  "phase_retry_test": "Phase de test à continuer",
+  "accepted": "Accepté",
+  "review_required": "Révision requise",
+  "rejected": "Rejeté",
+
+
+
   'solo': 'Solo',
   'team': 'Équipe',
   'campaign': 'Parcours Certifiant',

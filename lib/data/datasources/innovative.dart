@@ -16,6 +16,7 @@ class InnovativeStrategiesApi {
       final storageRepository = Get.find<StorageRepository>();
       final token = await storageRepository.getAccessToken();
 
+
       // ✅ Use ApiConstants helper method instead of hardcoding URL
       final url = '${ApiConstants.baseUrl}${ApiConstants.keywordBaseInnovative}$strategyId';
 

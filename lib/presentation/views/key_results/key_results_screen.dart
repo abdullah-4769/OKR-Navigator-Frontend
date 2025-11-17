@@ -658,7 +658,7 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
 
                         /// OKR Constellation
-                        const CustomOKRConstellation(),
+                        // const CustomOKRConstellation(),
 
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
 
