@@ -268,6 +268,18 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
                       const CustomAIStrategyContainer(),
 
                       SizedBox(height: AppDimensions.d28.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: AppDimensions.d40.w),
+                        child: Obx(
+                              () => CustomButton2(
+                            text: _getButtonText(viewModel.isSubmitting.value),
+                            onPressed: viewModel.isSubmitting.value
+                                ? () {}
+                                : () => _handleSubmit(viewModel),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: AppDimensions.d28.h),
 
                       // ✅ HIDE JOURNEY MAP FOR MODIFICATION FLOW
                       if (!_isModifyFromContextual) ...[
@@ -280,20 +292,9 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
                             showDetails: journeyController.showDetails.value,
                           ),
                         ),
-                        SizedBox(height: AppDimensions.d28.h),
                       ],
 
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: AppDimensions.d40.w),
-                        child: Obx(
-                              () => CustomButton2(
-                            text: _getButtonText(viewModel.isSubmitting.value),
-                            onPressed: viewModel.isSubmitting.value
-                                ? () {}
-                                : () => _handleSubmit(viewModel),
-                          ),
-                        ),
-                      ),
+
                       SizedBox(height: AppDimensions.d28.h),
                     ],
                   ),

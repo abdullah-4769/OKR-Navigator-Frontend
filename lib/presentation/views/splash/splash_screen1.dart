@@ -50,7 +50,6 @@ class _SplashScreen1State extends State<SplashScreen1> {
                       width: 90.w,
                     ),
 
-                    SizedBox(height: 24.h),
 
                     // Mask SVG
                     CommonImage(
@@ -60,7 +59,6 @@ class _SplashScreen1State extends State<SplashScreen1> {
                       width: 200.w,
                     ),
 
-                    SizedBox(height: 16.h),
 
                     // Title - Using Theme
                     Padding(
@@ -84,7 +82,7 @@ class _SplashScreen1State extends State<SplashScreen1> {
 
                     // Subtitle - Using Theme
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                      padding: EdgeInsets.symmetric(horizontal: 22.w),
                       child: Center(
                         child: Text(
                           'splash1_subtitle'.tr,

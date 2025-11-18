@@ -1,9 +1,4 @@
 
-
-
-
-
-
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +6,32 @@ import 'package:flutter/material.dart';
 /// 🎯 SharedPreferences Wrapper - Complete Version
 class SharedPrefs {
   static SharedPreferences? _prefs;
+  static const String keyBonusScore = 'bonus_score';
+  static const String keyHasSubmittedBonus = 'has_submitted_bonus';
+
+  static Future<void> saveBonusScore(int score) async {
+    await _prefs?.setInt(keyBonusScore, score);
+    print('💾 Saved bonus score: $score');
+  }
+
+  static int getBonusScore() {
+    return _prefs?.getInt(keyBonusScore) ?? 0;
+  }
+
+  static Future<void> setBonusSubmitted(bool submitted) async {
+    await _prefs?.setBool(keyHasSubmittedBonus, submitted);
+  }
+
+  static bool getBonusSubmitted() {
+    return _prefs?.getBool(keyHasSubmittedBonus) ?? false;
+  }
+
+  // Clear bonus data when starting new game
+  static Future<void> clearBonusData() async {
+    await _prefs?.remove(keyBonusScore);
+    await _prefs?.remove(keyHasSubmittedBonus);
+    print('🧹 Cleared bonus data');
+  }
 
   /// Initialize SharedPreferences (call once in main.dart)
   static Future<void> init() async {

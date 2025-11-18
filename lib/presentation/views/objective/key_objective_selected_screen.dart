@@ -414,6 +414,20 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                         ),
 
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: _getButtonPadding(screenWidth, isTablet, isDesktop),
+                          ),
+                          child: Obx(() {
+                            return CustomButton2(
+                              text: _getButtonText(),
+                              onPressed: controller.isButtonEnabled
+                                  ? _navigateToNextScreen
+                                  : null,
+                            );
+                          }),
+                        ),
+                        SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
 
                         // ✅ Journey map (hide for modification flow)
                         if (!_isModifyFromContextual) ...[
@@ -430,19 +444,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                         ],
 
                         // ✅ Complete selection button
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: _getButtonPadding(screenWidth, isTablet, isDesktop),
-                          ),
-                          child: Obx(() {
-                            return CustomButton2(
-                              text: _getButtonText(),
-                              onPressed: controller.isButtonEnabled
-                                  ? _navigateToNextScreen
-                                  : null,
-                            );
-                          }),
-                        ),
 
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.025)),
                       ],

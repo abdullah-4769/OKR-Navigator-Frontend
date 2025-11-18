@@ -1341,6 +1341,15 @@ final Map<String, String> fr = {
   "accepted": "Accepté",
   "review_required": "Révision requise",
   "rejected": "Rejeté",
+  "bonus_mode_active": "Mode Bonus Activé",
+  "submitting_bonus_score": "Soumission du Score Bonus",
+  "bonus_score_submitted": "Score Bonus Soumis",
+  "bonus_mode_completed": "Mode Bonus Terminé",
+  "bonus_mode_completion_message": "Vous avez terminé le mode bonus !",
+  "bonus_mode_title": "Mode Bonus ! 🎉",
+  "bonus_mode_description": "Complétez le parcours OKR et gagnez des points bonus !",
+  "start_bonus_mode": "Démarrer le Mode Bonus",
+  "bonus_mode_label": "Mode Bonus",
 
 
 

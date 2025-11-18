@@ -378,6 +378,7 @@ final Map<String, String> en = {
   'launch_products_faster': 'Launch Products Faster',
   'launch_description':
   'Reduce time-to-market by optimizing internal processes and execution speed.',
+  "phase_retry_test": "Phase Retry Test",
 
   // AI Evaluation Focus
   'ai_evaluation_focus': 'AI Evaluation Focus',
@@ -386,6 +387,15 @@ final Map<String, String> en = {
   'initiatives_per_rk': 'Initiatives (2 per RK)',
   'overall_coherence': 'Overall Coherence',
   'key_results_count': 'Key Results (3)',
+  "bonus_mode_active": "Bonus Mode Active",
+  "submitting_bonus_score": "Submitting Bonus Score",
+  "bonus_score_submitted": "Bonus Score Submitted",
+  "bonus_mode_completed": "Bonus Mode Completed",
+  "bonus_mode_completion_message": "You have completed the bonus mode!",
+  "bonus_mode_title": "Bonus Mode! 🎉",
+  "bonus_mode_description": "Complete the OKR journey and earn bonus points!",
+  "start_bonus_mode": "Start Bonus Mode",
+  "bonus_mode_label": "Bonus Mode",
 
 // Metric and timeframe translations
   'revenue_metric': '\$ Revenue',

@@ -184,6 +184,7 @@ class GameModeScreen extends StatelessWidget {
                           ),
                           child: CustomButton(
                             text: 'select_continue'.tr,
+                            // onPressed: controller.onStart,
                             onPressed: controller.navigateToPricingScreen,
                           ),
                         ),

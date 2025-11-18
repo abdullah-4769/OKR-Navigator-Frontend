@@ -1,9 +1,9 @@
 enum SupportedLanguage {
   en(code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧'),
   fr(code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷'),
-  de(code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪'),
-  it(code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹'),
-  za(code: 'za', name: 'South African', nativeName: 'Afrikaans', flag: '🇿🇦'),
+  // de(code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪'),
+  // it(code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹'),
+  // za(code: 'za', name: 'South African', nativeName: 'Afrikaans', flag: '🇿🇦'),
   es(code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸');
 
   final String code;

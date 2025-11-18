@@ -13,7 +13,11 @@ final Map<String, String> es = {
   "accepted": "Accepted",
   "review_required": "Review Required",
   "rejected": "Rejected",
-
+  "bonus_mode_active": "Modo de Bonificación Activado",
+  "submitting_bonus_score": "Enviando Puntuación de Bonificación",
+  "bonus_score_submitted": "Puntuación de Bonificación Enviada",
+  "bonus_mode_completed": "Modo de Bonificación Completado",
+  "bonus_mode_completion_message": "¡Has completado el modo de bonificación!",
 
 
   // AUTHENTICATION & ONBOARDING
@@ -125,7 +129,7 @@ final Map<String, String> es = {
   // OBJECTIVES & KEY RESULTS
   "objective": "Objetivo",
   "selected_objective": "Objetivo seleccionado",
-  "select_key_results": "Seleccionar resultados clave",
+  "select_key_results": "Seleccionar resultados\nclave",
   "choose_3_outcomes": "Elige 3 resultados que harán avanzar tu estrategia",
   "choose_3_outcomes_retry": "Elige 3 resultados diferentes para mejorar tus iniciativas",
   "choose_3_outcomes_modify": "Elige 3 resultados para adaptarte al desafío del mercado",
@@ -369,6 +373,10 @@ final Map<String, String> es = {
   "relevance_threshold": "Umbral de relevancia",
   "submit_initiatives_ai": "Envía tus iniciativas para análisis de IA",
   "feedback_appear_here": "Los comentarios aparecerán aquí",
+  "bonus_mode_title": "¡Modo de Bonificación! 🎉",
+  "bonus_mode_description": "Completa el viaje de OKR y gana puntos de bonificación.",
+  "start_bonus_mode": "Iniciar Modo de Bonificación",
+  "bonus_mode_label": "Modo de Bonificación",
 
   // TEAM WELCOME
   "welcome_team": "¡Bienvenido Equipo!",
@@ -525,8 +533,8 @@ final Map<String, String> es = {
   "goal_master": "Maestro de Objetivos",
   "innovation_expert": "Experto en Innovación",
   "challenge_solver": "Solucionador de Desafíos",
-  "peer_feedback": "Retroalimentación de pares",
-  "send_feedback_to_team": "Enviar retroalimentación al equipo",
+  "peer_feedback": "Opinión de pares",
+  "send_feedback_to_team": "Enviar Opinión al equipo",
   "recent_games": "Juegos recientes",
   "solo_campaign": "Campaña individual - Nivel 1",
   "team_challenge": "Desafío de equipo",
@@ -697,7 +705,7 @@ final Map<String, String> es = {
   "final_score": "Puntuación final",
   "silver_level": "Nivel Plata",
   "achievement": "Logro",
-  "ai_navigator_feedback": "Retroalimentación del Navegador IA",
+  "ai_navigator_feedback": "Opinión del Navegador IA",
   "strengths": "Fortalezas",
   "excellent_challenge_analysis": "Excelente análisis de desafíos y alineación estratégica. Fuerte comprensión de resultados medibles.",
   "areas_for_improvement": "Áreas de mejora",
@@ -725,7 +733,7 @@ final Map<String, String> es = {
   "9.99€/month": "9,99€/mes",
 
   // FEEDBACK SCREEN
-  "feedback": "Retroalimentación",
+  "feedback": "Opinión",
   "no_feedback_data": "No hay datos de retroalimentación disponibles",
   "level_completed": "¡Nivel completado!",
   "organization_completed": "¡Organización ${0} completada!",

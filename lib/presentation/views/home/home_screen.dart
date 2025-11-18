@@ -9,6 +9,7 @@ import 'package:stacked_card_carousel/stacked_card_carousel.dart';
 import '../../../controllers/home_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../services/shared_preference.dart';
+import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_svg.dart';
 import '../authentication/profile_screen.dart';
 
@@ -385,21 +386,124 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Opacity(
                   opacity: _blinkAnimation.value,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,   // 🔥 Centers image + text vertically
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
                         'assets/images/robortarrow.png',
                         height: 90.h,
                         fit: BoxFit.contain,
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Bonus Mode",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                          decorationStyle: TextDecorationStyle.wavy
+                      SizedBox(height: 8.h),
+                      InkWell(
+                        onTap: () async {
+                          // Clear previous session data
+                          await SharedPrefs.clearGameSessionData();
+
+                          // Set bonus mode
+                          await SharedPrefs.saveGameMode("bonus");
+                          print("BONUS MODE ACTIVATED");
+
+                          // Show bonus mode dialog
+                          Get.dialog(
+                            Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.all(24.w),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFFFFD700),
+                                      Color(0xFFFFA500),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.stars,
+                                      size: 64.sp,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    Text(
+                                      'bonus_mode_title'.tr,
+                                      style: TextStyle(
+                                        fontSize: 24.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontFamily: 'GothamBold',
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    Text(
+                                      'bonus_mode_description'.tr,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.white,
+                                        fontFamily: 'Gotham',
+                                      ),
+                                    ),
+                                    SizedBox(height: 24.h),
+                                    CustomButton2(
+                                      text: 'start_bonus_mode'.tr,
+                                      onPressed: () {
+                                        Get.back();
+                                        Get.toNamed(
+                                          AppRoutes.roleSelection,
+                                          arguments: {"fromBonus": true},
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            barrierDismissible: false,
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 6.h,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+                            ),
+                            borderRadius: BorderRadius.circular(20.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFFFFD700).withOpacity(0.4),
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.stars,
+                                color: Colors.white,
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                "bonus_mode_label".tr,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontFamily: 'GothamBold',
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     ],

@@ -40,7 +40,7 @@ class _SplashScreen2State extends State<SplashScreen2> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 50.h),
+                    SizedBox(height: 20.h),
 
                     // Top Logo
                     CustomSvg(
@@ -60,7 +60,6 @@ class _SplashScreen2State extends State<SplashScreen2> {
                       width: 200.w,
                     ),
 
-                    SizedBox(height: 20.h),
 
                     // Title - Using Theme
                     Padding(
@@ -84,7 +83,7 @@ class _SplashScreen2State extends State<SplashScreen2> {
 
                     // Subtitle - Using Theme
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                      padding: EdgeInsets.symmetric(horizontal: 22.w),
                       child: Center(
                         child: Text(
                           'splash2_subtitle'.tr,

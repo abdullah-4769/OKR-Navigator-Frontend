@@ -661,20 +661,6 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
                         // const CustomOKRConstellation(),
 
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
-
-                        /// Journey Map (hide for modification flow)
-                        if (!_isModifyFromContextual) ...[
-                          Obx(() => CustomJourneyMap(
-                            progress: journeyController.progress.value,
-                            steps: journeyController.steps,
-                            completedSteps: journeyController.completedSteps,
-                            onToggle: journeyController.toggleJourneyDetails,
-                            showDetails: journeyController.showDetails.value,
-                          )),
-                          SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
-                        ],
-
-                        /// Complete Selection Button
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: _getButtonPadding(screenWidth, isTablet, isDesktop),
@@ -703,8 +689,22 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
                                 : null,
                           )),
                         ),
+                        SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
 
-                        SizedBox(height: _getResponsiveSpacing(screenHeight, 0.025)),
+                        /// Journey Map (hide for modification flow)
+                        if (!_isModifyFromContextual) ...[
+                          Obx(() => CustomJourneyMap(
+                            progress: journeyController.progress.value,
+                            steps: journeyController.steps,
+                            completedSteps: journeyController.completedSteps,
+                            onToggle: journeyController.toggleJourneyDetails,
+                            showDetails: journeyController.showDetails.value,
+                          )),
+                          SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
+                        ],
+
+                        /// Complete Selection Button
+
                       ],
                     ),
                   ),

@@ -70,6 +70,7 @@ import '../controllers/home_navbar_controller.dart';
 import '../controllers/key_results_controller.dart';
 import '../controllers/okr_constellation_controller.dart';
 import '../controllers/profile_controller.dart';
+import '../controllers/role_selection_controller.dart';
 import '../controllers/team_mode_controller/create_team_controller.dart';
 import '../controllers/team_mode_controller/team_chat_controller.dart';
 import '../controllers/team_mode_controller/team_contextual_challange_controller.dart';
@@ -85,6 +86,8 @@ import '../data/repositories/key_results_repo.dart';
 import '../data/repositories/team_repo.dart';
 import '../data/repositories/team_repository.dart';
 import '../generated/network.dart';
+import '../presentation/routes/app_routes.dart';
+import '../presentation/views/roles/role_selection_screen.dart';
 import '../repository/campaign_mode/certification_evaluation_repo.dart';
 import '../repository/campaign_mode/certification_repository.dart';
 
@@ -111,6 +114,14 @@ class AppBindings extends Bindings {
     Get.lazyPut(() => CertificationInfoApiService(), fenix: true);
     Get.lazyPut(() => CertificationInfoRepository(), fenix: true);
     Get.lazyPut(() => CertificationInfoViewModel(), fenix: true);
+    GetPage(
+      name: AppRoutes.roleSelection,
+      page: () => RoleSelectionScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<RoleSelectionController>(() => RoleSelectionController());
+      }),
+    );
+
     //  REPOSITORIES - Always available (permanent)
     Get.lazyPut(() => StrategyRepository(), fenix: true);
     Get.lazyPut(() => ObjectiveRepository(), fenix: true);

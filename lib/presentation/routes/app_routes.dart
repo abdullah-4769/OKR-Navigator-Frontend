@@ -22,6 +22,7 @@ import 'package:game_app/presentation/views/team_mode/team_strategy_selection.da
 import 'package:game_app/presentation/views/team_mode/team_industry_choose_screen.dart';
 
 // ✅ Use aliases to avoid name conflicts
+import '../../controllers/role_selection_controller.dart';
 import '../../generated/models/responses/key_results/key_results_response.dart';
 import '../views/campaign_mode_views/campaign_role_selection_screen.dart';
 import '../views/campaign_mode_views/campaign_suggestion_initiative_screen.dart';
@@ -166,6 +167,13 @@ class AppRoutes {
       page: () => CampaignFinalCertificationScreen(),
     ),
 
+    GetPage(
+      name: AppRoutes.roleSelection,
+      page: () => RoleSelectionScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => RoleSelectionController());
+      }),
+    ),
 
     GetPage(
       name: suggestionInitiativeScreen,
