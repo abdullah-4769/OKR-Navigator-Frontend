@@ -10,29 +10,28 @@ class HomeController extends GetxController {
 
   final List<Map<String, dynamic>> cards = [
     {
-      'titleTop': 'start'.tr,
-      'titleBottom': 'game'.tr,
-      'subtitle': 'start_game_subtitle'.tr,
-      'cta': 'tap_to_start'.tr,
+      'titleTop': 'start',
+      'titleBottom': 'game',
+      'subtitle': 'start_game_subtitle',
+      'cta': 'tap_to_start',
       'bg': 0xFFC34028,
-
       'bg2': 0xFFB23322,
       'icon': 'assets/images/game.svg',
     },
     {
-      'titleTop': 'join'.tr,
-      'titleBottom': 'challenge'.tr,
-      'subtitle': 'join_challenge_subtitle'.tr,
-      'cta': 'tap_to_join'.tr,
+      'titleTop': 'join',
+      'titleBottom': 'challenge',
+      'subtitle': 'join_challenge_subtitle',
+      'cta': 'tap_to_join',
       'bg': 0xFFBDEFE4,
       'bg2': 0xFFA3E1D4,
       'icon': 'assets/images/join.svg',
     },
     {
-      'titleTop': 'score'.tr,
-      'titleBottom': 'board'.tr,
-      'subtitle': 'scoreboard_subtitle'.tr,
-      'cta': 'tap_to_check'.tr,
+      'titleTop': 'score',
+      'titleBottom': 'board',
+      'subtitle': 'scoreboard_subtitle',
+      'cta': 'tap_to_check',
       'bg': 0xFFC9CBEF,
       'bg2': 0xFFB4B7EA,
       'icon': 'assets/images/score.svg',
@@ -51,18 +50,18 @@ class HomeController extends GetxController {
     try {
       final journeyController = Get.find<JourneyController>();
       journeyController.resetProgress();
-      print('home_journey_reset'.tr);
+      print('✅ Journey progress reset');
     } catch (e) {
-      print('home_journey_reset_error'.trParams({'error': e.toString()}));
+      print('❌ Error resetting journey: $e');
     }
   }
 
   Future<void> _clearPreviousGameData() async {
     try {
       await SharedPrefs.clearGameSessionData();
-      print('home_clear_game_data'.tr);
+      print('✅ Previous game data cleared');
     } catch (e) {
-      print('home_clear_game_data_error'.trParams({'error': e.toString()}));
+      print('❌ Error clearing game data: $e');
     }
   }
 
@@ -90,7 +89,8 @@ class HomeController extends GetxController {
   }
 
   void goNext() {
-    if (pageController.hasClients && selectedCardIndex.value < cards.length - 1) {
+    if (pageController.hasClients &&
+        selectedCardIndex.value < cards.length - 1) {
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -110,15 +110,21 @@ class HomeController extends GetxController {
   void onTapCTA() {
     switch (selectedCardIndex.value) {
       case 0:
+        // Start Game - Navigate to GameMode selection
+        print('🎮 Navigating to Game Mode Selection');
         Get.toNamed(AppRoutes.gameMode);
         break;
 
       case 1:
+        // Join Challenge
+        print('🏆 Joining Challenge Mode');
         _saveChallengeMode();
         Get.toNamed(AppRoutes.joinChallengeScreen);
         break;
 
       case 2:
+        // Scoreboard
+        print('📊 Navigating to Scoreboard');
         Get.toNamed(AppRoutes.scoreboardScreen);
         break;
     }
@@ -127,12 +133,12 @@ class HomeController extends GetxController {
   Future<void> _saveChallengeMode() async {
     try {
       await SharedPrefs.saveGameMode('challenge');
-      print('home_challenge_mode_saved'.tr);
+      print('✅ Challenge mode saved');
 
       final savedMode = await SharedPrefs.getGameMode();
-      print('home_challenge_mode_verified'.trParams({'mode': savedMode ?? 'null'}));
+      print('✅ Challenge mode verified: $savedMode');
     } catch (e) {
-      print('home_challenge_mode_error'.trParams({'error': e.toString()}));
+      print('❌ Error saving challenge mode: $e');
     }
   }
 

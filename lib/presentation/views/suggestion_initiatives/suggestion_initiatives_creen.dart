@@ -233,35 +233,35 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
                           descController: viewModel.secondInitiativeDesc,
                         ),
 
-                        // ✅ ADDED: Hint for 3rd initiative in adaptation screen
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: _getHorizontalPadding(screenWidth)),
-                          child: Container(
-                            padding: EdgeInsets.all(16.w),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryBlue.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12.r),
-                              border: Border.all(color: AppColors.primaryBlue.withOpacity(0.3)),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.info_outline, color: AppColors.primaryBlue, size: 20.w),
-                                SizedBox(width: 12.w),
-                                Expanded(
-                                  child: Text(
-                                    'hint_third_initiative_adaptation'.tr,
-                                    style: TextStyle(
-                                      fontSize: 12.sp,
-                                      color: AppColors.primaryBlue,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: AppDimensions.d12.h),
+                        // // ✅ ADDED: Hint for 3rd initiative in adaptation screen
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(horizontal: _getHorizontalPadding(screenWidth)),
+                        //   child: Container(
+                        //     padding: EdgeInsets.all(16.w),
+                        //     decoration: BoxDecoration(
+                        //       color: AppColors.primaryBlue.withOpacity(0.1),
+                        //       borderRadius: BorderRadius.circular(12.r),
+                        //       border: Border.all(color: AppColors.primaryBlue.withOpacity(0.3)),
+                        //     ),
+                        //     child: Row(
+                        //       children: [
+                        //         // Icon(Icons.info_outline, color: AppColors.primaryBlue, size: 20.w),
+                        //         // SizedBox(width: 12.w),
+                        //         // Expanded(
+                        //         //   child: Text(
+                        //         //     'hint_third_initiative_adaptation'.tr,
+                        //         //     style: TextStyle(
+                        //         //       fontSize: 12.sp,
+                        //         //       color: AppColors.primaryBlue,
+                        //         //       fontStyle: FontStyle.italic,
+                        //         //     ),
+                        //         //   ),
+                        //         // ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        // SizedBox(height: AppDimensions.d12.h),
                       ],
 
                       SizedBox(height: AppDimensions.d12.h),
@@ -333,44 +333,44 @@ class _SuggestionInitiativesScreenState extends State<SuggestionInitiativesScree
     return Column(
       children: [
         // Show message that user is viewing existing initiatives
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: _getHorizontalPadding(MediaQuery.of(Get.context!).size.width)),
-          child: Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: AppColors.primaryBlue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: AppColors.primaryBlue.withOpacity(0.3)),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.visibility, color: AppColors.primaryBlue, size: 20.w),
-                    SizedBox(width: 12.w),
-                    Text(
-                      'viewing_existing_initiatives'.tr,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryBlue,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  'hint_third_initiative_adaptation'.tr,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.primaryBlue,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: 16.h),
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: _getHorizontalPadding(MediaQuery.of(Get.context!).size.width)),
+        //   child: Container(
+        //     padding: EdgeInsets.all(16.w),
+        //     decoration: BoxDecoration(
+        //       color: AppColors.primaryBlue.withOpacity(0.1),
+        //       borderRadius: BorderRadius.circular(12.r),
+        //       border: Border.all(color: AppColors.primaryBlue.withOpacity(0.3)),
+        //     ),
+        //     child: Column(
+        //       children: [
+        //         Row(
+        //           children: [
+        //             Icon(Icons.visibility, color: AppColors.primaryBlue, size: 20.w),
+        //             SizedBox(width: 12.w),
+        //             Text(
+        //               'viewing_existing_initiatives'.tr,
+        //               style: TextStyle(
+        //                 fontSize: 14.sp,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: AppColors.primaryBlue,
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //         SizedBox(height: 8.h),
+        //         Text(
+        //           'hint_third_initiative_adaptation'.tr,
+        //           style: TextStyle(
+        //             fontSize: 12.sp,
+        //             color: AppColors.primaryBlue,
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        // SizedBox(height: 16.h),
 
         // Show user's existing initiatives (read-only or editable based on your needs)
         CustomInitiativeInput(

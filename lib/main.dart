@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +12,8 @@ import 'core/app_binding.dart';
 import 'core/app_theme.dart';
 import 'core/localization/app_translation.dart';
 import 'core/localization/localization_services.dart';
+import 'data/datasources/auth_api.dart';
+import 'data/repositories/auth_repository.dart';
 import 'data/repositories/key_results_repo.dart';
 import 'data/repositories/storage_repository.dart';
 import 'generated/network.dart';
@@ -23,7 +26,6 @@ import 'services/shared_preference.dart';
 /// ---------------------------------------------------------------------------
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Initialise Firebase **inside** the background isolate
   await Firebase.initializeApp();
   debugPrint("FCM background message: ${message.messageId}");
 }
@@ -32,67 +34,48 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 /// 2. Main entry point
 /// ---------------------------------------------------------------------------
 Future<void> main() async {
-  // -------------------------------------------------
-  // Ensure Flutter is ready before any native call
-  // -------------------------------------------------
   WidgetsFlutterBinding.ensureInitialized();
-
-  // -------------------------------------------------
-  // 1. Initialise Firebase (once)
-  // -------------------------------------------------
   await Firebase.initializeApp();
+  await GetStorage.init();
+  await SharedPrefs.init();
 
-  // -------------------------------------------------
-  // 2. Initialise async storage / prefs
-  // -------------------------------------------------
-  await Future.wait([
-    GetStorage.init(),
-    SharedPrefs.init(),
-  ]);
-
-  // -------------------------------------------------
-  // 3. Register **permanent** dependencies
-  // -------------------------------------------------
+  // 1. Storage repository
   Get.put(StorageRepository(), permanent: true);
 
-  // DioClient is async – wrap in Get.putAsync
-  await Get.putAsync<DioClient>(() async {
+  // 2. DioClient
+  final dioClient = await Get.putAsync<DioClient>(() async {
     final client = DioClient();
     await client.init();
     return client;
   }, permanent: true);
 
-  // -------------------------------------------------
-  // 4. Register permanent controllers
-  // -------------------------------------------------
+  // 3. AuthApi
+  Get.put<AuthApi>(AuthApi(dioClient.dio), permanent: true);
+
+  // 4. AuthRepository
+  Get.put<AuthRepository>(AuthRepository(Get.find<AuthApi>()), permanent: true);
+
+  // 5. Other controllers
   Get.put(GameModeController(), permanent: true);
   Get.put(JourneyController(), permanent: true);
 
-  // -------------------------------------------------
-  // 5. Lazy-put services that may be recreated
-  // -------------------------------------------------
+  // 6. Other services
   Get.lazyPut<KeyResultService>(() => KeyResultService(), fenix: true);
   Get.lazyPut<KeyResultRepository>(() => KeyResultRepository(), fenix: true);
 
-  // -------------------------------------------------
-  // 6. Initialise localisation (await required)
-  // -------------------------------------------------
+  // 7. Localization
   final localizationService = LocalizationService();
   await localizationService.init();
 
-  // -------------------------------------------------
-  // 7. Register FCM background handler
-  // -------------------------------------------------
+  // 8. FCM
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // -------------------------------------------------
-  // 8. Run the app
-  // -------------------------------------------------
+  // 9. Run app
   runApp(MyApp(localizationService: localizationService));
 }
 
 /// ---------------------------------------------------------------------------
-/// 3. Root widget
+/// 3. Root Widget
 /// ---------------------------------------------------------------------------
 class MyApp extends StatelessWidget {
   final LocalizationService localizationService;
@@ -106,17 +89,19 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       useInheritedMediaQuery: true,
-      builder: (context, child) => Obx(() => GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Game App',
-        translations: AppTranslations(),
-        locale: localizationService.currentLocale,
-        fallbackLocale: const Locale('en'),
-        initialBinding: AppBindings(),
-        initialRoute: AppRoutes.splash0,
-        getPages: AppRoutes.pages,
-        theme: appTheme,
-      )),
+      builder: (context, child) => Obx(
+            () => GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Game App',
+          translations: AppTranslations(),
+          locale: localizationService.currentLocale,
+          fallbackLocale: const Locale('en'),
+          initialBinding: AppBindings(),
+          initialRoute: AppRoutes.splash0,
+          getPages: AppRoutes.pages,
+          theme: appTheme,
+        ),
+      ),
     );
   }
 }

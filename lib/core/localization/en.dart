@@ -20,6 +20,9 @@ final Map<String, String> en = {
   'success': 'Success',
   'redirected_home': 'Redirected to home screen',
   'select': 'Select',
+  'current_focus':'Current Focus',
+  'strategic_initiative':'Strategic Initiative',
+  'add_initiatives_to_continue':'Add Initiatives To Continue',
   'key_results': 'Key Results',
   'selected_objective': 'Selected Objective',
   'select_key_results': 'Select Key Results',
@@ -36,6 +39,11 @@ final Map<String, String> en = {
   'adapting_to_challenge': 'Adapting to Challenge',
   'retry_attempt': 'Retry Attempt',
   'try_again_with': 'Try Again With',
+  'solo_mode': 'Solo Mode',
+  'team_mode': 'Team Mode',
+  'campaign_mode': 'Campaign Mode',
+  'challenge_mode': 'Challenge Mode',
+
   // Initiatives Screen Strings
   'revise': 'Revise',
   'revise_initiatives_subtitle': 'Update your initiatives to address the market challenge',
@@ -59,7 +67,18 @@ final Map<String, String> en = {
   'submitting': 'Submitting...',
   'save_revisions': 'Save Revisions',
   'submit_analysis': 'Submit Analysis',
+  "ready_for_solo_mode": "Ready for Solo Mode!",
+  "ready_for_team_mode": "Ready for Team Mode!",
+  "ready_for_campaign_mode": "Ready for Campaign Mode!",
 
+  "solo_mode_description": "Challenge yourself and improve your skills individually. Play at your own pace and master the game!",
+  "team_mode_description": "Work together with your team to achieve common goals. Collaborate and strategize for success!",
+  "campaign_mode_description": "Engage in structured missions with progressive difficulty. Complete challenges and unlock rewards!",
+
+  // Existing keys (make sure these exist)
+  "welcome_to_okr_navigator": "Welcome to OKR Navigator",
+  "start_screen_description": "Your journey to mastering OKRs begins here. Let's get started!",
+  "swipe_to_start": "Swipe to Start",
   // Header texts
   'suggestion': 'Suggestion',
   'of_initiatives': 'of Initiatives',
@@ -179,7 +198,11 @@ final Map<String, String> en = {
   'german': 'German',
   'italian': 'Italian',
   'afrikaans': 'Afrikaans',
-
+"Good":"Good",
+  "Perfect":"Perfect",
+  "Excellent":"Excellent",
+  "Average":"Average",
+  "Needs Improvement":"Needs Improvement",
 // Home Screen
   'certificate': 'Certificate',
 
@@ -336,7 +359,7 @@ final Map<String, String> en = {
 
   // ---------- Team Objective Screen ----------
   'choose': 'Choose',
-  'objective': 'Your Objective',
+  'objective': 'Objective',
   'selected_strategy': 'Selected Strategy',
   'development_new_markets': 'Development of New Markets',
   'objective_description':
@@ -587,7 +610,7 @@ final Map<String, String> en = {
   'readjust_strategy': 'Readjust your strategy to challenge. Select which elements to modify',
   'current_strategy': 'Current Strategy',
   'development_new_markets': 'Development of New Markets',
-  'objective': 'Objective',
+
   'expand_emerging_markets': 'Expand into emerging markets',
   'key_results': 'Key Results',
   'achieve_5m_revenue': 'Achieve \$5M Revenue from New Products',
@@ -1101,7 +1124,7 @@ final Map<String, String> en = {
   'title_master_adapter': 'Title Master Adapter',
 
   'choose': 'Choose',
-  'objective': 'Your Objective',
+
   'selected_strategy': 'Selected Strategy',
   'development_new_markets': 'Development of New Markets',
   'objective_description':
@@ -1823,7 +1846,7 @@ final Map<String, String> en = {
 
   // ---------- Team Objective Screen ----------
   'choose': 'Choose',
-  'objective': 'Your Objective',
+
   'selected_strategy': 'Selected Strategy',
   'development_new_markets': 'Development of New Markets',
   'objective_description':
@@ -2064,7 +2087,7 @@ final Map<String, String> en = {
   "readjust_strategy": "Readjust your strategy to challenge. Select which elements to modify",
   "current_strategy": "Current Strategy",
   "development_new_markets": "Development of New Markets",
-  "objective": "Objective",
+
   "expand_emerging_markets": "Expand into emerging markets",
   "key_results": "Key Results",
   "achieve_5m_revenue": "Achieve \$5M Revenue from New Products",
@@ -2538,7 +2561,7 @@ final Map<String, String> en = {
   "Focus on expanding into untapped markets to drive sustainable growth and increase market share.",
   "campaign": "I am Taking\nMy Certification",
   "mode": "Mode",
-  "camp":"Campaign",
+
   "you_are_navigator": "You are Navigator",
   "navigator_mission": "Navigator Mission",
   "navigator_mission_desc":
@@ -2614,7 +2637,6 @@ final Map<String, String> en = {
 // Game Mode Texts
   'solo': 'Solo',
   'challenge': 'Challenge',
-  'campaign': 'Campaign',
 
 // Score Decision Texts
   'strategic_master': 'Strategic Master',
@@ -2678,7 +2700,7 @@ final Map<String, String> en = {
   "title_master_adapter": "Title Master Adapter",
 
   'choose': 'Choose',
-  'objective': 'Your Objective',
+
   'selected_strategy': 'Selected Strategy',
   'development_new_markets': 'Development of New Markets',
   'objective_description':
@@ -3021,6 +3043,27 @@ final Map<String, String> en = {
   'view_manage_profile': 'View and manage your profile information.',
   'my_profile': 'My Profile',
   'continue_with_google': 'Continue with Google',
-
+  'your': 'Your',
+  'certification': 'Certification',
+  'loading_certifications': 'Loading your certifications...',
+  'failed_load_certifications': 'Failed to load certifications',
+  'try_again': 'Try Again',
+  'no_certification_data': 'No certification data available',
+  'earned_certifications': 'Earned Certifications',
+  'earned': 'Earned',
+  'in_progress': 'In Progress',
+  'available': 'Available',
+  'available_to_start': 'Available to Start',
+  'start': 'Start',
+  "leadership_excellence": "Leadership\nExcellence",
+  "leadership_excellence_desc": "Long-term objective setting and planning",
+  "stakeholder_management": "Stakeholder\nManagement",
+  "stakeholder_management_desc": "Effective communication and relationship",
+  "fetching_certifications": "Fetching certification information...",
+  "certification_fetched": "Certification info fetched successfully!",
+  "earned": "Earned",
+  "in_progress": "In Progress",
+  "total": "Total",
+  "error_fetching_certifications": "Error in fetching certification information"
 
 };

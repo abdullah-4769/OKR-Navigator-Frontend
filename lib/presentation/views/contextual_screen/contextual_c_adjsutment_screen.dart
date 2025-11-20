@@ -532,56 +532,56 @@ class _ContextualCAdjustmentScreenState extends State<ContextualCAdjustmentScree
                       // Update the test button to actually save data
                       // ✅ TEST BUTTON - For debugging navigation (USES REAL DYNAMIC DATA)
                       SizedBox(height: height * 0.02),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: height * 0.05.h),
-                          child: CustomButton(
-                            text: "Test Save Real Data & Navigate",
-                            backgroundColor: AppColors.primaryGreen,
-                            onPressed: () async {
-                              print('🧪 TEST BUTTON: Starting REAL DATA test flow...');
-
-                              try {
-                                // 1. First run a quick adaptation analysis to get REAL data
-                                final strategy = await _getDefaultStrategy();
-                                final objective = await _getDefaultObjective();
-
-                                print('🧪 Running quick adaptation analysis for REAL data...');
-                                await adaptationViewModel.submitAdaptationAnalysis(
-                                  strategy: strategy,
-                                  objective: objective,
-                                  keyResult: 'Test Key Result',
-                                  challenge: 'Market Adaptation Challenge',
-                                  proposal: 'Strategic market analysis and adaptation plan',
-                                );
-
-                                // 2. Wait for analysis to complete and data to be saved
-                                await Future.delayed(Duration(seconds: 2));
-
-                                // 3. Check if we have real data
-                                if (adaptationViewModel.hasData) {
-                                  final realScore = adaptationViewModel.evaluationData.value!.score;
-                                  final realFeedback = adaptationViewModel.evaluationData.value!.feedback;
-                                  print('✅ REAL DATA OBTAINED - Score: $realScore, Feedback: $realFeedback');
-                                } else {
-                                  print('⚠️ No real data from analysis, using test save');
-                                  await adaptationViewModel.saveTestScoreToDatabase();
-                                }
-
-                                // 4. Then navigate
-                                await _testNavigationBasedOnMode();
-
-                                print('✅ TEST BUTTON: Real data test flow completed');
-                              } catch (e) {
-                                print('❌ Error in test flow: $e');
-                                // Fallback: save test score and navigate
-                                await adaptationViewModel.saveTestScoreToDatabase();
-                                await _testNavigationBasedOnMode();
-                              }
-                            },
-                          ),
-                        ),
-                      ),
+                      // Center(
+                      //   child: Padding(
+                      //     padding: EdgeInsets.symmetric(horizontal: height * 0.05.h),
+                      //     child: CustomButton(
+                      //       text: "Test Save Real Data & Navigate",
+                      //       backgroundColor: AppColors.primaryGreen,
+                      //       onPressed: () async {
+                      //         print('🧪 TEST BUTTON: Starting REAL DATA test flow...');
+                      //
+                      //         try {
+                      //           // 1. First run a quick adaptation analysis to get REAL data
+                      //           final strategy = await _getDefaultStrategy();
+                      //           final objective = await _getDefaultObjective();
+                      //
+                      //           print('🧪 Running quick adaptation analysis for REAL data...');
+                      //           await adaptationViewModel.submitAdaptationAnalysis(
+                      //             strategy: strategy,
+                      //             objective: objective,
+                      //             keyResult: 'Test Key Result',
+                      //             challenge: 'Market Adaptation Challenge',
+                      //             proposal: 'Strategic market analysis and adaptation plan',
+                      //           );
+                      //
+                      //           // 2. Wait for analysis to complete and data to be saved
+                      //           await Future.delayed(Duration(seconds: 2));
+                      //
+                      //           // 3. Check if we have real data
+                      //           if (adaptationViewModel.hasData) {
+                      //             final realScore = adaptationViewModel.evaluationData.value!.score;
+                      //             final realFeedback = adaptationViewModel.evaluationData.value!.feedback;
+                      //             print('✅ REAL DATA OBTAINED - Score: $realScore, Feedback: $realFeedback');
+                      //           } else {
+                      //             print('⚠️ No real data from analysis, using test save');
+                      //             await adaptationViewModel.saveTestScoreToDatabase();
+                      //           }
+                      //
+                      //           // 4. Then navigate
+                      //           await _testNavigationBasedOnMode();
+                      //
+                      //           print('✅ TEST BUTTON: Real data test flow completed');
+                      //         } catch (e) {
+                      //           print('❌ Error in test flow: $e');
+                      //           // Fallback: save test score and navigate
+                      //           await adaptationViewModel.saveTestScoreToDatabase();
+                      //           await _testNavigationBasedOnMode();
+                      //         }
+                      //       },
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: height * 0.02),
 
                       // ✅ Retry counter display

@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:game_app/data/network/app_url.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../generated/models/responses/auth/login_response.dart';
@@ -40,8 +42,8 @@ class StorageRepository extends GetxService {
   /// Clear saved user
   Future<void> clearUser() async => await _prefs.remove(_userDataKey);
 
-  /// Convert Firebase User to app User model
-  User firebaseUserToAppUser(firebaseUser) {
+/// Convert Firebase User to app User model
+User firebaseUserToAppUser(fb.User firebaseUser) {
     return User(
       id: firebaseUser.uid,
       name: firebaseUser.displayName ?? '',
@@ -50,15 +52,30 @@ class StorageRepository extends GetxService {
   }
 
   // ------------------------------
-  // Token Methods
-  // ------------------------------
 
-  /// Get access token
+
+
+
+  // Clear saved user
+
+  // Save access token
+  Future<void> saveAccessToken(String token) async {
+    await _prefs.write(_accessTokenKey, token);
+  }
+
+  // Get access token
   String? getAccessToken() => _prefs.read(_accessTokenKey);
 
-  /// Save access token
-  Future<void> saveAccessToken(String token) async =>
-      await _prefs.write(_accessTokenKey, token);
+  // Clear all user data
+  Future<void> clearAllUserData() async {
+    await _prefs.erase();
+  }
+
+
+
+  /// Get access token
+
+
 
   /// Clear access token
   Future<void> clearAccessToken() async => await _prefs.remove(_accessTokenKey);
@@ -106,5 +123,5 @@ class StorageRepository extends GetxService {
   // Clear All Data
   // ------------------------------
 
-  Future<void> clearAllUserData() async => await _prefs.erase();
+
 }

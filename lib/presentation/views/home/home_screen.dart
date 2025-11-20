@@ -423,12 +423,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(
-                                      Icons.stars,
-                                      size: 64.sp,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(height: 16.h),
+
                                     Text(
                                       'bonus_mode_title'.tr,
                                       style: TextStyle(
@@ -487,12 +482,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.stars,
-                                color: Colors.white,
-                                size: 16.sp,
-                              ),
-                              SizedBox(width: 4.w),
+                              // Icon(
+                              //   Icons.stars,
+                              //   color: Colors.white,
+                              //   size: 16.sp,
+                              // ),
+                              // SizedBox(width: 4.w),
                               Text(
                                 "bonus_mode_label".tr,
                                 style: TextStyle(
@@ -715,7 +710,7 @@ class _CardItemState extends State<_CardItem> with SingleTickerProviderStateMixi
                     TextSpan(
                       text: '${widget.cardData['titleTop'].toString().tr}\n',
                       style: TextStyle(
-                        fontSize: 40.sp,
+                        fontSize: 34.sp,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
                       ),
@@ -723,7 +718,7 @@ class _CardItemState extends State<_CardItem> with SingleTickerProviderStateMixi
                     TextSpan(
                       text: widget.cardData['titleBottom'].toString().tr,
                       style: TextStyle(
-                        fontSize: 34.sp,
+                        fontSize: 30.sp,
                         fontWeight: FontWeight.w800,
                         color: Colors.black.withValues(alpha: 0.5),
                       ),

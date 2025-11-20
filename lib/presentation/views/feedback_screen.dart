@@ -260,15 +260,15 @@ class FeedbackScreen extends StatelessWidget {
       // Determine title based on converted overall score
       String title;
       if (overallScore30 >= 27) {
-        title = "Perfect";
+        title = "Perfect".tr;
       } else if (overallScore30 >= 24) {
-        title = "Excellent";
+        title = "Excellent".tr;
       } else if (overallScore30 >= 21) {
-        title = "Good";
+        title = "Good".tr;
       } else if (overallScore30 >= 18) {
-        title = "Average";
+        title = "Average".tr;
       } else {
-        title = "Needs Improvement";
+        title = "Needs Improvement".tr;
       }
 
       print('🎯 Converting scores for bonus mode:');
@@ -583,8 +583,8 @@ class FeedbackScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title.tr,
@@ -595,6 +595,7 @@ class FeedbackScreen extends StatelessWidget {
                 color: Colors.black87,
               ),
             ),
+            SizedBox(height: 4.h), // Small spacing between title and rating
             Text(
               rating.tr,  // Translate to French if locale is FR
               style: TextStyle(
@@ -619,7 +620,6 @@ class FeedbackScreen extends StatelessWidget {
       ],
     );
   }
-
   Widget _buildCertificationButton() {
     return GestureDetector(
       onTap: () {

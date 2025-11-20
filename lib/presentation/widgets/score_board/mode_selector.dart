@@ -36,13 +36,13 @@ class ModeSelectorWidget extends StatelessWidget {
                 controller,
               ),
               _buildModeButton(
-                'Campaign'.tr,
+                'camp'.tr,
                 GameMode.campaign,
                 controller.selectedMode.value == GameMode.campaign,
                 controller,
               ),
               _buildModeButton(
-                'Challenge'.tr,
+                'challenge'.tr,
                 GameMode.challenge,
                 controller.selectedMode.value == GameMode.challenge,
                 controller,

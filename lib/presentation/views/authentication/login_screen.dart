@@ -183,16 +183,15 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
 
-// Replace the Google Sign-In button section in your LoginScreen with this:
 
                       SizedBox(height: screenHeight * 0.04),
 
                       /// -------- GOOGLE SIGN IN BUTTON --------
                       /// -------- GOOGLE SIGN IN BUTTON --------
-                      Obx(() => InkWell(
-                        onTap: googlelogin.isGoogleLoading.value
+                      Obx(()  => InkWell(
+                        onTap: controller.isGoogleLoading.value
                             ? null
-                            : () => googlelogin.loginWithGoogle(),
+                            : () => controller.loginWithGoogle(),
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           height: 45.h,

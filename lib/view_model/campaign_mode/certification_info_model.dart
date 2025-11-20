@@ -16,13 +16,13 @@ class CertificationInfoViewModel extends GetxController {
   // Available certifications (static data as per your design)
   final List<Map<String, dynamic>> availableCertifications = [
     {
-      'title': 'Leadership\nExcellence',
-      'description': 'Long-term objective setting and planning',
+      'title': 'leadership_excellence'.tr,
+      'description': 'leadership_excellence_desc'.tr,
       'icon': Icons.military_tech,
     },
     {
-      'title': 'Stakeholder\nManagement',
-      'description': 'Effective communication and relationship',
+      'title': 'stakeholder_management'.tr,
+      'description': 'stakeholder_management_desc'.tr,
       'icon': Icons.groups,
     },
   ];
@@ -32,18 +32,18 @@ class CertificationInfoViewModel extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      print('📍 Fetching certification information...');
+      print('📍 ${'fetching_certifications'.tr}');
 
       final result = await _repository.getCertificationInfo();
       _certificationInfo.value = result;
 
-      print('✅ Certification info fetched successfully!');
-      print('📊 Earned: ${result.progress.earned}, In Progress: ${result.progress.inProgress}, Total: ${result.progress.total}');
-      print('🏆 Certifications: ${result.certifications.length}');
+      print('✅ ${'certification_fetched'.tr}');
+      print('📊 ${'earned'.tr}: ${result.progress.earned}, ${'in_progress'.tr}: ${result.progress.inProgress}, ${'total'.tr}: ${result.progress.total}');
+      print('🏆 ${result.certifications.length} certifications');
 
     } catch (e) {
       errorMessage.value = e.toString();
-      print('❌ Error in fetchCertificationInfo: $e');
+      print('❌ ${'error_fetching_certifications'.tr}: $e');
 
       // Set default data on error
       _certificationInfo.value = CertificationInfoResponse(

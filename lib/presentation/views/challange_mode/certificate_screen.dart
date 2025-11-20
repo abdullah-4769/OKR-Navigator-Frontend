@@ -31,7 +31,18 @@ class CertificationScreen extends StatelessWidget {
     );
   }
 }
-
+// 'your': 'Your',
+// 'certification': 'Certification',
+// 'loading_certifications': 'Loading your certifications...',
+// 'failed_load_certifications': 'Failed to load certifications',
+// 'try_again': 'Try Again',
+// 'no_certification_data': 'No certification data available',
+// 'earned_certifications': 'Earned Certifications',
+// 'earned': 'Earned',
+// 'in_progress': 'In Progress',
+// 'available': 'Available',
+// 'available_to_start': 'Available to Start',
+// 'start': 'Start',
 class _ResponsiveCertificationScreen extends StatefulWidget {
   final BoxConstraints constraints;
   final Orientation orientation;
@@ -172,8 +183,8 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
     return Column(
       children: [
         CustomHeader(
-          title: 'Your',
-          highlightedText: 'Certification',
+          title: 'your'.tr,
+          highlightedText: 'certification'.tr,
           onBackTap: () => Get.back(),
         ),
         SizedBox(height: 50.h),
@@ -182,7 +193,7 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
         ),
         SizedBox(height: 16.h),
         Text(
-          'Loading your certifications...',
+          'loading_certifications'.tr,
           style: TextStyle(
             fontSize: 16.sp,
             color: AppColors.primaryRed,
@@ -196,8 +207,8 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
     return Column(
       children: [
         CustomHeader(
-          title: 'Your',
-          highlightedText: 'Certification',
+          title: 'your'.tr,
+          highlightedText: 'certification'.tr,
           onBackTap: () => Get.back(),
         ),
         SizedBox(height: 50.h),
@@ -208,7 +219,7 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
         ),
         SizedBox(height: 16.h),
         Text(
-          'Failed to load certifications',
+          'failed_load_certifications'.tr,
           style: TextStyle(
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
@@ -231,7 +242,7 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
             backgroundColor: AppColors.primaryRed,
             foregroundColor: Colors.white,
           ),
-          child: Text('Try Again'),
+          child: Text('try_again'.tr),
         ),
       ],
     );
@@ -241,13 +252,13 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
     return Column(
       children: [
         CustomHeader(
-          title: 'Your',
-          highlightedText: 'Certification',
+          title: 'your'.tr,
+          highlightedText: 'certification'.tr,
           onBackTap: () => Get.back(),
         ),
         SizedBox(height: 50.h),
         Text(
-          'No certification data available',
+          'no_certification_data'.tr,
           style: TextStyle(fontSize: 16.sp),
         ),
       ],
@@ -262,8 +273,8 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomHeader(
-          title: 'Your',
-          highlightedText: 'Certification',
+          title: 'your'.tr,
+          highlightedText: 'certification'.tr,
           onBackTap: () => Get.back(),
         ),
 
@@ -299,9 +310,9 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
   Widget _buildStatsRow(ProgressInfo progress) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      _buildStatCard(progress.earned.toString(), 'Earned', Color(0xff00233B)),
-      _buildStatCard(progress.inProgress.toString(), 'In Progress', Color(0xff00233B)),
-      _buildStatCard(progress.total.toString(), 'Available', Color(0xff00233B)),
+      _buildStatCard(progress.earned.toString(), 'earned'.tr, Color(0xff00233B)),
+      _buildStatCard(progress.inProgress.toString(), 'in_progress'.tr, Color(0xff00233B)),
+      _buildStatCard(progress.total.toString(), 'available'.tr, Color(0xff00233B)),
     ],
   );
 
@@ -349,7 +360,7 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
           ),
           SizedBox(width: 12),
           Text(
-            'Earned Certifications',
+            'earned_certifications'.tr,
             style: TextStyle(
               fontSize: getResponsiveFont(mobile: 18, tablet: 20, desktop: 22, largeDesktop: 24, ultraWide: 26),
               fontWeight: FontWeight.bold,
@@ -494,7 +505,7 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
       ),
       SizedBox(height: 16),
       Text(
-        'Available to Start',
+        'available_to_start'.tr,
         style: TextStyle(
           fontSize: getResponsiveFont(mobile: 18, tablet: 20, desktop: 22, largeDesktop: 24, ultraWide: 26),
           fontWeight: FontWeight.bold,
@@ -545,18 +556,18 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: Color(0xff24387F), borderRadius: BorderRadius.circular(20)),
-                    child: Text(
-                      'Start',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: getResponsiveFont(mobile: 12, tablet: 14, desktop: 16, largeDesktop: 18, ultraWide: 20),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  //   decoration: BoxDecoration(color: Color(0xff24387F), borderRadius: BorderRadius.circular(20)),
+                  //   child: Text(
+                  //     'start'.tr,
+                  //     style: TextStyle(
+                  //       color: Colors.white,
+                  //       fontSize: getResponsiveFont(mobile: 12, tablet: 14, desktop: 16, largeDesktop: 18, ultraWide: 20),
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               SizedBox(height: 4),

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:game_app/data/network/app_url.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:game_app/data/network/app_url.dart';
 
 import '../../generated/models/requests/register_request.dart';
 import '../../generated/models/responses/auth/login_response.dart';
@@ -17,6 +17,4 @@ abstract class AuthApi {
 
   @POST('${AppUrls.signUpUrl}')
   Future<RegisterResponse> register(@Body() RegisterRequest request);
-
-
 }

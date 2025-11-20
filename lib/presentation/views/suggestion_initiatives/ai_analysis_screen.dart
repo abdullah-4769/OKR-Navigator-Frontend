@@ -512,14 +512,14 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
                           ),
                         ),
                         SizedBox(height: screenHeight * 0.001),
-                        SizedBox(height: screenHeight * 0.001),
-                        SizedBox(height: screenHeight * 0.001),
-                        CustomButton(
-                          text: "phase_retry_test".tr,
-                          onPressed: () {
-                            Get.toNamed(AppRoutes.contextualChallenge);
-                          },
-                        ),
+                        // SizedBox(height: screenHeight * 0.001),
+                        // SizedBox(height: screenHeight * 0.001),
+                        // CustomButton(
+                        //   text: "phase_retry_test".tr,
+                        //   onPressed: () {
+                        //     Get.toNamed(AppRoutes.contextualChallenge);
+                        //   },
+                        // ),
                         SizedBox(height: screenHeight * 0.001),
                       ],
                     );

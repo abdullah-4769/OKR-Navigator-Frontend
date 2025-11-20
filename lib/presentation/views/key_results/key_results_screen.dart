@@ -836,50 +836,23 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
   Widget _buildKeyResultItem(KeyResultLatest item, int displayIndex) {
     final originalIndex = keyResultsViewModel.allKeyResults.indexOf(item);
 
-    // 🌀 Random icons list
-    final icons = [
-      Icons.star,
-      Icons.rocket,
-      Icons.lightbulb,
-      Icons.flag,
-      Icons.trending_up,
-      Icons.bar_chart,
-      Icons.thumb_up,
-      Icons.work,
-      Icons.public,
-      Icons.check_circle,
-    ];
+    // Dynamic heading: K1, K2, K3...
+    final heading = 'K${displayIndex + 1}';
 
-    // 🌀 Random tag icons list
-    final tagIcons = [
-      Icons.trending_up,
-      Icons.access_time,
-      Icons.bolt,
-      Icons.show_chart,
-      Icons.schedule,
-      Icons.speed,
-      Icons.insights,
-      Icons.analytics,
-      Icons.multiline_chart,
-      Icons.timeline,
-    ];
-
-    final randomIcon = icons[displayIndex % icons.length];
-    final randomTagIcon1 = tagIcons[(displayIndex + 1) % tagIcons.length];
-    final randomTagIcon2 = tagIcons[(displayIndex + 2) % tagIcons.length];
+    // Only use flag icon for all key results
+    final flagIcon = Icons.flag;
 
     return Obx(() => CustomIndustryContainer(
-      title: _safeTranslate(item.title, fallback: 'Title'),
+      title: heading, // ✅ Set dynamic heading
       description: _safeTranslate(item.description, fallback: 'Available for the selected one'),
-      icon: randomIcon,
+      icon: flagIcon, // Only flag icon
       isSelected: keyResultsViewModel.isSelected(originalIndex),
-      // In _buildKeyResultItem method
       onTap: () {
         keyResultsViewModel.toggleSelection(originalIndex);
         if (keyResultsViewModel.isSelected(originalIndex)) {
-          constellationController.addIcon(randomIcon);
+          constellationController.addIcon(flagIcon); // Add flag icon to constellation
         } else {
-          constellationController.removeIcon(randomIcon);
+          constellationController.removeIcon(flagIcon); // Remove flag icon from constellation
         }
 
         // Update journey progress based on key results selection
@@ -889,15 +862,10 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
           journeyController.uncompleteStep(2); // Mark key results step as incomplete
         }
       },
-      showTag1: true,
-      tag1Icon: randomTagIcon1, // 🔹 Use random tag icon
-      tag1Text: _safeTranslate(item.tag1 ?? '', fallback: ''),
-      showTag2: true,
-      tag2Icon: randomTagIcon2, // 🔹 Use random tag icon
-      tag2Text: _safeTranslate(item.tag2 ?? '', fallback: ''),
+      showTag1: false,
+      showTag2: false,
     ));
   }
-
   String _safeTranslate(String? key, {String fallback = ''}) {
     if (key == null) return fallback;
     try {

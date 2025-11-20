@@ -1,3 +1,4 @@
+// COMPLETE UPDATED KEY_OBJECTIVE_SELECTED_SCREEN.DART
 import 'dart:math' hide log;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,7 @@ import '../../../controllers/strategy_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../../generated/models/responses/objectives/objectives_response.dart';
+import '../../../generated/models/responses/strategy/strategy_response.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_home_navbar.dart';
@@ -28,37 +30,44 @@ class KeyObjectiveSelectedScreen extends StatefulWidget {
 }
 
 class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen> {
+  // ✅ Make args nullable
+  late final Map<String, dynamic>? args;
+  late final StrategyResponse? strategy;
+  late final String? strategyDisplayTitle;
+  late final int? strategyCardIndex;
+
   final TextEditingController searchController = TextEditingController();
   final RxList<Objective> filteredObjectives = RxList<Objective>();
   final KeyObjectiveController controller = Get.find<KeyObjectiveController>();
   final JourneyController journeyController = Get.find<JourneyController>();
   final StrategySelectionController strategyController = Get.find<StrategySelectionController>();
 
-  // ✅ ADD: Scroll controller for the objectives list
   final ScrollController _scrollController = ScrollController();
 
-  // ✅ Track initialization state and source
   bool _isInitialized = false;
   bool _hasShownMessage = false;
 
-  // ✅ Different sources with different behaviors
-  final bool _isRetryFromAnalysis = Get.parameters['isRetry'] == 'true';
-  final bool _isModifyFromContextual = Get.parameters['source'] == 'contextual_challenge';
-  final bool _isNormalFlow = !Get.parameters.containsKey('isRetry') && !Get.parameters.containsKey('source');
+  late final bool _isRetryFromAnalysis;
+  late final bool _isModifyFromContextual;
+  late final bool _isNormalFlow;
 
   @override
   void initState() {
     super.initState();
 
-    print('🎯 Objective Screen Source:');
-    print('   - Retry from Analysis: $_isRetryFromAnalysis');
-    print('   - Modify from Contextual: $_isModifyFromContextual');
-    print('   - Normal Flow: $_isNormalFlow');
+    // ✅ Safely get arguments
+    args = Get.arguments as Map<String, dynamic>?;
 
-    // Initialize filtered objectives
+    strategy = args?['strategy'] as StrategyResponse?;
+    strategyDisplayTitle = args?['strategyDisplayTitle'] as String?;
+    strategyCardIndex = args?['strategyCardIndex'] as int?;
+
+    _isRetryFromAnalysis = Get.parameters['isRetry'] == 'true';
+    _isModifyFromContextual = Get.parameters['source'] == 'contextual_challenge';
+    _isNormalFlow = !_isRetryFromAnalysis && !_isModifyFromContextual;
+
     filteredObjectives.assignAll(controller.objectives);
 
-    // Use delayed initialization to avoid build phase conflicts
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeScreen();
     });
@@ -67,40 +76,29 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
   @override
   void dispose() {
     searchController.dispose();
-    _scrollController.dispose(); // ✅ DISPOSE: Scroll controller
+    _scrollController.dispose();
     super.dispose();
   }
 
   void _initializeScreen() {
     if (_isInitialized) return;
-
     _isInitialized = true;
 
-    // Handle different scenarios with appropriate messages
     if (!_hasShownMessage) {
       _hasShownMessage = true;
-
       Future.delayed(const Duration(milliseconds: 500), () {
         if (_isRetryFromAnalysis) {
-          SnackbarHelper.info(
-              'Please select a different objective to improve your initiatives'
-          );
+          SnackbarHelper.info('Please select a different objective to improve your initiatives');
         } else if (_isModifyFromContextual) {
-          SnackbarHelper.info(
-              'Select a new objective to adapt to the market challenge'
-          );
+          SnackbarHelper.info('Select a new objective to adapt to the market challenge');
         }
-        // No message for normal flow
       });
     }
 
-    // Clear previous selection for retry/modify scenarios
     if (_isRetryFromAnalysis || _isModifyFromContextual) {
       controller.clearSelection();
-      //journeyController.progress.value = 20; // Reset progress
     }
 
-    // Set up objectives listener - safely after build
     ever(controller.objectives, (_) {
       if (mounted) {
         filteredObjectives.assignAll(controller.objectives);
@@ -110,32 +108,24 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       }
     });
 
-    // Load objectives if needed
     _loadObjectivesIfNeeded();
   }
 
   void _loadObjectivesIfNeeded() {
-    final args = Get.arguments as Map<String, dynamic>?;
     final selectedRole = args?['selectedRole'] as Map<String, dynamic>?;
     final selectedIndustry = args?['selectedIndustry'] as Map<String, dynamic>?;
     final isCampaignMode = args?['isCampaignMode'] as bool? ?? false;
 
-    // ✅ ONLY FETCH FOR NORMAL FLOW (from strategy screen)
     if (_isNormalFlow) {
-      print('🔄 Normal flow detected - Fetching fresh objectives from API');
       _fetchObjectives(selectedRole, selectedIndustry, isCampaignMode);
       return;
     }
 
-    // ✅ FOR RETRY/MODIFY - Use existing objectives
     if (_isRetryFromAnalysis || _isModifyFromContextual) {
       if (controller.objectives.isNotEmpty) {
-        print('♻️ Reusing existing ${controller.objectives.length} objectives for ${_isRetryFromAnalysis ? "retry" : "modify"} scenario');
         filteredObjectives.assignAll(controller.objectives);
         return;
       } else {
-        // Fallback: If somehow objectives are empty, fetch them
-        print('⚠️ No existing objectives found, fetching as fallback...');
         _fetchObjectives(selectedRole, selectedIndustry, isCampaignMode);
       }
     }
@@ -147,31 +137,12 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       bool isCampaignMode,
       ) async {
     try {
-      // Show loading message only for normal flow
-      if (_isNormalFlow) {
-        print('📥 Fetching objectives from API...');
-      }
-
-      if (isCampaignMode) {
-        if (selectedRole != null && selectedIndustry != null) {
-          await controller.getObjectives(selectedRole, selectedIndustry);
-          print('✅ Campaign objectives loaded: ${controller.objectives.length}');
-        } else {
-          SnackbarHelper.error('Missing campaign data. Please restart the campaign.');
-        }
+      if (selectedRole != null && selectedIndustry != null) {
+        await controller.getObjectives(selectedRole, selectedIndustry);
       } else {
-        if (selectedRole != null && selectedIndustry != null) {
-          await controller.getObjectives(selectedRole, selectedIndustry);
-          print('✅ Solo objectives loaded: ${controller.objectives.length}');
-        } else {
-          SnackbarHelper.error('Please select both a role and an industry.');
-          await Future.delayed(const Duration(seconds: 1));
-          Get.offAllNamed(AppRoutes.selectStrategy, arguments: {
-            'selectedRole': selectedRole,
-            'selectedIndustry': selectedIndustry,
-            'isCampaignMode': isCampaignMode,
-          });
-        }
+        SnackbarHelper.error('Missing role or industry info.');
+        await Future.delayed(const Duration(seconds: 1));
+        Get.offAllNamed(AppRoutes.selectStrategy, arguments: args);
       }
     } catch (e) {
       print('❌ Error fetching objectives: $e');
@@ -206,57 +177,53 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
   }
 
   String _getStrategyDisplayText() {
-    final strategy = strategyController.selectedStrategy.value;
-    if (strategy == null) {
-      return 'No strategy selected'.tr;
+    if (strategyDisplayTitle != null && strategyDisplayTitle!.isNotEmpty) {
+      return strategyDisplayTitle!;
     }
-    return strategy.title ?? 'Unknown Strategy';
+
+    if (strategyCardIndex != null && strategyCardIndex! >= 0) {
+      final titleFromController = strategyController.getCardTitle(strategyCardIndex!);
+      if (titleFromController != null && titleFromController.isNotEmpty) {
+        return titleFromController;
+      }
+    }
+
+    final controllerStrategy = strategyController.selectedStrategy.value;
+    if (controllerStrategy != null) {
+      final titleFromIndex = strategyController.getCardTitle(strategyController.selectedCardIndex.value);
+      if (titleFromIndex != null && titleFromIndex.isNotEmpty) {
+        return titleFromIndex;
+      }
+    }
+
+    final apiTitle = strategy?.title ?? 'No strategy selected'.tr;
+    return apiTitle;
   }
 
-  // ✅ DYNAMIC HEADER & MESSAGES BASED ON SOURCE
   String _getHeaderTitle() {
-    if (_isRetryFromAnalysis) {
-      return 'try_again_with_different'.tr;
-    } else if (_isModifyFromContextual) {
-      return 'modify'.tr;
-    }
+    if (_isRetryFromAnalysis) return 'try_again_with_different'.tr;
+    if (_isModifyFromContextual) return 'modify'.tr;
     return 'choose'.tr;
   }
 
-  String _getHeaderHighlight() {
-    if (_isRetryFromAnalysis) {
-      return 'objective'.tr;
-    } else if (_isModifyFromContextual) {
-      return 'objective'.tr;
-    }
-    return 'objective'.tr;
-  }
+  String _getHeaderHighlight() => 'objective'.tr;
 
   String _getSubtitleText() {
-    if (_isRetryFromAnalysis) {
-      return 'select_different_objective_retry'.tr;
-    } else if (_isModifyFromContextual) {
-      return 'select_new_objective_for_challenge'.tr;
-    }
+    if (_isRetryFromAnalysis) return 'select_different_objective_retry'.tr;
+    if (_isModifyFromContextual) return 'select_new_objective_for_challenge'.tr;
     return 'select_one_objective'.tr;
   }
 
-  // ✅ Get appropriate button text
   String _getButtonText() {
-    if (_isModifyFromContextual) {
-      return 'save_changes'.tr;
-    }
+    if (_isModifyFromContextual) return 'save_changes'.tr;
     return 'complete_selection'.tr;
   }
 
-  // ✅ Get navigation destination
   void _navigateToNextScreen() {
     if (_isModifyFromContextual) {
-      // Return to contextual challenge screen with updated objective
       Get.back(result: controller.selectedObjective.value);
       SnackbarHelper.success('Objective updated successfully');
     } else {
-      // Normal flow - go to key results
       Get.offAllNamed(AppRoutes.keyResultsScreen);
     }
   }
@@ -268,11 +235,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
     final screenHeight = mediaQuery.size.height;
     final isTablet = screenWidth > 600;
     final isDesktop = screenWidth > 900;
-
-    print('🏗️ Building KeyObjectiveScreen - Source Analysis:');
-    print('   - Retry: $_isRetryFromAnalysis');
-    print('   - Modify: $_isModifyFromContextual');
-    print('   - Normal: $_isNormalFlow');
 
     return Scaffold(
       body: CustomBackground(
@@ -297,10 +259,8 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                             final args = Get.arguments as Map<String, dynamic>?;
 
                             if (_isModifyFromContextual) {
-                              // Just go back to contextual challenge
                               Get.back();
                             } else {
-                              // Normal navigation back
                               Get.offAllNamed(
                                 AppRoutes.selectStrategy,
                                 arguments: {
@@ -314,24 +274,21 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                         ),
                         SizedBox(height: screenHeight * 0.02),
 
-                        // ✅ Selected strategy container
+                        // ✅ FIXED: Strategy display without unnecessary Obx wrapper
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: _getHorizontalPadding(screenWidth),
                           ),
-                          child: Obx(() {
-                            return CustomObjectiveContainer(
-                              title: _safeTranslate('selected_strategy'),
-                              subtitle: _getStrategyDisplayText(),
-                              icon: Icons.emoji_objects,
-                              titleColor: AppColors.primaryRed,
-                            );
-                          }),
+                          child: CustomObjectiveContainer(
+                            title: _safeTranslate('selected_strategy'),
+                            subtitle: _getStrategyDisplayText(),
+                            icon: Icons.emoji_objects,
+                            titleColor: AppColors.primaryRed,
+                          ),
                         ),
 
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.025)),
 
-                        // ✅ Title and subtitle section - DIFFERENT STYLES BASED ON SOURCE
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: _getHorizontalPadding(screenWidth),
@@ -361,7 +318,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                                 ),
                               ),
 
-                              // ✅ SHOW DIFFERENT BADGES BASED ON SOURCE
                               if (_isRetryFromAnalysis) ...[
                                 SizedBox(height: screenHeight * 0.01),
                                 Container(
@@ -405,7 +361,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
 
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.02)),
 
-                        // ✅ Objectives list
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: _getContentPadding(screenWidth, isTablet),
@@ -429,7 +384,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                         ),
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
 
-                        // ✅ Journey map (hide for modification flow)
                         if (!_isModifyFromContextual) ...[
                           Obx(() {
                             return CustomJourneyMap(
@@ -442,8 +396,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                           }),
                           SizedBox(height: _getResponsiveSpacing(screenHeight, 0.03)),
                         ],
-
-                        // ✅ Complete selection button
 
                         SizedBox(height: _getResponsiveSpacing(screenHeight, 0.025)),
                       ],
@@ -463,7 +415,6 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
     );
   }
 
-  // ✅ Helper methods for dynamic styling
   Color _getSubtitleColor() {
     if (_isRetryFromAnalysis) return AppColors.primaryRed;
     if (_isModifyFromContextual) return AppColors.primaryBlue;
@@ -475,10 +426,8 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
     return FontWeight.normal;
   }
 
-  // ✅ SAFE: Build objectives content without nested reactive calls
   Widget _buildObjectivesContent() {
     return Obx(() {
-      // Show loader when fetching objectives for normal flow
       if (controller.loading.value && _isNormalFlow) {
         return Container(
           height: 200.h,
@@ -533,12 +482,12 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: Column(
         children: [
-          SizedBox(height: 2.h), //  Less top spacing
+          SizedBox(height: 2.h),
           Container(
-            decoration: BoxDecoration(color: AppColors.white,
-            borderRadius: BorderRadius.circular(12.r),
-             border: Border.all(color: AppColors.primaryRed, width: 2.w)
-
+            decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: AppColors.primaryRed, width: 2.w)
             ),
             constraints: BoxConstraints(maxHeight: 400.h),
             child: Padding(
@@ -547,30 +496,30 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                 controller: _scrollController,
                 thumbVisibility: true,
                 trackVisibility: true,
-                thickness: 6.w, // ✅ REDUCED: Thinner scrollbar
+                thickness: 6.w,
                 radius: Radius.circular(20.r),
                 child: Obx(() => isTablet && screenWidth > 800
                     ? GridView.builder(
-                  controller: _scrollController, // ✅ ADDED: Scroll controller
+                  controller: _scrollController,
                   shrinkWrap: true,
                   physics: const AlwaysScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 1.2,
-                    crossAxisSpacing: 8.w, // ✅ REDUCED: Less spacing between grid items
-                    mainAxisSpacing: 8.h,  // ✅ REDUCED: Less spacing between grid items
+                    crossAxisSpacing: 8.w,
+                    mainAxisSpacing: 8.h,
                   ),
                   itemCount: filteredObjectives.length,
                   itemBuilder: (context, index) => _buildObjectiveItem(index),
                 )
                     : ListView.builder(
-                  controller: _scrollController, // ✅ ADDED: Scroll controller
+                  controller: _scrollController,
                   shrinkWrap: true,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.only(bottom: 8.h), // ✅ ADDED: Bottom padding for scroll
+                  padding: EdgeInsets.only(bottom: 8.h),
                   itemCount: filteredObjectives.length,
                   itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.only(bottom: 8.h), // ✅ REDUCED: Less spacing between list items
+                    padding: EdgeInsets.only(bottom: 8.h),
                     child: _buildObjectiveItem(index),
                   ),
                 )),
@@ -607,30 +556,26 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
       final isSelected = controller.isSelected(obj);
 
       return Container(
-        margin: EdgeInsets.only(bottom: 2.h), // ✅ REDUCED: Less bottom margin
+        margin: EdgeInsets.only(bottom: 2.h),
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected ? Colors.transparent : Colors.transparent,
-            //width: 2.0, // ✅ REDUCED: Thinner border
           ),
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: CustomIndustryContainer(
-          title: _safeTranslate(titleKey, fallback: 'Title'),
-          description: _safeTranslate(descriptionKey, fallback: 'Available'),
+          title: _safeTranslate(titleKey, fallback: 'Title'.tr),
+          description: _safeTranslate(descriptionKey, fallback: 'Available'.tr),
           icon: _getObjectiveIcon(index),
           isSelected: isSelected,
-          // In _buildObjectiveItem method
           onTap: () {
             controller.selectObjective(obj);
             if (controller.isSelected(obj)) {
-              journeyController.completeStep(1); // Mark objective step as complete
+              journeyController.completeStep(1);
             } else {
-              journeyController.uncompleteStep(1); // Mark objective step as incomplete
+              journeyController.uncompleteStep(1);
             }
           },
-          // ✅ ADD: Remove internal padding if CustomIndustryContainer has too much
-         // padding: EdgeInsets.all(12.w), // Adjust as needed
         ),
       );
     });

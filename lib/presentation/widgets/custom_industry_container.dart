@@ -6,7 +6,7 @@ import '../../core/app_dimensions.dart';
 class CustomIndustryContainer extends StatelessWidget {
   final String title;
   final String description;
-  final IconData icon;
+  final IconData icon; // ✅ Keep parameter for backward compatibility but won't display
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -34,7 +34,7 @@ class CustomIndustryContainer extends StatelessWidget {
     super.key,
     required this.title,
     required this.description,
-    this.icon = Icons.auto_graph_sharp,
+    this.icon = Icons.auto_graph_sharp, // ✅ Keep for compatibility
     required this.isSelected,
     required this.onTap,
     this.showSelectionCircle = true,
@@ -47,8 +47,8 @@ class CustomIndustryContainer extends StatelessWidget {
     this.showTag3 = false,
     this.tag3Icon,
     this.tag3Text,
-    this.extraNote, // ✅ default null
-    this.extraNoteColor, // ✅ default null
+    this.extraNote,
+    this.extraNoteColor,
   });
 
   @override
@@ -75,7 +75,6 @@ class CustomIndustryContainer extends StatelessWidget {
             minWidth: maxWidth * 0.85,
           ),
           decoration: BoxDecoration(
-
             color: AppColors.lightGrey,
             borderRadius: BorderRadius.circular(AppDimensions.d16.r),
             border: Border.all(
@@ -97,33 +96,13 @@ class CustomIndustryContainer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// 🔹 Icon + Title + Selection Circle Row
+              /// 🔹 Title + Selection Circle Row (NO ICON)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(AppDimensions.d10.w),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primaryRed : Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      icon,
-                      size: AppDimensions.d24.w,
-                      color:
-                      isSelected ? Colors.white : AppColors.textSecondary,
-                    ),
-                  ),
-                  SizedBox(width: AppDimensions.d14.w),
+                  /// ✅ REMOVED: Icon container completely removed
 
-                  /// Title Text
+                  /// Title Text - Now takes full width
                   Expanded(
                     child: Text(
                       title,
@@ -139,6 +118,8 @@ class CustomIndustryContainer extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+
+                  SizedBox(width: AppDimensions.d10.w),
 
                   /// ✅ Selection Circle (optional)
                   if (showSelectionCircle)

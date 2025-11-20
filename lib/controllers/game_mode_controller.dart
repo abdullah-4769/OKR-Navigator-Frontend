@@ -44,28 +44,27 @@ class GameModeController extends GetxController {
 
   final List<Map<String, dynamic>> gameModes = [
     {
-      'title': 'solo'.tr,
-      'subtitle': 'Play alone at your own pace'.tr,
+      'title': 'solo',
+      'subtitle': 'Play alone at your own pace',
       'icon': 'assets/images/solop.png',
       'color': const Color(0xFF4ECDC4),
-      'description': 'Challenge yourself and improve your skills individually'.tr,
+      'description': 'Challenge yourself and improve your skills individually',
       'mode': 'solo',
     },
     {
-      'title': 'Team'.tr,
-      'subtitle': 'Collaborate with others'.tr,
+      'title': 'Team',
+      'subtitle': 'Collaborate with others',
       'icon': 'assets/images/teamteam.png',
       'color': const Color(0xFFFF6B6B),
-      'description': 'Work together with your team to achieve common goals'.tr,
+      'description': 'Work together with your team to achieve common goals',
       'mode': 'team',
     },
-
     {
-      'title': 'campaign'.tr,
-      'subtitle': 'Complete missions and progress'.tr,
+      'title': 'campaign',
+      'subtitle': 'Complete missions and progress',
       'icon': 'assets/images/campaign_image.png',
       'color': const Color(0xFF45B7D1),
-      'description': 'Engage in structured missions with progressive difficulty'.tr,
+      'description': 'Engage in structured missions with progressive difficulty',
       'mode': 'campaign',
     },
   ];
@@ -144,7 +143,7 @@ class GameModeController extends GetxController {
     }
   }
 
-  /// Navigate to Pricing screen and store selected mode
+  /// Navigate to StartScreen first, then proceed to PricingScreen
   void navigateToPricingScreen() {
     final selectedGameMode = gameModes[selectedIndex.value]['mode'] as String;
     selectedMode.value = selectedGameMode;
@@ -152,8 +151,15 @@ class GameModeController extends GetxController {
     print('💾 Saving game mode: $selectedGameMode');
     SharedPrefs.saveGameMode(selectedGameMode);
 
-    print('🚀 Navigating to PricingScreen with mode: $selectedGameMode');
-    Get.toNamed(AppRoutes.pricingScreen);
+    print('🚀 Navigating to StartScreen with mode: $selectedGameMode');
+    // ✅ Navigate to StartScreen with game mode info
+    Get.toNamed(
+      AppRoutes.start,
+      arguments: {
+        'fromGameMode': true,
+        'selectedMode': selectedGameMode,
+      },
+    );
   }
 
   /// Get current game mode for external use
@@ -173,20 +179,18 @@ class GameModeController extends GetxController {
         return 'assets/images/solo.svg';
     }
   }
-  // In your Campaign controller
+
   Future<void> verifyGameMode() async {
     final savedMode = await SharedPrefs.getGameMode();
     print('🎮 Current saved game mode: $savedMode');
 
     if (savedMode != 'campaign') {
       print('⚠️ Warning: Campaign screen loaded but saved mode is: $savedMode');
-      // You might want to handle this case - redirect or show error
     } else {
       print('✅ Campaign mode verified successfully');
     }
   }
 
-  // In GameModeController - add this method
   String getCurrentGameMode() {
     return selectedMode.value;
   }
@@ -198,138 +202,4 @@ class GameModeController extends GetxController {
   bool isSoloMode() {
     return selectedMode.value == 'solo';
   }
-
 }
-
-//kjsscoiugasdluvc
-//
-//
-// import 'package:flutter/material.dart';
-// import 'package:game_app/presentation/routes/app_routes.dart';
-// import 'package:get/get.dart';
-//
-// class GameModeController extends GetxController {
-//   final PageController pageController = PageController(viewportFraction: 0.8);
-//   final RxInt selectedIndex = 0.obs;
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // Instead of jumpToPage here, wait for the first frame
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       if (pageController.hasClients) {
-//         pageController.jumpToPage(0); // or whatever index you want
-//       }
-//     });
-//
-//     pageController.addListener(_handlePageChange);
-//   }
-//
-//   void resetGameMode() {
-//     selectedIndex.value = 0;
-//     selectedMode.value = 'solo';
-//     if (pageController.hasClients) {
-//       pageController.jumpToPage(0);
-//     }
-//   }
-//
-//   /// Selected mode for PricingScreen (solo, team, campaign)
-//   final RxString selectedMode = 'solo'.obs;
-//
-//   /// Game modes list with proper asset paths and additional data
-//   final List<Map<String, dynamic>> gameModes = [
-//     {
-//       'title': 'Solo'.tr,
-//       'subtitle': 'Play alone at your own pace'.tr,
-//       'icon': 'assets/images/solo.svg',
-//       'color': const Color(0xFF4ECDC4),
-//       'description':
-//       'Challenge yourself and improve your skills individually'.tr,
-//       'mode': 'solo',
-//     },
-//     {
-//       'title': 'Team'.tr,
-//       'subtitle': 'Collaborate with others'.tr,
-//       'icon': 'assets/images/team.svg',
-//       'color': const Color(0xFFFF6B6B),
-//       'description': 'Work together with your team to achieve common goals'.tr,
-//       'mode': 'team',
-//     },
-//     {
-//       'title': 'Campaign'.tr,
-//       'subtitle': 'Complete missions and progress'.tr,
-//       'icon': 'assets/images/campaign.svg',
-//       'color': const Color(0xFF45B7D1),
-//       'description':
-//       'Engage in structured missions with progressive difficulty'.tr,
-//       'mode': 'campaign',
-//     },
-//   ];
-//
-//
-//
-//   @override
-//   void onClose() {
-//     pageController.removeListener(_handlePageChange);
-//     pageController.dispose();
-//     super.onClose();
-//   }
-//
-//   void _handlePageChange() {
-//     if (pageController.page != null) {
-//       final newIndex = pageController.page!.round();
-//       if (newIndex != selectedIndex.value) {
-//         selectedIndex.value = newIndex;
-//       }
-//     }
-//   }
-//
-//   void onPageChanged(int index) {
-//     selectedIndex.value = index;
-//   }
-//
-//   void nextCard() {
-//     if (selectedIndex.value < gameModes.length - 1) {
-//       selectedIndex.value++;
-//       pageController.animateToPage(
-//         selectedIndex.value,
-//         duration: const Duration(milliseconds: 400),
-//         curve: Curves.easeInOut,
-//       );
-//     }
-//   }
-//
-//   void previousCard() {
-//     if (selectedIndex.value > 0) {
-//       selectedIndex.value--;
-//       pageController.animateToPage(
-//         selectedIndex.value,
-//         duration: const Duration(milliseconds: 400),
-//         curve: Curves.easeInOut,
-//       );
-//     }
-//   }
-//
-//   /// Navigate to Pricing screen and store selected mode
-//   void navigateToPricingScreen() {
-//     final selectedGameMode = gameModes[selectedIndex.value]['mode'] as String;
-//     selectedMode.value = selectedGameMode;
-//     Get.toNamed(AppRoutes.pricingScreen);
-//   }
-//
-//   /// Get relevant SVG asset for PricingScreen
-//   String get modeSvg {
-//     switch (selectedMode.value) {
-//       case 'team':
-//         return 'assets/images/team.svg';
-//       case 'campaign':
-//         return 'assets/images/campaign.svg'; // ✅ fixed spelling
-//       case 'solo':
-//       default:
-//         return 'assets/images/solo.svg';
-//     }
-//   }
-// }
-//
-
-
-

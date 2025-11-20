@@ -7,7 +7,7 @@ import '../../../core/app_dimensions.dart';
 
 class CustomInfoContainer extends StatelessWidget {
   final double percentage;
-  final String robotAsset;
+  final String robotAsset; // Can be PNG or SVG
   final String title;
   final String description;
   final Color percentageBarColor;
@@ -44,13 +44,9 @@ class CustomInfoContainer extends StatelessWidget {
       ),
       child: Column(
         children: [
-          /// Robot SVG/Icon
+          /// Robot SVG/PNG
           Center(
-            child: SvgPicture.asset(
-              robotAsset,
-              height: AppDimensions.d90.h,
-              width: AppDimensions.d80.w,
-            ),
+            child: _buildRobotImage(),
           ),
 
           SizedBox(height: AppDimensions.d12.h),
@@ -96,8 +92,7 @@ class CustomInfoContainer extends StatelessWidget {
           SizedBox(height: AppDimensions.d16.h),
 
           /// White inner box with tips
-           Container(
-
+          Container(
             margin: EdgeInsets.symmetric(horizontal: AppDimensions.d16.w),
             padding: EdgeInsets.all(AppDimensions.d16.w),
             decoration: BoxDecoration(
@@ -112,7 +107,7 @@ class CustomInfoContainer extends StatelessWidget {
                 Row(
                   children: [
                     CircleAvatar(
-                    backgroundColor: AppColors.primaryRed,
+                      backgroundColor: AppColors.primaryRed,
                       child: Icon(
                         icon,
                         size: AppDimensions.d24.w,
@@ -151,5 +146,23 @@ class CustomInfoContainer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Determines whether to use SVG or PNG/JPG
+  Widget _buildRobotImage() {
+    if (robotAsset.toLowerCase().endsWith(".svg")) {
+      return SvgPicture.asset(
+        robotAsset,
+        height: AppDimensions.d90.h,
+        width: AppDimensions.d80.w,
+      );
+    } else {
+      return Image.asset(
+        robotAsset,
+        height: AppDimensions.d90.h,
+        width: AppDimensions.d80.w,
+        fit: BoxFit.contain,
+      );
+    }
   }
 }

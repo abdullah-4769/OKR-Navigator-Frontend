@@ -376,7 +376,14 @@ final Map<String, String> es = {
   "bonus_mode_title": "¡Modo de Bonificación! 🎉",
   "bonus_mode_description": "Completa el viaje de OKR y gana puntos de bonificación.",
   "start_bonus_mode": "Iniciar Modo de Bonificación",
-  "bonus_mode_label": "Modo de Bonificación",
+  "bonus_mode_label": "Bonif",
+  'current_focus': 'Enfoque Actual',
+  'strategic_initiative': 'Iniciativa Estratégica',
+  'add_initiatives_to_continue': 'Agregar Iniciativas para Continuar',
+  'solo_mode': 'Modo Solo',
+  'team_mode': 'Modo Equipo',
+  'campaign_mode': 'Modo Campaña',
+  'challenge_mode': 'Modo Desafío',
 
   // TEAM WELCOME
   "welcome_team": "¡Bienvenido Equipo!",
@@ -385,7 +392,7 @@ final Map<String, String> es = {
 
   // TEAM OBJECTIVE
   "choose": "Elegir",
-  "objective": "Tu objetivo",
+
   "selected_strategy": "Estrategia seleccionada",
   "development_new_markets": "Desarrollo de nuevos mercados",
   "objective_description": "Enfócate en la expansión hacia mercados no explotados para impulsar el crecimiento sostenible y aumentar la cuota de mercado.",
@@ -476,7 +483,7 @@ final Map<String, String> es = {
   "readjust_strategy": "Reajusta tu estrategia al desafío. Selecciona los elementos a modificar",
   "current_strategy": "Estrategia actual",
   "development_new_markets": "Desarrollo de nuevos mercados",
-  "objective": "Objetivo",
+
   "expand_emerging_markets": "Expandirse a mercados emergentes",
   "key_results": "Resultados clave",
   "achieve_5m_revenue": "Alcanzar 5M\$ de ingresos de nuevos productos",
@@ -742,7 +749,14 @@ final Map<String, String> es = {
   "objective_alignment": "Alineación de Objetivos",
   "key_results_quality": "Calidad de Resultados Clave",
   "okr_assessment_feedback": "Retroalimentación de Evaluación OKR",
-
+  "Good": "Bueno",
+  "Perfect": "Perfecto",
+  "Excellent": "Excelente",
+  "Average": "Promedio",
+  "Needs Improvement": "Necesita mejorar",
+  "user_initiatives": "Iniciativas del Usuario",
+  "add_initiatives_to_continue": "Agregar iniciativas para continuar",
+  "current_focus": "Enfoque Actual",
   // AI STRATEGIC ANALYSIS
   "ai_strategic_analysis": "Análisis estratégico de IA",
   "submit_initiatives_ai_analysis": "Enviar tus iniciativas para análisis de IA",
@@ -751,4 +765,27 @@ final Map<String, String> es = {
   "ai_tips_debrief": "Consejos IA y revisión",
   "AI has analyzed your initiatives and found them highly relevant! 🚀":
   "¡La IA ha analizado tus iniciativas y las ha encontrado muy relevantes! 🚀",
+  'your': 'Tu',
+  'certification': 'Certificación',
+  'loading_certifications': 'Cargando tus certificaciones...',
+  'failed_load_certifications': 'Error al cargar las certificaciones',
+  'try_again': 'Intentar de nuevo',
+  'no_certification_data': 'No hay datos de certificación disponibles',
+  'earned_certifications': 'Certificaciones obtenidas',
+  'earned': 'Obtenido',
+  'in_progress': 'En progreso',
+  'available': 'Disponible',
+  'available_to_start': 'Disponible para iniciar',
+  'start': 'Iniciar',
+  "leadership_excellence": "Liderazgo\nExcelente",
+  "leadership_excellence_desc": "Establecimiento y planificación de objetivos a largo plazo",
+  "stakeholder_management": "Gestión de\nPartes Interesadas",
+  "stakeholder_management_desc": "Comunicación y relaciones efectivas",
+  "fetching_certifications": "Cargando información de certificación...",
+  "certification_fetched": "¡Información de certificación obtenida con éxito!",
+  "earned": "Obtenido",
+  "in_progress": "En progreso",
+  "total": "Total",
+  "error_fetching_certifications": "Error al obtener información de certificación"
+
 };

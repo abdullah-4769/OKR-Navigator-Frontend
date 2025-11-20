@@ -80,6 +80,7 @@ import '../controllers/team_mode_controller/team_key_results_controller.dart';
 import '../controllers/team_mode_controller/team_objective_controller.dart';
 import '../controllers/team_mode_controller/team_strategy_controller.dart';
 import '../controllers/team_mode_controller/team_strategy_selection_controller.dart';
+import '../data/datasources/auth_api.dart';
 import '../data/repositories/innovative_repo.dart';
 import '../data/repositories/innovative_strategy_repo.dart';
 import '../data/repositories/key_results_repo.dart';
@@ -111,6 +112,7 @@ class AppBindings extends Bindings {
     // CORE SERVICES - Must be initialized in order
     // These are initialized in main.dart before app starts
     Get.lazyPut(() => ProfileController(), fenix: true);
+    // Get.lazyPut(()=>LoginController());
     Get.lazyPut(() => CertificationInfoApiService(), fenix: true);
     Get.lazyPut(() => CertificationInfoRepository(), fenix: true);
     Get.lazyPut(() => CertificationInfoViewModel(), fenix: true);
@@ -125,7 +127,7 @@ class AppBindings extends Bindings {
     //  REPOSITORIES - Always available (permanent)
     Get.lazyPut(() => StrategyRepository(), fenix: true);
     Get.lazyPut(() => ObjectiveRepository(), fenix: true);
-    Get.lazyPut(() => AuthRepository(), fenix: true);
+    // Get.lazyPut(() => AuthRepository(), fenix: true);
     Get.lazyPut(() => InnovativeStrategiesRepository(), fenix: true);
     Get.lazyPut(() => CertificationApiService(), fenix: true);
     Get.lazyPut(() => CertificationRepository(), fenix: true);
@@ -138,7 +140,7 @@ class AppBindings extends Bindings {
     Get.put(JourneyController(), permanent: true);
     Get.put(StrategySelectionController(), permanent: true);
     Get.put(KeyObjectiveController(), permanent: true);
-    Get.lazyPut(()=>LoginController());
+    // Get.lazyPut(()=>LoginController());
     //  LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
     // Get.lazyPut<KeyResultsViewModel>(() => KeyResultsViewModel(), fenix: true);
     Get.lazyPut<OKRConstellationController>(
@@ -149,7 +151,7 @@ class AppBindings extends Bindings {
 
     //  AUTH CONTROLLERS - Only when login/register screen opens
     Get.lazyPut(() => RegisterController());
-    Get.lazyPut(() => LoginController());
+    // Get.lazyPut(() => LoginController());
 
 
 
@@ -165,7 +167,7 @@ class AppBindings extends Bindings {
     Get.put(TeamRepository(), permanent: true);
 
     Get.put(ObjectiveRepository(), permanent: true);
-    Get.lazyPut(() => AuthRepository());
+    // Get.lazyPut(() => AuthRepository());
 
     //  GAME FLOW CONTROLLERS - Needed across multiple screens (permanent)
     Get.put(JourneyController(), permanent: true);
@@ -191,8 +193,8 @@ class AppBindings extends Bindings {
 
     //  AUTH CONTROLLERS - Only when login/register screen opens
     Get.lazyPut(() => RegisterController());
-    Get.lazyPut(() => LoginController());
-    Get.lazyPut(() => AuthRepository());
+    // Get.lazyPut(() => LoginController());
+    // Get.lazyPut(() => AuthRepository());
     // contextual challenge ...........
     Get.lazyPut(() => InnovativeStrategiesRepository());
 
@@ -213,17 +215,19 @@ class AppBindings extends Bindings {
 
     Get.put(KeyObjectiveController(), permanent: true); //  Changed to permanent
     Get.put(StrategySelectionController(), permanent: true);
-    Get.put(AuthRepository(), permanent: true);
+    // Get.put(AuthRepository(AuthApi()), permanent: true);
+
     //  LAZY CONTROLLERS - Load when needed (fenix: true for reuse)
     Get.lazyPut<KeyResultsLatestViewModel>(() => KeyResultsLatestViewModel(), fenix: true);
     Get.lazyPut<OKRConstellationController>(
           () => OKRConstellationController(),
       fenix: true,
     );
+    Get.put<AuthRepository>(AuthRepository(Get.find<AuthApi>()));
 
     //  AUTH CONTROLLERS - Only when login/register screen opens
     Get.lazyPut(() => RegisterController());
-    Get.lazyPut(() => LoginController());
+    Get.lazyPut<LoginController>(() => LoginController(), fenix: true);
     // contextual challenge ...........
     Get.lazyPut(() => InnovativeStrategiesRepository());
 
@@ -233,7 +237,10 @@ class AppBindings extends Bindings {
 
     // Register repositories
     Get.lazyPut<KeyResultRepository>(() => KeyResultRepository());
-
+    Get.lazyPut<AuthRepository>(
+          () => AuthRepository(Get.find<AuthApi>()),
+      fenix: true,
+    );
     // Register controllers
     Get.lazyPut<KeyResultsController>(() => KeyResultsController());
 

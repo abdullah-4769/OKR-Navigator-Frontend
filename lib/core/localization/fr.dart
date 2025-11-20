@@ -9,7 +9,7 @@ final Map<String, String> fr = {
   'retry_attempt': 'Tentative de nouvelle tentative',
   'please_select_different_objective': 'Veuillez sélectionner un objectif différent',
   'improve_initiatives_retry': 'Choisissez un nouvel objectif pour améliorer votre taux de réussite des initiatives',
-  'select_adjust': 'Sélectionner pour ajuster',
+  'select_adjust': 'Ajuster',
   'final_challenge': 'Défi final',
   'progress_warning': 'Avertissement de progression',
   'progress_warning_desc': 'Votre progression actuelle sera perdue. Êtes-vous sûr de vouloir retourner à l\'accueil ?',
@@ -27,7 +27,7 @@ final Map<String, String> fr = {
   'complete_selection': 'Sélection terminée',
   'save_changes': 'Sauvegarder les modifications',
   'available_key_results': 'Résultats clés disponibles',
-  'key_results_selected': 'résultats clés sélectionnés',
+  'key_results_selected': '',
   'select_key_results_to_continue': 'Ajuster les résultats clés',
   'view': 'Voir',
   'select_adjust': 'Sélectionner/Ajuster',
@@ -62,7 +62,17 @@ final Map<String, String> fr = {
   'suggestion': 'Suggestion',
   'of_initiatives': 'd\'Initiatives',
   'initiatives': 'Initiatives',
+  "ready_for_solo_mode": "Prêt pour le mode Solo !",
+  "ready_for_team_mode": "Prêt pour le mode Équipe !",
+  "ready_for_campaign_mode": "Prêt pour le mode Campagne !",
 
+  "solo_mode_description": "Défiez-vous et améliorez vos compétences individuellement. Jouez à votre rythme et maîtrisez le jeu !",
+  "team_mode_description": "Travaillez ensemble avec votre équipe pour atteindre des objectifs communs. Collaborez et élaborez des stratégies pour réussir !",
+  "campaign_mode_description": "Participez à des missions structurées avec une difficulté progressive. Complétez des défis et débloquez des récompenses !",
+
+  "welcome_to_okr_navigator": "Bienvenue sur OKR Navigator",
+  "start_screen_description": "Votre voyage pour maîtriser les OKR commence ici. Commençons !",
+  "swipe_to_start": "Glissez pour commencer",
   // Optional: Additional descriptive texts
   'revise_initiatives_subtitle': 'Mettez à jour vos initiatives en fonction de nouvelles perspectives',
   'add_initiatives_subtitle': 'Ajoutez des initiatives pour atteindre vos résultats clés sélectionnés',
@@ -341,7 +351,7 @@ final Map<String, String> fr = {
 
   // ---------- Team Objective Screen ----------
   'choose': 'Choisir',
-  'objective': 'Votre objectif',
+  'objective': 'Objectif',
   'selected_strategy': 'Stratégie sélectionnée',
   'development_new_markets': 'Développement de nouveaux marchés',
   'objective_description': 'Concentrez-vous sur l\'expansion vers des marchés non exploités pour stimuler une croissance durable et augmenter la part de marché.',
@@ -374,6 +384,9 @@ final Map<String, String> fr = {
   'satisfaction_description': 'Assurer une satisfaction client élevée avec une qualité de service améliorée et un engagement accru.',
   'launch_products_faster': 'Lancer les produits plus rapidement',
   'launch_description': 'Réduire le time-to-market en optimisant les processus internes et la vitesse d\'exécution.',
+  "user_initiatives": "Initiatives Utilisateur",
+  "add_initiatives_to_continue": "Ajouter des initiatives pour continuer",
+  "current_focus": "Focus Actuel",
 
   // AI Evaluation Focus
   'ai_evaluation_focus': 'Focus de l\'évaluation IA',
@@ -407,7 +420,7 @@ final Map<String, String> fr = {
   'objective_definition': 'Définition de l\'objectif',
   'key_results_ca': 'Résultats clés CA',
   'initiatives': 'Initiatives',
-  'key_results_selected': 'Résultats clés sélectionnés',
+
   'more_needed': 'plus nécessaire',
   'achieve_revenue_new_products': 'Atteindre 5M\$ de revenus provenant de nouveaux produits',
   'revenue_description': 'Générer un flux de revenus significatif dans les 12 premiers mois suivant le lancement',
@@ -496,7 +509,7 @@ final Map<String, String> fr = {
   'objective_definition': 'Définition de l\'objectif',
   'key_results_ca': 'Résultats clés CA',
   'initiatives': 'Initiatives',
-  'key_results_selected': 'Résultats clés sélectionnés',
+
   'more_needed': 'plus nécessaire',
   'achieve_revenue_new_products': 'Atteindre 5M\$ de revenus provenant de nouveaux produits',
   'revenue_description': 'Générer un flux de revenus significatif dans les 12 premiers mois suivant le lancement',
@@ -551,6 +564,18 @@ final Map<String, String> fr = {
   'retake': 'Reprendre',
   'share_result': 'Partager le résultat',
   'downloadable_pdf': 'PDF téléchargeable',
+  'your': 'Votre',
+  'certification': 'Certification',
+  'loading_certifications': 'Chargement de vos certifications...',
+  'failed_load_certifications': 'Échec du chargement des certifications',
+  'try_again': 'Réessayer',
+  'no_certification_data': 'Aucune donnée de certification disponible',
+  'earned_certifications': 'Certifications obtenues',
+  'earned': 'Obtenu',
+  'in_progress': 'En cours',
+  'available': 'Disponible',
+  'available_to_start': 'Disponible pour commencer',
+  'start': 'Commencer',
 
   // contextual challenge
   'contextual': 'Contextuel',
@@ -566,7 +591,7 @@ final Map<String, String> fr = {
   'readjust_strategy': 'Réajustez votre stratégie au défi. Sélectionnez les éléments à modifier',
   'current_strategy': 'Stratégie actuelle',
   'development_new_markets': 'Développement de nouveaux marchés',
-  'objective': 'Objectif',
+
   'expand_emerging_markets': 'Étendre vers les marchés émergents',
   'key_results': 'Résultats clés',
   'achieve_5m_revenue': 'Atteindre 5M\$ de revenus provenant de nouveaux produits',
@@ -689,7 +714,7 @@ final Map<String, String> fr = {
   'selected_strategy': 'Stratégie sélectionnée',
   'development_new_markets': 'Développement de nouveaux marchés',
   'objective_description': 'Concentrez-vous sur l\'expansion vers des marchés non exploités pour stimuler une croissance durable et augmenter la part de marché.',
-  'choose_your_objective': 'Choisissez votre objectif',
+
   'select_one_objective': 'Sélectionnez un objectif stratégique sur lequel vous concentrer en fonction de votre stratégie de développement de marché',
   'complete_selection': 'Sélection terminée',
   'add_initiatives_subtitle': '',
@@ -795,7 +820,7 @@ final Map<String, String> fr = {
   'selected_strategy': 'Stratégie sélectionnée',
   'development_new_markets': 'Développement de nouveaux marchés',
   'objective_description': 'Concentrez-vous sur l\'expansion vers des marchés non exploités pour stimuler une croissance durable et augmenter la part de marché.',
-  'choose_your_objective': 'Choisissez votre objectif',
+
   'select_one_objective': 'Sélectionnez un objectif stratégique sur lequel vous concentrer en fonction de votre stratégie de développement de marché',
 
   'key_results': 'Résultats clés',
@@ -1044,11 +1069,11 @@ final Map<String, String> fr = {
   'title_master_adapter': 'Titre Maître de l\'Adaptation',
 
   'choose': 'Choisir',
-  'objective': 'Votre objectif',
+
   'selected_strategy': 'Stratégie sélectionnée',
   'development_new_markets': 'Développement de nouveaux marchés',
   'objective_description': 'Concentrez-vous sur l\'expansion vers des marchés non exploités pour stimuler une croissance durable et augmenter la part de marché.',
-  'choose_your_objective': 'Choisissez votre objectif',
+
   'select_one_objective': 'Sélectionnez un objectif stratégique sur lequel vous concentrer en fonction de votre stratégie de développement de marché',
   'define_key_results': 'Définir les résultats clés',
 
@@ -1073,7 +1098,7 @@ final Map<String, String> fr = {
   'select_key_results': 'Sélectionner les résultats clés',
   'choose_3_outcomes': 'Choisissez 3 résultats mesurables. Construisez votre constellation de métriques de succès',
   'complete_selection': 'Terminer votre sélection',
-  'key_results_selected': 'Résultats clés sélectionnés',
+
   'all_key_results_selected': 'Tous les résultats clés sélectionnés !',
   'one_more_needed': '1 de plus nécessaire',
   'more_needed': 'plus nécessaire',
@@ -1333,10 +1358,11 @@ final Map<String, String> fr = {
 
   'single_user': 'Utilisateur unique',
   'multiple_users': 'Utilisateurs multiples',
-  "perfect": "Parfait",
-  "excellent": "Excellent",
-  "good": "Bon",
-  "average": "Moyen",
+  "Good": "Bon",
+  "Perfect": "Parfait",
+  "Excellent": "Excellent",
+  "Average": "Moyen",
+  "Needs Improvement": "À améliorer",
   "phase_retry_test": "Phase de test à continuer",
   "accepted": "Accepté",
   "review_required": "Révision requise",
@@ -1349,12 +1375,13 @@ final Map<String, String> fr = {
   "bonus_mode_title": "Mode Bonus ! 🎉",
   "bonus_mode_description": "Complétez le parcours OKR et gagnez des points bonus !",
   "start_bonus_mode": "Démarrer le Mode Bonus",
-  "bonus_mode_label": "Mode Bonus",
-
-
-
+  "bonus_mode_label": "Bonus",
   'solo': 'Solo',
   'team': 'Équipe',
+  'current_focus': 'Focus Actuel',
+  'strategic_initiative': 'Initiative Stratégique',
+  'add_initiatives_to_continue': 'Ajouter des Initiatives pour Continuer',
+
   'campaign': 'Parcours Certifiant',
   'no_strategy_selected': 'Aucune Stratégie Sélectionnée',
   'generating_key_results': 'Génération des résultats clés en fonction de votre Objectif...',
@@ -1410,6 +1437,11 @@ final Map<String, String> fr = {
   'campaign': 'Parcours Certifiant',
   'show_personal_achievements': 'Voir Mes Réussites',
   'solo_mode': 'Solo',
+  'solo_mode': 'Mode Solo',
+  'team_mode': 'Mode Équipe',
+  'campaign_mode': 'Mode Campagne',
+  'challenge_mode': 'Mode Défi',
+
   'team_mode': 'Équipe',
   'campaign_mode': 'Parcours Certifiant',
   'challenge_mode': 'Défi',
@@ -1421,5 +1453,15 @@ final Map<String, String> fr = {
   'view_manage_profile': 'Consulter et gérer vos informations de profil',
   'my_profile': 'Mon Profil',
   'continue_with_google': 'Continuer avec Google',
+  "leadership_excellence": "Leadership\nExcellence",
+  "leadership_excellence_desc": "Définition et planification des objectifs à long terme",
+  "stakeholder_management": "Gestion des\nparties prenantes",
+  "stakeholder_management_desc": "Communication et relations efficaces",
+  "fetching_certifications": "Chargement des informations de certification...",
+  "certification_fetched": "Informations sur la certification récupérées avec succès !",
+  "earned": "Obtenu",
+  "in_progress": "En cours",
+  "total": "Total",
+  "error_fetching_certifications": "Erreur lors du chargement des informations de certification"
 
 };

@@ -61,7 +61,7 @@ class CustomAIAnalysisScreen2 extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: const CustomInfoContainer(
                             percentage: 80, // <<--- 80% here
-                            robotAsset: "assets/images/robot.svg",
+                            robotAsset: "assets/images/robort.png",
                             title: "AI Insights",
                             description:
                             "These AI-based suggestions are tailored from your strategic data.\n\n"

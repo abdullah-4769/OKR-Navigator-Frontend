@@ -4,16 +4,41 @@ import 'package:get/get.dart';
 import '../../../core/app_assets.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
+import '../../../services/shared_preference.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/common_image.dart';
 import '../../widgets/custom_svg.dart';
 
-class StartScreen extends StatelessWidget {
+class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
 
   @override
+  State<StartScreen> createState() => _StartScreenState();
+}
+
+class _StartScreenState extends State<StartScreen> {
+  bool fromGameMode = false;
+  String? selectedMode;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkNavigationSource();
+  }
+
+  void _checkNavigationSource() {
+    // Check if we came from GameModeScreen
+    final args = Get.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      fromGameMode = args['fromGameMode'] ?? false;
+      selectedMode = args['selectedMode'];
+      print('🎮 StartScreen - From GameMode: $fromGameMode');
+      print('🎮 StartScreen - Selected Mode: $selectedMode');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Screen Size
     final screenWidth = MediaQuery.of(context).size.width;
 
     return OrientationBuilder(
@@ -26,7 +51,7 @@ class StartScreen extends StatelessWidget {
               Container(
                 width: double.infinity,
                 height: double.infinity,
-                decoration:  BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -64,7 +89,7 @@ class StartScreen extends StatelessWidget {
                             ),
                             SizedBox(height: AppDimensions.d20.h),
 
-                            // MaskGroup SVG
+                            // MaskGroup Image
                             CommonImage(
                               assetPath: 'assets/images/start_screen_img.png',
                               width: AppDimensions.d180.w,
@@ -74,9 +99,11 @@ class StartScreen extends StatelessWidget {
 
                             SizedBox(height: AppDimensions.d40.h),
 
-                            // Welcome Title → Using Theme
+                            // Welcome Title
                             Text(
-                              'welcome_to_okr_navigator'.tr,
+                              fromGameMode && selectedMode != null
+                                  ? _getWelcomeTitle()
+                                  : 'welcome_to_okr_navigator'.tr,
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium
@@ -86,9 +113,11 @@ class StartScreen extends StatelessWidget {
 
                             SizedBox(height: AppDimensions.d16.h),
 
-                            // Description → Using Theme
+                            // Description
                             Text(
-                              'start_screen_description'.tr,
+                              fromGameMode && selectedMode != null
+                                  ? _getModeDescription()
+                                  : 'start_screen_description'.tr,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium
@@ -103,9 +132,7 @@ class StartScreen extends StatelessWidget {
 
                             // Swipe to Start Button
                             SwipeToStart(
-                              onSwipeComplete: () {
-                                Get.offAllNamed(AppRoutes.splash1);
-                              },
+                              onSwipeComplete: _handleSwipeComplete,
                             ),
 
                             SizedBox(height: AppDimensions.d40.h),
@@ -121,6 +148,48 @@ class StartScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _getWelcomeTitle() {
+    switch (selectedMode) {
+      case 'solo':
+        return 'ready_for_solo_mode'.tr;
+      case 'team':
+        return 'ready_for_team_mode'.tr;
+      case 'campaign':
+        return 'ready_for_campaign_mode'.tr;
+      default:
+        return 'welcome_to_okr_navigator'.tr;
+    }
+  }
+
+  String _getModeDescription() {
+    switch (selectedMode) {
+      case 'solo':
+        return 'solo_mode_description'.tr;
+      case 'team':
+        return 'team_mode_description'.tr;
+      case 'campaign':
+        return 'campaign_mode_description'.tr;
+      default:
+        return 'start_screen_description'.tr;
+    }
+  }
+
+  void _handleSwipeComplete() async {
+    if (fromGameMode && selectedMode != null) {
+      // Coming from game mode selection - proceed to pricing screen
+      print('🎮 Proceeding to PricingScreen with mode: $selectedMode');
+      
+      // Verify the mode is saved
+      final savedMode = await SharedPrefs.getGameMode();
+      print('✅ Verified saved mode: $savedMode');
+      
+      Get.offAllNamed(AppRoutes.pricingScreen);
+    } else {
+      // Normal flow - go to splash1
+      Get.offAllNamed(AppRoutes.splash1);
+    }
   }
 }
 
@@ -172,7 +241,7 @@ class _SwipeToStartState extends State<SwipeToStart> {
             ),
           ),
 
-          // Base Text (Black) → Theme applied
+          // Base Text (Black)
           Positioned.fill(
             child: Center(
               child: Text(
