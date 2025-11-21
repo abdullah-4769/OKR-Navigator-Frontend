@@ -319,9 +319,13 @@ class SuggestionInitiativesViewModel extends GetxController {
         } else {
           // Normal flow - go to analysis screen
           print('➡️ Navigating to AI Analysis screen');
+          // Use this:
           Get.toNamed(
             AppRoutes.aiAnalysisShowScreen,
-            arguments: response.data,
+            arguments: {
+              'analysisData': response.data,
+              'source': 'initiative_analysis',
+            },
           );
         }
       } else {

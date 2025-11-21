@@ -1,120 +1,303 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:game_app/data/response/api_response.dart';
-import 'package:game_app/view_model/challange_view_models/join_challenge_view_model.dart';
-
-import '../../../../data/response/status.dart';
-import '../../../routes/app_routes.dart';
-import '../challange_detail_screen.dart';
+import '../../../../data/repositories/storage_repository.dart';
+import '../../../../services/shared_preference.dart';
+import '../../../../view_model/challange_view_models/join_challenge_view_model.dart';
 
 class InputInviteCodeCard extends StatelessWidget {
-  InputInviteCodeCard({super.key});
+  InputInviteCodeCard({Key? key}) : super(key: key);
 
-  final JoinChallengeViewModel _challengeVM = Get.put(JoinChallengeViewModel());
-  final TextEditingController _inviteCodeController = TextEditingController();
+  final JoinChallengeViewModel _viewModel = Get.find<JoinChallengeViewModel>();
+  final StorageRepository _storageRepo = Get.find<StorageRepository>();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 18.w),
-      padding: EdgeInsets.all(16.h),
+      margin: const EdgeInsets.symmetric(horizontal: 18),
+      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
       decoration: BoxDecoration(
-        color: Colors.red.shade50,
-        borderRadius: BorderRadius.circular(28.r),
-        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: Colors.grey),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Title
           Text(
-            "Enter Invite Code",
-            style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade600),
-          ),
-          SizedBox(height: 8.h),
-          TextField(
-            controller: _inviteCodeController,
-            decoration: InputDecoration(
-              hintText: "Enter code here",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
+            'Enter Invite Code',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xff24387F),
             ),
           ),
           SizedBox(height: 12.h),
-          Obx(() {
-            if (_challengeVM.isJoining.value) {
-              print('InputInviteCodeCard: Showing CircularProgressIndicator (isJoining: true)');
-              return const Center(child: CircularProgressIndicator());
-            }
-            return ElevatedButton(
-              onPressed: () async {
-                final code = _inviteCodeController.text.trim();
-                print('InputInviteCodeCard: Join button pressed with code: $code');
-                if (code.isNotEmpty) {
-                  print('InputInviteCodeCard: Calling joinChallenge with code: $code');
-                  await _challengeVM.joinChallenge(code);
-                  final response = _challengeVM.joinChallengeResponse;
-                  print('InputInviteCodeCard: Response status: ${response.status}, message: ${response.message}, data: ${response.data}');
-                  if (response.status == Status.completed) {
-                    print('InputInviteCodeCard: Join successful, navigating to /challenge-detail with data: ${response.data}');
-                    Get.snackbar("Success", "Joined challenge successfully!",
-                        snackPosition: SnackPosition.TOP,
-                        backgroundColor: Colors.green,
-                        colorText: Colors.white);
-                    // Navigate to challenge detail screen
-                    Get.toNamed('/challenge-detail', arguments: response.data);
-                  } else {
-                    print('InputInviteCodeCard: Join failed, showing error: ${response.message}');
-                    Get.snackbar("Error", response.message ?? "Failed to join challenge",
-                        snackPosition: SnackPosition.TOP,
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white);
-                  }
-                } else {
-                  print('InputInviteCodeCard: Invalid code entered (empty)');
-                  Get.snackbar("Error", "Please enter a valid code",
-                      snackPosition: SnackPosition.TOP,
-                      backgroundColor: Colors.red,
-                      colorText: Colors.white);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade400,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+
+          // Input field with real-time validation
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _viewModel.inviteCodeController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter 6-digit code',
+                    hintStyle: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: 14.sp,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Color(0xff24387F), width: 2),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    suffixIcon: _buildClearButton(),
+                  ),
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.characters,
+                  maxLength: 6,
+                  onChanged: (value) {
+                    // This will automatically update the observable via the listener
+                  },
+                  buildCounter: (context, {required currentLength, required isFocused, maxLength}) {
+                    return null; // Hide counter
+                  },
                 ),
               ),
-              child: Text(
-                "Join Challenge",
-                style: TextStyle(fontSize: 16.sp),
-              ),
-            );
-          }),
-          SizedBox(height: 8.h),
-          Obx(() {
-            final response = _challengeVM.joinChallengeResponse;
-            if (response.status == Status.error) {
-              print('InputInviteCodeCard: Displaying error: ${response.message}');
-              return Text(
-                "Error: ${response.message}",
-                style: TextStyle(color: Colors.red, fontSize: 14.sp),
-              );
-            } else if (response.status == Status.completed) {
+              SizedBox(width: 12.w),
 
-              Get.off(() => ChallengeDetailsScreen());
-              print('InputInviteCodeCard: Displaying success message');
-              // return Text(
-              //   "Joined successfully ✅",
-              //   style: TextStyle(color: Colors.green, fontSize: 14.sp),
-              // );
-            }
-            print('InputInviteCodeCard: No status to display, returning SizedBox');
-            return const SizedBox.shrink();
-          }),
+              // Join Button - FIXED: Use proper observable
+              Builder(
+                builder: (context) => _buildJoinButton(context),
+              ),
+            ],
+          ),
+
+          // Validation and status messages
+          SizedBox(height: 8.h),
+          _buildValidationMessage(),
+          SizedBox(height: 8.h),
+          _buildStatusMessage(),
         ],
       ),
     );
+  }
+
+  // FIXED: Build clear button without Obx
+  Widget _buildClearButton() {
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: _viewModel.inviteCodeController,
+      builder: (context, value, child) {
+        if (value.text.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return IconButton(
+          icon: Icon(Icons.clear, size: 20.sp),
+          onPressed: () {
+            _viewModel.inviteCodeController.clear();
+            _viewModel.clearStatus();
+          },
+        );
+      },
+    );
+  }
+
+  // FIXED: Accept context as parameter and use observable inviteCode
+  Widget _buildJoinButton(BuildContext context) {
+    return Obx(() {
+      // ✅ These are the observable variables that Obx will watch
+      final isLoading = _viewModel.isJoining.value;
+      final code = _viewModel.inviteCode.value; // ✅ NOW OBSERVABLE
+      final isValidCode = _viewModel.isValidInviteCode(code);
+      final userId = _getCurrentUserId();
+      final isUserLoggedIn = userId != null && userId.isNotEmpty;
+
+      return ElevatedButton(
+        onPressed: (isLoading || !isValidCode || !isUserLoggedIn)
+            ? null
+            : () => _joinChallenge(context),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xff24387F),
+          foregroundColor: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          disabledBackgroundColor: Colors.grey.shade300,
+        ),
+        child: isLoading
+            ? SizedBox(
+          width: 20.w,
+          height: 20.h,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        )
+            : Text(
+          'Join',
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    });
+  }
+
+  // FIXED: Build validation message with proper observable usage
+  Widget _buildValidationMessage() {
+    return Obx(() {
+      final code = _viewModel.inviteCode.value; // ✅ NOW OBSERVABLE
+
+      if (code.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      if (!_viewModel.isValidInviteCode(code)) {
+        return Text(
+          'Code must be exactly 6 characters (letters and numbers only)',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 12.sp,
+          ),
+        );
+      }
+
+      return Text(
+        'Valid code format',
+        style: TextStyle(
+          color: Colors.green,
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w500,
+        ),
+      );
+    });
+  }
+
+  // FIXED: Build status message with proper Obx containing observable
+  Widget _buildStatusMessage() {
+    return Obx(() {
+      final status = _viewModel.joinStatus.value;
+
+      if (status.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      Color textColor;
+      Color backgroundColor;
+      IconData icon;
+
+      if (status.contains('Success') || status.contains('joined')) {
+        textColor = Colors.green.shade800;
+        backgroundColor = Colors.green.shade50;
+        icon = Icons.check_circle;
+      } else if (status.contains('Error') || status.contains('Failed') || status.contains('not found')) {
+        textColor = Colors.red.shade800;
+        backgroundColor = Colors.red.shade50;
+        icon = Icons.error;
+      } else if (status.contains('Joining')) {
+        textColor = Colors.blue.shade800;
+        backgroundColor = Colors.blue.shade50;
+        icon = Icons.hourglass_empty;
+      } else {
+        textColor = Colors.orange.shade800;
+        backgroundColor = Colors.orange.shade50;
+        icon = Icons.info;
+      }
+
+      return Container(
+        padding: EdgeInsets.all(12.h),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: textColor.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: textColor, size: 16.sp),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Text(
+                status,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  // ✅ FIXED: Get user ID with proper fallback chain
+  String? _getCurrentUserId() {
+    String? userId = _storageRepo.getUserId();
+
+    if (userId != null && userId.isNotEmpty) {
+      return userId;
+    }
+
+    userId = SharedPrefs.getUserId();
+    if (userId != null && userId.isNotEmpty) {
+      return userId;
+    }
+
+    return null;
+  }
+
+  // ✅ FIXED: Join challenge with proper user ID validation
+  Future<void> _joinChallenge(BuildContext context) async {
+    final inviteCode = _viewModel.inviteCodeController.text.trim().toUpperCase();
+
+    if (inviteCode.isEmpty) {
+      Get.snackbar(
+        'Invalid Code',
+        'Please enter an invite code',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (!_viewModel.isValidInviteCode(inviteCode)) {
+      Get.snackbar(
+        'Invalid Code',
+        'Invite code must be 6 characters (letters and numbers only)',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    final userId = _getCurrentUserId();
+
+    if (userId == null || userId.isEmpty) {
+      Get.snackbar(
+        'Authentication Required',
+        'Please log in to join challenges',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: Duration(seconds: 4),
+      );
+      return;
+    }
+
+    print('🎯 Joining challenge with code: $inviteCode for user: $userId');
+    await _viewModel.joinChallengeWithCode(inviteCode, userId);
   }
 }

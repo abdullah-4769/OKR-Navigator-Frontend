@@ -5,6 +5,7 @@ import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
 import '../../widgets/common_image.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/custom_curved_arrow.dart';
 import '../../widgets/custom_svg.dart';
 
@@ -99,7 +100,23 @@ class _SplashScreen2State extends State<SplashScreen2> {
                       ),
                     ),
 
-                    SizedBox(height: 0.269.sh), // Responsive height using screen percentage
+                    SizedBox(height: 0.169.sh), // Responsive height using screen percentage
+                       InkWell(
+                         onTap: () => Get.toNamed(AppRoutes.home),
+
+                         child: Container(
+                           height: 50,
+                           width: 300,
+                           decoration: BoxDecoration(
+                             color: AppColors.accentRed,
+                             borderRadius: BorderRadius.circular(10)
+                           ),
+                           child: Center(
+                             child: Text("start_mission".tr,style: TextStyle(fontSize: 16,color: AppColors.white),),
+                           ),
+                         ),
+                       ),
+                    SizedBox(height: 0.019.sh), // Responsive height using screen percentage
 
                     // Bottom Logo
                     Center(
@@ -116,30 +133,44 @@ class _SplashScreen2State extends State<SplashScreen2> {
               ),
 
               // Left Arrow - Fixed positioning
-              Positioned(
-                left: 0,
-                bottom: 0.15.sh, // Responsive positioning
-                child: CustomCurvedArrow(
-                  isLeft: true,
-                  onTap: () => Get.offAllNamed(AppRoutes.splash1),
-                  width: 55.w,
-                  height: 130.h,
-                ),
-              ),
+              // Positioned(
+              //   left: 0,
+              //   bottom: 0.15.sh, // Responsive positioning
+              //   child: CustomCurvedArrow(
+              //     isLeft: true,
+              //     onTap: () => Get.offAllNamed(AppRoutes.splash1),
+              //     width: 55.w,
+              //     height: 130.h,
+              //   ),
+              // ),
 
               // Right Arrow - Fixed positioning
-              Positioned(
-                right: 0,
-                bottom: 0.15.sh, // Responsive positioning
-                child: CustomCurvedArrow(
-                  isLeft: false,
-                  onTap: () => Get.toNamed(AppRoutes.home),
-                  width: 55.w,
-                  height: 130.h,
-                ),
-              ),
+              // Positioned(
+              //   right: 0,
+              //   bottom: 0.15.sh, // Responsive positioning
+              //   child: CustomCurvedArrow(
+              //     isLeft: false,
+              //     onTap: () => Get.toNamed(AppRoutes.home),
+              //     width: 55.w,
+              //     height: 130.h,
+              //   ),
+              // ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+  Widget _buildLogoutButton(bool isTablet) {
+    return Obx(
+          () => SizedBox(
+        width: isTablet ? 350.0 : double.infinity,
+        child: CustomButton(
+          text: 'logout'.tr,
+          onPressed: (){
+            // Assuming logout method in ProfileController
+          }
+          // Optional: Use a different color for logout, e.g., backgroundColor: AppColors.accentRed
         ),
       ),
     );

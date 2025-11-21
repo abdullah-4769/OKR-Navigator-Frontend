@@ -4,9 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/presentation/views/challange_mode/widget/input_invite_code_card.dart';
 import 'package:get/get.dart';
 import '../../../core/app_colors.dart';
+import '../../../data/repositories/storage_repository.dart';
 import '../../../data/response/status.dart';
 import '../../../services/shared_preference.dart';
 import '../../../view_model/challange_view_models/challange_create_view_model.dart';
+import '../../../view_model/challange_view_models/join_challenge_view_model.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
@@ -23,6 +25,7 @@ class JoinChallengeScreen extends StatefulWidget {
 class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
   final ChallengeCreateViewModel _viewModel = Get.put(ChallengeCreateViewModel());
   bool _isInitializing = true;
+  final StorageRepository _storageRepo = Get.find<StorageRepository>();
 
   @override
   void initState() {
@@ -30,55 +33,73 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
     _initializeScreen();
   }
 
-  // Initialize screen data
   Future<void> _initializeScreen() async {
     try {
       setState(() {
         _isInitializing = true;
       });
 
-      // Check if user is logged in
-      final userId = SharedPrefs.getUserId();
-      if (userId == null) {
-        Get.snackbar(
-          'Authentication Required',
-          'Please log in to join challenges',
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
+      // ✅ FIXED: Get user ID from StorageRepository (works for both email and Google)
+      final userId = _storageRepo.getUserId();
+
+      if (userId == null || userId.isEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Get.snackbar(
+            'Authentication Required',
+            'Please log in to join challenges',
+            backgroundColor: Colors.orange,
+            colorText: Colors.white,
+          );
+        });
         return;
       }
 
+      print('✅ Initializing with user ID: $userId');
+
       // Use the actual user ID from authentication
-      await _convertUserIdToHostId();
+      await _convertUserIdToHostId(userId);
       await _viewModel.fetchPlayersExceptCurrentUser();
       await _viewModel.fetchInvitations();
 
     } catch (e) {
       print('❌ Error initializing screen: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to initialize: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      setState(() {
-        _isInitializing = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.snackbar(
+          'Error',
+          'Failed to initialize: $e',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isInitializing = false;
+        });
+      }
     }
   }
 
   // Function to convert user ID to host ID and save it
-  Future<void> _convertUserIdToHostId() async {
-    final userId = SharedPrefs.getUserId();
-    if (userId != null) {
+  Future<void> _convertUserIdToHostId(String userId) async {
+    try {
       await SharedPrefs.saveHostId(userId);
-      print('🔑 User ID converted to Host ID: $userId');
-    } else {
-      print('⚠️ No user ID found - user might not be logged in');
+      print('🔑 User ID saved as Host ID: $userId');
+    } catch (e) {
+      print('⚠️ Error saving host ID: $e');
     }
   }
+  // Function to convert user ID to host ID and save it
+  // Future<void> _convertUserIdToHostId(String userId) async {
+  //   try {
+  //     await SharedPrefs.saveHostId(userId);
+  //     print('🔑 User ID saved as Host ID: $userId');
+  //   } catch (e) {
+  //     print('⚠️ Error saving host ID: $e');
+  //   }
+  // }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -208,36 +229,74 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
     );
   }
 // Action buttons with proper validation - FIXED: Single button that transforms
+// Replace your _buildActionButtons() method with this:
   Widget _buildActionButtons() {
-    return Obx(() {
-      final status = _viewModel.inviteCodeResponse.value.status;
-      final isLoading = status == Status.loading;
-      final userId = SharedPrefs.getUserId();
-      final hasInviteCode = _viewModel.inviteCode.isNotEmpty;
+    final JoinChallengeViewModel joinViewModel = Get.find<JoinChallengeViewModel>();
 
-      // ✅ FIXED: Single button that transforms based on state
-      final buttonText = hasInviteCode ? "Continue" : "Create Challenge";
-      final isButtonEnabled = !isLoading && userId != null;
+    return Obx(() {
+      final createStatus = _viewModel.inviteCodeResponse.value.status;
+      final isCreating = createStatus == Status.loading;
+      final hasInviteCode = _viewModel.inviteCode.isNotEmpty;
+      final isJoining = joinViewModel.isJoining.value;
+
+      // ✅ FIXED: Get userId from StorageRepository
+      final userId = _storageRepo.getUserId();
+      final canCreate = !isCreating && userId != null && userId.isNotEmpty;
+      final canJoin = !isJoining && userId != null && userId.isNotEmpty;
+
+      // Check if user has entered an invite code to join
+      final hasJoinCode = joinViewModel.inviteCodeController.text.isNotEmpty;
+      final isValidJoinCode = joinViewModel.isValidInviteCode(joinViewModel.inviteCodeController.text);
 
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           children: [
-            CustomButton2(
-              text: isLoading ? "Creating Challenge..." : buttonText,
-              onPressed: isButtonEnabled
-                  ? () {
-                if (hasInviteCode) {
-                  // Continue to challenge details
+            // JOIN CHALLENGE BUTTON - Only show when user has entered an invite code
+            if (hasJoinCode && !hasInviteCode) ...[
+              CustomButton2(
+                text: isJoining ? "Joining Challenge..." : "Join Challenge",
+                onPressed: (canJoin && isValidJoinCode) ? () {
+                  final code = joinViewModel.inviteCodeController.text;
+                  joinViewModel.joinChallengeWithCode(code, userId!);
+                } : null,
+              ),
+              SizedBox(height: 10.h),
+            ],
+
+            // CREATE CHALLENGE BUTTON - Only show when no invite code is entered
+            if (!hasJoinCode) ...[
+              CustomButton2(
+                text: isCreating ? "Creating Challenge..." : "Create Challenge",
+                onPressed: canCreate ? () {
+                  _viewModel.createChallenge();
+                } : null,
+              ),
+              SizedBox(height: 10.h),
+            ],
+
+            // CONTINUE BUTTON - Only show when challenge is created
+            if (hasInviteCode) ...[
+              CustomButton2(
+                text: "Continue",
+                onPressed: () {
                   Get.to(() => ChallengeDetailsScreen());
-                } else {
-                  // Create new challenge
-                  _viewModel.createChallenge(userId!);
-                }
-              }
-                  : null,
-            ),
-            SizedBox(height: 10.h),
+                },
+              ),
+              SizedBox(height: 10.h),
+            ],
+
+            // Show error if user is not logged in
+            if (userId == null || userId.isEmpty) ...[
+              SizedBox(height: 8.h),
+              Text(
+                'Please log in to create or join challenges',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ],
 
             // Show invite code info when available
             if (hasInviteCode) ...[
@@ -254,14 +313,63 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
                   children: [
                     Icon(Icons.check_circle, color: Colors.green, size: 16.sp),
                     SizedBox(width: 8.w),
-                    Text(
-                      'Challenge created! Share your code: ${_viewModel.inviteCode.value}',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.green.shade800,
-                        fontWeight: FontWeight.w500,
+                    Expanded(
+                      child: Text(
+                        'Challenge created! Share your code: ${_viewModel.inviteCode.value}',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.green.shade800,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            // Show join status
+            if (joinViewModel.joinStatus.isNotEmpty) ...[
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.all(12.h),
+                decoration: BoxDecoration(
+                  color: joinViewModel.joinStatus.value.contains('Error')
+                      ? Colors.red.shade50
+                      : Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: joinViewModel.joinStatus.value.contains('Error')
+                        ? Colors.red.shade200
+                        : Colors.green.shade200,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      joinViewModel.joinStatus.value.contains('Error')
+                          ? Icons.error
+                          : Icons.check_circle,
+                      color: joinViewModel.joinStatus.value.contains('Error')
+                          ? Colors.red
+                          : Colors.green,
+                      size: 16.sp,
+                    ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Text(
+                        joinViewModel.joinStatus.value,
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: joinViewModel.joinStatus.value.contains('Error')
+                              ? Colors.red.shade800
+                              : Colors.green.shade800,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
@@ -271,9 +379,7 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
         ),
       );
     });
-  }
-  // // Action buttons with proper validation
-  // Widget _buildActionButtons() {
+  }  // Widget _buildActionButtons() {
   //   return Column(
   //     children: [
   //       Obx(() {

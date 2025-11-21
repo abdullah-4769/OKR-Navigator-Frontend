@@ -174,13 +174,13 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      // ✅ FIXED: Using safe translated title
-                                      firstKRTitle,
-                                      style: appTheme.textTheme.bodyLarge?.copyWith(
-                                        color: AppColors.primaryRed,
-                                      ),
-                                    ),
+                                    // Text(
+                                    //   // ✅ FIXED: Using safe translated title
+                                    //   firstKRTitle,
+                                    //   style: appTheme.textTheme.bodyLarge?.copyWith(
+                                    //     color: AppColors.primaryRed,
+                                    //   ),
+                                    // ),
                                     SizedBox(height: 4.h),
                                     Text(
                                       // ✅ FIXED: Using safe translated description
@@ -214,7 +214,7 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                               child: CustomIndustryContainer(
                                 showSelectionCircle: false,
                                 // ✅ FIXED: Using safe translate for KR titles and descriptions
-                                title: _safeTranslate(kr.title),
+                                title: "",
                                 description: _safeTranslate(kr.description),
                                 icon: Icons.key, 
                                 isSelected: false,

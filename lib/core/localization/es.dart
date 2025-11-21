@@ -786,6 +786,16 @@ final Map<String, String> es = {
   "earned": "Obtenido",
   "in_progress": "En progreso",
   "total": "Total",
-  "error_fetching_certifications": "Error al obtener información de certificación"
+  "error_fetching_certifications": "Error al obtener información de certificación",
+  'start_mission':'Comienza la misión',
+  "exit_selection": "¿Salir de la selección?",
+  "exit_selection_confirmation": "¿Estás seguro de que quieres salir? Se perderá todo tu progreso.",
+  "yes": "Sí",
+  "no": "No",
+  "cancel": "Cancelar",
+  "exit": "Salir",
+      "achievements": "Achievements",
+  "achievements": "Logros",
+
 
 };

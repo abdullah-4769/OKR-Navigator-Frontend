@@ -173,9 +173,9 @@ final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMo
                                 return Padding(
                                   padding: EdgeInsets.symmetric(vertical: 8.h),
                                   child: CustomIndustryContainer(
-                                    title: item.title ?? 'Unknown',
+                                    title: "K${index + 1}",
                                     description: item.description ?? 'No description',
-                                    icon: Icons.key, // replace with proper icon if needed
+                                    // icon: Icons.key, // replace with proper icon if needed
                                     isSelected: controller.isSelected(index),
                                     onTap: () {
                                       controller.toggleSelection(index);
@@ -203,7 +203,7 @@ final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMo
                           SizedBox(height: AppDimensions.d20.h),
 
                           /// -------- CONSTELLATION ---------
-                          const CustomOKRConstellation(),
+                          // const CustomOKRConstellation(),
 
                           SizedBox(height: AppDimensions.d20.h),
 

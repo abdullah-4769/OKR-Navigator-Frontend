@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/generated/assets.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
 import 'package:game_app/presentation/widgets/bubble_button.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:stacked_card_carousel/stacked_card_carousel.dart';
 
 import '../../../controllers/home_controller.dart';
 import '../../../core/app_colors.dart';
+import '../../../core/api_constants.dart';
+import '../../../data/repositories/storage_repository.dart';
 import '../../../services/shared_preference.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_svg.dart';
@@ -23,6 +27,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final HomeController c = Get.put(HomeController(), permanent: true);
   final PageController _stackedCardController = PageController();
+  final StorageRepository _storageRepo = Get.find<StorageRepository>();
+
+  // User avatar URL
+  String? userAvatarUrl;
 
   // Animation controllers
   late AnimationController _topBarController;
@@ -50,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _clearGameData();
+    _loadUserAvatar();
 
     // Initialize animation controllers
     _topBarController = AnimationController(
@@ -213,6 +222,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  void _loadUserAvatar() {
+    try {
+      // Get user data from storage (works for both email and Google login)
+      final prefs = GetStorage();
+      final json = prefs.read('user-data');
+
+      if (json != null) {
+        final userData = jsonDecode(json);
+        final avatarId = userData['avatarPicId']?.toString();
+
+        if (avatarId != null && avatarId.isNotEmpty) {
+          setState(() {
+            // Check if it's already a full URL (Google) or just an ID (local)
+            if (avatarId.startsWith('http')) {
+              userAvatarUrl = avatarId; // Google avatar URL
+            } else {
+              userAvatarUrl = '${ApiConstants.baseUrl}/uploads/$avatarId'; // Local avatar
+            }
+          });
+          print('✅ Loaded avatar: $userAvatarUrl');
+        }
+      }
+    } catch (e) {
+      print('❌ Error loading avatar: $e');
+    }
+  }
+
   @override
   void dispose() {
     _topBarController.dispose();
@@ -228,325 +264,345 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              SlideTransition(
-                position: _topBarSlideAnimation,
-                child: FadeTransition(
-                  opacity: _topBarFadeAnimation,
-                  child: _topBar(),
-                ),
-              ),
-              SizedBox(height: 6.h),
-              ScaleTransition(
-                scale: _certificateScaleAnimation,
-                child: FadeTransition(
-                  opacity: _certificateFadeAnimation,
-                  child: CustomBubbleButton(
-                    text: 'certificate'.tr,
-                    width: 90,
-                    height: 30,
-                    onTap: () => Get.toNamed(AppRoutes.certificationScreen),
-                  ),
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Expanded(
-                child: SlideTransition(
-                  position: _cardsSlideAnimation,
-                  child: FadeTransition(
-                    opacity: _cardsFadeAnimation,
-                    child: _mainCardsSectionContent(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
-                child: SlideTransition(
-                  position: _dashboardSlideAnimation,
-                  child: FadeTransition(
-                    opacity: _dashboardFadeAnimation,
-                    child: _dashboardButton(),
-                  ),
-                ),
-              ),
-            ],
-          ),
+    body: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.backgroundTop, AppColors.backgroundBottom],
         ),
       ),
-    );
+      child: SafeArea(
+        child: Column(
+          children: [
+            SlideTransition(
+              position: _topBarSlideAnimation,
+              child: FadeTransition(
+                opacity: _topBarFadeAnimation,
+                child: _topBar(),
+              ),
+            ),
+            SizedBox(height: 6.h),
+            ScaleTransition(
+              scale: _certificateScaleAnimation,
+              child: FadeTransition(
+                opacity: _certificateFadeAnimation,
+                child: CustomBubbleButton(
+                  text: 'certificate'.tr,
+                  width: 90,
+                  height: 30,
+                  onTap: () => Get.toNamed(AppRoutes.certificationScreen),
+                ),
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Expanded(
+              child: SlideTransition(
+                position: _cardsSlideAnimation,
+                child: FadeTransition(
+                  opacity: _cardsFadeAnimation,
+                  child: _mainCardsSectionContent(),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+              child: SlideTransition(
+                position: _dashboardSlideAnimation,
+                child: FadeTransition(
+                  opacity: _dashboardFadeAnimation,
+                  child: _dashboardButton(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 
   Widget _topBar() => Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomSvg(
-            assetPath: 'assets/images/okrnev.svg',
-            semanticsLabel: 'okr'.tr,
-            height: 45.h,
-          ),
-          Row(
-            children: [
-              // Notification with blink animation
-              AnimatedBuilder(
-                animation: _notificationBlinkAnimation,
-                builder: (context, child) => Transform.scale(
-                    scale: _notificationBlinkAnimation.value,
-                    child: _circleIcon(
-                      child: Stack(
-                        children: [
-                          Icon(
-                            Icons.notifications_outlined,
-                            color: AppColors.primaryRed,
-                            size: 22.sp,
-                          ),
-                          // Red dot indicator with opacity blink
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            child: FadeTransition(
-                              opacity: _blinkAnimation,
-                              child: Container(
-                                width: 8.w,
-                                height: 8.w,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryRed,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 1.5,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-              ),
-              SizedBox(width: 8.w),
-              InkWell(
-                onTap: (){
-                  Get.to(ProfileScreen());
-                },
-                child: _circleIcon(
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/images/solo_image.png",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-
-  Widget _circleIcon({required Widget child}) => Container(
-      height: 46.sp,
-      width: 46.sp,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColors.primaryRed,
-          width: 1.5,
-        ),
-        color: AppColors.imageBackgroundColor.withValues(alpha: 0.4),
-      ),
-      child: Center(child: child),
-    );
-
-  Widget _mainCardsSectionContent() => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-        // Robot arrow with bounce and blink animation
-        Center(
-          child: Padding(
-            padding: EdgeInsets.only(left: 12.w),
-            child: AnimatedBuilder(
-              animation: Listenable.merge([_robotBounceAnimation, _blinkAnimation]),
-              builder: (context, child) => Transform.translate(
-                offset: Offset(0, -10 * _robotBounceAnimation.value),
-                child: Opacity(
-                  opacity: _blinkAnimation.value,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        CustomSvg(
+          assetPath: 'assets/images/okrnev.svg',
+          semanticsLabel: 'okr'.tr,
+          height: 45.h,
+        ),
+        Row(
+          children: [
+            // Notification with blink animation
+            AnimatedBuilder(
+              animation: _notificationBlinkAnimation,
+              builder: (context, child) => Transform.scale(
+                scale: _notificationBlinkAnimation.value,
+                child: _circleIcon(
+                  child: Stack(
                     children: [
-                      Image.asset(
-                        'assets/images/robortarrow.png',
-                        height: 90.h,
-                        fit: BoxFit.contain,
+                      Icon(
+                        Icons.notifications_outlined,
+                        color: AppColors.primaryRed,
+                        size: 22.sp,
                       ),
-                      SizedBox(height: 8.h),
-                      InkWell(
-                        onTap: () async {
-                          // Clear previous session data
-                          await SharedPrefs.clearGameSessionData();
-
-                          // Set bonus mode
-                          await SharedPrefs.saveGameMode("bonus");
-                          print("BONUS MODE ACTIVATED");
-
-                          // Show bonus mode dialog
-                          Get.dialog(
-                            Dialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.r),
-                              ),
-                              child: Container(
-                                padding: EdgeInsets.all(24.w),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFFFD700),
-                                      Color(0xFFFFA500),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(20.r),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-
-                                    Text(
-                                      'bonus_mode_title'.tr,
-                                      style: TextStyle(
-                                        fontSize: 24.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        fontFamily: 'GothamBold',
-                                      ),
-                                    ),
-                                    SizedBox(height: 12.h),
-                                    Text(
-                                      'bonus_mode_description'.tr,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: Colors.white,
-                                        fontFamily: 'Gotham',
-                                      ),
-                                    ),
-                                    SizedBox(height: 24.h),
-                                    CustomButton2(
-                                      text: 'start_bonus_mode'.tr,
-                                      onPressed: () {
-                                        Get.back();
-                                        Get.toNamed(
-                                          AppRoutes.roleSelection,
-                                          arguments: {"fromBonus": true},
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
+                      // Red dot indicator with opacity blink
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: FadeTransition(
+                          opacity: _blinkAnimation,
+                          child: Container(
+                            width: 8.w,
+                            height: 8.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryRed,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 1.5,
                               ),
                             ),
-                            barrierDismissible: false,
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 6.h,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
-                            ),
-                            borderRadius: BorderRadius.circular(20.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFFFFD700).withOpacity(0.4),
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Icon(
-                              //   Icons.stars,
-                              //   color: Colors.white,
-                              //   size: 16.sp,
-                              // ),
-                              // SizedBox(width: 4.w),
-                              Text(
-                                "bonus_mode_label".tr,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontFamily: 'GothamBold',
-                                ),
-                              ),
-                            ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-        Expanded(
-          child: Obx(() {
-            final selectedIndex = c.selectedCardIndex.value;
-            return StackedCardCarousel(
-              initialOffset: 20,
-              spaceBetweenItems: 320,
-              pageController: _stackedCardController,
-              items: List.generate(
-                c.cards.length,
-                    (index) => _CardItem(
-                  index: index,
-                  cardData: c.cards[index],
-                  isCenter: index == selectedIndex,
-                  onTap: () {
-                    if (index == selectedIndex) {
-                      c.onTapCTA();
-                    } else {
-                      _stackedCardController.animateToPage(
-                        index,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
+            SizedBox(width: 8.w),
+            // UPDATED: Dynamic profile avatar
+            InkWell(
+              onTap: () {
+                Get.to(ProfileScreen());
+              },
+              child: _circleIcon(
+                child: ClipOval(
+                  child: userAvatarUrl != null && userAvatarUrl!.isNotEmpty
+                      ? Image.network(
+                    userAvatarUrl!,
+                    fit: BoxFit.cover,
+                    width: 46.sp,
+                    height: 46.sp,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        "assets/images/solo_image.png",
+                        fit: BoxFit.cover,
                       );
-                      c.selectedCardIndex.value = index;
-                    }
-                  },
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: AppColors.imageBackgroundColor,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primaryRed,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                      : Image.asset(
+                    "assets/images/solo_image.png",
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-              onPageChanged: (index) {
-                c.selectedCardIndex.value = index;
-              },
-            );
-          }),
+            ),
+          ],
         ),
-        Padding(
-          padding: EdgeInsets.only(right: 14.w),
-          child: _verticalDots(),
-        )
       ],
-    );
+    ),
+  );
+
+  Widget _circleIcon({required Widget child}) => Container(
+    height: 46.sp,
+    width: 46.sp,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      border: Border.all(
+        color: AppColors.primaryRed,
+        width: 1.5,
+      ),
+      color: AppColors.imageBackgroundColor.withValues(alpha: 0.4),
+    ),
+    child: Center(child: child),
+  );
+
+  Widget _mainCardsSectionContent() => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      // Robot arrow with bounce and blink animation
+      Center(
+        child: Padding(
+          padding: EdgeInsets.only(left: 12.w),
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_robotBounceAnimation, _blinkAnimation]),
+            builder: (context, child) => Transform.translate(
+              offset: Offset(0, -10 * _robotBounceAnimation.value),
+              child: Opacity(
+                opacity: _blinkAnimation.value,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/robortarrow.png',
+                      height: 90.h,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(height: 8.h),
+                    InkWell(
+                      onTap: () async {
+                        // Clear previous session data
+                        await SharedPrefs.clearGameSessionData();
+
+                        // Set bonus mode
+                        await SharedPrefs.saveGameMode("bonus");
+                        print("BONUS MODE ACTIVATED");
+
+                        // Show bonus mode dialog
+                        Get.dialog(
+                          Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.all(24.w),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFFFFD700),
+                                    Color(0xFFFFA500),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20.r),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'bonus_mode_title'.tr,
+                                    style: TextStyle(
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontFamily: 'GothamBold',
+                                    ),
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  Text(
+                                    'bonus_mode_description'.tr,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: Colors.white,
+                                      fontFamily: 'Gotham',
+                                    ),
+                                  ),
+                                  SizedBox(height: 24.h),
+                                  CustomButton2(
+                                    text: 'start_bonus_mode'.tr,
+                                    onPressed: () {
+                                      Get.back();
+                                      Get.toNamed(
+                                        AppRoutes.roleSelection,
+                                        arguments: {"fromBonus": true},
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          barrierDismissible: false,
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+                          ),
+                          borderRadius: BorderRadius.circular(20.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFFFFD700).withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "bonus_mode_label".tr,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontFamily: 'GothamBold',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      Expanded(
+        child: Obx(() {
+          final selectedIndex = c.selectedCardIndex.value;
+          return StackedCardCarousel(
+            initialOffset: 20,
+            spaceBetweenItems: 320,
+            pageController: _stackedCardController,
+            items: List.generate(
+              c.cards.length,
+                  (index) => _CardItem(
+                index: index,
+                cardData: c.cards[index],
+                isCenter: index == selectedIndex,
+                onTap: () {
+                  if (index == selectedIndex) {
+                    c.onTapCTA();
+                  } else {
+                    _stackedCardController.animateToPage(
+                      index,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                    c.selectedCardIndex.value = index;
+                  }
+                },
+              ),
+            ),
+            onPageChanged: (index) {
+              c.selectedCardIndex.value = index;
+            },
+          );
+        }),
+      ),
+      Padding(
+        padding: EdgeInsets.only(right: 14.w),
+        child: _verticalDots(),
+      )
+    ],
+  );
 
   Widget _verticalDots() => Obx(
         () => Column(
@@ -575,8 +631,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     onTap: () => Get.toNamed(AppRoutes.scoreboardScreen),
     child: Row(
       children: [
-        // Arrow with blink animation
-
         SizedBox(width: 6.w),
         FadeTransition(
           opacity: _blinkAnimation,
@@ -593,7 +647,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       color: Colors.black87,
                     ),
                   ),
-                  SizedBox(width: 10.w,),
+                  SizedBox(
+                    width: 10.w,
+                  ),
                   FadeTransition(
                     opacity: _blinkAnimation,
                     child: Image.asset(
@@ -604,7 +660,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ],
               ),
-
               Text(
                 'dashboard'.tr,
                 style: TextStyle(

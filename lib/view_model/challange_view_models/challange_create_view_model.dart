@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/api_constants.dart';
 import '../../data/response/api_response.dart';
+import '../../data/repositories/storage_repository.dart';
 import '../../presentation/views/challange_mode/challange_detail_screen.dart';
 import '../../repository/challange_repositories/challange_create_repository.dart';
 import '../../repository/challange_repositories/challenge_accept_invitation_repository.dart';
@@ -17,25 +18,19 @@ class ChallengeCreateViewModel extends GetxController {
   final ChallengeRepository _repository = ChallengeRepository();
   final ChallengeAcceptInvitationRepository _invitationRepository = ChallengeAcceptInvitationRepository();
   final ChallengeSendInviteRepository _sendInviteRepository = ChallengeSendInviteRepository();
+  final StorageRepository _storageRepo = Get.find<StorageRepository>();
 
   final isChallengeCreated = false.obs;
-
-  // Reactive invite code
   var inviteCode = ''.obs;
-
-  // API response state
   var inviteCodeResponse = ApiResponse<String>.notStarted().obs;
   var invitationResponse = ApiResponse<List<dynamic>>.notStarted().obs;
 
-  // Search controllers
   final searchPlayersController = TextEditingController();
   final searchChallengersController = TextEditingController();
 
-  // Reactive filtered lists
   var filteredPlayers = <Map<String, dynamic>>[].obs;
   var filteredChallengers = <Map<String, dynamic>>[].obs;
 
-  // Loading states for buttons - FIXED: Using RxMap for proper reactivity
   final _challengingPlayers = <String, bool>{}.obs;
   final _respondingInvitations = <String, bool>{}.obs;
 
@@ -43,32 +38,50 @@ class ChallengeCreateViewModel extends GetxController {
   void onInit() {
     super.onInit();
     filteredChallengers.value = [];
-
-    // Listen to search text changes
     searchPlayersController.addListener(_filterPlayers);
-
     fetchPlayersExceptCurrentUser();
     fetchInvitations();
   }
 
-  // Check if currently challenging a player
   bool isChallengingPlayer(String playerId) {
     return _challengingPlayers[playerId] == true;
   }
 
-  // Check if currently responding to an invitation
   bool isRespondingToInvitation(String invitationId) {
     return _respondingInvitations[invitationId] == true;
   }
 
-  // Fetch invitations from API
+  // ✅ FIXED: Get current user ID with proper fallback chain
+  String? _getCurrentUserId() {
+    // Try StorageRepository first (most reliable)
+    String? userId = _storageRepo.getUserId();
+
+    if (userId != null && userId.isNotEmpty) {
+      if (kDebugMode) print("✅ Got user ID from StorageRepository: $userId");
+      return userId;
+    }
+
+    // Fallback to SharedPrefs
+    userId = SharedPrefs.getUserId();
+    if (userId != null && userId.isNotEmpty) {
+      if (kDebugMode) print("✅ Got user ID from SharedPrefs: $userId");
+      return userId;
+    }
+
+    if (kDebugMode) print("❌ No user ID found in any storage");
+    return null;
+  }
+
   Future<void> fetchInvitations() async {
     try {
       invitationResponse.value = ApiResponse.loading();
 
-      // Get user ID from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final userId = prefs.getString('userId') ?? SharedPrefs.getUserId() ?? 'f1f9313d-becf-4bec-a605-1c304bbb9b87';
+      // ✅ FIXED: Use unified user ID getter
+      final userId = _getCurrentUserId();
+
+      if (userId == null || userId.isEmpty) {
+        throw Exception('User not logged in. Please login again.');
+      }
 
       if (kDebugMode) print("Fetching invitations for user: $userId");
 
@@ -76,8 +89,7 @@ class ChallengeCreateViewModel extends GetxController {
 
       if (kDebugMode) print("Received invitations data: $invitations");
 
-      // Parse invitations into challengers format
-      final challengers = _parseInvitationsToChallengers(invitations);
+      final challengers = _parseInvitationsToChallengers(invitations, userId);
 
       if (kDebugMode) print("Parsed ${challengers.length} challengers");
 
@@ -87,18 +99,14 @@ class ChallengeCreateViewModel extends GetxController {
     } catch (e) {
       if (kDebugMode) print("Error fetching invitations: $e");
       invitationResponse.value = ApiResponse.error(e.toString());
-      // Get.snackbar(
-      //   'Error',
-      //   'Failed to load challengers: ${e.toString()}',
-      //   snackPosition: SnackPosition.BOTTOM,
-      //   backgroundColor: Colors.red,
-      //   colorText: Colors.white,
-      // );
     }
   }
 
-  // Parse API response to challengers format
-  List<Map<String, dynamic>> _parseInvitationsToChallengers(List<dynamic> invitations) {
+  // ✅ FIXED: Pass currentUserId to properly identify recipient
+  List<Map<String, dynamic>> _parseInvitationsToChallengers(
+      List<dynamic> invitations,
+      String currentUserId
+      ) {
     final List<Map<String, dynamic>> challengers = [];
 
     for (var invitation in invitations) {
@@ -120,10 +128,13 @@ class ChallengeCreateViewModel extends GetxController {
           final points = hostDetail['totalPoints'] ?? 0;
           final avatarPicId = hostDetail['avatarPicId']?.toString();
 
-          // FIXED: Ensure all values are properly converted to strings
+          // ✅ FIXED: Get recipient ID from invitation
+          final recipientId = invitation['playerId']?.toString() ?? currentUserId;
+
           challengers.add({
-            'id': invitationId?.toString() ?? '', // FIXED: Never null
+            'id': invitationId?.toString() ?? '',
             'challengeId': challengeId?.toString() ?? '',
+            'recipientId': recipientId, // ✅ CRITICAL: Save recipient ID
             'name': playerName,
             'level': 'Level $rank',
             'avatar': avatarPicId != null && avatarPicId.isNotEmpty
@@ -143,9 +154,8 @@ class ChallengeCreateViewModel extends GetxController {
     return challengers;
   }
 
-  // Respond to challenge invitation
+  // ✅ FIXED: Use recipientId from invitation data
   Future<void> respondToChallenge(String invitationId, bool accept) async {
-    // Validate invitation ID - FIXED: Better validation
     if (invitationId.isEmpty || invitationId == 'null') {
       Get.snackbar('Error', 'Invalid invitation ID');
       return;
@@ -153,15 +163,31 @@ class ChallengeCreateViewModel extends GetxController {
 
     try {
       _respondingInvitations[invitationId] = true;
-      update(); // Force UI update
+      update();
 
-      // Get user ID from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      final playerId = prefs.getString('userId') ?? SharedPrefs.getUserId() ?? 'ceb0147f-273b-425e-a1f8-07e8f0dee9f2';
+      // ✅ FIXED: Find the challenger to get correct recipientId
+      final challenger = filteredChallengers.firstWhereOrNull(
+              (c) => c['id']?.toString() == invitationId
+      );
 
-      if (kDebugMode) print("Responding to invitation $invitationId with accept: $accept");
+      if (challenger == null) {
+        throw Exception('Invitation not found');
+      }
 
-      // Convert invitationId to int for API call
+      // ✅ FIXED: Use recipientId from invitation data, NOT current user ID
+      final recipientId = challenger['recipientId']?.toString();
+
+      if (recipientId == null || recipientId.isEmpty) {
+        throw Exception('Invalid recipient ID in invitation');
+      }
+
+      if (kDebugMode) {
+        print("🎯 Responding to invitation:");
+        print("  - Invitation ID: $invitationId");
+        print("  - Recipient ID: $recipientId");
+        print("  - Accept: $accept");
+      }
+
       final invitationIdInt = int.tryParse(invitationId);
       if (invitationIdInt == null) {
         throw Exception('Invalid invitation ID format: $invitationId');
@@ -169,7 +195,7 @@ class ChallengeCreateViewModel extends GetxController {
 
       final response = await _invitationRepository.respondToChallenge(
           invitationIdInt,
-          playerId,
+          recipientId, // ✅ FIXED: Use correct recipient ID
           accept
       );
 
@@ -193,16 +219,14 @@ class ChallengeCreateViewModel extends GetxController {
         try {
           final acceptedChallengeId = response['challengeId']?.toString();
           if (acceptedChallengeId != null) {
+            final prefs = await SharedPreferences.getInstance();
             await prefs.setString('acceptInviteChallengeId', acceptedChallengeId);
             print('✅ Saved acceptInviteChallengeId: $acceptedChallengeId');
-          } else {
-            print('⚠️ No challengeId found in accept response');
           }
         } catch (e) {
           print('⚠️ Error saving acceptInviteChallengeId: $e');
         }
 
-        // Navigate to challenge details screen
         Future.delayed(Duration(milliseconds: 500), () {
           Get.to(() => ChallengeDetailsScreen());
         });
@@ -229,11 +253,10 @@ class ChallengeCreateViewModel extends GetxController {
       );
     } finally {
       _respondingInvitations[invitationId] = false;
-      update(); // Force UI update
+      update();
     }
   }
 
-  // Filter players based on search query
   void _filterPlayers() {
     final query = searchPlayersController.text.toLowerCase();
     if (query.isEmpty) {
@@ -256,7 +279,6 @@ class ChallengeCreateViewModel extends GetxController {
     searchChallengersController.clear();
   }
 
-  // Copy invite code to clipboard
   void copyInviteCode() {
     if (inviteCode.value.isNotEmpty) {
       Clipboard.setData(ClipboardData(text: inviteCode.value));
@@ -271,11 +293,80 @@ class ChallengeCreateViewModel extends GetxController {
     }
   }
 
-  // Create challenge
-  Future<void> createChallenge(String hostId) async {
+  // ✅ FIXED: Create challenge with proper user ID handling
+  // Future<void> createChallenge([String? hostId]) async {
+  //   try {
+  //     inviteCodeResponse.value = ApiResponse.loading();
+  //
+  //     // Use provided hostId or get current user ID
+  //     final finalHostId = hostId ?? _getCurrentUserId();
+  //
+  //     if (finalHostId == null || finalHostId.isEmpty) {
+  //       throw Exception('User not logged in. Please login again.');
+  //     }
+  //
+  //     if (kDebugMode) print("Creating challenge for host: $finalHostId");
+  //
+  //     final challengeData = await _repository.createChallenge(finalHostId);
+  //
+  //     final code = challengeData['code']?.toString() ?? '';
+  //     final challengeId = challengeData['id']?.toString() ?? '';
+  //
+  //     if (code.isEmpty || challengeId.isEmpty) {
+  //       throw Exception('Invalid response from server: missing code or challengeId');
+  //     }
+  //
+  //     final prefs = await SharedPreferences.getInstance();
+  //     await prefs.setString('challengeId', challengeId);
+  //     if (kDebugMode) print("✅ Saved challengeId: $challengeId");
+  //
+  //     inviteCode.value = code;
+  //     inviteCodeResponse.value = ApiResponse.completed(code);
+  //
+  //     Get.snackbar(
+  //       'Success!',
+  //       'Challenge created with code: $code',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.green,
+  //       colorText: Colors.white,
+  //       duration: Duration(seconds: 4),
+  //     );
+  //   } catch (e) {
+  //     if (kDebugMode) print("Error creating challenge: $e");
+  //     inviteCodeResponse.value = ApiResponse.error(e.toString());
+  //     Get.snackbar(
+  //       'Error',
+  //       'Failed to create challenge: ${e.toString()}',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //       duration: Duration(seconds: 4),
+  //     );
+  //   }
+  // }
+  Future<void> createChallenge() async {
     try {
       inviteCodeResponse.value = ApiResponse.loading();
-      if (kDebugMode) print("Creating challenge for host: $hostId");
+
+      // ✅ FIXED: Get user ID from StorageRepository (works for both email and Google)
+      final hostId = _storageRepo.getUserId();
+
+      if (hostId == null || hostId.isEmpty) {
+        if (kDebugMode) print("❌ User ID not found in storage");
+
+        inviteCodeResponse.value = ApiResponse.error('User not logged in');
+
+        Get.snackbar(
+          'Authentication Required',
+          'Please log in to create challenges',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      if (kDebugMode) print("✅ Creating challenge for host: $hostId");
 
       final challengeData = await _repository.createChallenge(hostId);
 
@@ -305,7 +396,7 @@ class ChallengeCreateViewModel extends GetxController {
         duration: Duration(seconds: 4),
       );
     } catch (e) {
-      if (kDebugMode) print("Error creating challenge: $e");
+      if (kDebugMode) print("❌ Error creating challenge: $e");
       inviteCodeResponse.value = ApiResponse.error(e.toString());
       Get.snackbar(
         'Error',
@@ -317,13 +408,13 @@ class ChallengeCreateViewModel extends GetxController {
       );
     }
   }
-
-  // Fetch players except current user - FIXED: Better data validation
   Future<void> fetchPlayersExceptCurrentUser() async {
     try {
-      final userId = SharedPrefs.getUserId();
-      if (userId == null) {
-        if (kDebugMode) print("User ID not found in SharedPreferences");
+      // ✅ FIXED: Use unified user ID getter
+      final userId = _getCurrentUserId();
+
+      if (userId == null || userId.isEmpty) {
+        if (kDebugMode) print("User ID not found in any storage");
         Get.snackbar('Error', 'User ID not found. Please log in again.');
         return;
       }
@@ -342,15 +433,13 @@ class ChallengeCreateViewModel extends GetxController {
 
         for (var user in data) {
           try {
-            // FIXED: Complete null safety for player data
             final playerId = user['id']?.toString() ?? '';
             final playerName = user['name']?.toString() ?? 'Unknown Player';
 
-            // Skip if no valid ID
             if (playerId.isEmpty) continue;
 
             players.add({
-              'id': playerId, // FIXED: Never null
+              'id': playerId,
               'name': playerName,
               'avatar': user['avatarPicId'] != null && user['avatarPicId'].toString().isNotEmpty
                   ? '${ApiConstants.baseUrl}/uploads/${user['avatarPicId']}'
@@ -368,9 +457,6 @@ class ChallengeCreateViewModel extends GetxController {
 
         filteredPlayers.value = players;
         if (kDebugMode) print("✅ Loaded ${players.length} players");
-
-        // Debug: Check player data
-        _debugPlayerData(players);
       } else {
         throw Exception('HTTP ${response.statusCode}: ${response.body}');
       }
@@ -386,44 +472,23 @@ class ChallengeCreateViewModel extends GetxController {
     }
   }
 
-  // Debug method to check player data
-  void _debugPlayerData(List<Map<String, dynamic>> players) {
-    print('🔍 DEBUG: Player Data Analysis');
-    for (var i = 0; i < players.length; i++) {
-      final player = players[i];
-      final playerId = player['id']?.toString();
-      final playerName = player['name']?.toString();
-
-      print('Player $i:');
-      print('  - ID: "$playerId" (type: ${playerId.runtimeType})');
-      print('  - Name: "$playerName"');
-      print('  - Has ID: ${playerId != null && playerId.isNotEmpty}');
-      print('  - Can Challenge: ${playerId != null && playerId.isNotEmpty}');
-    }
-  }
-
-  // Send challenge invite to selected player - FIXED: Better loading states
   Future<void> sendChallengeInvite(String playerId) async {
-    // FIXED: Better validation
     if (playerId.isEmpty || playerId == 'null') {
       Get.snackbar('Error', 'Invalid player ID');
       return;
     }
 
     try {
-      // FIXED: Set loading state properly
       _challengingPlayers[playerId] = true;
-      update(); // Force UI update
+      update();
 
       final prefs = await SharedPreferences.getInstance();
-
-      // Get challengeId as String and parse to int
       final challengeIdStr = prefs.getString('challengeId');
+
       if (challengeIdStr == null) {
         throw Exception('No active challenge found. Please create a challenge first.');
       }
 
-      // Parse to int
       final challengeId = int.tryParse(challengeIdStr);
       if (challengeId == null) {
         throw Exception('Invalid challenge ID format: $challengeIdStr');
@@ -455,13 +520,11 @@ class ChallengeCreateViewModel extends GetxController {
         duration: Duration(seconds: 4),
       );
     } finally {
-      // FIXED: Clear loading state properly
       _challengingPlayers[playerId] = false;
-      update(); // Force UI update
+      update();
     }
   }
 
-  // Refresh all data
   Future<void> refreshData() async {
     await fetchPlayersExceptCurrentUser();
     await fetchInvitations();
@@ -474,4 +537,3 @@ class ChallengeCreateViewModel extends GetxController {
     super.onClose();
   }
 }
-

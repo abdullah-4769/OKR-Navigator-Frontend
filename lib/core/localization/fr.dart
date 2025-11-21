@@ -72,7 +72,7 @@ final Map<String, String> fr = {
 
   "welcome_to_okr_navigator": "Bienvenue sur OKR Navigator",
   "start_screen_description": "Votre voyage pour maîtriser les OKR commence ici. Commençons !",
-  "swipe_to_start": "Glissez pour commencer",
+  "swipe_to_start": "Glisser pour commencer",
   // Optional: Additional descriptive texts
   'revise_initiatives_subtitle': 'Mettez à jour vos initiatives en fonction de nouvelles perspectives',
   'add_initiatives_subtitle': 'Ajoutez des initiatives pour atteindre vos résultats clés sélectionnés',
@@ -690,7 +690,7 @@ final Map<String, String> fr = {
   // remainings
   'welcome_to_okr_navigator': 'Bienvenue dans OKR Navigator',
   'start_screen_description': 'Entrez dans le rôle d\'un leader stratégique. Que vous soyez en solo, en équipe ou en certification, chaque choix que vous ferez façonnera le chemin vers le succès organisationnel.',
-  'company_crisis_description': 'Vous venez d\'entrer dans une entreprise en crise. Chaque décision que vous prenez pourrait changer son avenir.',
+  'company_crisis_description': " l’organisation est en crise Productivité en baisse.Objectifs désalignés.Équipes en dispersion d'énergie.Votre mission est claire :Rétablir le cap stratégique en définissant des OKR cohérents, ambitieux et réalistes .Chaque décision que vous prendrez façonnera la performance, l’engagement et l’avenir de l’entreprise.",
   'choose_role_instruction': 'Choisissez votre rôle pour commencer la mission',
   'first_time_playing': 'Première fois que vous jouez ?',
   'watch_tutorial': 'Regarder le tutoriel',
@@ -886,7 +886,7 @@ final Map<String, String> fr = {
   'role': 'Rôle',
   'profile': 'Profil',
   'welcome_navigator': 'Bienvenue Navigateur',
-  'company_crisis_description': 'Vous êtes entré dans un scénario de crise d\'entreprise. Faites vos choix avec sagesse pour naviguer avec succès.',
+  'company_crisis_description': " l’organisation est en crise Productivité en baisse.Objectifs désalignés.Équipes en dispersion d'énergie.Votre mission est claire :Rétablir le cap stratégique en définissant des OKR cohérents, ambitieux et réalistes .Chaque décision que vous prendrez façonnera la performance, l’engagement et l’avenir de l’entreprise.",
   'choose_role_instruction': 'Veuillez choisir votre rôle pour continuer',
   'select_continue': 'Continuer',
   'first_time_playing': 'Première fois que vous jouez ?',
@@ -1131,9 +1131,9 @@ final Map<String, String> fr = {
   'welcome_navigator': 'Bienvenue, Navigateur !',
   'splash1_subtitle': 'Vous avez été recruté pour une mission à haut risque. L\'une de nos entreprises les plus performantes est confrontée à une crise stratégique et a besoin de votre leadership pour redresser la situation.',
   'splash2_title': 'L\'entreprise est en difficulté',
-  'splash2_subtitle': 'La productivité décline. Les objectifs sont désalignés. L\'équipe perd son focus. Vous êtes le seul à avoir les compétences pour apporter clarté, direction et résultats.',
-
+  "splash2_subtitle":" l’organisation est en crise Productivité en baisse.Objectifs désalignés.Équipes en dispersion d'énergie.Votre mission est claire :Rétablir le cap stratégique en définissant des OKR cohérents, ambitieux et réalistes .Chaque décision que vous prendrez façonnera la performance, l’engagement et l’avenir de l’entreprise.",
   // JOURNEY & MAP
+'start_mission': 'Commencez la mission',
   'journey': 'Parcours',
   'map': 'Carte',
   'show_less': 'Afficher moins',
@@ -1462,6 +1462,14 @@ final Map<String, String> fr = {
   "earned": "Obtenu",
   "in_progress": "En cours",
   "total": "Total",
-  "error_fetching_certifications": "Erreur lors du chargement des informations de certification"
+  "error_fetching_certifications": "Erreur lors du chargement des informations de certification",
+  "exit_selection": "Quitter la sélection ?",
+  "exit_selection_confirmation": "Êtes-vous sûr de vouloir quitter ? Tous vos progrès seront perdus.",
+  "yes": "Oui",
+  "no": "Non",
+  "cancel": "Annuler",
+  "exit": "Quitter",
+  "achievements": "Réalisations",
+
 
 };

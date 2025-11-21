@@ -98,6 +98,8 @@ import '../services/campaign/certification_evaluation_viewmodel.dart';
 import '../services/key_result/key_results.dart';
 import '../services/notification_service.dart';
 import '../view_model/campaign_mode/certification_info_model.dart';
+import '../view_model/challange_view_models/join_challenge_view_model.dart';
+import '../view_model/challenge_view_model/contextual_challenge_view_model.dart';
 import '../view_model/challenge_view_model/innovative_view_model.dart';
 import '../view_model/key_result_latest_view_model.dart';
 import '../view_model/key_results_view_mode.dart' hide KeyResultsLatestViewModel;
@@ -199,14 +201,15 @@ class AppBindings extends Bindings {
     Get.lazyPut(() => InnovativeStrategiesRepository());
 
     Get.lazyPut(() => InnovativeStrategiesViewModel());
+    Get.lazyPut(() => ChallengeViewModel());
 
 
 
     Get.put(TeamGameTimerController(), permanent: true);
 
     Get.put(FirebaseNotificationService(),permanent:true);
-
-
+    Get.put(StrategySelectionController(),permanent: true);
+    Get.lazyPut(()=>JoinChallengeViewModel());
     //  NEW COMPREHENSIVE CONTROLLERS
     Get.put(TeamStrategyController(), permanent: true);
     Get.put(TeamChatController(), permanent: true);

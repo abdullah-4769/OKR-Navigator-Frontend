@@ -407,7 +407,84 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
       );
     }
   }
+  void _showBackConfirmationDialog() {
+    // Agar modify from contextual flow hai to direct back karein
+    if (_isModifyFromContextual) {
+      Get.back();
+      return;
+    }
 
+    // Normal flow ke liye confirmation dialog show karein
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: AppColors.white,
+        surfaceTintColor: AppColors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        title: Text(
+          'exit_selection'.tr,
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryRed,
+            fontFamily: 'GothamBold',
+          ),
+          textAlign: TextAlign.center,
+        ),
+        content: Text(
+          'exit_selection_confirmation'.tr,
+          style: TextStyle(
+            fontSize: 16.sp,
+            color: AppColors.textSecondary,
+            fontFamily: 'Gotham',
+            height: 1.4,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        actions: [
+          // No Button - Current screen pe hi rahein
+          TextButton(
+            onPressed: () {
+              Get.back(); // Dialog band karein
+            },
+            child: Text(
+              'no'.tr,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          // Yes Button - Home screen pe navigate karein
+          ElevatedButton(
+            onPressed: () {
+              Get.back(); // Dialog band karein
+              Get.offAllNamed(AppRoutes.home); // Home screen pe navigate karein
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryRed,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+            ),
+            child: Text(
+              'yes'.tr,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: AppColors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+        actionsAlignment: MainAxisAlignment.spaceAround,
+      ),
+      barrierDismissible: false, // User ko dialog ke bahar click karke band karne se roke
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -432,22 +509,29 @@ class _KeyResultsScreenState extends State<KeyResultsScreen> {
                     child: Column(
                       children: [
                         SizedBox(height: screenHeight * 0.02),
-
-                        /// Custom Header
                         CustomHeader(
                           title: _getHeaderTitle(),
                           highlightedText: _getHeaderHighlight(),
                           onBackTap: () {
-                            if (_isModifyFromContextual) {
-                              // Just go back to contextual challenge
-                              Get.back();
-                            } else {
-                              // Normal navigation back
-                              Get.toNamed(AppRoutes.keyObjectiveScreen);
-                            }
+                            _showBackConfirmationDialog();
                           },
                           showDashboardIcon: true,
                         ),
+                        /// Custom Header
+                        // CustomHeader(
+                        //   title: _getHeaderTitle(),
+                        //   highlightedText: _getHeaderHighlight(),
+                        //   onBackTap: () {
+                        //     if (_isModifyFromContextual) {
+                        //       // Just go back to contextual challenge
+                        //       Get.back();
+                        //     } else {
+                        //       // Normal navigation back
+                        //       Get.toNamed(AppRoutes.keyObjectiveScreen);
+                        //     }
+                        //   },
+                        //   showDashboardIcon: true,
+                        // ),
 
                         SizedBox(height: screenHeight * 0.015),
 

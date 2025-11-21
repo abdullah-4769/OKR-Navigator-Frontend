@@ -39,8 +39,10 @@ Future<void> main() async {
   await GetStorage.init();
   await SharedPrefs.init();
 
-  // 1. Storage repository
-  Get.put(StorageRepository(), permanent: true);
+  // 1. Storage repository (MUST be initialized first for auto-login check)
+  final storageRepo = StorageRepository();
+  await storageRepo.init();
+  Get.put<StorageRepository>(storageRepo, permanent: true);
 
   // 2. DioClient
   final dioClient = await Get.putAsync<DioClient>(() async {
@@ -97,6 +99,7 @@ class MyApp extends StatelessWidget {
           locale: localizationService.currentLocale,
           fallbackLocale: const Locale('en'),
           initialBinding: AppBindings(),
+          // ✅ ALWAYS start with splash screen
           initialRoute: AppRoutes.splash0,
           getPages: AppRoutes.pages,
           theme: appTheme,

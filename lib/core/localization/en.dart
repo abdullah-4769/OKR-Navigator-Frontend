@@ -3052,6 +3052,7 @@ final Map<String, String> en = {
   'earned_certifications': 'Earned Certifications',
   'earned': 'Earned',
   'in_progress': 'In Progress',
+  'start_mission':'Start the mission',
   'available': 'Available',
   'available_to_start': 'Available to Start',
   'start': 'Start',
@@ -3064,6 +3065,11 @@ final Map<String, String> en = {
   "earned": "Earned",
   "in_progress": "In Progress",
   "total": "Total",
-  "error_fetching_certifications": "Error in fetching certification information"
-
+  "error_fetching_certifications": "Error in fetching certification information",
+      "exit_selection": "Exit Selection?",
+"exit_selection_confirmation": "Are you sure you want to exit? All your progress will be lost.",
+"yes": "Yes",
+"no": "No",
+"cancel": "Cancel",
+"exit": "Exit"
 };

@@ -184,7 +184,7 @@ class _ResponsiveCertificationScreenState extends State<_ResponsiveCertification
       children: [
         CustomHeader(
           title: 'your'.tr,
-          highlightedText: 'certification'.tr,
+          highlightedText: 'achievements'.tr,
           onBackTap: () => Get.back(),
         ),
         SizedBox(height: 50.h),

@@ -16,6 +16,7 @@ class StartScreen extends StatefulWidget {
   State<StartScreen> createState() => _StartScreenState();
 }
 
+
 class _StartScreenState extends State<StartScreen> {
   bool fromGameMode = false;
   String? selectedMode;
@@ -188,7 +189,7 @@ class _StartScreenState extends State<StartScreen> {
       Get.offAllNamed(AppRoutes.pricingScreen);
     } else {
       // Normal flow - go to splash1
-      Get.offAllNamed(AppRoutes.splash1);
+      Get.offAllNamed(AppRoutes.splash2);
     }
   }
 }
