@@ -435,7 +435,8 @@ class _ResponsiveCardPager extends StatelessWidget {
                   fit: BoxFit.contain,
                 )
                     : Image.asset(
-                  controller.cardAssets[controller.selectedCardIndex.value],
+                  // ✅ CRITICAL FIX: Use strategyCardAssets directly (0-based, no backcard)
+                  controller.strategyCardAssets[controller.selectedCardIndex.value],
                   key: ValueKey<int>(controller.selectedCardIndex.value),
                   height: getResponsiveHeight(
                     mobile: 350,
@@ -701,4 +702,3 @@ enum DeviceType {
   largeDesktop,
   ultraWide,
 }
-

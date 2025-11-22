@@ -1,38 +1,45 @@
-import 'package:game_app/data/network/network_api_services.dart';
-import 'package:game_app/data/response/api_response.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../../core/api_constants.dart';
+import '../../data/response/api_response.dart';
 
 class ShowChallengersVsRepository {
-  final NetworkApiService _apiService = NetworkApiService();
-
   Future<ApiResponse<List<dynamic>>> getChallengePlayers(String challengeId) async {
     try {
+      final url = '${ApiConstants.baseUrl}/challenges/$challengeId/challengeplayer';
+
       print('🔵 Repository: Calling API for challengeId: $challengeId');
+      print('🔵 Full URL: $url');
 
-      // ✅ Use ApiConstants for the full URL
-      final fullUrl = ApiConstants.getChallengePlayers(challengeId);
-      print('🔵 Full URL: $fullUrl');
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-      final response = await _apiService.getGetApiResponse(fullUrl);
+      print('🔵 Response Status: ${response.statusCode}');
+      print('🔵 Response Body: ${response.body}');
 
-      print('🔵 Repository: Response type: ${response.runtimeType}');
-      print('🔵 Repository: Response data: $response');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
 
-      // Validate response is a List
-      if (response is! List) {
-        throw Exception('Expected List but got ${response.runtimeType}');
+        if (data is List) {
+          print('🔵 Repository: Response type: List<dynamic>');
+          print('🔵 Repository: Found ${data.length} players');
+
+          // ✅ FIXED: Just return the raw data, let ViewModel handle enrichment
+          return ApiResponse.completed(data);
+        } else {
+          throw Exception('Unexpected response format: $data');
+        }
+      } else {
+        throw Exception('HTTP ${response.statusCode}: ${response.body}');
       }
-
-      print('✅ Successfully parsed ${response.length} players');
-
-      return ApiResponse.completed(response as List<dynamic>);
     } catch (e) {
-      print('❌ Repository error: $e');
+      print('❌ Repository Error: $e');
       return ApiResponse.error(e.toString());
     }
   }
 }
-
 //
 //
 // import 'package:game_app/data/network/network_api_services.dart';

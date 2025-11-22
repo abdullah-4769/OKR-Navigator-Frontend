@@ -1,130 +1,35 @@
-// import 'package:get/get.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:game_app/data/response/api_response.dart';
-// import '../../generated/models/requests/challange_mode/join_challange_request.dart';
-// import '../../repository/challange_repositories/join_challange_repository.dart';
-//
-// class JoinChallengeViewModel extends GetxController {
-//   final JoinChallengeRepository _repository = JoinChallengeRepository();
-//
-//   final Rx<ApiResponse> _joinChallengeResponse = ApiResponse.notStarted().obs;
-//   ApiResponse get joinChallengeResponse => _joinChallengeResponse.value;
-//
-//   final isJoining = false.obs;
-//
-//   Future<void> joinChallenge(String code) async {
-//     print('JoinChallengeViewModel: joinChallenge called with code: $code');
-//     try {
-//       isJoining.value = true;
-//       _joinChallengeResponse.value = ApiResponse.loading();
-//       print('JoinChallengeViewModel: Set isJoining to true, response to loading');
-//
-//       final prefs = await SharedPreferences.getInstance();
-//       final userId = prefs.getString('userId');
-//       print('JoinChallengeViewModel: Retrieved userId: $userId');
-//
-//       if (userId == null) {
-//         print('JoinChallengeViewModel: Error - User ID not found in SharedPreferences');
-//         _joinChallengeResponse.value = ApiResponse.error("User ID not found");
-//         return;
-//       }
-//
-//       final request = JoinChallengeRequest(userId: userId);
-//       print('JoinChallengeViewModel: Sending join request with code: $code, userId: $userId');
-//
-//       final response = await _repository.joinChallenge(code, request);
-//       print('JoinChallengeViewModel: Received response: $response');
-//
-//       _joinChallengeResponse.value = ApiResponse.completed(response);
-//       print('JoinChallengeViewModel: Set response to completed');
-//       // ✅ Save joined challenge ID for later use
-//       try {
-//         final prefs = await SharedPreferences.getInstance();
-//         // Assuming response is a Map (based on your API response)
-//         final challengeId = response['id']?.toString();
-//         if (challengeId != null) {
-//           await prefs.setString('joinChallengeId', challengeId);
-//           print('✅ Saved joinChallengeId: $challengeId');
-//         } else {
-//           print('⚠️ No challenge ID found in join challenge response');
-//         }
-//       } catch (e) {
-//         print('⚠️ Error saving joinChallengeId to SharedPreferences: $e');
-//       }
-//
-//     } catch (error) {
-//       print('JoinChallengeViewModel: Error occurred: $error');
-//       _joinChallengeResponse.value = ApiResponse.error(error.toString());
-//     } finally {
-//       isJoining.value = false;
-//       print('JoinChallengeViewModel: Set isJoining to false');
-//     }
-//
-//   }
-// }
+
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/repositories/storage_repository.dart';
 import '../../presentation/views/challange_mode/challange_detail_screen.dart';
 import '../../repository/challange_repositories/join_challange_repository.dart';
 
 class JoinChallengeViewModel extends GetxController {
-  final JoinChallengeRepository _repository = JoinChallengeRepository();
+  final TextEditingController inviteCodeController = TextEditingController();
   final StorageRepository _storageRepo = Get.find<StorageRepository>();
+  final JoinChallengeRepository _repository = JoinChallengeRepository();
 
-  final inviteCodeController = TextEditingController();
-  final isJoining = false.obs;
-  final joinStatus = ''.obs;
-  final inviteCode = ''.obs;
+  var isJoining = false.obs;
+  var joinStatus = ''.obs;
+  var inviteCode = ''.obs;
 
-
-  @override
-  void onInit() {
-    super.onInit();
-    // ✅ ADD THIS: Listen to text controller changes
-    inviteCodeController.addListener(() {
-      inviteCode.value = inviteCodeController.text.trim();
-    });
+  void clearStatus() {
+    joinStatus.value = '';
   }
 
-  @override
-  void onClose() {
-    inviteCodeController.removeListener(() {});
-    inviteCodeController.dispose();
-    super.onClose();
+  bool isValidInviteCode(String code) {
+    return code.length == 6 && RegExp(r'^[A-Z0-9]{6}$').hasMatch(code.toUpperCase());
   }
 
-  // ✅ FIXED: Get current user ID with proper fallback chain
-  String? _getCurrentUserId() {
-    // Try StorageRepository first (most reliable)
-    String? userId = _storageRepo.getUserId();
-
-    if (userId != null && userId.isNotEmpty) {
-      if (kDebugMode) print("✅ Got user ID from StorageRepository: $userId");
-      return userId;
-    }
-
-    if (kDebugMode) print("❌ No user ID found in StorageRepository");
-    return null;
-  }
-
-  // ✅ FIXED: Join challenge with code - proper user ID handling
-  Future<void> joinChallengeWithCode(String code, String userId) async {
-    // Validate inputs
-    if (code.isEmpty) {
-      joinStatus.value = 'Error: Invite code is required';
-      return;
-    }
-
-    if (userId.isEmpty) {
-      joinStatus.value = 'Error: User not logged in';
+  /// Join a challenge using invite code
+  Future<void> joinChallengeWithCode(String inviteCode, String userId) async {
+    if (!isValidInviteCode(inviteCode)) {
       Get.snackbar(
-        'Authentication Required',
-        'Please log in to join challenges',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
+        'Invalid Code',
+        'Please enter a valid 6-character invite code',
+        backgroundColor: Colors.orange,
         colorText: Colors.white,
       );
       return;
@@ -134,90 +39,57 @@ class JoinChallengeViewModel extends GetxController {
       isJoining.value = true;
       joinStatus.value = 'Joining challenge...';
 
-      if (kDebugMode) {
-        print('🎯 Attempting to join challenge:');
-        print('  - Invite Code: $code');
-        print('  - User ID: $userId');
-      }
+      final upperCode = inviteCode.toUpperCase();
 
-      // Call repository to join challenge
-      final result = await _repository.joinChallenge(code, userId);
+      print('\n🎯 ========== JOINING CHALLENGE ==========');
+      print('📋 Code: $upperCode');
+      print('👤 User ID: $userId');
 
-      if (kDebugMode) print('✅ Join challenge response: $result');
+      // Call repository to join
+      final result = await _repository.joinChallenge(upperCode, userId);
 
-      // Extract challenge ID from response
-      final challengeId = result['challengeId']?.toString() ??
-          result['id']?.toString();
+      final challengeId = result['challengeId'];
 
-      if (challengeId == null || challengeId.isEmpty) {
-        throw Exception('No challenge ID received from server');
-      }
+      print('✅ Join successful!');
+      print('   Challenge ID: $challengeId');
+      print('   User ID: $userId');
+      print('=========================================\n');
 
-      // Save challenge ID to SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('acceptInviteChallengeId', challengeId);
-      if (kDebugMode) print('✅ Saved acceptInviteChallengeId: $challengeId');
-
-      // Update status
-      joinStatus.value = 'Success! Joined challenge';
-      isJoining.value = false;
+      joinStatus.value = 'Successfully joined!';
 
       // Show success message
       Get.snackbar(
-        'Success!',
-        'You have successfully joined the challenge!',
-        snackPosition: SnackPosition.BOTTOM,
+        'Success! 🎉',
+        'You joined the challenge!',
         backgroundColor: Colors.green,
         colorText: Colors.white,
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 2),
       );
 
-      // Clear the input
-      inviteCodeController.clear();
-
-      // Navigate to challenge details after a short delay
-      Future.delayed(Duration(milliseconds: 500), () {
-        Get.to(() => ChallengeDetailsScreen());
-      });
+      // Navigate to challenge details
+      await Future.delayed(Duration(milliseconds: 800));
+      Get.to(() => ChallengeDetailsScreen());
 
     } catch (e) {
-      isJoining.value = false;
+      print('❌ ERROR: $e');
 
-      // Parse error message
-      String errorMessage = e.toString();
-      if (errorMessage.contains('Challenge not found')) {
-        joinStatus.value = 'Error: Invalid invite code';
-        errorMessage = 'Invalid invite code. Please check and try again.';
-      } else if (errorMessage.contains('already joined') || errorMessage.contains('Already')) {
-        joinStatus.value = 'Error: Already joined this challenge';
-        errorMessage = 'You have already joined this challenge.';
-      } else if (errorMessage.contains('User not found')) {
-        joinStatus.value = 'Error: User not found. Please log in again.';
-        errorMessage = 'User authentication failed. Please log in again.';
-      } else {
-        joinStatus.value = 'Error: Failed to join challenge';
-      }
-
-      if (kDebugMode) print('❌ Error joining challenge: $e');
+      joinStatus.value = 'Error: ${e.toString()}';
 
       Get.snackbar(
-        'Error',
-        errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
+        'Failed to Join',
+        e.toString().replaceAll('Exception: ', ''),
         backgroundColor: Colors.red,
         colorText: Colors.white,
         duration: Duration(seconds: 4),
       );
+    } finally {
+      isJoining.value = false;
     }
   }
 
-  // Clear status message
-  void clearStatus() {
-    joinStatus.value = '';
-  }
-
-  // Validate invite code format
-  bool isValidInviteCode(String code) {
-    return code.length == 6 && RegExp(r'^[A-Z0-9]+$').hasMatch(code);
+  @override
+  void onClose() {
+    inviteCodeController.dispose();
+    super.onClose();
   }
 }

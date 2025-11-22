@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../data/repositories/storage_repository.dart';
-import '../../../../services/shared_preference.dart';
 import '../../../../view_model/challange_view_models/join_challenge_view_model.dart';
 
 class InputInviteCodeCard extends StatelessWidget {
@@ -65,7 +64,8 @@ class InputInviteCodeCard extends StatelessWidget {
                   textCapitalization: TextCapitalization.characters,
                   maxLength: 6,
                   onChanged: (value) {
-                    // This will automatically update the observable via the listener
+                    // Update observable invite code
+                    _viewModel.inviteCode.value = value.toUpperCase(); // Ensure it's uppercase
                   },
                   buildCounter: (context, {required currentLength, required isFocused, maxLength}) {
                     return null; // Hide counter
@@ -74,10 +74,8 @@ class InputInviteCodeCard extends StatelessWidget {
               ),
               SizedBox(width: 12.w),
 
-              // Join Button - FIXED: Use proper observable
-              Builder(
-                builder: (context) => _buildJoinButton(context),
-              ),
+              // Join Button
+              _buildJoinButton(context),
             ],
           ),
 
@@ -91,7 +89,7 @@ class InputInviteCodeCard extends StatelessWidget {
     );
   }
 
-  // FIXED: Build clear button without Obx
+  // Build clear button
   Widget _buildClearButton() {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: _viewModel.inviteCodeController,
@@ -103,20 +101,19 @@ class InputInviteCodeCard extends StatelessWidget {
           icon: Icon(Icons.clear, size: 20.sp),
           onPressed: () {
             _viewModel.inviteCodeController.clear();
-            _viewModel.clearStatus();
+            _viewModel.inviteCode.value = ''; // Clear observable as well
+            _viewModel.clearStatus(); // Clear status when the button is pressed
           },
         );
       },
     );
   }
 
-  // FIXED: Accept context as parameter and use observable inviteCode
+  // Build join button
   Widget _buildJoinButton(BuildContext context) {
     return Obx(() {
-      // ✅ These are the observable variables that Obx will watch
       final isLoading = _viewModel.isJoining.value;
-      final code = _viewModel.inviteCode.value; // ✅ NOW OBSERVABLE
-      final isValidCode = _viewModel.isValidInviteCode(code);
+      final isValidCode = _viewModel.isValidInviteCode(_viewModel.inviteCode.value);
       final userId = _getCurrentUserId();
       final isUserLoggedIn = userId != null && userId.isNotEmpty;
 
@@ -153,10 +150,10 @@ class InputInviteCodeCard extends StatelessWidget {
     });
   }
 
-  // FIXED: Build validation message with proper observable usage
+  // Build validation message
   Widget _buildValidationMessage() {
     return Obx(() {
-      final code = _viewModel.inviteCode.value; // ✅ NOW OBSERVABLE
+      final code = _viewModel.inviteCode.value;
 
       if (code.isEmpty) {
         return const SizedBox.shrink();
@@ -183,7 +180,7 @@ class InputInviteCodeCard extends StatelessWidget {
     });
   }
 
-  // FIXED: Build status message with proper Obx containing observable
+  // Build status message
   Widget _buildStatusMessage() {
     return Obx(() {
       final status = _viewModel.joinStatus.value;
@@ -200,7 +197,7 @@ class InputInviteCodeCard extends StatelessWidget {
         textColor = Colors.green.shade800;
         backgroundColor = Colors.green.shade50;
         icon = Icons.check_circle;
-      } else if (status.contains('Error') || status.contains('Failed') || status.contains('not found')) {
+      } else if (status.contains('Error') || status.contains('Failed')) {
         textColor = Colors.red.shade800;
         backgroundColor = Colors.red.shade50;
         icon = Icons.error;
@@ -241,63 +238,39 @@ class InputInviteCodeCard extends StatelessWidget {
     });
   }
 
-  // ✅ FIXED: Get user ID with proper fallback chain
+  // Get Current User ID
   String? _getCurrentUserId() {
     String? userId = _storageRepo.getUserId();
-
-    if (userId != null && userId.isNotEmpty) {
-      return userId;
-    }
-
-    userId = SharedPrefs.getUserId();
-    if (userId != null && userId.isNotEmpty) {
-      return userId;
-    }
-
-    return null;
+    return userId?.isNotEmpty == true ? userId : null;
   }
 
-  // ✅ FIXED: Join challenge with proper user ID validation
+  // Join Challenge
   Future<void> _joinChallenge(BuildContext context) async {
     final inviteCode = _viewModel.inviteCodeController.text.trim().toUpperCase();
 
-    if (inviteCode.isEmpty) {
+    if (inviteCode.isEmpty || !_viewModel.isValidInviteCode(inviteCode)) {
       Get.snackbar(
         'Invalid Code',
-        'Please enter an invite code',
+        'Please enter a valid invite code.',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    if (!_viewModel.isValidInviteCode(inviteCode)) {
-      Get.snackbar(
-        'Invalid Code',
-        'Invite code must be 6 characters (letters and numbers only)',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.red,
         colorText: Colors.white,
       );
       return;
     }
 
     final userId = _getCurrentUserId();
-
-    if (userId == null || userId.isEmpty) {
+    if (userId == null) {
       Get.snackbar(
         'Authentication Required',
-        'Please log in to join challenges',
+        'Please log in to join challenges.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
-        duration: Duration(seconds: 4),
       );
       return;
     }
 
-    print('🎯 Joining challenge with code: $inviteCode for user: $userId');
     await _viewModel.joinChallengeWithCode(inviteCode, userId);
   }
 }

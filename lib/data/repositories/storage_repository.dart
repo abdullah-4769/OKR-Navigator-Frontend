@@ -38,6 +38,31 @@ class StorageRepository extends GetxService {
     await _prefs.write(_userDataKey, jsonEncode(userMap));
   }
 
+  /// Save joined challenge ID
+  Future<void> saveJoinedChallengeId(String challengeId) async {
+    try {
+      await _prefs.write('joined_challenge_id', challengeId);
+      log("✅ Saved joined challenge ID: $challengeId");
+    } catch (e) {
+      log("❌ Error saving joined challenge ID: $e");
+      rethrow;
+    }
+  }
+
+  /// Get joined challenge ID
+  String? getJoinedChallengeId() {
+    try {
+      return _prefs.read('joined_challenge_id');
+    } catch (e) {
+      log("❌ Error getting joined challenge ID: $e");
+      return null;
+    }
+  }
+
+  /// Clear joined challenge ID
+  Future<void> clearJoinedChallengeId() async {
+    await _prefs.remove('joined_challenge_id');
+  }
   /// Save user from GOOGLE login (login_response.dart)
   Future<void> saveGoogleUser(GoogleUser user) async {
     // Check if SaveUser (which has avatarPicId)

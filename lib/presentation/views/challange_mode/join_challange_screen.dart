@@ -25,7 +25,7 @@ class JoinChallengeScreen extends StatefulWidget {
 class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
   final ChallengeCreateViewModel _viewModel = Get.put(ChallengeCreateViewModel());
   bool _isInitializing = true;
-  final StorageRepository _storageRepo = Get.find<StorageRepository>();
+  final StorageRepository _storageRepo = Get.put(StorageRepository());
 
   @override
   void initState() {
@@ -231,54 +231,53 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
 // Action buttons with proper validation - FIXED: Single button that transforms
 // Replace your _buildActionButtons() method with this:
   Widget _buildActionButtons() {
-    final JoinChallengeViewModel joinViewModel = Get.find<JoinChallengeViewModel>();
+    final JoinChallengeViewModel joinViewModel = Get.put(JoinChallengeViewModel());
+    final ChallengeCreateViewModel createViewModel = Get.find<ChallengeCreateViewModel>();
 
     return Obx(() {
-      final createStatus = _viewModel.inviteCodeResponse.value.status;
-      final isCreating = createStatus == Status.loading;
-      final hasInviteCode = _viewModel.inviteCode.isNotEmpty;
-      final isJoining = joinViewModel.isJoining.value;
-
-      // ✅ FIXED: Get userId from StorageRepository
-      final userId = _storageRepo.getUserId();
-      final canCreate = !isCreating && userId != null && userId.isNotEmpty;
-      final canJoin = !isJoining && userId != null && userId.isNotEmpty;
-
-      // Check if user has entered an invite code to join
+      final hasInviteCode = createViewModel.inviteCode.isNotEmpty;
       final hasJoinCode = joinViewModel.inviteCodeController.text.isNotEmpty;
-      final isValidJoinCode = joinViewModel.isValidInviteCode(joinViewModel.inviteCodeController.text);
+      final userId = _storageRepo.getUserId();
 
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           children: [
-            // JOIN CHALLENGE BUTTON - Only show when user has entered an invite code
+            // CREATE CHALLENGE BUTTON - Show when no code is entered
+            if (!hasJoinCode && !hasInviteCode) ...[
+              CustomButton2(
+                text: "Create Challenge",
+                onPressed: userId != null ? () {
+                  createViewModel.createChallenge();
+                } : null,
+              ),
+              SizedBox(height: 10.h),
+            ],
+
+            // JOIN CHALLENGE BUTTON - Show when user entered a code
             if (hasJoinCode && !hasInviteCode) ...[
               CustomButton2(
-                text: isJoining ? "Joining Challenge..." : "Join Challenge",
-                onPressed: (canJoin && isValidJoinCode) ? () {
+                text: "Join Challenge",
+                onPressed: userId != null ? () {
                   final code = joinViewModel.inviteCodeController.text;
-                  joinViewModel.joinChallengeWithCode(code, userId!);
+                  joinViewModel.joinChallengeWithCode(code, userId);
                 } : null,
               ),
               SizedBox(height: 10.h),
             ],
-
-            // CREATE CHALLENGE BUTTON - Only show when no invite code is entered
-            if (!hasJoinCode) ...[
-              CustomButton2(
-                text: isCreating ? "Creating Challenge..." : "Create Challenge",
-                onPressed: canCreate ? () {
-                  _viewModel.createChallenge();
-                } : null,
-              ),
-              SizedBox(height: 10.h),
-            ],
-
-            // CONTINUE BUTTON - Only show when challenge is created
+            CustomButton2(
+              text: "Continue",
+              onPressed: () {
+                Get.to(() => ChallengeDetailsScreen());
+              },
+            ),
+            SizedBox(height: 10.h),
+            // CREATE CHALLENGE BUTTON - Show after creating challenge
+            if (hasInviteCode)
+            // CONTINUE BUTTON - Show after creating challenge
             if (hasInviteCode) ...[
               CustomButton2(
-                text: "Continue",
+                text: "Continue to Challenge",
                 onPressed: () {
                   Get.to(() => ChallengeDetailsScreen());
                 },
@@ -286,8 +285,8 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
               SizedBox(height: 10.h),
             ],
 
-            // Show error if user is not logged in
-            if (userId == null || userId.isEmpty) ...[
+            // Show authentication error
+            if (userId == null) ...[
               SizedBox(height: 8.h),
               Text(
                 'Please log in to create or join challenges',
@@ -297,90 +296,11 @@ class _JoinChallengeScreenState extends State<JoinChallengeScreen> {
                 ),
               ),
             ],
-
-            // Show invite code info when available
-            if (hasInviteCode) ...[
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.all(12.h),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.green.shade200),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.green, size: 16.sp),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        'Challenge created! Share your code: ${_viewModel.inviteCode.value}',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.green.shade800,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-
-            // Show join status
-            if (joinViewModel.joinStatus.isNotEmpty) ...[
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.all(12.h),
-                decoration: BoxDecoration(
-                  color: joinViewModel.joinStatus.value.contains('Error')
-                      ? Colors.red.shade50
-                      : Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: joinViewModel.joinStatus.value.contains('Error')
-                        ? Colors.red.shade200
-                        : Colors.green.shade200,
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      joinViewModel.joinStatus.value.contains('Error')
-                          ? Icons.error
-                          : Icons.check_circle,
-                      color: joinViewModel.joinStatus.value.contains('Error')
-                          ? Colors.red
-                          : Colors.green,
-                      size: 16.sp,
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        joinViewModel.joinStatus.value,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: joinViewModel.joinStatus.value.contains('Error')
-                              ? Colors.red.shade800
-                              : Colors.green.shade800,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ],
         ),
       );
     });
-  }  // Widget _buildActionButtons() {
-  //   return Column(
+  }  //   return Column(
   //     children: [
   //       Obx(() {
   //         final status = _viewModel.inviteCodeResponse.value.status;

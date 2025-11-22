@@ -115,6 +115,7 @@ class AppBindings extends Bindings {
     // These are initialized in main.dart before app starts
     Get.lazyPut(() => ProfileController(), fenix: true);
     // Get.lazyPut(()=>LoginController());
+    Get.lazyPut(()=>JoinChallengeViewModel());
     Get.lazyPut(() => CertificationInfoApiService(), fenix: true);
     Get.lazyPut(() => CertificationInfoRepository(), fenix: true);
     Get.lazyPut(() => CertificationInfoViewModel(), fenix: true);
