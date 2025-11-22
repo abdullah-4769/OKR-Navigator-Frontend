@@ -176,31 +176,65 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
     }
   }
 
+  // String _getStrategyDisplayText() {
+  //   if (strategyDisplayTitle != null && strategyDisplayTitle!.isNotEmpty) {
+  //     return strategyDisplayTitle!;
+  //   }
+  //
+  //   if (strategyCardIndex != null && strategyCardIndex! >= 0) {
+  //     final titleFromController = strategyController.getCardTitle(strategyCardIndex!);
+  //     if (titleFromController != null && titleFromController.isNotEmpty) {
+  //       return titleFromController;
+  //     }
+  //   }
+  //
+  //   final controllerStrategy = strategyController.selectedStrategy.value;
+  //   if (controllerStrategy != null) {
+  //     final titleFromIndex = strategyController.getCardTitle(strategyController.selectedCardIndex.value);
+  //     if (titleFromIndex != null && titleFromIndex.isNotEmpty) {
+  //       return titleFromIndex;
+  //     }
+  //   }
+  //
+  //   final apiTitle = strategy?.title ?? 'No strategy selected'.tr;
+  //   return apiTitle;
+  // }
   String _getStrategyDisplayText() {
+    // Priority checks for title retrieval
     if (strategyDisplayTitle != null && strategyDisplayTitle!.isNotEmpty) {
+      print('✅ Using strategyDisplayTitle: $strategyDisplayTitle');
       return strategyDisplayTitle!;
     }
 
+    final strategyFromController = strategyController.selectedStrategy.value;
+
+    // Check if backend card ID is available and match titles
+    if (strategyFromController?.cardId != null) {
+      final titleFromBackendId = strategyController.getCardTitleFromBackendId(strategyFromController?.cardId);
+      if (titleFromBackendId != null && titleFromBackendId.isNotEmpty) {
+        print('✅ Using title from backend ID mapping: $titleFromBackendId');
+        return titleFromBackendId;
+      }
+    }
+
+    // Fallback options for titles
     if (strategyCardIndex != null && strategyCardIndex! >= 0) {
       final titleFromController = strategyController.getCardTitle(strategyCardIndex!);
       if (titleFromController != null && titleFromController.isNotEmpty) {
+        print('⚠️ Using title from controller card index: $titleFromController');
         return titleFromController;
       }
     }
 
     final controllerStrategy = strategyController.selectedStrategy.value;
-    if (controllerStrategy != null) {
-      final titleFromIndex = strategyController.getCardTitle(strategyController.selectedCardIndex.value);
-      if (titleFromIndex != null && titleFromIndex.isNotEmpty) {
-        return titleFromIndex;
-      }
+    if (controllerStrategy != null && controllerStrategy.title != null && controllerStrategy.title!.isNotEmpty) {
+      print('⚠️ Using API title from controller: ${controllerStrategy.title}');
+      return controllerStrategy.title!;
     }
 
-    final apiTitle = strategy?.title ?? 'No strategy selected'.tr;
-    return apiTitle;
-  }
-
-  String _getHeaderTitle() {
+    print('❌ No strategy title found, using fallback');
+    return 'No strategy selected'.tr;
+  }  String _getHeaderTitle() {
     if (_isRetryFromAnalysis) return 'try_again_with_different'.tr;
     if (_isModifyFromContextual) return 'modify'.tr;
     return 'choose'.tr;
@@ -275,6 +309,17 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                         SizedBox(height: screenHeight * 0.02),
 
                         // ✅ FIXED: Strategy display without unnecessary Obx wrapper
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(
+                        //     horizontal: _getHorizontalPadding(screenWidth),
+                        //   ),
+                        //   child: CustomObjectiveContainer(
+                        //     title: _safeTranslate('selected_strategy'),
+                        //     subtitle: _getStrategyDisplayText(),
+                        //     icon: Icons.emoji_objects,
+                        //     titleColor: AppColors.primaryRed,
+                        //   ),
+                        // ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: _getHorizontalPadding(screenWidth),
@@ -285,9 +330,7 @@ class _KeyObjectiveSelectedScreenState extends State<KeyObjectiveSelectedScreen>
                             icon: Icons.emoji_objects,
                             titleColor: AppColors.primaryRed,
                           ),
-                        ),
-
-                        SizedBox(height: _getResponsiveSpacing(screenHeight, 0.025)),
+                        ),                        SizedBox(height: _getResponsiveSpacing(screenHeight, 0.025)),
 
                         Padding(
                           padding: EdgeInsets.symmetric(

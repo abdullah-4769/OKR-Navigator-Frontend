@@ -1,11 +1,9 @@
-// // strategy_selection_controller.dart
 import 'dart:math';
 import 'package:game_app/controllers/base_strategy_controller.dart';
 import 'package:game_app/data/repositories/strategy_repository.dart';
 import 'package:game_app/utils/snackbar_helper.dart';
 import 'package:get/get.dart';
 import '../generated/models/responses/strategy/strategy_response.dart';
-
 class StrategySelectionController extends BaseStrategyController {
   final StrategyRepository _strategyRepository = Get.find<StrategyRepository>();
 
@@ -47,54 +45,31 @@ class StrategySelectionController extends BaseStrategyController {
   }
 
   @override
+  @override
   void revealCard(StrategyResponse strategy) {
-    if (!canReveal.value) {
-      SnackbarHelper.error('You can only reveal one card');
-      return;
-    }
+    print('🎴 Revealing Card:');
+    print('   Backend cardId: ${strategy.cardId}');
+    print('   Backend title: ${strategy.title}');
+    print('   Language: ${languageController.selectedLanguage.value}');
 
-    try {
-      // Map API cardId to our asset index
-      // For English: 8 cards (cardId 1-8 maps to index 0-7)
-      // For French/Spanish: 16 cards (cardId 1-16 maps to index 0-15)
-      int cardIndex = (strategy.cardId ?? 1) - 1; // Convert to 0-based index
+    // Set the selected strategy
+    selectedStrategy.value = strategy;
 
-      // Ensure index is within bounds of current language's card assets
-      if (cardIndex < 0 || cardIndex >= strategyCardAssets.length) {
-        print('⚠️ Card index out of bounds: $cardIndex, using fallback');
-        cardIndex = Random().nextInt(strategyCardAssets.length);
-      }
+    // Map backend cardId to local index for display
+    final mappedIndex = getCardIndexFromBackendId(strategy.cardId);
+    selectedCardIndex.value = mappedIndex;
 
-      // Update card state
-      selectedCardIndex.value = cardIndex;
-      isCardRevealed.value = true;
-      selectedStrategy.value = strategy;
-      canReveal.value = false;
+    // Ensure title retrieval is language-aware
+    final displayTitle = getCardTitleFromBackendId(strategy.cardId) ?? 'Strategy Card';
+    print('   Display title: $displayTitle');
 
-      // Complete journey step
-      journey.completeStep(0);
+    // Mark card as revealed
+    isCardRevealed.value = true;
 
-      print('🎴 Card revealed successfully:');
-      print('   Language: ${languageController.selectedLanguage.value.name}');
-      print('   Card index: $cardIndex');
-      print('   Card asset: ${strategyCardAssets[cardIndex]}');
-      print('   API cardId: ${strategy.cardId}');
-      print('   Strategy: ${strategy.title}');
-
-    } catch (e) {
-      print('❌ Error in revealCard: $e');
-      // Fallback to random card
-      final randomIndex = Random().nextInt(strategyCardAssets.length);
-      selectedCardIndex.value = randomIndex;
-      isCardRevealed.value = true;
-      selectedStrategy.value = strategy;
-      canReveal.value = false;
-      journey.completeStep(0);
-
-      print('⚠️ Used fallback random card: index $randomIndex');
-    }
+    print('   Mapped local index: $mappedIndex');
+    print('   Selected Card Index: ${selectedCardIndex.value}');
+    print('   Current Asset: $currentCardAsset');
   }
-
   @override
   void hideCard() {
     // Go back to back card
