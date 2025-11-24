@@ -16,6 +16,7 @@ import '../../../services/shared_preference.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_svg.dart';
 import '../authentication/profile_screen.dart';
+import '../notification/notification_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -342,10 +343,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: _circleIcon(
                   child: Stack(
                     children: [
-                      Icon(
-                        Icons.notifications_outlined,
-                        color: AppColors.primaryRed,
-                        size: 22.sp,
+                      InkWell(
+                        onTap: (){
+                          Get.to(NotificationScreen());
+                        },
+                        child: Icon(
+                          Icons.notifications_outlined,
+                          color: AppColors.primaryRed,
+                          size: 22.sp,
+                        ),
                       ),
                       // Red dot indicator with opacity blink
                       Positioned(

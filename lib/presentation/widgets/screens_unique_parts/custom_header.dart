@@ -52,7 +52,7 @@ class _CustomHeaderState extends State<CustomHeader> {
         if (avatarId != null && avatarId.isNotEmpty) {
           setState(() {
             if (avatarId.startsWith("http")) {
-              userAvatarUrl = avatarId; // Google image full URL
+              userAvatarUrl = avatarId;
             } else {
               userAvatarUrl = '${ApiConstants.baseUrl}/uploads/$avatarId';
             }
@@ -73,73 +73,80 @@ class _CustomHeaderState extends State<CustomHeader> {
       height: 130.h,
       child: Stack(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              /// BACK BUTTON
-              CustomCurvedArrow(
-                isLeft: true,
-                onTap: widget.onBackTap,
-                width: 60.w,
-                height: 60.h,
-              ),
+          /// MAIN ROW (No left padding)
+          Padding(
+            padding: EdgeInsets.only(left: 0, right: 10.w), // removed left padding
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                /// BACK BUTTON (Reduced width to remove left gap)
+                CustomCurvedArrow(
+                  isLeft: true,
+                  onTap: widget.onBackTap,
+                  width: 45.w,
+                  height: 45.h,
+                ),
 
-              /// TITLE SECTION
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.title,
-                      style: theme.textTheme.displayLarge?.copyWith(
-                        color: AppColors.primaryRed,
-                        fontSize: 20.sp,
-                      ),
-                    ),
-                    if (widget.highlightedText != null)
+                SizedBox(width: 6.w),
+
+                /// TITLE
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Text(
-                        widget.highlightedText!,
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          color: AppColors.primaryBlue,
-                          fontSize: 18.sp,
+                        widget.title,
+                        style: theme.textTheme.displayLarge?.copyWith(
+                          color: AppColors.primaryRed,
+                          fontSize: 20.sp,
+                        ),
+                      ),
+                      if (widget.highlightedText != null)
+                        Text(
+                          widget.highlightedText!,
+                          style: theme.textTheme.headlineLarge?.copyWith(
+                            color: AppColors.primaryBlue,
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                /// LANGUAGE + PROFILE
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.language, color: AppColors.primaryBlue, size: 32),
+                      onPressed: () => Get.toNamed(AppRoutes.language, parameters: {
+                        'from': currentRoute,
+                      }),
+                    ),
+
+                    if (widget.showDashboardIcon)
+                      InkWell(
+                        onTap: () => Get.to(ProfileScreen()),
+                        child: CircleAvatar(
+                          radius: 24.r,
+                          backgroundColor: Colors.white,
+                          child: ClipOval(
+                            child: userAvatarUrl != null
+                                ? Image.network(
+                              userAvatarUrl!,
+                              fit: BoxFit.cover,
+                              width: 46.sp,
+                              height: 46.sp,
+                              errorBuilder: (_, __, ___) =>
+                                  Image.asset("assets/images/solo_image.png"),
+                            )
+                                : Image.asset("assets/images/solo_image.png"),
+                          ),
                         ),
                       ),
                   ],
                 ),
-              ),
-
-              /// RIGHT SIDE: LANGUAGE + PROFILE PICTURE
-              Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.language, color: AppColors.primaryBlue, size: 32),
-                    onPressed: () => Get.toNamed(AppRoutes.language, parameters: {
-                      'from': currentRoute,
-                    }),
-                  ),
-
-                  if (widget.showDashboardIcon)
-                    InkWell(
-                      onTap: () => Get.to(ProfileScreen()),
-                      child: CircleAvatar(
-                        radius: 24.r,
-                        backgroundColor: Colors.white,
-                        child: ClipOval(
-                          child: userAvatarUrl != null
-                              ? Image.network(
-                            userAvatarUrl!,
-                            fit: BoxFit.cover,
-                            width: 46.sp,
-                            height: 46.sp,
-                            errorBuilder: (_, __, ___) => Image.asset("assets/images/solo_image.png"),
-                          )
-                              : Image.asset("assets/images/solo_image.png"),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
 
           /// SUBTITLE

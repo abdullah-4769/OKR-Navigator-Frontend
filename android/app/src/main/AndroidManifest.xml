@@ -17,6 +17,14 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
+        <!-- Default notification channel and icon for FCM -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+
         <!-- Firebase Messaging (optional) -->
         <service
             android:name="com.google.firebase.messaging.FirebaseMessagingService"

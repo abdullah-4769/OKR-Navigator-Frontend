@@ -16,7 +16,10 @@ final Map<String, String> fr = {
   'cancel': 'Annuler',
   'yes_go_home': 'Oui, aller à l\'accueil',
   'success': 'Succès',
-  'redirected_home': 'Redirigé vers l\'écran d\'accueil',
+  "no_notifications_found": "Aucune notification trouvée",
+  'notification':'Notification',
+
+      'redirected_home': 'Redirigé vers l\'écran d\'accueil',
   'select': 'Sélectionner',
   'key_results': 'Résultats clés',
   'selected_objective': 'Objectif sélectionné',

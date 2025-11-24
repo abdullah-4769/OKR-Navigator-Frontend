@@ -7,7 +7,10 @@ final Map<String, String> es = {
   "okr_logo": "Logo OKR",
   "bottom_logo": "Logo de la app",
   "okr": "OKR",
-  "certificate": "Certificado",
+  "no_notifications_found": "No se encontraron notificaciones",
+  'notification':'notificaciones',
+
+      "certificate": "Certificado",
   'continue_with_google': 'Continuar con Google',
   "phase_retry_test": "Test Phase to Continue",
   "accepted": "Accepted",
