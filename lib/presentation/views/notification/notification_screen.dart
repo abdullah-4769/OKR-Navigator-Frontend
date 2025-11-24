@@ -8,7 +8,6 @@ import '../../widgets/custom_home_navbar.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 
-
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
@@ -30,30 +29,48 @@ class NotificationScreen extends StatelessWidget {
                     onBackTap: () => Get.back(),
                   ),
                   SizedBox(height: 20.h),
+                  // Add refresh indicator
+// Replace the Expanded widget with this:
                   Expanded(
-                    child: Obx(() {
-                      if (controller.isLoading.value) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (controller.notifications.isEmpty) {
-                        return Center(
-                          child: Text(
-                            "no_notifications_found".tr,
-                            style: TextStyle(fontSize: 14.sp, color: Colors.black54),
-                          ),
+                    child: RefreshIndicator(
+                      onRefresh: () => controller.refreshWithIndicator(),
+                      child: Obx(() {
+                        if (controller.isLoading.value) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (controller.notifications.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.notifications_none,
+                                  size: 64.sp,
+                                  color: Colors.black54,
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  "no_notifications_found".tr,
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          itemCount: controller.notifications.length,
+                          itemBuilder: (context, index) {
+                            final item = controller.notifications[index];
+                            return _buildNotificationCard(item, controller);
+                          },
                         );
-                      }
-                      return ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        itemCount: controller.notifications.length,
-                        itemBuilder: (context, index) {
-                          final item = controller.notifications[index];
-                          return _buildNotificationCard(item);
-                        },
-                      );
-                    }),
-                  ),
-                ],
+                      }),
+                    ),
+                  ),                ],
               ),
             ),
             Positioned(
@@ -67,15 +84,14 @@ class NotificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationCard(AppNotification item) {
+  Widget _buildNotificationCard(AppNotification item, NotificationViewModel controller) {
     return GestureDetector(
       onTap: () {
         if (!item.isRead) {
-          Get.find<NotificationViewModel>().markAsRead(item.id);
+          controller.markAsRead(item.id);
         }
-        // final data = item.data;
-        // final mode = data['mode'];
-        // if (mode == 'challenge') Get.toNamed('/challenge', arguments: item.data);
+        // Handle notification tap navigation
+        _handleNotificationTap(item);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
@@ -148,8 +164,8 @@ class NotificationScreen extends StatelessWidget {
             ),
             if (!item.isRead)
               Container(
-                width: 10,
-                height: 10,
+                width: 10.w,
+                height: 10.w,
                 margin: EdgeInsets.only(top: 4.h),
                 decoration: const BoxDecoration(
                   color: Color(0xFFFF6B00),
@@ -160,5 +176,23 @@ class NotificationScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleNotificationTap(AppNotification item) {
+    final data = item.data;
+    final mode = data['mode']?.toString();
+    final event = data['event']?.toString();
+
+    debugPrint('Notification tapped: mode=$mode, event=$event');
+
+    // Handle navigation based on notification type
+    if (mode == 'challenge') {
+      // Get.toNamed('/challenge', arguments: data);
+      debugPrint('Navigate to challenge with data: $data');
+    } else if (mode == 'solo') {
+      // Get.toNamed('/solo', arguments: data);
+      debugPrint('Navigate to solo with data: $data');
+    }
+    // Add more navigation cases as needed
   }
 }

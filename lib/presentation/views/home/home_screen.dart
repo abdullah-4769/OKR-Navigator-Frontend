@@ -12,6 +12,7 @@ import '../../../controllers/home_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/api_constants.dart';
 import '../../../data/repositories/storage_repository.dart';
+import '../../../services/notifications/notifications_service.dart';
 import '../../../services/shared_preference.dart';
 import '../../widgets/custom_button2.dart';
 import '../../widgets/custom_svg.dart';
@@ -29,6 +30,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final HomeController c = Get.put(HomeController(), permanent: true);
   final PageController _stackedCardController = PageController();
   final StorageRepository _storageRepo = Get.find<StorageRepository>();
+  final NotificationsService _notificationsService = NotificationsService();
+
 
   // User avatar URL
   String? userAvatarUrl;
@@ -344,8 +347,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   child: Stack(
                     children: [
                       InkWell(
-                        onTap: (){
+                        onTap: ()async{
                           Get.to(NotificationScreen());
+                          final token = await _notificationsService.refreshFCMToken();
+                          Get.snackbar(
+                            'Token Refresh',
+                            token != null ? 'New token: $token' : 'Failed to get token',
+                          );
+
                         },
                         child: Icon(
                           Icons.notifications_outlined,

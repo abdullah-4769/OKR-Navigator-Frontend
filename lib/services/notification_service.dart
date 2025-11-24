@@ -112,9 +112,9 @@ class FirebaseNotificationService extends GetxService {
     });
 
     // 4. Foreground Message Handler: delegate to unified NotificationsService
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      await NotificationsService().handleRemoteMessage(message);
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    //   await NotificationsService().handleRemoteMessage(message);
+    // });
 
     // 5. Background handler is registered in main.dart using NotificationsService.showFromBackground
     // Avoid duplicate background registration here.

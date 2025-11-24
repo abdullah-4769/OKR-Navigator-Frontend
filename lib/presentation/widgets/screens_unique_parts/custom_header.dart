@@ -74,79 +74,76 @@ class _CustomHeaderState extends State<CustomHeader> {
       child: Stack(
         children: [
           /// MAIN ROW (No left padding)
-          Padding(
-            padding: EdgeInsets.only(left: 0, right: 10.w), // removed left padding
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                /// BACK BUTTON (Reduced width to remove left gap)
-                CustomCurvedArrow(
-                  isLeft: true,
-                  onTap: widget.onBackTap,
-                  width: 45.w,
-                  height: 45.h,
-                ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              /// BACK BUTTON (Reduced width to remove left gap)
+              CustomCurvedArrow(
+                isLeft: true,
+                onTap: widget.onBackTap,
+                width: 45.w,
+                height: 45.h,
+              ),
 
-                SizedBox(width: 6.w),
+              SizedBox(width: 6.w),
 
-                /// TITLE
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.title,
-                        style: theme.textTheme.displayLarge?.copyWith(
-                          color: AppColors.primaryRed,
-                          fontSize: 20.sp,
-                        ),
-                      ),
-                      if (widget.highlightedText != null)
-                        Text(
-                          widget.highlightedText!,
-                          style: theme.textTheme.headlineLarge?.copyWith(
-                            color: AppColors.primaryBlue,
-                            fontSize: 18.sp,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-
-                /// LANGUAGE + PROFILE
-                Row(
+              /// TITLE
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.language, color: AppColors.primaryBlue, size: 32),
-                      onPressed: () => Get.toNamed(AppRoutes.language, parameters: {
-                        'from': currentRoute,
-                      }),
+                    Text(
+                      widget.title,
+                      style: theme.textTheme.displayLarge?.copyWith(
+                        color: AppColors.primaryRed,
+                        fontSize: 20.sp,
+                      ),
                     ),
-
-                    if (widget.showDashboardIcon)
-                      InkWell(
-                        onTap: () => Get.to(ProfileScreen()),
-                        child: CircleAvatar(
-                          radius: 24.r,
-                          backgroundColor: Colors.white,
-                          child: ClipOval(
-                            child: userAvatarUrl != null
-                                ? Image.network(
-                              userAvatarUrl!,
-                              fit: BoxFit.cover,
-                              width: 46.sp,
-                              height: 46.sp,
-                              errorBuilder: (_, __, ___) =>
-                                  Image.asset("assets/images/solo_image.png"),
-                            )
-                                : Image.asset("assets/images/solo_image.png"),
-                          ),
+                    if (widget.highlightedText != null)
+                      Text(
+                        widget.highlightedText!,
+                        style: theme.textTheme.headlineLarge?.copyWith(
+                          color: AppColors.primaryBlue,
+                          fontSize: 18.sp,
                         ),
                       ),
                   ],
                 ),
-              ],
-            ),
+              ),
+
+              /// LANGUAGE + PROFILE
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.language, color: AppColors.primaryBlue, size: 32),
+                    onPressed: () => Get.toNamed(AppRoutes.language, parameters: {
+                      'from': currentRoute,
+                    }),
+                  ),
+
+                  if (widget.showDashboardIcon)
+                    InkWell(
+                      onTap: () => Get.to(ProfileScreen()),
+                      child: CircleAvatar(
+                        radius: 24.r,
+                        backgroundColor: Colors.white,
+                        child: ClipOval(
+                          child: userAvatarUrl != null
+                              ? Image.network(
+                            userAvatarUrl!,
+                            fit: BoxFit.cover,
+                            width: 46.sp,
+                            height: 46.sp,
+                            errorBuilder: (_, __, ___) =>
+                                Image.asset("assets/images/solo_image.png"),
+                          )
+                              : Image.asset("assets/images/solo_image.png"),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
           ),
 
           /// SUBTITLE
