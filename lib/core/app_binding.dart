@@ -111,6 +111,8 @@ class AppBindings extends Bindings {
   @override
   void dependencies() {
     Get.put(HomeNavBarController(), permanent: true);
+    Get.lazyPut<CreateTeamController>(() => CreateTeamController());
+
     // CORE SERVICES - Must be initialized in order
     // These are initialized in main.dart before app starts
     Get.lazyPut(() => ProfileController(), fenix: true);

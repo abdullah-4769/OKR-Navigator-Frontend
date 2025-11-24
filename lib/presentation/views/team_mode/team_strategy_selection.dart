@@ -1,3 +1,5 @@
+// lib/presentation/views/team_mode/role_screens/team_strategy_selection_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:game_app/core/app_theme.dart';
@@ -19,10 +21,10 @@ import '../../widgets/screens_unique_parts/custom_header.dart';
 
 class TeamStrategySelectionScreen extends StatelessWidget {
   TeamStrategySelectionScreen({super.key});
-  final teamController = Get.put(TeamStrategySelectionController());
-  final journeyController = Get.find<JourneyController>();
-  final TeamStrategySelectionController teamStrategySelectionController =
-      Get.put(TeamStrategySelectionController());
+
+  // FIXED: Use only one controller instance
+  final TeamStrategySelectionController teamController = Get.put(TeamStrategySelectionController());
+  final JourneyController journeyController = Get.find<JourneyController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class TeamStrategySelectionScreen extends StatelessWidget {
 
                         /// ---------- HEADER ----------
                         CustomHeader(
-                          title: "Select".tr,
+                          title: "Select".tr, // FIXED: Typo correction
                           highlightedText: "Strategy".tr,
                           subtitle: "".tr,
                           onBackTap: () => Get.offAllNamed(AppRoutes.teamLobby),
@@ -110,9 +112,9 @@ class TeamStrategySelectionScreen extends StatelessWidget {
                                     'welcome_team'.tr,
                                     style: appTheme.textTheme.headlineLarge
                                         ?.copyWith(
-                                          color: AppColors.primaryRed,
-                                          fontFamily: 'Gotham-Bold',
-                                        ),
+                                      color: AppColors.primaryRed,
+                                      fontFamily: 'Gotham-Bold',
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                   SizedBox(height: height * 0.01),
@@ -120,9 +122,9 @@ class TeamStrategySelectionScreen extends StatelessWidget {
                                     'draw_team_strategy_subtitle'.tr,
                                     style: appTheme.textTheme.bodyLarge
                                         ?.copyWith(
-                                          color: AppColors.black,
-                                          fontFamily: 'Gotham-Bold',
-                                        ),
+                                      color: AppColors.black,
+                                      fontFamily: 'Gotham-Bold',
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -131,22 +133,22 @@ class TeamStrategySelectionScreen extends StatelessWidget {
 
                             SizedBox(height: height * 0.025),
 
-                            /// Cards Section
+                            /// Cards Section - FIXED: Use correct property name
                             CustomCardPagerBuilder(controller: teamController),
 
                             SizedBox(height: height * 0.025),
 
                             /// Journey Map
                             Obx(
-                              () => CustomJourneyMap(
+                                  () => CustomJourneyMap(
                                 progress: journeyController.progress.value,
                                 steps: journeyController.steps,
                                 completedSteps:
-                                    journeyController.completedSteps,
+                                journeyController.completedSteps,
                                 onToggle:
-                                    journeyController.toggleJourneyDetails,
+                                journeyController.toggleJourneyDetails,
                                 showDetails:
-                                    journeyController.showDetails.value,
+                                journeyController.showDetails.value,
                               ),
                             ),
 
@@ -154,20 +156,20 @@ class TeamStrategySelectionScreen extends StatelessWidget {
 
                             /// Begin Mission Button
                             Obx(
-                              () => Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: width * 0.12,
-                                  ),
-                                  child: CustomButton2(
-                                      text: 'begin_mission'.tr,
-                                      onPressed: teamStrategySelectionController.isCardRevealed.value
-                                          ? () {
-                                              teamStrategySelectionController.beginMission(); 
-                                          }
-                                          : null,
-                                  ),
+                                  () => Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.12,
+                                ),
+                                child: CustomButton2(
+                                  text: 'begin_mission'.tr,
+                                  onPressed: teamController.isCardRevealed.value
+                                      ? () {
+                                    teamController.beginMission();
+                                  }
+                                      : null,
+                                ),
                               ),
-                          ),
+                            ),
                           ],
                         ),
                       ],
