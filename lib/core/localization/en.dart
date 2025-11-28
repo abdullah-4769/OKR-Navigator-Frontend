@@ -1,7 +1,8 @@
 final Map<String, String> en = {
 //
 
-
+  "no_notifications_found": "No notifications found",
+  'notification':'Notifications',
   'tap_to_reveal_strategy': 'Tap to Reveal Strategy',
   'strategy_revealed': 'Strategy Revealed',
   'lets_start_mission': "Let's Start the Mission",

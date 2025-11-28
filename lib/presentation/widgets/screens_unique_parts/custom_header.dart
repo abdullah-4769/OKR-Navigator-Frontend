@@ -52,7 +52,7 @@ class _CustomHeaderState extends State<CustomHeader> {
         if (avatarId != null && avatarId.isNotEmpty) {
           setState(() {
             if (avatarId.startsWith("http")) {
-              userAvatarUrl = avatarId; // Google image full URL
+              userAvatarUrl = avatarId;
             } else {
               userAvatarUrl = '${ApiConstants.baseUrl}/uploads/$avatarId';
             }
@@ -73,18 +73,21 @@ class _CustomHeaderState extends State<CustomHeader> {
       height: 130.h,
       child: Stack(
         children: [
+          /// MAIN ROW (No left padding)
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /// BACK BUTTON
+              /// BACK BUTTON (Reduced width to remove left gap)
               CustomCurvedArrow(
                 isLeft: true,
                 onTap: widget.onBackTap,
-                width: 60.w,
-                height: 60.h,
+                width: 45.w,
+                height: 45.h,
               ),
 
-              /// TITLE SECTION
+              SizedBox(width: 6.w),
+
+              /// TITLE
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +111,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 ),
               ),
 
-              /// RIGHT SIDE: LANGUAGE + PROFILE PICTURE
+              /// LANGUAGE + PROFILE
               Row(
                 children: [
                   IconButton(
@@ -131,7 +134,8 @@ class _CustomHeaderState extends State<CustomHeader> {
                             fit: BoxFit.cover,
                             width: 46.sp,
                             height: 46.sp,
-                            errorBuilder: (_, __, ___) => Image.asset("assets/images/solo_image.png"),
+                            errorBuilder: (_, __, ___) =>
+                                Image.asset("assets/images/solo_image.png"),
                           )
                               : Image.asset("assets/images/solo_image.png"),
                         ),
