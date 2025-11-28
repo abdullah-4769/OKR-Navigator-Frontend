@@ -1,5 +1,6 @@
 // lib/controllers/team_mode_controller/team_lobby_controller.dart
 
+import 'dart:async';
 import 'dart:developer'; 
 import 'package:game_app/data/repositories/team_repo.dart';
 import 'package:game_app/presentation/routes/app_routes.dart';
@@ -20,11 +21,20 @@ class TeamLobbyController extends GetxController {
   var errorMessage = ''.obs;
   
   var memberScores = <Map<String, dynamic>>[].obs;
+  final RxBool isHost = false.obs;
+
+  /// Explicit team id that can be passed via navigation arguments.
+  /// This avoids relying only on `CreateTeamController.createdTeamId`,
+  /// which might not yet be initialized for members who join via code.
+  int? _explicitTeamId;
 
   final TeamRepository _teamRepository = Get.find<TeamRepository>();
   final StrategyRepository _strategyRepository = Get.find<StrategyRepository>();
   final StorageRepository _storageRepository = Get.find<StorageRepository>();
   final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
+
+  Timer? _refreshTimer;
+  bool _hasNavigatedToAssignRoles = false;
 
   @override
   void onInit() {
@@ -32,24 +42,110 @@ class TeamLobbyController extends GetxController {
     // Clear initial data to ensure the count starts correctly
     players.clear(); 
     memberScores.clear();
+
+    // Try to hydrate state from navigation arguments first
+    _initializeFromArguments();
+
+    // Always load latest data from API as the source of truth
     _loadLobbyData(); 
+  }
+
+  /// Read initial team data (team id + members) from navigation arguments.
+  /// This is especially important for users who join a team via invite code,
+  /// so their lobby immediately reflects the correct team info.
+  void _initializeFromArguments() {
+    final args = Get.arguments;
+    if (args is Map<String, dynamic>) {
+      // Team ID passed from navigation
+      final argTeamId = args['teamId'];
+      if (argTeamId is int) {
+        _explicitTeamId = argTeamId;
+      }
+
+      // Full lobby response passed from navigation (when available)
+      final argTeamData = args['teamData'];
+      if (argTeamData is TeamLobbyResponse) {
+        teamData.value = argTeamData;
+
+        final members = argTeamData.members ?? [];
+        if (members.isNotEmpty) {
+          players.assignAll(
+            members.map((m) => m.user?.name ?? 'Unknown').toList(),
+          );
+        }
+
+        final currentUserId = _storageRepository.getUser()?.id;
+        isHost.value = members.any(
+          (member) => member.role == 'HOST' && member.user?.id == currentUserId,
+        );
+      }
+    }
+  }
+
+  /// Resolve the current team id with the following precedence:
+  /// 1) Explicit id passed via navigation arguments
+  /// 2) Id already present in `teamData`
+  /// 3) Id stored in `CreateTeamController.createdTeamId`
+  int? _resolveTeamId() {
+    if (_explicitTeamId != null) return _explicitTeamId;
+    if (teamData.value?.id != null) return teamData.value!.id;
+
+    if (Get.isRegistered<CreateTeamController>()) {
+      final createTeamController = Get.find<CreateTeamController>();
+      return createTeamController.createdTeamId.value;
+    }
+    return null;
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // If team data is empty or missing token/members, fetch immediately
+    if (teamData.value == null || 
+        teamData.value?.token == null || 
+        teamData.value?.members == null || 
+        teamData.value?.members!.isEmpty == true) {
+      _loadLobbyData();
+    }
+    _startAutoRefresh();
+  }
+
+  @override
+  void onClose() {
+    _refreshTimer?.cancel();
+    super.onClose();
+  }
+
+  void _startAutoRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer.periodic(const Duration(seconds: 6), (_) {
+      _refreshLobbySilently();
+    });
+  }
+
+  void _refreshLobbySilently() {
+    fetchTeamDetails(withLoader: false).then((_) async {
+      await fetchMemberScores();
+      _maybeNavigateMemberToAssignRoles();
+    });
   }
 
   Future<void> _loadLobbyData() async {
     await fetchTeamDetails();
-    fetchMemberScores();
+    await fetchMemberScores();
   }
 
   // ------------------------------------------------
   // 1. GET TEAM DETAILS (API INTEGRATION)
   // ------------------------------------------------
-  Future<void> fetchTeamDetails() async {
+  Future<void> fetchTeamDetails({bool withLoader = true}) async {
     try {
-      isLoading.value = true;
+      if (withLoader) {
+        isLoading.value = true;
+      }
       errorMessage.value = '';
       
-      final createTeamController = Get.find<CreateTeamController>();
-      final teamId = createTeamController.createdTeamId.value; 
+      final teamId = _resolveTeamId();
       
       if (teamId == null) {
         errorMessage.value = 'No team ID found. Please create a team first.';
@@ -60,20 +156,34 @@ class TeamLobbyController extends GetxController {
       final teamLobbyResponse = await _teamRepository.getTeamDetails(teamId);
       teamData.value = teamLobbyResponse;
       
-      if (teamLobbyResponse.members != null) {
+      log('📋 Team Details Fetched:');
+      log('  - Team ID: ${teamLobbyResponse.id}');
+      log('  - Team Title: ${teamLobbyResponse.title}');
+      log('  - Team Token: ${teamLobbyResponse.token ?? "NULL"}');
+      log('  - Members Count: ${teamLobbyResponse.members?.length ?? 0}');
+      
+      if (teamLobbyResponse.members != null && teamLobbyResponse.members!.isNotEmpty) {
         players.assignAll(teamLobbyResponse.members!.map((member) => member.user?.name ?? 'Unknown').toList());
-        log('Lobby: Players list populated with ${players.length} members.'); 
+        log('✅ Lobby: Players list populated with ${players.length} members: ${players.join(", ")}'); 
       } else {
         players.clear();
-        log('Lobby: Players list cleared (0 members).');
+        log('⚠️ Lobby: Players list cleared (0 members). Members data: ${teamLobbyResponse.members}');
       }
+
+      final currentUserId = _storageRepository.getUser()?.id;
+      final memberList = teamLobbyResponse.members ?? [];
+      isHost.value = memberList.any(
+        (member) => member.role == 'HOST' && member.user?.id == currentUserId,
+      );
       
     } catch (e) {
       errorMessage.value = 'Failed to load team details: ${e.toString()}';
       SnackbarHelper.error('Failed to load team details.');
       print('Error fetching team details: $e');
     } finally {
-      isLoading.value = false;
+      if (withLoader) {
+        isLoading.value = false;
+      }
     }
   }
 
@@ -81,7 +191,7 @@ class TeamLobbyController extends GetxController {
   // 2. FETCH MEMBER SCORES (API INTEGRATION)
   // ------------------------------------------------
   Future<void> fetchMemberScores() async {
-    final teamId = teamData.value?.id; 
+    final teamId = _resolveTeamId(); 
     
     if (teamId == null || teamData.value?.members == null) {
       log('Scores: Skipping fetch. Team data or members not available.');
@@ -128,25 +238,84 @@ class TeamLobbyController extends GetxController {
     }
   }
 
-  void beginMission() {
-    _sendTeamGameStartedNotification();
-    
+  Future<void> beginMission() async {
+    if (!isHost.value) {
+      SnackbarHelper.warning('Only the host can start the mission.');
+      return;
+    }
+    if (players.length < 2) {
+      SnackbarHelper.warning('Need at least 2 members to start.');
+      return;
+    }
+
+    // Ensure we have the latest team data (including newly joined members)
+    await fetchTeamDetails(withLoader: false);
+
+    await _sendTeamGameStartedNotification();
+
     Get.toNamed(AppRoutes.assignRoleScreen);
   }
 
-  void _sendTeamGameStartedNotification() {
-    final createTeamController = Get.find<CreateTeamController>();
-    final teamId = createTeamController.createdTeamId.value;
-    
-    if (teamId != null && teamData.value?.members != null) {
-      final teamMemberUserIds = teamData.value!.members!
-          .map((member) => member.userId!)
-          .toList();
-      
-      _notificationService.sendTeamGameStarted(
-        teamId: teamId,
-        teamMemberUserIds: teamMemberUserIds,
-      );
+  /// Notify all team members (including newly joined ones) that the game started.
+  /// Uses the resolved team id and refreshes members list if needed.
+  Future<void> _sendTeamGameStartedNotification() async {
+    final teamId = _resolveTeamId();
+
+    if (teamId == null) {
+      log('⚠️ Cannot send game started notification: teamId is null');
+      return;
+    }
+
+    // If members list is missing or empty, try to refresh once more
+    if (teamData.value?.members == null || teamData.value!.members!.isEmpty) {
+      await fetchTeamDetails(withLoader: false);
+    }
+
+    final members = teamData.value?.members ?? [];
+    if (members.isEmpty) {
+      log('⚠️ Cannot send game started notification: members list is empty');
+      return;
+    }
+
+    final teamMemberUserIds = members
+        .map((member) => member.userId)
+        .whereType<String>()
+        .toList();
+
+    if (teamMemberUserIds.isEmpty) {
+      log('⚠️ Cannot send game started notification: no valid member userIds');
+      return;
+    }
+
+    await _notificationService.sendTeamGameStarted(
+      teamId: teamId,
+      teamMemberUserIds: teamMemberUserIds,
+    );
+  }
+
+  /// Fallback (non-FCM) mechanism:
+  /// For non-host players, if we detect that any non-host roles have been
+  /// assigned while they are in the lobby, automatically navigate them to
+  /// the Assign Roles screen so they stay in sync with the host.
+  void _maybeNavigateMemberToAssignRoles() {
+    // Only applies to non-host players
+    if (isHost.value) return;
+
+    // Only trigger from lobby, and only once
+    if (_hasNavigatedToAssignRoles) return;
+    if (Get.currentRoute != AppRoutes.teamLobby) return;
+
+    final members = teamData.value?.members ?? [];
+    if (members.isEmpty) return;
+
+    // Consider game "in roles phase" when any member has a specific role set
+    final hasAssignedRoles = members.any(
+      (m) => m.role != null && m.role!.isNotEmpty && m.role != 'HOST',
+    );
+
+    if (hasAssignedRoles) {
+      _hasNavigatedToAssignRoles = true;
+      Get.toNamed(AppRoutes.assignRoleScreen);
     }
   }
 

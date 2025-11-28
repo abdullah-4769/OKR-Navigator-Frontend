@@ -4,6 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../data/repositories/storage_repository.dart';
 import '../data/repositories/team_repo.dart';
+import '../presentation/routes/app_routes.dart';
+import '../controllers/team_mode_controller/create_team_controller.dart';
+import '../controllers/team_mode_controller/team_lobby_controller.dart';
 
 // Top-level function for background messages (required by Flutter)
 @pragma('vm:entry-point')
@@ -107,14 +110,31 @@ class FirebaseNotificationService extends GetxService {
         // Display the foreground FCM message as a local notification
         _showLocalNotification(notification.title, notification.body);
       }
+      _handleIncomingNotification(message.data);
     });
 
-    // 5. Background Message Handler (using the top-level function)
+    // 5. Handle notification taps when app is in background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleIncomingNotification(message.data);
+    });
+
+    // 6. Background Message Handler (using the top-level function)
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+    // 7. Handle notification that opened the app from a terminated state
+    final initialMessage = await _messaging.getInitialMessage();
+    if (initialMessage != null) {
+      _handleIncomingNotification(initialMessage.data);
+    }
   }
 
   /// Displays the notification using Flutter Local Notifications
   Future<void> _showLocalNotification(String? title, String? body, {String? payload}) async {
+    await showLocalNotification(title, body, payload: payload);
+  }
+
+  /// Public method to show local notifications (used by WebSocket handlers)
+  Future<void> showLocalNotification(String? title, String? body, {String? payload}) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'okr_navigator_channel',
       'OKR Navigator Notifications',
@@ -135,7 +155,52 @@ class FirebaseNotificationService extends GetxService {
     );
   }
 
-  /// Generic method to send notifications (Network-based)
+  void _handleIncomingNotification(Map<String, dynamic> data) {
+    if (data.isEmpty) return;
+
+    final typeKey = data['notificationType'] ?? data['notification_type'];
+    if (typeKey == null) {
+      return;
+    }
+
+    NotificationType? type;
+    for (final candidate in NotificationType.values) {
+      if (candidate.name == typeKey) {
+        type = candidate;
+        break;
+      }
+    }
+
+    if (type == null) {
+      print('⚠️ Unknown notification type: $typeKey');
+      return;
+    }
+
+    switch (type) {
+      case NotificationType.teamGameStarted:
+        _handleTeamGameStartedNotification(data);
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _handleTeamGameStartedNotification(Map<String, dynamic> data) {
+    final currentRoute = Get.currentRoute;
+
+    // If player is already in assign role screen, no action required
+    if (currentRoute == AppRoutes.assignRoleScreen) {
+      return;
+    }
+
+    // Only auto-navigate when the player is waiting in the lobby
+    if (currentRoute == AppRoutes.teamLobby) {
+      print('📢 Team game started notification received. Navigating to Assign Roles screen.');
+      Get.toNamed(AppRoutes.assignRoleScreen);
+    }
+  }
+
+  /// Generic method to send notifications (WebSocket-based, no backend needed)
   Future<void> sendNotification({
     required String title,
     required String body,
@@ -143,27 +208,111 @@ class FirebaseNotificationService extends GetxService {
     String? recipientUserId,
     int? teamId,
     Map<String, dynamic>? additionalData,
+    bool skipLocalNotification = false, // New parameter to skip local notification
   }) async {
-    // 1. Trigger Local Notification Immediately (for local user feedback)
-    _showLocalNotification(title, body); // <-- ADDED LOCAL NOTIFICATION TRIGGER
+    final currentUserId = _storageRepository.getUser()?.id;
     
-    // 2. Send Network Notification (FCM via Backend)
-    final Map<String, dynamic> payload = {
-      'title': title,
-      'body': body,
-      'notificationType': notificationType.name,
-      'senderUserId': _storageRepository.getUser()?.id,
-      if (recipientUserId != null) 'recipientUserId': recipientUserId,
-      if (teamId != null) 'teamId': teamId,
-      if (additionalData != null) ...additionalData,
-    };
-
+    // 1. Trigger Local Notification only for the intended recipient (or broadcasts)
+    // Skip local notification if:
+    // - skipLocalNotification is true (for team updates where sender shouldn't see notification)
+    // - recipientUserId is specified and it's NOT the current user (notification is for someone else)
+    final bool shouldShowLocal = !skipLocalNotification && 
+        (recipientUserId == null || recipientUserId == currentUserId);
+    
+    if (shouldShowLocal) {
+      _showLocalNotification(title, body);
+      print('📱 Local notification shown to current user: $currentUserId');
+    } else {
+      print('⏭️ Skipping local notification (recipient: $recipientUserId, current: $currentUserId)');
+    }
+    
+    // 2. Send Notification via WebSocket (no backend needed!)
+    // This broadcasts to all team members connected to the WebSocket room
     try {
-      // Calls your backend endpoint which should forward to FCM
-      await _teamRepository.sendFCMNotification(payload);
-      print('✅ Network Notification sent: $title');
+      await _sendNotificationViaWebSocket(
+        title: title,
+        body: body,
+        notificationType: notificationType,
+        recipientUserId: recipientUserId,
+        teamId: teamId,
+        additionalData: additionalData,
+      );
+      print('✅ WebSocket notification sent for: $notificationType');
     } catch (e) {
-      print('❌ Failed to send network notification: $e');
+      print('❌ Failed to send WebSocket notification: $e');
+      // Fallback: Try FCM backend if available (optional)
+      try {
+        final Map<String, dynamic> payload = {
+          'title': title,
+          'body': body,
+          'notificationType': notificationType.name,
+          'senderUserId': currentUserId,
+          if (recipientUserId != null) 'recipientUserId': recipientUserId,
+          if (teamId != null) 'teamId': teamId,
+          if (additionalData != null) ...additionalData,
+        };
+        await _teamRepository.sendFCMNotification(payload);
+        print('✅ Fallback: FCM Notification sent to backend');
+      } catch (fcmError) {
+        print('❌ FCM fallback also failed: $fcmError');
+      }
+    }
+  }
+
+  /// Send notification via WebSocket to team room
+  Future<void> _sendNotificationViaWebSocket({
+    required String title,
+    required String body,
+    required NotificationType notificationType,
+    String? recipientUserId,
+    int? teamId,
+    Map<String, dynamic>? additionalData,
+  }) async {
+    // Get team token from TeamLobbyController (preferred) or CreateTeamController
+    String? teamToken;
+    
+    // Try TeamLobbyController first (most reliable source)
+    if (Get.isRegistered<TeamLobbyController>()) {
+      try {
+        final lobbyController = Get.find<TeamLobbyController>();
+        teamToken = lobbyController.teamData.value?.token;
+      } catch (e) {
+        print('⚠️ Could not get token from TeamLobbyController: $e');
+      }
+    }
+    
+    // Fallback to CreateTeamController
+    if ((teamToken == null || teamToken.isEmpty) && Get.isRegistered<CreateTeamController>()) {
+      try {
+        final createTeamController = Get.find<CreateTeamController>();
+        // Token might be in the team code controller if user just joined
+        teamToken = createTeamController.teamCodeController.text.trim();
+      } catch (e) {
+        print('⚠️ Could not get token from CreateTeamController: $e');
+      }
+    }
+
+    if (teamToken == null || teamToken.isEmpty) {
+      print('⚠️ Team token not available for WebSocket notification');
+      print('   Notification will not be sent to other team members');
+      return;
+    }
+
+    final currentUserId = _storageRepository.getUser()?.id;
+    final currentUserName = _storageRepository.getUser()?.name ?? 'Unknown';
+    
+    // Create a structured notification message that WebSocket can broadcast
+    // Format: NOTIFICATION:<type>:<senderId>:<senderName>:<title>:<body>
+    // This allows the WebSocket server to broadcast to all team members
+    final notificationMessage = 'NOTIFICATION:${notificationType.name}:$currentUserId:$currentUserName:$title:$body';
+    
+    try {
+      // Send via WebSocket message API (this broadcasts to all team members in the room)
+      await _teamRepository.sendWsMessage(teamToken, notificationMessage);
+      print('📤 WebSocket notification sent to team room (token: ${teamToken.substring(0, 3)}...)');
+    } catch (e) {
+      print('❌ Failed to send WebSocket notification: $e');
+      rethrow;
     }
   }
   
@@ -433,6 +582,8 @@ class FirebaseNotificationService extends GetxService {
         ? NotificationType.teamMemberJoined 
         : NotificationType.teamMemberLeft;
     
+    // Send notification to all other team members (not the sender)
+    // skipLocalNotification = true because the sender shouldn't see their own join/leave notification
     for (final userId in teamMemberUserIds) {
       await sendNotification(
         title: "Team Update",
@@ -440,6 +591,7 @@ class FirebaseNotificationService extends GetxService {
         notificationType: notificationType,
         recipientUserId: userId,
         teamId: teamId,
+        skipLocalNotification: true, // Don't show local notification on sender's device
         additionalData: {
           'playerName': playerName,
           'hasJoined': hasJoined,
@@ -447,6 +599,8 @@ class FirebaseNotificationService extends GetxService {
         },
       );
     }
+    
+    print('📢 Team member update notifications sent to ${teamMemberUserIds.length} team members');
   }
 
   /// Team Mode: Team Roster Updated Before Game Start
@@ -461,6 +615,7 @@ class FirebaseNotificationService extends GetxService {
         notificationType: NotificationType.teamRosterUpdated,
         recipientUserId: userId,
         teamId: teamId,
+        skipLocalNotification: true, // Don't show local notification on sender's device
         additionalData: {
           'gameMode': 'team',
         },
@@ -501,6 +656,7 @@ class FirebaseNotificationService extends GetxService {
         notificationType: NotificationType.teamGameStarted,
         recipientUserId: userId,
         teamId: teamId,
+        skipLocalNotification: false, // All team members should see this notification
         additionalData: {
           'gameMode': 'team',
         },
@@ -521,6 +677,7 @@ class FirebaseNotificationService extends GetxService {
         notificationType: NotificationType.teamPlayerProgress,
         recipientUserId: userId,
         teamId: teamId,
+        skipLocalNotification: true, // Don't show local notification on sender's device
         additionalData: {
           'playerName': playerName,
           'gameMode': 'team',
@@ -542,6 +699,7 @@ class FirebaseNotificationService extends GetxService {
         notificationType: NotificationType.teamTimeReminder,
         recipientUserId: userId,
         teamId: teamId,
+        skipLocalNotification: false, // All team members should see time reminders
         additionalData: {
           'remainingMinutes': remainingMinutes,
           'gameMode': 'team',
@@ -563,6 +721,7 @@ class FirebaseNotificationService extends GetxService {
         notificationType: NotificationType.teamScoreUpdated,
         recipientUserId: userId,
         teamId: teamId,
+        skipLocalNotification: true, // Don't show local notification on sender's device
         additionalData: {
           'playerName': playerName,
           'gameMode': 'team',
@@ -601,19 +760,33 @@ class FirebaseNotificationService extends GetxService {
   // ============================================================================
 
   /// Legacy method for team notifications (backward compatibility)
+  /// Note: This method is deprecated. Use specific notification methods instead.
   Future<void> sendTeamNotification({
     required int teamId,
     required String title,
     required String body,
     String? recipientUserId,
-    required String notificationType, 
+    required String notificationType,
+    bool skipLocalNotification = false,
   }) async {
+    // Map string notification type to enum if possible
+    NotificationType type = NotificationType.teamInvitation; // Default
+    try {
+      type = NotificationType.values.firstWhere(
+        (e) => e.name == notificationType.toLowerCase(),
+        orElse: () => NotificationType.teamInvitation,
+      );
+    } catch (e) {
+      print('⚠️ Unknown notification type: $notificationType, using default');
+    }
+    
     await sendNotification(
       title: title,
       body: body,
-      notificationType: NotificationType.teamInvitation, // Default type
+      notificationType: type,
       recipientUserId: recipientUserId,
       teamId: teamId,
+      skipLocalNotification: skipLocalNotification,
     );
   }
 }

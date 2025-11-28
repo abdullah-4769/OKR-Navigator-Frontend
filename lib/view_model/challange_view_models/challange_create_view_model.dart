@@ -31,12 +31,14 @@ import '../../repository/challange_repositories/challange_create_repository.dart
 import '../../repository/challange_repositories/challenge_accept_invitation_repository.dart';
 import '../../repository/challange_repositories/challenge_send__invite_repostory.dart';
 import '../../services/shared_preference.dart';
+import '../../services/notification_service.dart';
 
 class ChallengeCreateViewModel extends GetxController {
   final ChallengeRepository _repository = ChallengeRepository();
   final ChallengeAcceptInvitationRepository _invitationRepository = ChallengeAcceptInvitationRepository();
   final ChallengeSendInviteRepository _sendInviteRepository = ChallengeSendInviteRepository();
   final StorageRepository _storageRepo = Get.find<StorageRepository>();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
 
   final isChallengeCreated = false.obs;
   var inviteCode = ''.obs;
@@ -471,6 +473,24 @@ class ChallengeCreateViewModel extends GetxController {
       if (kDebugMode) print("✅ Invite response: $result");
 
       await fetchInvitations();
+
+      String recipientName = 'Player';
+      try {
+        final matchedPlayer = filteredPlayers.firstWhere(
+          (player) => player['id'] == playerId,
+        );
+        recipientName = matchedPlayer['name']?.toString() ??
+            matchedPlayer['displayName']?.toString() ??
+            recipientName;
+      } catch (_) {}
+
+      final hostName = _storageRepo.getUser()?.name ?? 'Player';
+      await _notificationService.sendChallengeInvitation(
+        hostName: hostName,
+        recipientName: recipientName,
+        recipientUserId: playerId,
+        isReceived: true,
+      );
 
     } catch (e) {
       if (kDebugMode) print("❌ Error sending invite: $e");

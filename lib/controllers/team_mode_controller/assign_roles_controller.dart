@@ -1,5 +1,6 @@
 // lib/controllers/team_mode_controller/assign_roles_controller.dart
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:game_app/data/repositories/team_repo.dart';
 import 'package:game_app/generated/models/requests/team_mode/set_team_role_for_game_request.dart';
@@ -12,7 +13,11 @@ import '../../../generated/models/responses/team_mode/assign_roles_response.dart
 import '../../../generated/models/requests/team_mode/update_team_member_request.dart';
 import '../../../generated/models/responses/team_mode/update_team_member_response.dart';
 import '../../../data/repositories/storage_repository.dart';
+import '../../../data/repositories/strategy_repository.dart';
+import '../../../presentation/routes/app_routes.dart';
+import '../../../services/shared_preference.dart';
 import 'create_team_controller.dart';
+import 'team_strategy_selection_controller.dart';
 
 class AssignRolesController extends GetxController {
  var isLoading = false.obs;
@@ -37,13 +42,37 @@ class AssignRolesController extends GetxController {
  final TeamRepository _teamRepository = Get.find<TeamRepository>();
  final StorageRepository _storageRepository = Get.find<StorageRepository>();
  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
+ final StrategyRepository _strategyRepository = Get.find<StrategyRepository>();
+
+ Timer? _pollingTimer;
+ bool _hasNavigatedToStrategy = false;
 
  @override
  void onInit() {
   super.onInit();
-    // Initialize hostUserId from storage
-    hostUserId.value = _storageRepository.getUser()?.id;
   fetchTeamMembers(); 
+ }
+
+ @override
+ void onReady() {
+   super.onReady();
+   // Start polling for non-host members to detect when host begins mission
+   if (!isCurrentUserHost) {
+     _startPollingForGameStart();
+   }
+ }
+
+ @override
+ void onClose() {
+   _pollingTimer?.cancel();
+   super.onClose();
+ }
+
+ // Getter to check if current user is host
+ bool get isCurrentUserHost {
+   final currentUserId = _storageRepository.getUser()?.id;
+   if (currentUserId == null || hostUserId.value == null) return false;
+   return currentUserId == hostUserId.value;
  }
 
   // 💡 NEW: Getter for all roles currently assigned to ANY member
@@ -102,6 +131,12 @@ class AssignRolesController extends GetxController {
    
    final membersList = await _teamRepository.getTeamMembers(teamId);
    members.assignAll(membersList);
+   
+   // Find and store the host user ID
+   final hostMember = membersList.firstWhereOrNull((m) => m.role == 'HOST');
+   if (hostMember != null && hostMember.userId != null) {
+     hostUserId.value = hostMember.userId;
+   }
    
   } catch (e) {
    errorMessage.value = 'Failed to load team members: ${e.toString()}';
@@ -227,8 +262,106 @@ class AssignRolesController extends GetxController {
   } catch (e) {
    Get.snackbar("Error", "Failed to auto-assign roles: ${e.toString()}");
    print('Error updating role: $e');
-  } finally {
-   isAutoUpdatingRole.value = false;
+   } finally {
+    isAutoUpdatingRole.value = false;
   }
+ }
+
+ // ------------------------------------------------
+ // ✅ 3. POLLING FOR GAME START (Auto-navigate non-host members)
+ // ------------------------------------------------
+ void _startPollingForGameStart() {
+   _pollingTimer?.cancel();
+   _pollingTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+     _checkIfGameHasStarted();
+   });
+ }
+
+ void _checkIfGameHasStarted() async {
+   // Only check if we're still on assign role screen and haven't navigated yet
+   if (_hasNavigatedToStrategy) {
+     _pollingTimer?.cancel();
+     return;
+   }
+
+   if (Get.currentRoute != AppRoutes.assignRoleScreen) {
+     _pollingTimer?.cancel();
+     return;
+   }
+
+   // Only for non-host members
+   if (isCurrentUserHost) {
+     _pollingTimer?.cancel();
+     return;
+   }
+
+   try {
+     final createTeamController = Get.find<CreateTeamController>();
+     final teamId = createTeamController.createdTeamId.value;
+     
+     if (teamId == null) return;
+
+     // Check if strategy has been fetched for the team (indicates game has started)
+     // Try to get team strategy - if it exists, game has started
+     try {
+       final currentUserId = _storageRepository.getUser()?.id;
+       if (currentUserId == null) return;
+
+       // Get current user's role
+       final currentUserMember = members.firstWhereOrNull(
+         (member) => member.userId == currentUserId,
+       );
+       final String currentRole = currentUserMember?.role ?? 'PLAYER';
+
+       // Try to fetch team strategy - if successful, game has started
+       final strategyResponse = await _strategyRepository.getTeamStrategy(
+         teamId: teamId,
+         role: currentRole,
+       );
+
+       // If strategy exists, navigate to strategy selection
+       if (strategyResponse.title != null || strategyResponse.strategyId != null) {
+         _navigateToStrategySelection();
+         return;
+       }
+     } catch (e) {
+       // If strategy doesn't exist yet (404 or error), game hasn't started
+       // Continue polling
+       print('Strategy not found yet (game not started): $e');
+     }
+   } catch (e) {
+     print('Error checking game start: $e');
+   }
+ }
+
+ void _navigateToStrategySelection() {
+   if (_hasNavigatedToStrategy) return;
+   _hasNavigatedToStrategy = true;
+   _pollingTimer?.cancel();
+
+   // Get current user's role and industry for navigation
+   final currentUserId = _storageRepository.getUser()?.id;
+   final currentUserMember = members.firstWhereOrNull(
+     (member) => member.userId == currentUserId,
+   );
+   final String currentRole = currentUserMember?.role ?? 'PLAYER';
+   final Map<String, dynamic> roleArgument = {
+     'title': currentRole,
+     'titleKey': currentRole,
+   };
+
+   // Get industry from shared preferences
+   final selectedIndustry = SharedPrefs.getSelectedIndustry() ?? {
+     'titleKey': 'Technology',
+     'title': 'Technology',
+   };
+
+   Get.toNamed(
+     AppRoutes.teamStrategySelection,
+     arguments: {
+       'selectedRole': roleArgument,
+       'selectedIndustry': selectedIndustry,
+     },
+   );
  }
 }

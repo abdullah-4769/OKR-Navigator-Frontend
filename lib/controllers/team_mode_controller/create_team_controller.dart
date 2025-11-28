@@ -98,8 +98,47 @@ class CreateTeamController extends GetxController {
       log('RESPONSE: ${response.toString()}');
 
       if (response.id != null) {
-        createdTeamId.value = response.id;
+        // When joining, backend returns a membership object:
+        // { id: <memberId>, teamId: <teamId>, ... }
+        // Prefer the explicit teamId when available.
+        final joinedTeamId = response.teamId ?? response.id;
+        createdTeamId.value = joinedTeamId;
         SnackbarHelper.success("Joined existing team: ${response.title ?? 'Team'}!");
+
+        // Update TeamLobbyController with the response data immediately
+        // This ensures the lobby screen shows correct data (token, members) right away
+        try {
+          TeamLobbyController? lobbyController;
+          if (Get.isRegistered<TeamLobbyController>()) {
+            lobbyController = Get.find<TeamLobbyController>();
+          } else {
+            // Controller not registered yet, will be created when screen opens
+            // We'll store the response data to be used when controller initializes
+            log('ℹ️ Lobby controller not registered yet, will be initialized on screen open');
+          }
+          
+          if (lobbyController != null) {
+            lobbyController.teamData.value = response;
+            
+            // Update players list from response
+            if (response.members != null) {
+              lobbyController.players.assignAll(
+                response.members!.map((member) => member.user?.name ?? 'Unknown').toList()
+              );
+              log('✅ Updated lobby controller with ${lobbyController.players.length} members from join response');
+            }
+            
+            // Update host status
+            final currentUserId = _storageRepository.getUser()?.id;
+            final memberList = response.members ?? [];
+            lobbyController.isHost.value = memberList.any(
+              (member) => member.role == 'HOST' && member.user?.id == currentUserId,
+            );
+          }
+        } catch (e) {
+          log('⚠️ Could not update lobby controller: $e');
+          // Continue anyway - the lobby controller will fetch on its own
+        }
 
         try {
           await _teamRepository.joinWsTeam(token, userId);
@@ -109,14 +148,31 @@ class CreateTeamController extends GetxController {
           SnackbarHelper.warning("Joined team but WebSocket connection failed. You may not receive real-time updates.");
         }
 
-        _notificationService.sendTeamNotification(
-          teamId: response.id!,
-          title: "Team Update",
-          body: "$userName has joined the team.",
-          notificationType: 'TEAM_JOIN',
-        );
+        final otherMemberIds = response.members
+                ?.map((member) => member.userId)
+                .where((memberId) =>
+                    memberId != null && memberId.isNotEmpty && memberId != userId)
+                .cast<String>()
+                .toList() ??
+            [];
 
-        Get.toNamed(AppRoutes.teamLobby);
+        if (otherMemberIds.isNotEmpty) {
+          await _notificationService.sendTeamMemberUpdate(
+            playerName: userName,
+            hasJoined: true,
+            teamId: response.id!,
+            teamMemberUserIds: otherMemberIds,
+          );
+        }
+
+        // Navigate directly to Assign Roles screen when user joins
+        // Host can assign roles, other members can only view
+        Get.toNamed(
+          AppRoutes.assignRoleScreen,
+          arguments: {
+            'teamId': joinedTeamId,
+          },
+        );
       } else {
         SnackbarHelper.error(response.title ?? "Failed to join team. Invalid token or user ID.");
       }
@@ -155,7 +211,12 @@ class CreateTeamController extends GetxController {
         if (teamId != null) {
           createdTeamId.value = teamId;
           log('✅ Extracted team ID from error response: $teamId');
-          Get.toNamed(AppRoutes.teamLobby);
+          Get.toNamed(
+            AppRoutes.teamLobby,
+            arguments: {
+              'teamId': teamId,
+            },
+          );
         } else {
           log('⚠️ Could not extract team ID from error response');
           SnackbarHelper.warning("Unable to navigate automatically. Please use your existing team from the lobby.");

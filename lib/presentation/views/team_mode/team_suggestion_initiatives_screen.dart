@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../controllers/journey_controller.dart';
 import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../controllers/team_mode_controller/team_suggestion_initiative_controller.dart';
+import '../../../controllers/team_mode_controller/team_strategy_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../../core/app_theme.dart';
@@ -39,6 +40,7 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
   
 
   final JourneyController journeyController = Get.find<JourneyController>();
+  final TeamStrategySelectionController strategyController = Get.find<TeamStrategySelectionController>();
   
   // Get controller instance once it's been initialized in the constructor
   TeamSuggestionInitiativesController get controller => Get.find<TeamSuggestionInitiativesController>();
@@ -140,6 +142,26 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+
+                      SizedBox(height: height * 0.02),
+
+                      /// ✅ Selected Strategy Container
+                      Obx(() {
+                        final strategyName = strategyController.strategyDisplayTitle;
+                        final subtitleText = strategyName.isNotEmpty
+                            ? strategyName
+                            : 'No strategy selected yet';
+
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: width * 0.06),
+                          child: CustomObjectiveContainer(
+                            title: 'selected_strategy'.tr,
+                            subtitle: subtitleText,
+                            description: '',
+                            icon: Icons.emoji_objects,
+                          ),
+                        );
+                      }),
 
                       SizedBox(height: height * 0.02),
 

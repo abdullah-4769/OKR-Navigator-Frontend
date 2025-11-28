@@ -168,6 +168,13 @@ class TeamChatController extends GetxController {
   /// Handle incoming messages
   void _handleMessage(dynamic message) {
     try {
+      // Check if this is a notification message (starts with "NOTIFICATION:")
+      if (message is String && message.startsWith('NOTIFICATION:')) {
+        _handleNotificationMessage(message);
+        return;
+      }
+      
+      // Otherwise, treat as regular chat message
       final data = jsonDecode(message);
       
       // Add message to list with proper structure for ChatWidget
@@ -188,6 +195,39 @@ class TeamChatController extends GetxController {
       
     } catch (e) {
       log('Error handling message: $e');
+    }
+  }
+
+  /// Handle notification messages from WebSocket
+  /// Format: NOTIFICATION:<type>:<senderId>:<senderName>:<title>:<body>
+  void _handleNotificationMessage(String message) {
+    try {
+      final parts = message.split(':');
+      if (parts.length < 6) {
+        log('⚠️ Invalid notification message format: $message');
+        return;
+      }
+
+      final notificationType = parts[1];
+      final senderId = parts[2];
+      final senderName = parts[3];
+      final title = parts[4];
+      final body = parts.sublist(5).join(':'); // Body may contain colons
+
+      final currentUserId = _storageRepository.getUser()?.id;
+      
+      // Don't show notification if it's from the current user
+      if (senderId == currentUserId) {
+        log('⏭️ Skipping notification from self');
+        return;
+      }
+
+      // Show local notification using the notification service
+      _notificationService.showLocalNotification(title, body);
+      log('📬 Notification received via WebSocket: $title - $body');
+      
+    } catch (e) {
+      log('❌ Error handling notification message: $e');
     }
   }
 

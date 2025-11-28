@@ -304,13 +304,26 @@ Widget build(BuildContext context) {
       child: Column(
        children: [
        // Begin Mission Button
-       CustomButton2(
-        backgroundColor: membersCount >= 2 ? AppColors.primaryBlue : AppColors.textSecondary.withOpacity(0.3),
-        textColor: Colors.white,
-        text: "Begin Mission".tr,
-        onPressed: controller.beginMission,
-        // onPressed: membersCount >= 2 ? controller.beginMission : null,
-       ),
+      CustomButton2(
+       backgroundColor: (isHost && membersCount >= 2)
+           ? AppColors.primaryBlue
+           : AppColors.textSecondary.withOpacity(0.3),
+       textColor: Colors.white,
+       text: "Begin Mission".tr,
+       onPressed: (isHost && membersCount >= 2) ? controller.beginMission : null,
+      ),
+      if (!isHost)
+        Padding(
+          padding: EdgeInsets.only(top: 8.h),
+          child: Text(
+            "Only the host can begin the mission.",
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12.sp,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
 
        SizedBox(height: 10.h),
        // Invite Members Button (Only Host can invite)
