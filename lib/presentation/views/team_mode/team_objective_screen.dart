@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../controllers/journey_controller.dart';
 import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../controllers/team_mode_controller/team_objective_controller.dart';
+import '../../../controllers/team_mode_controller/team_strategy_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
@@ -24,6 +25,7 @@ class TeamObjectiveScreen extends StatelessWidget {
   // Use Get.put and Get.find correctly
   final TeamObjectiveController controller = Get.put(TeamObjectiveController());
   final JourneyController journeyController = Get.find<JourneyController>();
+  final TeamStrategySelectionController strategyController = Get.find<TeamStrategySelectionController>();
   final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMode'] ?? false;
 
   void _fetchObjectivesOnLoad() {
@@ -130,15 +132,22 @@ class TeamObjectiveScreen extends StatelessWidget {
 
                           /// ---------- SELECTED STRATEGY CARD -----------
                           SizedBox(height: AppDimensions.d10.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: CustomObjectiveContainer(
-                              title: _safeTranslate('selected_strategy'),
-                              subtitle: _safeTranslate('development_new_markets'),
-                              description: _safeTranslate('objective_description'),
-                              icon: Icons.emoji_objects,
-                            ),
-                          ),
+                          Obx(() {
+                            final strategyName = strategyController.strategyDisplayTitle;
+                            final subtitleText = strategyName.isNotEmpty
+                                ? strategyName
+                                : 'No strategy selected yet';
+
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: CustomObjectiveContainer(
+                                title: _safeTranslate('selected_strategy'),
+                                subtitle: subtitleText,
+                                description: _safeTranslate('objective_description'),
+                                icon: Icons.emoji_objects,
+                              ),
+                            );
+                          }),
 
                           SizedBox(height: AppDimensions.d20.h),
 

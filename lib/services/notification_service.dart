@@ -121,7 +121,8 @@ class FirebaseNotificationService extends GetxService {
   }
 
   /// Displays the notification using Flutter Local Notifications
-  Future<void> _showLocalNotification(String? title, String? body, {String? payload}) async {
+// ← YE METHOD KO PUBLIC BANA DO (underscore hata do)
+  Future<void> showLocalNotification(String? title, String? body, {String? payload}) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'okr_navigator_channel',
       'OKR Navigator Notifications',
@@ -130,8 +131,7 @@ class FirebaseNotificationService extends GetxService {
       priority: Priority.high,
       ticker: 'ticker',
     );
-    const NotificationDetails platformDetails =
-        NotificationDetails(android: androidDetails);
+    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
 
     await _localNotifications.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -141,7 +141,6 @@ class FirebaseNotificationService extends GetxService {
       payload: payload,
     );
   }
-
   // Topic subscription helpers
   Future<void> subscribeToTeamTopic(int teamId) async {
     try {
@@ -207,7 +206,7 @@ class FirebaseNotificationService extends GetxService {
     Map<String, dynamic>? additionalData,
   }) async {
     // 1. Trigger Local Notification Immediately (for local user feedback)
-    _showLocalNotification(title, body); // <-- ADDED LOCAL NOTIFICATION TRIGGER
+    showLocalNotification(title, body); // <-- ADDED LOCAL NOTIFICATION TRIGGER
     
     // 2. Send Network Notification (FCM via Backend)
     final Map<String, dynamic> payload = {

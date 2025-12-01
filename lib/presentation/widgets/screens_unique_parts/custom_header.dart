@@ -10,7 +10,6 @@ import '../../routes/app_routes.dart';
 import '../../views/authentication/profile_screen.dart';
 import '../common_image.dart';
 import '../custom_curved_arrow.dart';
-
 class CustomHeader extends StatefulWidget {
   final String title;
   final String? subtitle;
@@ -73,16 +72,18 @@ class _CustomHeaderState extends State<CustomHeader> {
       height: 130.h,
       child: Stack(
         children: [
-          /// MAIN ROW (No left padding)
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /// BACK BUTTON (Reduced width to remove left gap)
-              CustomCurvedArrow(
-                isLeft: true,
-                onTap: widget.onBackTap,
-                width: 45.w,
-                height: 45.h,
+              /// BACK BUTTON (fixed — zero padding)
+              Transform.translate(
+                offset: Offset(-20.w, 0), // removes left gap
+                child: CustomCurvedArrow(
+                  isLeft: true,
+                  onTap: widget.onBackTap,
+                  width: 80.w,
+                  height: 80.h,
+                ),
               ),
 
               SizedBox(width: 6.w),
@@ -115,10 +116,10 @@ class _CustomHeaderState extends State<CustomHeader> {
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.language, color: AppColors.primaryBlue, size: 32),
-                    onPressed: () => Get.toNamed(AppRoutes.language, parameters: {
-                      'from': currentRoute,
-                    }),
+                    icon: const Icon(Icons.language,
+                        color: AppColors.primaryBlue, size: 32),
+                    onPressed: () => Get.toNamed(AppRoutes.language,
+                        parameters: {'from': currentRoute}),
                   ),
 
                   if (widget.showDashboardIcon)
@@ -134,8 +135,8 @@ class _CustomHeaderState extends State<CustomHeader> {
                             fit: BoxFit.cover,
                             width: 46.sp,
                             height: 46.sp,
-                            errorBuilder: (_, __, ___) =>
-                                Image.asset("assets/images/solo_image.png"),
+                            errorBuilder: (_, __, ___) => Image.asset(
+                                "assets/images/solo_image.png"),
                           )
                               : Image.asset("assets/images/solo_image.png"),
                         ),
@@ -153,7 +154,6 @@ class _CustomHeaderState extends State<CustomHeader> {
               right: 10.w,
               child: Text(
                 widget.subtitle!,
-                textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontSize: 12.sp,
                   color: AppColors.textBlack,
@@ -165,3 +165,4 @@ class _CustomHeaderState extends State<CustomHeader> {
     );
   }
 }
+

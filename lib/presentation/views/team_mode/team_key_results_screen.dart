@@ -6,6 +6,7 @@ import '../../../controllers/journey_controller.dart';
 import '../../../controllers/okr_constellation_controller.dart';
 import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../controllers/team_mode_controller/team_key_results_controller.dart';
+import '../../../controllers/team_mode_controller/team_strategy_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
@@ -27,6 +28,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
   final JourneyController journeyController = Get.isRegistered<JourneyController>()
       ? Get.find<JourneyController>()
       : Get.put(JourneyController());
+  final TeamStrategySelectionController strategyController = Get.find<TeamStrategySelectionController>();
   final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMode'] ?? false;
 
   String _safeTranslate(String? key, {String fallback = ''}) {
@@ -113,6 +115,26 @@ class TeamKeyResultsScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+
+                          SizedBox(height: AppDimensions.d10.h),
+
+                          /// -------- Selected Strategy ---------
+                          Obx(() {
+                            final strategyName = strategyController.strategyDisplayTitle;
+                            final subtitleText = strategyName.isNotEmpty
+                                ? strategyName
+                                : 'No strategy selected yet';
+
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: CustomObjectiveContainer(
+                                title: _safeTranslate('selected_strategy'),
+                                subtitle: subtitleText,
+                                description: _safeTranslate('objective_description'),
+                                icon: Icons.emoji_objects,
+                              ),
+                            );
+                          }),
 
                           SizedBox(height: AppDimensions.d10.h),
 

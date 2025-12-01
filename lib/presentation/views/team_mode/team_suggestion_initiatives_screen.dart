@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../controllers/journey_controller.dart';
 import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../controllers/team_mode_controller/team_suggestion_initiative_controller.dart';
+import '../../../controllers/team_mode_controller/team_strategy_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../../core/app_theme.dart';
@@ -25,21 +26,22 @@ import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
 
 class TeamSuggestionInitiativesScreen extends StatelessWidget {
-  
+
   TeamSuggestionInitiativesScreen({
     super.key, required List selectedKeyResults,
   }) {
     // 1. Retrieve arguments immediately when the screen widget is instantiated
     final args = Get.arguments as Map<String, dynamic>?;
     final List<KeyResult> selectedKeyResults = (args?['selectedKeyResults'] as List<KeyResult>?) ?? [];
-    
+
     // 2. Initialize controller with retrieved arguments using Get.put
     Get.put(TeamSuggestionInitiativesController(keyResults: selectedKeyResults));
   }
-  
+
 
   final JourneyController journeyController = Get.find<JourneyController>();
-  
+  final TeamStrategySelectionController strategyController = Get.find<TeamStrategySelectionController>();
+
   // Get controller instance once it's been initialized in the constructor
   TeamSuggestionInitiativesController get controller => Get.find<TeamSuggestionInitiativesController>();
 
@@ -48,7 +50,7 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
     if (text == null || text.isEmpty) return fallback;
     try {
       // If the string contains spaces, assume it's a raw string from the API and return it directly.
-      if (text.contains(' ')) return text; 
+      if (text.contains(' ')) return text;
       return text.tr;
     } catch (e) {
       return text; // Fallback to raw string if translation fails
@@ -58,20 +60,20 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-    
+
     // Defensive check for Key Results data
     if (controller.keyResults.isEmpty) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-            Get.snackbar("Error", "Key Results data is missing. Navigating back.");
-            Get.offNamed(AppRoutes.teamKeyResultScreen);
-        });
-        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.snackbar("Error", "Key Results data is missing. Navigating back.");
+        Get.offNamed(AppRoutes.teamKeyResultScreen);
+      });
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    
+
     // Defensive access to the first KR for the header container title
     final firstKeyResult = controller.keyResults.first;
     final firstKRTitle = _safeTranslate(firstKeyResult.title, fallback: 'Focus on Key Result');
@@ -143,6 +145,26 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
 
                       SizedBox(height: height * 0.02),
 
+                      /// ✅ Selected Strategy Container
+                      Obx(() {
+                        final strategyName = strategyController.strategyDisplayTitle;
+                        final subtitleText = strategyName.isNotEmpty
+                            ? strategyName
+                            : 'No strategy selected yet';
+
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: width * 0.06),
+                          child: CustomObjectiveContainer(
+                            title: 'selected_strategy'.tr,
+                            subtitle: subtitleText,
+                            description: '',
+                            icon: Icons.emoji_objects,
+                          ),
+                        );
+                      }),
+
+                      SizedBox(height: height * 0.02),
+
                       /// ✅ Your Objective Container
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: width * 0.06),
@@ -207,7 +229,7 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                         child: Obx(() {
                           // Display all selected Key Results as context containers
                           if (controller.industries.isEmpty) return const SizedBox.shrink();
-                          
+
                           return Column(
                             children: controller.keyResults.map((kr) => Padding(
                               padding: EdgeInsets.only(bottom: 8.h),
@@ -216,9 +238,9 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                                 // ✅ FIXED: Using safe translate for KR titles and descriptions
                                 title: "",
                                 description: _safeTranslate(kr.description),
-                                icon: Icons.key, 
+                                icon: Icons.key,
                                 isSelected: false,
-                                onTap: () {}, 
+                                onTap: () {},
                                 showTag1: true,
                                 tag1Icon: Icons.trending_up,
                                 tag1Text: 'Goal'.tr,
@@ -295,9 +317,9 @@ class TeamSuggestionInitiativesScreen extends StatelessWidget {
                             text: controller.isSubmitting.value
                                 ? 'submitting'.tr
                                 : 'submit_analysis'.tr,
-                           onPressed: controller.isButtonEnabled 
-                            ? () => controller.submitInitiatives()
-                            : null, 
+                            onPressed: controller.isButtonEnabled
+                                ? () => controller.submitInitiatives()
+                                : null,
                           ),
                         ),
                       ),

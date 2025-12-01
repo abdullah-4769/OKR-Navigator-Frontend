@@ -1,6 +1,6 @@
 // lib/controllers/team_mode_controller/team_strategy_selection_controller.dart
 
-import 'dart:math';
+import 'package:game_app/controllers/language_controller.dart';
 import 'package:game_app/controllers/team_mode_controller/team_game_controller.dart';
 import 'package:game_app/generated/models/responses/team_mode/strategy_response.dart';
 import 'package:game_app/presentation/views/team_mode/game_time_controller.dart';
@@ -19,16 +19,96 @@ class TeamStrategySelectionController extends GetxController {
   final StorageRepository _storageRepository = Get.find<StorageRepository>();
   final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
 
-  /// List of card assets - FIXED: This is the correct property name
-  final List<String> cardAssets = [
-    'assets/images/card_1.png',
-    'assets/images/card_1.png',
-    'assets/images/card_1.png',
-    'assets/images/card_1.png',
+  /// Language controller to mirror single-mode rendering logic
+  final LanguageController _languageController = Get.find<LanguageController>();
+
+  /// English strategy card assets (mirrors single-player assets)
+  static const List<String> _englishCardAssets = [
+    'assets/images/strategy1.png',
+    'assets/images/strategy2.png',
+    'assets/images/strategy3.png',
+    'assets/images/strategy4.png',
+    'assets/images/strategy5.png',
+    'assets/images/strategy6.png',
+    'assets/images/strategy7.png',
+    'assets/images/strategy8.png',
   ];
 
-  // FIXED: Add getter for compatibility with CustomCardPagerBuilder if needed
-  List<String> get strategyCardAssets => cardAssets;
+  /// English strategy titles for card lookup
+  static const List<String> _englishCardTitles = [
+    "Improved Environmental Sustainability",
+    "Improve Operational Efficiency",
+    "Optimize Human Resources Management",
+    "Increase Profitability",
+    "Innovation in Product/Service Offerings",
+    "Reinforcement of Corporate Culture",
+    "Development of New Markets",
+    "Increase Customer Satisfaction",
+  ];
+
+  /// French assets/titles (indexes align with English order)
+  static const List<String> _frenchCardAssets = [
+    "assets/frencardsstrategy/1.jpeg",
+    "assets/frencardsstrategy/2.jpeg",
+    "assets/frencardsstrategy/3.jpeg",
+    "assets/frencardsstrategy/4.jpeg",
+    "assets/frencardsstrategy/5.jpeg",
+    "assets/frencardsstrategy/6.jpeg",
+    "assets/frencardsstrategy/7.jpeg",
+    "assets/frencardsstrategy/8.jpeg",
+  ];
+
+  static const List<String> _frenchCardTitles = [
+    "Amélioration de la Durabilité Environnementale",
+    "Amélioration de l'Efficience opérationnelle",
+    "Optimisation de la Gestion des Ressources Humaines",
+    "Accroissement de la Rentabilité",
+    "Innovation dans les Offres de Produits/Services",
+    "Renforcement de la Culture d'Entreprise",
+    "Développement de Nouveaux Marchés",
+    "Augmentation de la satisfaction client",
+  ];
+
+  /// Spanish assets/titles (Spanish deck has an extra card)
+  static const List<String> _spanishCardAssets = [
+    "assets/cartes objectifs/cartes objectifs_Page_1.png",
+    "assets/cartes objectifs/cartes objectifs_Page_2.png",
+    "assets/cartes objectifs/cartes objectifs_Page_4.png",
+    "assets/cartes objectifs/cartes objectifs_Page_6.png",
+    "assets/cartes objectifs/cartes objectifs_Page_8.png",
+    "assets/cartes objectifs/cartes objectifs_Page_10.png",
+    "assets/cartes objectifs/cartes objectifs_Page_12.png",
+    "assets/cartes objectifs/cartes objectifs_Page_14.png",
+    "assets/cartes objectifs/cartes objectifs_Page_16.png",
+  ];
+
+  static const List<String> _spanishCardTitles = [
+    "Mejora de la Sostenibilidad Ambiental",
+    "Estrategia de Compromiso del Cliente",
+    "Estrategia de Optimización de Procesos",
+    "Estrategia de Desarrollo de Talento",
+    "Estrategia de Maximización de Ingresos",
+    "Estrategia de Innovación Continua",
+    "Estrategia de Refuerzo Cultural",
+    "Estrategia de Expansión de Mercado",
+    "Estrategia de Eficiencia Operativa",
+  ];
+
+  /// Strategy assets exposed to the pager builder
+  List<String> get strategyCardAssets {
+    final langCode = _languageController.selectedLanguage.value.code;
+    if (langCode == 'fr') return _frenchCardAssets;
+    if (langCode == 'es') return _spanishCardAssets;
+    return _englishCardAssets;
+  }
+
+  /// Strategy titles exposed for the active language
+  List<String> get strategyCardTitles {
+    final langCode = _languageController.selectedLanguage.value.code;
+    if (langCode == 'fr') return _frenchCardTitles;
+    if (langCode == 'es') return _spanishCardTitles;
+    return _englishCardTitles;
+  }
 
   /// Selected card index
   final RxInt selectedCardIndex = (-1).obs;
@@ -93,10 +173,14 @@ class TeamStrategySelectionController extends GetxController {
 
       if (response.title != null) {
         // 3. Map API success to UI update
-        final randomIndex = Random().nextInt(cardAssets.length);
-        revealCard(randomIndex, name: response.title);
+        final mappedIndex = _resolveCardIndex(response);
+        if (mappedIndex == null) {
+          SnackbarHelper.error('Unable to map the fetched strategy to a card.');
+          print('Error: Could not find matching card for title ${response.title} or id ${response.strategyId}');
+          return;
+        }
 
-        selectedStrategy.value = response.title!;
+        revealCard(mappedIndex, name: response.title);
         print('Success: Strategy revealed: ${response.title}');
 
         // 4. Initialize timer with real game time from API response
@@ -131,10 +215,23 @@ class TeamStrategySelectionController extends GetxController {
 
   /// Reveal a specific card asset and set the name
   void revealCard(int index, {String? name}) {
-    selectedCardIndex.value = index;
+    if (strategyCardAssets.isEmpty) {
+      SnackbarHelper.error('Strategy cards are not configured.');
+      return;
+    }
+
+    final maxIndex = strategyCardAssets.length - 1;
+    final clampedIndex = index.clamp(0, maxIndex).toInt();
+    selectedCardIndex.value = clampedIndex;
     isCardRevealed.value = true;
 
-    if (name != null) selectedStrategy.value = name;
+    final resolvedName = name?.trim().isNotEmpty == true
+        ? name!.trim()
+        : (teamStrategyResponse.value?.title ??
+        _getTitleForIndex(clampedIndex) ??
+        '');
+
+    selectedStrategy.value = resolvedName;
 
     // ✅ Mark step 0 as completed & update journey progress
     journey.completeStep(0);
@@ -178,6 +275,84 @@ class TeamStrategySelectionController extends GetxController {
           'selectedIndustry': selectedIndustry, // Forwarding the Industry
         }
     );
+  }
+
+  /// Readable strategy title mirroring the revealed card name
+  String get strategyDisplayTitle {
+    final resolvedName = selectedStrategy.value.trim();
+    if (resolvedName.isNotEmpty) {
+      return resolvedName;
+    }
+
+    final index = selectedCardIndex.value;
+    if (index >= 0) {
+      final fallback = _getTitleForIndex(index);
+      if (fallback != null && fallback.trim().isNotEmpty) {
+        return fallback.trim();
+      }
+    }
+
+    return teamStrategyResponse.value?.title?.trim() ?? '';
+  }
+
+  /// Map backend response to a local card index
+  int? _resolveCardIndex(TeamStrategyResponse response) {
+    final indexFromId = _mapStrategyIdToIndex(response.strategyId);
+    if (indexFromId != null) {
+      return indexFromId;
+    }
+
+    final indexFromTitle = _mapTitleToIndex(response.title);
+    if (indexFromTitle != null) {
+      return indexFromTitle;
+    }
+
+    return null;
+  }
+
+  /// Convert backend strategyId (1-based) to 0-based index
+  int? _mapStrategyIdToIndex(int? strategyId) {
+    if (strategyId == null) return null;
+    final adjusted = strategyId - 1;
+    if (adjusted < 0) return null;
+
+    const maxCardCount = 9; // Spanish deck contains the most cards
+    if (adjusted >= maxCardCount) return null;
+
+    return adjusted;
+  }
+
+  /// Try to match title text (any supported language) to a card index
+  int? _mapTitleToIndex(String? title) {
+    if (title == null || title.trim().isEmpty) return null;
+    final normalized = title.toLowerCase().trim();
+
+    final englishIndex =
+    _indexOfNormalizedTitle(_englishCardTitles, normalized);
+    if (englishIndex != -1) return englishIndex;
+
+    final frenchIndex = _indexOfNormalizedTitle(_frenchCardTitles, normalized);
+    if (frenchIndex != -1) return frenchIndex;
+
+    final spanishIndex =
+    _indexOfNormalizedTitle(_spanishCardTitles, normalized);
+    if (spanishIndex != -1) return spanishIndex;
+
+    return null;
+  }
+
+  int _indexOfNormalizedTitle(List<String> titles, String normalized) {
+    return titles.indexWhere(
+          (title) => title.toLowerCase().trim() == normalized,
+    );
+  }
+
+  String? _getTitleForIndex(int index) {
+    final titles = strategyCardTitles;
+    if (index >= 0 && index < titles.length) {
+      return titles[index];
+    }
+    return null;
   }
 }
 // import 'dart:math';

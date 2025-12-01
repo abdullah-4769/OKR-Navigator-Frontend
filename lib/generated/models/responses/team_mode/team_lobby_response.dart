@@ -1,5 +1,13 @@
 class TeamLobbyResponse {
+  /// For full lobby responses this is the team id.
+  /// For join-team responses this is often the membership id, while
+  /// [teamId] below contains the actual team id.
   int? id;
+
+  /// Explicit team id field to support /team/join responses
+  /// which return `{ id: <memberId>, teamId: <teamId>, ... }`.
+  int? teamId;
+
   String? title;
   String? mission;
   String? teamavatorid;
@@ -7,17 +15,21 @@ class TeamLobbyResponse {
   int? totalMembers;
   List<Members>? members;
 
-  TeamLobbyResponse(
-      {this.id,
-      this.title,
-      this.mission,
-      this.teamavatorid,
-      this.token,
-      this.totalMembers,
-      this.members});
+  TeamLobbyResponse({
+    this.id,
+    this.teamId,
+    this.title,
+    this.mission,
+    this.teamavatorid,
+    this.token,
+    this.totalMembers,
+    this.members,
+  });
 
   TeamLobbyResponse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    // Some endpoints (like /team/join) return teamId separately.
+    teamId = json['teamId'];
     title = json['title'];
     mission = json['mission'];
     teamavatorid = json['teamavatorid'];
@@ -26,21 +38,24 @@ class TeamLobbyResponse {
     if (json['members'] != null) {
       members = <Members>[];
       json['members'].forEach((v) {
-        members!.add(new Members.fromJson(v));
+        members!.add(Members.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['mission'] = this.mission;
-    data['teamavatorid'] = this.teamavatorid;
-    data['token'] = this.token;
-    data['totalMembers'] = this.totalMembers;
-    if (this.members != null) {
-      data['members'] = this.members!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (teamId != null) {
+      data['teamId'] = teamId;
+    }
+    data['title'] = title;
+    data['mission'] = mission;
+    data['teamavatorid'] = teamavatorid;
+    data['token'] = token;
+    data['totalMembers'] = totalMembers;
+    if (members != null) {
+      data['members'] = members!.map((v) => v.toJson()).toList();
     }
     return data;
   }
