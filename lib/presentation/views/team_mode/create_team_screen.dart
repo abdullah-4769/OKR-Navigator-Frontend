@@ -57,8 +57,8 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
 
                       /// ---------- HEADER ----------
                       CustomHeader(
-                        title: isEditing ? 'Edit'.tr : 'Create'.tr,
-                        highlightedText: isEditing ? 'Team'.tr : "New team".tr,
+                      title: isEditing ? 'Edit'.tr : 'create'.tr,
+                      highlightedText: isEditing ? 'Team'.tr : 'new_team'.tr,
                         showDashboardIcon: false,
                         onBackTap: () => Get.back(),
                       ),

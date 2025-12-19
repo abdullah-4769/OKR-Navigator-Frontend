@@ -118,6 +118,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:game_app/controllers/team_mode_controller/team_lobby_controller.dart';
+import 'package:game_app/data/repositories/team_repo.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -130,12 +132,14 @@ import 'core/localization/localization_services.dart';
 import 'data/datasources/auth_api.dart';
 import 'data/repositories/auth_repository.dart';
 import 'data/repositories/key_results_repo.dart';
+import 'data/repositories/strategy_repository.dart';
 import 'data/repositories/storage_repository.dart';
 import 'generated/network.dart';
 import 'presentation/routes/app_routes.dart';
 import 'services/key_result/key_results.dart';
+import 'services/notification_service.dart';
 import 'services/shared_preference.dart';
-import 'services/notifications/notifications_service.dart';
+// import 'services/notifications/notifications_service.dart';
 
 /// 1. FCM background handler
 @pragma('vm:entry-point')
@@ -145,7 +149,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await GetStorage.init();
   await GetStorage.init('notifications');
   debugPrint("FCM background message: ${message.messageId}");
-  await NotificationsService.showFromBackground(message);
+  // await NotificationsService.showFromBackground(message);
 }
 
 /// 2. Main
@@ -156,7 +160,6 @@ Future<void> main() async {
   await GetStorage.init('notifications'); // NEW: For notification history
   await SharedPrefs.init();
 
-  // 1-6. (unchanged)
   final storageRepo = StorageRepository();
   await storageRepo.init();
   Get.put<StorageRepository>(storageRepo, permanent: true);
@@ -169,10 +172,12 @@ Future<void> main() async {
 
   Get.put<AuthApi>(AuthApi(dioClient.dio), permanent: true);
   Get.put<AuthRepository>(AuthRepository(Get.find<AuthApi>()), permanent: true);
+  Get.put(StrategyRepository(), permanent: true);
 
   Get.put(GameModeController(), permanent: true);
   Get.put(JourneyController(), permanent: true);
-
+  Get.put(TeamRepository(),permanent:true);
+  Get.put(FirebaseNotificationService(), permanent: true);
   Get.lazyPut<KeyResultService>(() => KeyResultService(), fenix: true);
   Get.lazyPut<KeyResultRepository>(() => KeyResultRepository(), fenix: true);
 
@@ -181,14 +186,14 @@ Future<void> main() async {
   await localizationService.init();
 
   // 8. FCM Setup
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await NotificationsService().init();
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await NotificationsService().init();
 
-  // NEW: Handle terminated state (app opened from notification tap)
-  final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-  if (initialMessage != null) {
-    await NotificationsService.showFromBackground(initialMessage);
-  }
+  // // NEW: Handle terminated state (app opened from notification tap)
+  // final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  // if (initialMessage != null) {
+  //   await NotificationsService.showFromBackground(initialMessage);
+  // }
 
   // 9. Run app
   runApp(MyApp(localizationService: localizationService));
@@ -201,7 +206,8 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.localizationService});
 
   @override
-  Widget build(BuildContext context) => ScreenUtilInit(
+  Widget build(BuildContext context) {
+    return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
@@ -220,4 +226,5 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+  }
 }

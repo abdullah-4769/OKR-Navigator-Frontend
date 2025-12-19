@@ -123,12 +123,16 @@ class ScoreboardScreen extends StatelessWidget {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  'I\'m ranked #${controller.userDetails.value?.rank ?? 'N/A'} in ${controller.getModeName()} this week!',
+                                  'im_ranked_this_week'.trParams({
+                                    'rank': '${controller.userDetails.value?.rank ?? 'N/A'}',
+                                    'mode': controller.getModeName(),
+                                  }),
                                   style: const TextStyle(
                                     color: Colors.black87,
                                     fontSize: 14,
                                   ),
-                                ),
+                                )
+
                               ),
                             ],
                           ),
@@ -176,9 +180,10 @@ class ScoreboardScreen extends StatelessWidget {
 
                                   return RankItemWidget(
                                     player: player,
-                                    // rank: displayRank,
+                                    rank: displayRank,
                                     isCurrentUser: isCurrentUser,
                                   );
+
                                 },
                               ),
                           ],

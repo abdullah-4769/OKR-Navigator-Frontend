@@ -180,8 +180,11 @@ class TeamStrategySelectionController extends GetxController {
           return;
         }
 
-        revealCard(mappedIndex, name: response.title);
-        print('Success: Strategy revealed: ${response.title}');
+        // Use the localized card title (like solo mode) so text matches the card art.
+        final displayTitle = _getTitleForIndex(mappedIndex) ?? response.title ?? '';
+
+        revealCard(mappedIndex, name: displayTitle);
+        print('Success: Strategy revealed: API title=${response.title}, displayTitle=$displayTitle');
 
         // 4. Initialize timer with real game time from API response
         if (response.remainingTime != null) {
@@ -228,8 +231,8 @@ class TeamStrategySelectionController extends GetxController {
     final resolvedName = name?.trim().isNotEmpty == true
         ? name!.trim()
         : (teamStrategyResponse.value?.title ??
-        _getTitleForIndex(clampedIndex) ??
-        '');
+            _getTitleForIndex(clampedIndex) ??
+            '');
 
     selectedStrategy.value = resolvedName;
 
@@ -264,16 +267,20 @@ class TeamStrategySelectionController extends GetxController {
     final selectedRole = args?['selectedRole'];
     final selectedIndustry = args?['selectedIndustry'];
 
+    // Snapshot of the title exactly as shown on the strategy screen
+    final selectedStrategyTitle = strategyDisplayTitle;
+
     // Update journey progress
     journey.completeStep(0);
 
-    // ✅ FIX: Navigate to Objective Selection with arguments
+    // Navigate to Objective Selection with arguments + explicit strategy title
     Get.toNamed(
-        AppRoutes.teamObjectiveSelectionScreen,
-        arguments: {
-          'selectedRole': selectedRole,      // Forwarding the Role
-          'selectedIndustry': selectedIndustry, // Forwarding the Industry
-        }
+      AppRoutes.teamObjectiveSelectionScreen,
+      arguments: {
+        'selectedRole': selectedRole,
+        'selectedIndustry': selectedIndustry,
+        'strategyDisplayTitle': selectedStrategyTitle,
+      },
     );
   }
 
@@ -297,14 +304,16 @@ class TeamStrategySelectionController extends GetxController {
 
   /// Map backend response to a local card index
   int? _resolveCardIndex(TeamStrategyResponse response) {
-    final indexFromId = _mapStrategyIdToIndex(response.strategyId);
-    if (indexFromId != null) {
-      return indexFromId;
-    }
-
+    // Prefer matching by title so the card image and displayed name stay in sync
     final indexFromTitle = _mapTitleToIndex(response.title);
     if (indexFromTitle != null) {
       return indexFromTitle;
+    }
+
+    // Fallback: use backend strategyId → index mapping
+    final indexFromId = _mapStrategyIdToIndex(response.strategyId);
+    if (indexFromId != null) {
+      return indexFromId;
     }
 
     return null;
@@ -328,14 +337,14 @@ class TeamStrategySelectionController extends GetxController {
     final normalized = title.toLowerCase().trim();
 
     final englishIndex =
-    _indexOfNormalizedTitle(_englishCardTitles, normalized);
+        _indexOfNormalizedTitle(_englishCardTitles, normalized);
     if (englishIndex != -1) return englishIndex;
 
     final frenchIndex = _indexOfNormalizedTitle(_frenchCardTitles, normalized);
     if (frenchIndex != -1) return frenchIndex;
 
     final spanishIndex =
-    _indexOfNormalizedTitle(_spanishCardTitles, normalized);
+        _indexOfNormalizedTitle(_spanishCardTitles, normalized);
     if (spanishIndex != -1) return spanishIndex;
 
     return null;
@@ -343,7 +352,7 @@ class TeamStrategySelectionController extends GetxController {
 
   int _indexOfNormalizedTitle(List<String> titles, String normalized) {
     return titles.indexWhere(
-          (title) => title.toLowerCase().trim() == normalized,
+      (title) => title.toLowerCase().trim() == normalized,
     );
   }
 

@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../data/repositories/storage_repository.dart';
 import '../data/repositories/team_repo.dart';
-import 'notifications/notifications_service.dart';
+import '../presentation/routes/app_routes.dart';
 
 // Top-level function for background messages (required by Flutter)
 @pragma('vm:entry-point')
@@ -78,30 +78,20 @@ class FirebaseNotificationService extends GetxService {
         },
     );
 
-    // 2. Permission and Token Retrieval + iOS foreground options
+    // 2. Permission and Token Retrieval
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true, badge: true, sound: true,
     );
     print('Notification permission: ${settings.authorizationStatus}');
-    await _messaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
     
     // Get and save the token
     final token = await _messaging.getToken();
     if (token != null) {
       await _storageRepository.saveFCMToken(token); 
-      final userId = _storageRepository.getUserId();
-      // Subscribe to per-user topic for direct messages
-      if (userId != null && userId.isNotEmpty) {
-        try {
-          await _messaging.subscribeToTopic('user_$userId');
-          print('✅ Subscribed to topic: user_$userId');
-        } catch (e) {
-          print('❌ Failed subscribing to user topic: $e');
-        }
+      final userId = _storageRepository.getUser()?.id;
+      
+      if (userId != null) {
+       
       }
     }
 
@@ -111,18 +101,33 @@ class FirebaseNotificationService extends GetxService {
       // Resend to backend here: await _teamRepository.registerFCMToken(newToken, userId);
     });
 
-    // 4. Foreground Message Handler: delegate to unified NotificationsService
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    //   await NotificationsService().handleRemoteMessage(message);
-    // });
+    // 4. Foreground Message Handler (uses local notifications to display)
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final notification = message.notification;
+      if (notification != null) {
+        // Display the foreground FCM message as a local notification
+        _showLocalNotification(notification.title, notification.body);
+      }
+      _handleIncomingNotification(message.data);
+    });
 
-    // 5. Background handler is registered in main.dart using NotificationsService.showFromBackground
-    // Avoid duplicate background registration here.
+    // 5. Handle notification taps when app is in background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleIncomingNotification(message.data);
+    });
+
+    // 6. Background Message Handler (using the top-level function)
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+    // 7. Handle notification that opened the app from a terminated state
+    final initialMessage = await _messaging.getInitialMessage();
+    if (initialMessage != null) {
+      _handleIncomingNotification(initialMessage.data);
+    }
   }
 
   /// Displays the notification using Flutter Local Notifications
-// ← YE METHOD KO PUBLIC BANA DO (underscore hata do)
-  Future<void> showLocalNotification(String? title, String? body, {String? payload}) async {
+  Future<void> _showLocalNotification(String? title, String? body, {String? payload}) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'okr_navigator_channel',
       'OKR Navigator Notifications',
@@ -131,7 +136,8 @@ class FirebaseNotificationService extends GetxService {
       priority: Priority.high,
       ticker: 'ticker',
     );
-    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+    const NotificationDetails platformDetails =
+        NotificationDetails(android: androidDetails);
 
     await _localNotifications.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -141,58 +147,49 @@ class FirebaseNotificationService extends GetxService {
       payload: payload,
     );
   }
-  // Topic subscription helpers
-  Future<void> subscribeToTeamTopic(int teamId) async {
-    try {
-      await _messaging.subscribeToTopic('team_$teamId');
-      print('✅ Subscribed to topic: team_$teamId');
-    } catch (e) {
-      print('❌ Failed subscribing to team topic: $e');
+
+  void _handleIncomingNotification(Map<String, dynamic> data) {
+    if (data.isEmpty) return;
+
+    final typeKey = data['notificationType'] ?? data['notification_type'];
+    if (typeKey == null) {
+      return;
+    }
+
+    NotificationType? type;
+    for (final candidate in NotificationType.values) {
+      if (candidate.name == typeKey) {
+        type = candidate;
+        break;
+      }
+    }
+
+    if (type == null) {
+      print('⚠️ Unknown notification type: $typeKey');
+      return;
+    }
+
+    switch (type) {
+      case NotificationType.teamGameStarted:
+        _handleTeamGameStartedNotification(data);
+        break;
+      default:
+        break;
     }
   }
 
-  Future<void> unsubscribeFromTeamTopic(int teamId) async {
-    try {
-      await _messaging.unsubscribeFromTopic('team_$teamId');
-      print('✅ Unsubscribed from topic: team_$teamId');
-    } catch (e) {
-      print('❌ Failed unsubscribing from team topic: $e');
-    }
-  }
+  void _handleTeamGameStartedNotification(Map<String, dynamic> data) {
+    final currentRoute = Get.currentRoute;
 
-  Future<void> subscribeToChallengeTopic(String challengeId) async {
-    try {
-      await _messaging.subscribeToTopic('challenge_$challengeId');
-      print('✅ Subscribed to topic: challenge_$challengeId');
-    } catch (e) {
-      print('❌ Failed subscribing to challenge topic: $e');
+    // If player is already in assign role screen, no action required
+    if (currentRoute == AppRoutes.assignRoleScreen) {
+      return;
     }
-  }
 
-  Future<void> unsubscribeFromChallengeTopic(String challengeId) async {
-    try {
-      await _messaging.unsubscribeFromTopic('challenge_$challengeId');
-      print('✅ Unsubscribed from topic: challenge_$challengeId');
-    } catch (e) {
-      print('❌ Failed unsubscribing from challenge topic: $e');
-    }
-  }
-
-  Future<void> subscribeToCampaignTopic(String campaignId) async {
-    try {
-      await _messaging.subscribeToTopic('campaign_$campaignId');
-      print('✅ Subscribed to topic: campaign_$campaignId');
-    } catch (e) {
-      print('❌ Failed subscribing to campaign topic: $e');
-    }
-  }
-
-  Future<void> unsubscribeFromCampaignTopic(String campaignId) async {
-    try {
-      await _messaging.unsubscribeFromTopic('campaign_$campaignId');
-      print('✅ Unsubscribed from topic: campaign_$campaignId');
-    } catch (e) {
-      print('❌ Failed unsubscribing from campaign topic: $e');
+    // Only auto-navigate when the player is waiting in the lobby
+    if (currentRoute == AppRoutes.teamLobby) {
+      print('📢 Team game started notification received. Navigating to Assign Roles screen.');
+      Get.toNamed(AppRoutes.assignRoleScreen);
     }
   }
 
@@ -205,8 +202,13 @@ class FirebaseNotificationService extends GetxService {
     int? teamId,
     Map<String, dynamic>? additionalData,
   }) async {
-    // 1. Trigger Local Notification Immediately (for local user feedback)
-    showLocalNotification(title, body); // <-- ADDED LOCAL NOTIFICATION TRIGGER
+    // 1. Trigger Local Notification only for the intended recipient (or broadcasts)
+    final currentUserId = _storageRepository.getUser()?.id;
+    final bool shouldShowLocal =
+        recipientUserId == null || recipientUserId == currentUserId;
+    if (shouldShowLocal) {
+      _showLocalNotification(title, body);
+    }
     
     // 2. Send Network Notification (FCM via Backend)
     final Map<String, dynamic> payload = {

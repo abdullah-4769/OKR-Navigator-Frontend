@@ -93,3 +93,7 @@ class ApiConstants {
   static const String AI_SCENARIO_STRATEGY_ENDPOINT =
       '$baseUrl/campaign/certification/ai-scenario-strategy/generate';
 }
+ // --------- Update Profile -------------
+ String updateProfile (String profileId){
+  return "https://okr-navigator-backend.onrender.com/auth/update/$profileId";
+}

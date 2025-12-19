@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../generated/models/responses/dashboard_for_all/dashboard_all.dart';
 
 class RankItemWidget extends StatelessWidget {
   final PlayerModel player;
+  final int rank;
   final bool isCurrentUser;
 
   const RankItemWidget({
     super.key,
     required this.player,
+    required this.rank,
     this.isCurrentUser = false,
   });
+
+  String translateLevel(String? level) {
+    switch (level) {
+      case 'Explorer':
+        return 'level_explorer'.tr;
+      case 'Newcomer':
+        return 'level_newcomer'.tr;
+      case 'Elite':
+        return 'level_elite'.tr;
+      default:
+        return level ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +85,12 @@ class RankItemWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Level ${player.level ?? 'N/A'} | ${player.totalScore ?? 0} Points Earned',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isCurrentUser ? Colors.white70 : Colors.black54,
-                  ),
-                ),
+                  'level_points_earned'.trParams({
+                    'level': translateLevel(player.level),
+                    'points': '${player.totalScore ?? 0}',
+                  }),
+                )
+
               ],
             ),
           ),

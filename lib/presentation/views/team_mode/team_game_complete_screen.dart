@@ -184,30 +184,30 @@ class TeamGameCompleteScreen extends StatelessWidget {
 
            SizedBox(height: height * 0.04),
 
-           /// Buttons
-           CustomButton(
-            text: "Play Another Team Game",
-            icon: Icons.play_arrow,
-            onPressed: controller.playAgain,
-           ),
+          /// Buttons
+          CustomButton(
+           text: 'play_another_team_game'.tr,
+           icon: Icons.play_arrow,
+           onPressed: controller.playAgain,
+          ),
            SizedBox(height: 12.h),
-           CustomButton(
-            text: "View Team Badges",
-            icon: Icons.badge_outlined,
-            onPressed: controller.viewBadges,
-           ),
+          CustomButton(
+           text: 'view_team_badges'.tr,
+           icon: Icons.badge_outlined,
+           onPressed: controller.viewBadges,
+          ),
            SizedBox(height: 12.h),
-           CustomButton(
-            text: "Share Team Score",
-            icon: Icons.share,
-            onPressed: controller.shareScore,
-           ),
+          CustomButton(
+           text: 'share_team_score'.tr,
+           icon: Icons.share,
+           onPressed: controller.shareScore,
+          ),
 
            SizedBox(height: 16.h),
            GestureDetector(
             onTap: controller.viewJourney,
             child: Text(
-             "View Team Journey",
+             'view_team_journey'.tr,
              style: Theme.of(context)
                .textTheme
                .titleSmall

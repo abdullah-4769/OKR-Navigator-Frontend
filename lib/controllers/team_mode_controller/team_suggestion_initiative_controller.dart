@@ -23,9 +23,10 @@ final RxBool isChallengeMode = false.obs;
 final RxList<Map<String, dynamic>> industries = <Map<String, dynamic>>[].obs;
 final RxInt selectedIndustry = 0.obs;
 
-// --- MODIFIED STATE FOR ATTEMPTS (Kept for demonstration, reset logic moved) ---
-final RxInt attempts = 0.obs;
-final int maxAttempts = 5; 
+// --- MODIFIED STATE FOR ATTEMPTS ---
+// Static so the counter persists across screen/controller recreations within a game.
+static final RxInt attempts = 0.obs;
+static const int maxAttempts = 3; 
 
 // Constructor
 TeamSuggestionInitiativesController({required this.keyResults});
@@ -155,7 +156,7 @@ final initiatives = [
 
 // API Call: POST /evaluate-initiatives
 final response = await Get.find<StrategyRepository>().submitInitiatives( //
- strategy: strategyTitle,
+ strategy: strategyTitle.toString(),
  objective: objectiveTitle,
  initiatives: initiatives,
  keyResults: finalKeyResults,
@@ -170,11 +171,8 @@ final int score = response.score ?? 0;
 // Store initiatives in challenge controller for display
 Get.find<TeamContextualChallengeController>().finalInitiatives.assignAll(initiatives);
 
-aiFeedback.value = response.message ?? 'initiatives_submitted_successfully'.tr;
-SnackbarHelper.success(response.message ?? 'Initiatives submitted.'); 
-
-// Reset attempts on successful submission of data (not required for game flow success)
-attempts.value = 0; 
+      aiFeedback.value = response.message ?? 'initiatives_submitted_successfully'.tr;
+      SnackbarHelper.success(response.message ?? 'Initiatives submitted.');
 
 
 // --- Navigation Logic: Always proceed to Analysis Screen ---

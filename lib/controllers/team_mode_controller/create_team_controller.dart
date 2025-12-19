@@ -116,23 +116,23 @@ class CreateTeamController extends GetxController {
             // We'll store the response data to be used when controller initializes
             log('ℹ️ Lobby controller not registered yet, will be initialized on screen open');
           }
-
+          
           if (lobbyController != null) {
             lobbyController.teamData.value = response;
-
+            
             // Update players list from response
             if (response.members != null) {
               lobbyController.players.assignAll(
-                  response.members!.map((member) => member.user?.name ?? 'Unknown').toList()
+                response.members!.map((member) => member.user?.name ?? 'Unknown').toList()
               );
               log('✅ Updated lobby controller with ${lobbyController.players.length} members from join response');
             }
-
+            
             // Update host status
             final currentUserId = _storageRepository.getUser()?.id;
             final memberList = response.members ?? [];
             lobbyController.isHost.value = memberList.any(
-                  (member) => member.role == 'HOST' && member.user?.id == currentUserId,
+              (member) => member.role == 'HOST' && member.user?.id == currentUserId,
             );
           }
         } catch (e) {
@@ -149,11 +149,11 @@ class CreateTeamController extends GetxController {
         }
 
         final otherMemberIds = response.members
-            ?.map((member) => member.userId)
-            .where((memberId) =>
-        memberId != null && memberId.isNotEmpty && memberId != userId)
-            .cast<String>()
-            .toList() ??
+                ?.map((member) => member.userId)
+                .where((memberId) =>
+                    memberId != null && memberId.isNotEmpty && memberId != userId)
+                .cast<String>()
+                .toList() ??
             [];
 
         if (otherMemberIds.isNotEmpty) {
@@ -165,12 +165,13 @@ class CreateTeamController extends GetxController {
           );
         }
 
-        // Navigate directly to Assign Roles screen when user joins
-        // Host can assign roles, other members can only view
+        // Navigate to Team Lobby after join; host will later start mission
+        // and all members will move to Assign Roles from the lobby flow.
         Get.toNamed(
-          AppRoutes.assignRoleScreen,
+          AppRoutes.teamLobby,
           arguments: {
             'teamId': joinedTeamId,
+            'teamData': response,
           },
         );
       } else {
@@ -701,322 +702,6 @@ class CreateTeamController extends GetxController {
 //   }
 //
 //
-//
-//   @override
-//   void onClose() {
-//     teamNameController.dispose();
-//     teamMissionController.dispose();
-//     teamCodeController.dispose();
-//     super.onClose();
-//   }
-// }
-// import 'package:flutter/material.dart';
-// import 'package:game_app/data/repositories/team_repo.dart';
-// import 'package:game_app/generated/models/requests/team_mode/join_team.dart';
-// import 'package:game_app/generated/models/requests/team_mode/edit_team_request.dart';
-// import 'package:game_app/services/notification_service.dart';
-// import 'package:get/get.dart';
-// import 'dart:developer';
-// import 'package:dio/dio.dart';
-//
-// import '../../presentation/routes/app_routes.dart';
-// import '../../generated/network.dart';
-// import '../../generated/models/requests/team_mode/create_team_request.dart';
-// import '../../generated/models/responses/team_mode/create_team_response.dart';
-// import '../../data/repositories/storage_repository.dart';
-// import '../../utils/snackbar_helper.dart';
-// import 'team_lobby_controller.dart';
-//
-// class CreateTeamController extends GetxController {
-//   final teamNameController = TextEditingController();
-//   final teamMissionController = TextEditingController();
-//   final teamCodeController = TextEditingController();
-//
-//   // ULTRA-FAST: Direct value assignment without complex logic
-//   var selectedAvatarIndex = (-1).obs;
-//   var isCreatingTeam = false.obs;
-//   var isJoiningTeam = false.obs;
-//   var createdTeamId = Rxn<int>();
-//
-//   final TeamRepository _teamRepository = Get.find<TeamRepository>();
-//   final StorageRepository _storageRepository = Get.find<StorageRepository>();
-//   final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
-//
-//   // ULTRA-FAST: Pre-defined avatar paths (make it non-observable for better performance)
-//   final List<String> avatars = [
-//     'assets/images/role_icon.png',
-//     'assets/images/role_icon2.png',
-//     'assets/images/role_icon.png',
-//     'assets/images/role_icon2.png',
-//   ];
-//
-//   static const int maxTeamSize = 5;
-//
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     selectedAvatarIndex.value = -1;
-//   }
-//
-//   // ULTRA-FAST: Pre-load all avatar images to memory
-//   void preloadAllAvatarImages() {
-//     for (final avatar in avatars) {
-//       try {
-//         final imageProvider = AssetImage(avatar);
-//         imageProvider.resolve(ImageConfiguration.empty).addListener(
-//           ImageStreamListener((info, syncCall) {
-//             log('✅ Pre-loaded avatar: $avatar');
-//           }),
-//         );
-//       } catch (e) {
-//         log('⚠️ Failed to pre-load avatar: $avatar - $e');
-//       }
-//     }
-//   }
-//
-//   // ULTRA-FAST: Instant avatar selection - just updates the observable
-//   void selectAvatarInstantly(int index) {
-//     selectedAvatarIndex.value = index;
-//   }
-//
-//   Future<void> joinTeam() async {
-//     final token = teamCodeController.text.trim();
-//     final user = _storageRepository.getUser();
-//     final userId = user?.id;
-//     final userName = user?.name ?? 'A new player';
-//
-//     if (token.isEmpty) {
-//       SnackbarHelper.warning("Please enter a team code or token.");
-//       return;
-//     }
-//     if (userId == null) {
-//       SnackbarHelper.error("User not logged in. Please sign in again.");
-//       return;
-//     }
-//
-//     try {
-//       isJoiningTeam.value = true;
-//       final request = JoinTeamRequest(token: token, userId: userId);
-//
-//       log('🔵 JOIN TEAM REQUEST:');
-//       log('URL: POST /team/join');
-//       log('REQUEST: ${request.toJson()}');
-//
-//       final response = await _teamRepository.joinTeam(request);
-//
-//       log('🟢 JOIN TEAM RESPONSE:');
-//       log('RESPONSE: ${response.toString()}');
-//
-//       if (response.id != null) {
-//         createdTeamId.value = response.id;
-//         SnackbarHelper.success("Joined existing team: ${response.title ?? 'Team'}!");
-//
-//         try {
-//           await _teamRepository.joinWsTeam(token, userId);
-//           log('Successfully joined WebSocket team room');
-//         } catch (wsError) {
-//           log('WebSocket join failed: $wsError');
-//           SnackbarHelper.warning("Joined team but WebSocket connection failed. You may not receive real-time updates.");
-//         }
-//
-//         _notificationService.sendTeamNotification(
-//           teamId: response.id!,
-//           title: "Team Update",
-//           body: "$userName has joined the team.",
-//           notificationType: 'TEAM_JOIN',
-//         );
-//
-//         Get.toNamed(AppRoutes.teamLobby);
-//       } else {
-//         SnackbarHelper.error(response.title ?? "Failed to join team. Invalid token or user ID.");
-//       }
-//     } on DioException catch (e) {
-//       log('🔴 JOIN TEAM ERROR:');
-//       log('STATUS CODE: ${e.response?.statusCode}');
-//       log('ERROR RESPONSE: ${e.response?.data}');
-//
-//       final errorData = e.response?.data;
-//       final errorMessage = errorData is Map
-//           ? (errorData['message']?.toString() ?? '')
-//           : errorData?.toString() ?? '';
-//
-//       if (e.response?.statusCode == 400 &&
-//           errorMessage.toLowerCase().contains('already a member')) {
-//         log('ℹ️ User is already a member - handling gracefully');
-//         SnackbarHelper.info("You are already part of this team.");
-//
-//         int? teamId;
-//
-//         if (errorData is Map) {
-//           if (errorData['teamId'] != null) {
-//             teamId = int.tryParse(errorData['teamId'].toString());
-//           } else if (errorData['id'] != null) {
-//             teamId = int.tryParse(errorData['id'].toString());
-//           } else if (errorData['team'] != null && errorData['team'] is Map) {
-//             final team = errorData['team'] as Map;
-//             if (team['id'] != null) {
-//               teamId = int.tryParse(team['id'].toString());
-//             } else if (team['teamId'] != null) {
-//               teamId = int.tryParse(team['teamId'].toString());
-//             }
-//           }
-//         }
-//
-//         if (teamId != null) {
-//           createdTeamId.value = teamId;
-//           log('✅ Extracted team ID from error response: $teamId');
-//           Get.toNamed(AppRoutes.teamLobby);
-//         } else {
-//           log('⚠️ Could not extract team ID from error response');
-//           SnackbarHelper.warning("Unable to navigate automatically. Please use your existing team from the lobby.");
-//         }
-//       }
-//       else if (e.response?.statusCode == 400 &&
-//           (errorMessage.toLowerCase().contains('team is full') ||
-//               errorMessage.toLowerCase().contains('full'))) {
-//         SnackbarHelper.error("Team is already full (Max $maxTeamSize players allowed).");
-//       }
-//       else {
-//         final displayMessage = errorMessage.isNotEmpty
-//             ? errorMessage
-//             : "Network error or invalid team data.";
-//         SnackbarHelper.error(displayMessage);
-//       }
-//     } catch (e) {
-//       log('🔴 JOIN TEAM UNEXPECTED ERROR: $e');
-//       log('ERROR TYPE: ${e.runtimeType}');
-//
-//       if (e.toString().contains('Team is full')) {
-//         SnackbarHelper.error("Team is already full (Max $maxTeamSize players allowed).");
-//       } else {
-//         SnackbarHelper.error("Network error or invalid team data.");
-//       }
-//     } finally {
-//       isJoiningTeam.value = false;
-//     }
-//   }
-//
-//   void loadTeamDetailsForEdit(int teamId) async {
-//     try {
-//       final response = await _teamRepository.getTeamDetails(teamId);
-//       if (response.id != null) {
-//         teamNameController.text = response.title ?? '';
-//         teamMissionController.text = response.mission ?? '';
-//         selectedAvatarIndex.value = int.tryParse(response.teamavatorid ?? '-1') ?? -1;
-//       }
-//     } catch (e) {
-//       log('Error loading team details for edit: $e');
-//       SnackbarHelper.error('Failed to load team details for editing.');
-//     }
-//   }
-//
-//   Future<void> _performEdit(int teamId) async {
-//     try {
-//       isCreatingTeam.value = true;
-//
-//       final request = EditTeamRequest(
-//         title: teamNameController.text.trim(),
-//         mission: teamMissionController.text.trim(),
-//         teamavatorid: selectedAvatarIndex.value >= 0 ? selectedAvatarIndex.value.toString() : "0",
-//       );
-//
-//       final updatedTeam = await _teamRepository.editTeam(teamId, request);
-//
-//       teamNameController.text = updatedTeam.title ?? '';
-//       teamMissionController.text = updatedTeam.mission ?? '';
-//       selectedAvatarIndex.value = int.tryParse(updatedTeam.teamavatorid ?? '-1') ?? -1;
-//
-//       SnackbarHelper.success("Team updated successfully!");
-//
-//       if(Get.isRegistered<TeamLobbyController>()) {
-//         Get.find<TeamLobbyController>().fetchTeamDetails();
-//       }
-//
-//       Get.offNamed(AppRoutes.teamLobby);
-//
-//     } catch (e) {
-//       SnackbarHelper.error("Failed to update team: ${e.toString()}");
-//       log('Edit team error: $e');
-//     } finally {
-//       isCreatingTeam.value = false;
-//     }
-//   }
-//
-//   Future<void> createTeam() async {
-//     try {
-//       isCreatingTeam.value = true;
-//
-//       final user = _storageRepository.getUser();
-//       final hostId = user?.id;
-//       final hostName = user?.name ?? 'The Host';
-//
-//       if (hostId == null) {
-//         SnackbarHelper.error("User not found. Please login again.");
-//         return;
-//       }
-//
-//       final request = CreateTeamRequest(
-//         title: teamNameController.text.trim(),
-//         mission: teamMissionController.text.trim(),
-//         hostId: hostId,
-//         teamavatorid: selectedAvatarIndex.value >= 0 ? selectedAvatarIndex.value.toString() : "0",
-//       );
-//
-//       final response = await dio.post(
-//         '/team/create',
-//         data: request.toJson(),
-//       );
-//
-//       if (response.statusCode == 200 || response.statusCode == 201) {
-//         final createTeamResponse = CreateTeamResponse.fromJson(response.data);
-//         final teamId = createTeamResponse.team?.id;
-//
-//         createdTeamId.value = teamId;
-//         SnackbarHelper.success("Team created successfully!");
-//
-//         if (teamId != null) {
-//           _notificationService.sendTeamNotification(
-//             teamId: teamId,
-//             title: "Team Roster Updated",
-//             body: "$hostName created the team: ${teamNameController.text.trim()}. Check the updated team list.",
-//             notificationType: 'TEAM_CREATED',
-//           );
-//         }
-//
-//         Get.offNamed(AppRoutes.teamLobby);
-//       } else {
-//         SnackbarHelper.error(response.data['message'] ?? "Failed to create team. Please try again.");
-//       }
-//     } catch (e) {
-//       SnackbarHelper.error("Network error. Please check your connection.");
-//       log('Create team error: $e');
-//     } finally {
-//       isCreatingTeam.value = false;
-//     }
-//   }
-//
-//   void continueCreateTeam({required bool isEditing}) {
-//     if (teamNameController.text.trim().isEmpty) {
-//       SnackbarHelper.warning("Please enter a team name");
-//       return;
-//     }
-//
-//     if (selectedAvatarIndex.value == -1) {
-//       SnackbarHelper.warning("Please choose a team avatar");
-//       return;
-//     }
-//
-//     if (isEditing) {
-//       final teamId = createdTeamId.value;
-//       if (teamId != null) {
-//         _performEdit(teamId);
-//       } else {
-//         SnackbarHelper.error("Cannot edit: Team ID is missing.");
-//       }
-//     } else {
-//       createTeam();
-//     }
-//   }
 //
 //   @override
 //   void onClose() {

@@ -449,7 +449,7 @@ class TeamGameCompleteController extends GetxController {
         initiativesController.secondInitiativeDesc.clear();
         initiativesController.aiFeedback.value = '';
         initiativesController.isChallengeMode.value = false;
-        initiativesController.attempts.value = 0;
+        TeamSuggestionInitiativesController.attempts.value = 0;
       }
 
       // Clear Team Contextual Challenge

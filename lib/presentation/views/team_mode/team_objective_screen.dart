@@ -133,7 +133,12 @@ class TeamObjectiveScreen extends StatelessWidget {
                           /// ---------- SELECTED STRATEGY CARD -----------
                           SizedBox(height: AppDimensions.d10.h),
                           Obx(() {
-                            final strategyName = strategyController.strategyDisplayTitle;
+                            // Prefer the explicit title passed from strategy screen (snapshot),
+                            // fall back to controller's current display title.
+                            final args = Get.arguments as Map<String, dynamic>?;
+                            final argTitle = args?['strategyDisplayTitle'] as String?;
+                            final controllerTitle = strategyController.strategyDisplayTitle;
+                            final strategyName = (argTitle ?? controllerTitle).trim();
                             final subtitleText = strategyName.isNotEmpty
                                 ? strategyName
                                 : 'No strategy selected yet';

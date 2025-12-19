@@ -16,6 +16,7 @@ import '../../widgets/custom_objective_container.dart';
 import '../../widgets/responsive_arrow.dart';
 import '../../widgets/screens_unique_parts/custom_background.dart';
 import '../../widgets/screens_unique_parts/custom_header.dart';
+import '../../../controllers/team_mode_controller/team_strategy_selection_controller.dart';
 
 class TeamContextualChallengeScreen extends StatelessWidget {
 	const TeamContextualChallengeScreen({super.key});
@@ -36,6 +37,7 @@ class TeamContextualChallengeScreen extends StatelessWidget {
 	Widget build(BuildContext context) {
 		
 		final controller = Get.put(TeamContextualChallengeController());
+    final strategyController = Get.find<TeamStrategySelectionController>();
 		final size = MediaQuery.of(context).size;
 		final width = size.width;
 		final height = size.height;
@@ -139,12 +141,21 @@ class TeamContextualChallengeScreen extends StatelessWidget {
 												child: Column(
 													children: [
 														/// Current Strategy (Assumed to be static for now, fetched from the Strategy controller)
-														CustomAdjustmentContainer(
-															icon: Icons.track_changes,
-															iconColor: AppColors.primaryRed,
-															title: "current_strategy".tr,
-															description: "development_new_markets".tr, // Hardcoded Strategy for now
-														),
+                            Builder(
+                              builder: (_) {
+                                final strategyTitle = strategyController.strategyDisplayTitle;
+                                final description = strategyTitle.isNotEmpty
+                                    ? strategyTitle
+                                    : 'No strategy selected yet';
+
+                                return CustomAdjustmentContainer(
+                                  icon: Icons.track_changes,
+                                  iconColor: AppColors.primaryRed,
+                                  title: "current_strategy".tr,
+                                  description: description,
+                                );
+                              },
+                            ),
 
 														SizedBox(height: 4.h),
 

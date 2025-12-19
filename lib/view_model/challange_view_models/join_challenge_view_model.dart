@@ -1,15 +1,21 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../data/repositories/storage_repository.dart';
 import '../../presentation/views/challange_mode/challange_detail_screen.dart';
 import '../../repository/challange_repositories/join_challange_repository.dart';
+import '../../repository/challange_repositories/challengers_vs_repository.dart';
+import '../../services/notification_service.dart';
+import '../../data/response/status.dart';
 
 class JoinChallengeViewModel extends GetxController {
   final TextEditingController inviteCodeController = TextEditingController();
   final StorageRepository _storageRepo = Get.find<StorageRepository>();
   final JoinChallengeRepository _repository = JoinChallengeRepository();
+  final ShowChallengersVsRepository _challengersRepository = ShowChallengersVsRepository();
+  final FirebaseNotificationService _notificationService = Get.find<FirebaseNotificationService>();
 
   var isJoining = false.obs;
   var joinStatus = ''.obs;
@@ -49,6 +55,9 @@ class JoinChallengeViewModel extends GetxController {
       final result = await _repository.joinChallenge(upperCode, userId);
 
       final challengeId = result['challengeId'];
+      final int? numericChallengeId = challengeId is int
+          ? challengeId as int
+          : int.tryParse(challengeId.toString());
 
       print('✅ Join successful!');
       print('   Challenge ID: $challengeId');
@@ -65,6 +74,15 @@ class JoinChallengeViewModel extends GetxController {
         colorText: Colors.white,
         duration: Duration(seconds: 2),
       );
+
+      final joiningPlayerName = _storageRepo.getUser()?.name ?? 'Player';
+      if (numericChallengeId != null) {
+        await _notifyExistingPlayers(
+          challengeId: numericChallengeId,
+          joiningUserId: userId,
+          joiningPlayerName: joiningPlayerName,
+        );
+      }
 
       // Navigate to challenge details
       await Future.delayed(Duration(milliseconds: 800));
@@ -84,6 +102,61 @@ class JoinChallengeViewModel extends GetxController {
       );
     } finally {
       isJoining.value = false;
+    }
+  }
+
+  Future<void> _notifyExistingPlayers({
+    required int challengeId,
+    required String joiningUserId,
+    required String joiningPlayerName,
+  }) async {
+    try {
+      final response =
+          await _challengersRepository.getChallengePlayers(challengeId.toString());
+      final status = response.status;
+      if ((status == Status.completed || status == Status.COMPLETED) &&
+          response.data != null) {
+        final List<dynamic> players = response.data!;
+
+        String? hostUserId;
+        if (players.isNotEmpty) {
+          final hostCandidate = players.first;
+          if (hostCandidate is Map<String, dynamic>) {
+            hostUserId =
+                hostCandidate['userId']?.toString() ?? hostCandidate['id']?.toString();
+          }
+        }
+
+        final recipients = players
+            .where((player) =>
+                player is Map<String, dynamic> &&
+                player['isPlaceholder'] != true)
+            .map((player) =>
+                player['userId']?.toString() ?? player['id']?.toString() ?? '')
+            .where((id) => id.isNotEmpty && id != joiningUserId)
+            .toList();
+
+        if (recipients.isNotEmpty) {
+          await _notificationService.sendChallengePlayerProgress(
+            playerName: joiningPlayerName,
+            otherParticipantUserIds: recipients,
+          );
+        }
+
+        if (hostUserId != null &&
+            hostUserId.isNotEmpty &&
+            hostUserId != joiningUserId) {
+          await _notificationService.sendChallengeInvitationResponse(
+            playerName: joiningPlayerName,
+            hostUserId: hostUserId,
+            isAccepted: true,
+          );
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Failed to notify challenge members: $e');
+      }
     }
   }
 

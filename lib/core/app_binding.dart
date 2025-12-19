@@ -84,6 +84,7 @@ import '../data/datasources/auth_api.dart';
 import '../data/repositories/innovative_repo.dart';
 import '../data/repositories/innovative_strategy_repo.dart';
 import '../data/repositories/key_results_repo.dart';
+import '../data/repositories/profile_repo.dart';
 import '../data/repositories/team_repo.dart';
 import '../data/repositories/team_repository.dart';
 import '../generated/network.dart';
@@ -97,6 +98,7 @@ import '../services/campaign/certification_api_service.dart';
 import '../services/campaign/certification_evaluation_viewmodel.dart';
 import '../services/key_result/key_results.dart';
 import '../services/notification_service.dart';
+import '../services/profile_service.dart';
 import '../view_model/campaign_mode/certification_info_model.dart';
 import '../view_model/challange_view_models/join_challenge_view_model.dart';
 import '../view_model/challenge_view_model/contextual_challenge_view_model.dart';
@@ -105,6 +107,7 @@ import '../view_model/key_result_latest_view_model.dart';
 import '../view_model/key_results_view_mode.dart' hide KeyResultsLatestViewModel;
 import '../view_model/key_results_view_model/key_results_view_model.dart';
 
+import '../view_model/profile_controller.dart';
 import 'localization/localization_services.dart';
 
 class AppBindings extends Bindings {
@@ -115,7 +118,7 @@ class AppBindings extends Bindings {
 
     // CORE SERVICES - Must be initialized in order
     // These are initialized in main.dart before app starts
-    Get.lazyPut(() => ProfileController(), fenix: true);
+    // Get.lazyPut(() => ProfileController(), fenix: true);
     // Get.lazyPut(()=>LoginController());
     Get.lazyPut(()=>JoinChallengeViewModel());
     Get.lazyPut(() => CertificationInfoApiService(), fenix: true);
@@ -249,6 +252,28 @@ class AppBindings extends Bindings {
     );
     // Register controllers
     Get.lazyPut<KeyResultsController>(() => KeyResultsController());
+    // Register API Client
+    Get.lazyPut<ProfileApiClient>(
+          () => ProfileApiClient(dio: dio),
+      fenix: true,
+    );
+
+    // Register Repository
+    // Make sure ProfileRepository is registered first
+    Get.lazyPut<ProfileRepository>(
+          () => ProfileRepository(
+        profileApiClient: Get.find<ProfileApiClient>(),
+      ),
+      fenix: true,
+    );
+
+// Then register ProfileController with its dependency
+    Get.lazyPut<ProfileController>(
+          () => ProfileController(
+        profileRepository: Get.find<ProfileRepository>(),
+      ),
+      fenix: true,
+    );
 
   }
 }

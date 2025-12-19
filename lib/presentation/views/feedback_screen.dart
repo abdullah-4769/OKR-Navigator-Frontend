@@ -56,7 +56,7 @@ class FeedbackScreen extends StatelessWidget {
                         return Center(
                           child: Padding(
                             padding: EdgeInsets.only(top: 100.h),
-                            child: CircularProgressIndicator(),
+                            child: const CircularProgressIndicator(),
                           ),
                         );
                       }
@@ -89,7 +89,7 @@ class FeedbackScreen extends StatelessWidget {
                                 margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                                 padding: EdgeInsets.all(12.w),
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
+                                  gradient: const LinearGradient(
                                     colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
                                   ),
                                   borderRadius: BorderRadius.circular(12.r),
@@ -100,7 +100,7 @@ class FeedbackScreen extends StatelessWidget {
                                     SizedBox(
                                       width: 16.w,
                                       height: 16.h,
-                                      child: CircularProgressIndicator(
+                                      child: const CircularProgressIndicator(
                                         strokeWidth: 2,
                                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                       ),
@@ -124,7 +124,7 @@ class FeedbackScreen extends StatelessWidget {
                                 margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                                 padding: EdgeInsets.all(12.w),
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
+                                  gradient: const LinearGradient(
                                     colors: [Color(0xFF4CAF50), Color(0xFF2E7D32)],
                                   ),
                                   borderRadius: BorderRadius.circular(12.r),
@@ -155,7 +155,7 @@ class FeedbackScreen extends StatelessWidget {
                                     margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                                     padding: EdgeInsets.all(12.w),
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
+                                      gradient: const LinearGradient(
                                         colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
                                       ),
                                       borderRadius: BorderRadius.circular(12.r),
@@ -177,7 +177,7 @@ class FeedbackScreen extends StatelessWidget {
                                     ),
                                   );
                                 }
-                                return SizedBox.shrink();
+                                return const SizedBox.shrink();
                               },
                             );
                           }),
@@ -355,13 +355,13 @@ class FeedbackScreen extends StatelessWidget {
           "bonus_mode_completed".tr,
           "bonus_mode_completion_message".tr,
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Color(0xFFFFD700),
+          backgroundColor: const Color(0xFFFFD700),
           colorText: Colors.black,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         );
 
         // Navigate to home after bonus completion
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () {
           Get.offAllNamed(AppRoutes.home);
         });
         return;
@@ -416,7 +416,7 @@ class FeedbackScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: scores.map((item) {
-            return Flexible( // FIX: Use Flexible to allow wrapping
+            return Flexible(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 4.w), // Reduced margin
                 padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 4.w), // Reduced padding
@@ -510,7 +510,7 @@ class FeedbackScreen extends StatelessWidget {
 
           // Overall Feedback
           Text(
-            feedback.feedback,
+            feedback.feedback.tr,
             style: TextStyle(
               fontFamily: 'Gotham',
               fontSize: 14.sp,

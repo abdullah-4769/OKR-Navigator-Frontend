@@ -1,14 +1,14 @@
 // lib/controllers/notification_viewmodel.dart
 import 'package:get/get.dart';
 
-import '../services/notifications/notifications_service.dart';
+// import '../services/notifications/notifications_service.dart';
 import 'app_notifications.dart'; // Make sure this import is correct
 
 class NotificationViewModel extends GetxController {
   final RxList<AppNotification> notifications = <AppNotification>[].obs;
   final RxBool isLoading = false.obs;
 
-  final NotificationsService _service = NotificationsService();
+  // final NotificationsService _service = NotificationsService();
 
   @override
   void onInit() {
@@ -18,7 +18,7 @@ class NotificationViewModel extends GetxController {
 
   void loadNotifications() {
     isLoading.value = true;
-    notifications.assignAll(_service.getSavedNotifications());
+    // notifications.assignAll(_service.getSavedNotifications());
     isLoading.value = false;
   }
 
@@ -30,12 +30,12 @@ class NotificationViewModel extends GetxController {
   }
 
   Future<void> markAsRead(String id) async {
-    await _service.markAsRead(id);
+    // await _service.markAsRead(id);
     loadNotifications(); // Refresh list
   }
 
   Future<void> clearAll() async {
-    await _service.clearAllNotifications();
+    // await _service.clearAllNotifications();
     notifications.clear();
   }
 }

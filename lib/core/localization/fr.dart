@@ -690,6 +690,37 @@ final Map<String, String> fr = {
   'grow_your_team': 'Développer votre équipe avec de nouveaux membres',
   'start_new_challenge': 'Commencer un nouveau défi d\'équipe',
 
+  // Team Lobby
+  'waiting_for_player': 'En attente d\'un joueur...',
+  'invite_someone_to_join': 'Invitez quelqu\'un à rejoindre',
+  'team_code_label': 'Code d\'équipe :',
+  'waiting_for_others_to_join': 'En attente des autres joueurs...',
+  'members_joined_label': '{count} membres ont rejoint',
+  'start_game_minimum_players': 'Démarrer la partie (minimum 2 joueurs requis)',
+  'unknown_user': 'Inconnu',
+  'host_only_begin_mission': 'Seul l\'hôte peut commencer la mission.',
+  'inviting': 'Invitation en cours...',
+  'invite_members': 'Inviter des membres',
+  'shareable_team_link_title': 'Lien d\'équipe partageable',
+  'shareable_team_link_body': 'Partagez ce lien avec votre équipe pour les faire rejoindre directement l\'application :',
+  'team_code_copied_clipboard': 'Lien partageable copié dans le presse-papiers !',
+  'done': 'Terminé',
+  'loading_team_details': 'Chargement des détails de l\'équipe...',
+  'lobby': 'Salon',
+
+  // Team Game Complete
+  'play_another_team_game': 'Rejouer une partie en équipe',
+  'view_team_badges': 'Voir les badges d\'équipe',
+  'share_team_score': 'Partager le score d\'équipe',
+  'view_team_journey': 'Voir le parcours de l\'équipe',
+
+  // Custom AI Analysis 2
+  'ai_insights_title': 'Informations IA',
+  'ai_insights_description':
+      'Ces suggestions basées sur l\'IA sont adaptées à partir de vos données stratégiques.\n\n'
+      'Elles fournissent des recommandations pour maximiser les performances dans les prochains défis.\n\n'
+      'Évaluez-les et appliquez-les en fonction des objectifs de votre équipe.',
+
   // remainings
   'welcome_to_okr_navigator': 'Bienvenue dans OKR Navigator',
   'start_screen_description': 'Entrez dans le rôle d\'un leader stratégique. Que vous soyez en solo, en équipe ou en certification, chaque choix que vous ferez façonnera le chemin vers le succès organisationnel.',
@@ -1012,6 +1043,14 @@ final Map<String, String> fr = {
   'coming_soon': 'Cette fonctionnalité arrive bientôt !',
   'ok': 'OK',
   'cancel': 'Annuler',
+  'time_limit': 'Limite de temps',
+  'generating_key_results': 'Génération des résultats clés...',
+  'generating_key_results_hint': 'Cela peut prendre quelques instants',
+  'no_key_results_available': 'Aucun résultat clé disponible',
+  'please_try_again': 'Veuillez réessayer',
+  'missing_strategy_objectives': 'Stratégie ou objectifs manquants. Impossible de récupérer les résultats clés.',
+  'no_key_results_generated': 'Aucun résultat clé généré. Utilisation de la liste par défaut.',
+  'failed_generate_key_results': 'Échec de la génération des résultats clés. Veuillez réessayer.',
 
   // HOME & DASHBOARD
   'home': 'Accueil',
@@ -1473,6 +1512,15 @@ final Map<String, String> fr = {
   "cancel": "Annuler",
   "exit": "Quitter",
   "achievements": "Réalisations",
+  'sign_up_navigator': 'Inscrivez-vous pour entrer dans le rôle de Navigateur stratégique',
+
+  'im_ranked_this_week': "Je suis classé #@rank en @mode cette semaine !",
+  'level_points_earned':
+  'Niveau @level | @points points gagnés',
+  'level_explorer': 'Explorateur',
+  'level_newcomer': 'Débutant',
+  'level_elite': 'Élite',
+  'update_profile':'Mettre à jour le profil'
 
 
 };

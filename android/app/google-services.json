@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1016249703708-b9ptocft43d4o49tj9rjf9tud52p1rk6.apps.googleusercontent.com",
+          "client_id": "1016249703708-qs5tdmjb9ghqma45b0g5hddrc718r4rq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.focush.okrnavigator",
-            "certificate_hash": "894be8679233f0c4193bb5a303a987c8566380fc"
+            "certificate_hash": "5bf2dbd034f8f7560ccf1f33e8ee4bb027e5b731"
           }
         },
         {

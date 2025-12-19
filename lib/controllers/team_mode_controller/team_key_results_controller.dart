@@ -46,9 +46,9 @@ class TeamKeyResultsController extends GetxController {
 
     log('KR Fetch: Attempting to fetch with Strategy ID: $strategyId, Objectives Count: ${objectiveTitles.length}'); 
 
-    if (strategyId == null || strategyTitle == null || objectiveTitles.isEmpty) {
-     log('KR Fetch: FAILED - Missing critical data.');
-     SnackbarHelper.error('Missing Strategy/Objectives. Cannot fetch Key Results.');
+     if (strategyId == null || strategyTitle == null || objectiveTitles.isEmpty) {
+      log('KR Fetch: FAILED - Missing critical data.');
+      SnackbarHelper.error('missing_strategy_objectives'.tr);
      
      // Fallback to minimal KRs if data is missing
      keyResults.assignAll([
@@ -76,8 +76,8 @@ class TeamKeyResultsController extends GetxController {
       
       // 5. Check results
       if (generatedKeyResults.isEmpty) {
-        log('KR Fetch: API returned empty list after generation. Using list.');
-        SnackbarHelper.warning('No key results generated. Using list.');
+      log('KR Fetch: API returned empty list after generation. Using list.');
+      SnackbarHelper.warning('no_key_results_generated'.tr);
 
         // Fallback data structure 
         keyResults.assignAll([
@@ -92,9 +92,10 @@ class TeamKeyResultsController extends GetxController {
         keyResults.assignAll(generatedKeyResults);
       }
       
-    } catch (e) {
+     } catch (e) {
      log('KR Fetch: EXCEPTION - ${e.toString()}');
-     SnackbarHelper.error('Failed to generate key results: ${e.toString()}');
+     // Show a clean, translated error without low‑level Dio details
+     SnackbarHelper.error('failed_generate_key_results'.tr);
      keyResults.clear();
      // Reset flag on error so a retry can be attempted (e.g., via refresh)
      hasFetched.value = false;

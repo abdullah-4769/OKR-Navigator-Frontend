@@ -705,6 +705,37 @@ final Map<String, String> en = {
   'plan_new_session': 'Plan a new session with your team',
   'grow_your_team': 'Grow your team with new members',
   'start_new_challenge': 'Start a new team challenge',
+
+  // Team Lobby
+  'waiting_for_player': 'Waiting for player...',
+  'invite_someone_to_join': 'Invite someone to join',
+  'team_code_label': 'Team Code:',
+  'waiting_for_others_to_join': 'Waiting for others to join...',
+  'members_joined_label': '{count} Members Joined',
+  'start_game_minimum_players': 'Start Game (Minimum 2 players required)',
+  'unknown_user': 'Unknown',
+  'host_only_begin_mission': 'Only the host can begin the mission.',
+  'inviting': 'Inviting...',
+  'invite_members': 'Invite Members',
+  'shareable_team_link_title': 'Shareable Team Link',
+  'shareable_team_link_body': 'Share this link with your team members to join the app directly:',
+  'team_code_copied_clipboard': 'Shareable link copied to clipboard!',
+  'done': 'Done',
+  'loading_team_details': 'Loading team details...',
+  'lobby': 'Lobby',
+
+  // Team Game Complete
+  'play_another_team_game': 'Play Another Team Game',
+  'view_team_badges': 'View Team Badges',
+  'share_team_score': 'Share Team Score',
+  'view_team_journey': 'View Team Journey',
+
+  // Custom AI Analysis 2
+  'ai_insights_title': 'AI Insights',
+  'ai_insights_description':
+      'These AI-based suggestions are tailored from your strategic data.\n\n'
+      'They provide guidance to maximize performance in upcoming challenges.\n\n'
+      'Evaluate and apply them according to your team goals.',
   //remainings
   'welcome_to_okr_navigator': 'Welcome to OKR Navigator',
   'start_screen_description':
@@ -1116,6 +1147,14 @@ final Map<String, String> en = {
   'feedback_will_appear_here': 'Feedback will appear here',
   'ai_feedback_per_day': '1 AI feedback per day',
   'ai_tips_debrief': 'AI tips & debrief',
+  'time_limit': 'Time Limit',
+  'generating_key_results': 'Generating key results...',
+  'generating_key_results_hint': 'This may take a few moments',
+  'no_key_results_available': 'No key results available',
+  'please_try_again': 'Please try again',
+  'missing_strategy_objectives': 'Missing strategy or objectives. Cannot fetch key results.',
+  'no_key_results_generated': 'No key results generated. Using default list.',
+  'failed_generate_key_results': 'Failed to generate key results. Please try again.',
   'AI has analyzed your initiatives and found them highly relevant! 🚀':
   'AI has analyzed your initiatives and found them highly relevant! 🚀',
   'start': 'Start',
@@ -3072,5 +3111,13 @@ final Map<String, String> en = {
 "yes": "Yes",
 "no": "No",
 "cancel": "Cancel",
-"exit": "Exit"
+"exit": "Exit",
+    'sign_up_navigator': 'Sign up to step into the role of a strategic Navigator',
+  'im_ranked_this_week': "I'm ranked #@rank in @mode this week!",
+  'level_points_earned':
+  'Level @level | @points Points Earned',
+  'level_explorer': 'Explorer',
+  'level_newcomer': 'Newcomer',
+  'level_elite': 'Elite',
+  'update_profile':"Update Profile"
 };

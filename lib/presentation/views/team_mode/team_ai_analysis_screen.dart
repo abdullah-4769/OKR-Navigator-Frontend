@@ -7,6 +7,7 @@ import '../../../generated/models/responses/strategy/generate_intiatives_respons
 import '../../../utils/snackbar_helper.dart';
 
 import '../../../controllers/team_mode_controller/team_game_controller.dart';
+import '../../../controllers/team_mode_controller/team_suggestion_initiative_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
@@ -299,17 +300,30 @@ Widget _buildAnalysisContainer({
                   }
                   
                   if (score >= 80) {
-                      // Successful flow: proceed to challenge
-                      Get.toNamed(AppRoutes.teamContextualChallengeScreen);
+                    // Successful flow: proceed to challenge
+                    Get.toNamed(AppRoutes.teamContextualChallengeScreen);
                   } else {
-                      // Failed flow: show message and redirect back to Objective screen
-                      SnackbarHelper.warning(
-                          'Score too low (${score}%). Returning to Objective selection to re-evaluate your strategy.'
+                    // Failed attempt – increment global attempt counter
+                    TeamSuggestionInitiativesController.attempts.value++;
+                    final currentAttempts = TeamSuggestionInitiativesController.attempts.value;
+
+                    if (currentAttempts >= TeamSuggestionInitiativesController.maxAttempts) {
+                      // Game over after 3 failed attempts
+                      SnackbarHelper.error(
+                        'Score too low (${score}%). Maximum attempts reached. Game over – please start a new game from home.',
                       );
-                      // Redirect back to Objective Screen
-                      Future.delayed(const Duration(milliseconds: 500), () {
-                          Get.offAllNamed(AppRoutes.teamObjectiveSelectionScreen);
+                      Future.delayed(const Duration(milliseconds: 600), () {
+                        Get.offAllNamed(AppRoutes.home);
                       });
+                    } else {
+                      // Allow re-try by sending user back to objective selection
+                      SnackbarHelper.warning(
+                        'Score too low (${score}%). Attempt $currentAttempts of 3. Returning to objective selection to re-evaluate your strategy.',
+                      );
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        Get.offAllNamed(AppRoutes.teamObjectiveSelectionScreen);
+                      });
+                    }
                   }
               },
               // Use isLoading to visually disable the button when hasData is false/loading

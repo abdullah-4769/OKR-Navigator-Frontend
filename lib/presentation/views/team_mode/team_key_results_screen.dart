@@ -6,7 +6,6 @@ import '../../../controllers/journey_controller.dart';
 import '../../../controllers/okr_constellation_controller.dart';
 import '../../../controllers/team_mode_controller/team_game_controller.dart';
 import '../../../controllers/team_mode_controller/team_key_results_controller.dart';
-import '../../../controllers/team_mode_controller/team_strategy_selection_controller.dart';
 import '../../../core/app_colors.dart';
 import '../../../core/app_dimensions.dart';
 import '../../routes/app_routes.dart';
@@ -28,7 +27,6 @@ class TeamKeyResultsScreen extends StatelessWidget {
   final JourneyController journeyController = Get.isRegistered<JourneyController>()
       ? Get.find<JourneyController>()
       : Get.put(JourneyController());
-  final TeamStrategySelectionController strategyController = Get.find<TeamStrategySelectionController>();
   final isChallengeMode = (Get.arguments as Map<String, dynamic>?)?['isChallengeMode'] ?? false;
 
   String _safeTranslate(String? key, {String fallback = ''}) {
@@ -92,7 +90,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Time Limit'.tr,
+                                      'time_limit'.tr,
                                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         color: AppColors.grey,
                                       ),
@@ -115,26 +113,6 @@ class TeamKeyResultsScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-
-                          SizedBox(height: AppDimensions.d10.h),
-
-                          /// -------- Selected Strategy ---------
-                          Obx(() {
-                            final strategyName = strategyController.strategyDisplayTitle;
-                            final subtitleText = strategyName.isNotEmpty
-                                ? strategyName
-                                : 'No strategy selected yet';
-
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              child: CustomObjectiveContainer(
-                                title: _safeTranslate('selected_strategy'),
-                                subtitle: subtitleText,
-                                description: _safeTranslate('objective_description'),
-                                icon: Icons.emoji_objects,
-                              ),
-                            );
-                          }),
 
                           SizedBox(height: AppDimensions.d10.h),
 
@@ -328,7 +306,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            'Generating Key Results...',
+            'generating_key_results'.tr,
             style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: 16.sp,
@@ -337,7 +315,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'This may take a few moments',
+            'generating_key_results_hint'.tr,
             style: TextStyle(
               color: AppColors.grey,
               fontSize: 14.sp,
@@ -360,7 +338,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            'No Key Results Available',
+            'no_key_results_available'.tr,
             style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: 16.sp,
@@ -369,7 +347,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Text(
-            'Please try again',
+            'please_try_again'.tr,
             style: TextStyle(
               color: AppColors.grey,
               fontSize: 14.sp,
@@ -377,7 +355,7 @@ class TeamKeyResultsScreen extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           CustomButton2(
-            text: 'Retry',
+            text: 'retry'.tr,
             onPressed: () {
               controller.fetchKeyResults();
             },

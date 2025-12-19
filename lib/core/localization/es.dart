@@ -558,6 +558,37 @@ final Map<String, String> es = {
   "grow_your_team": "Hacer crecer tu equipo con nuevos miembros",
   "start_new_challenge": "Iniciar un nuevo desafío de equipo",
 
+  // Team Lobby
+  "waiting_for_player": "Esperando jugador...",
+  "invite_someone_to_join": "Invita a alguien a unirse",
+  "team_code_label": "Código de equipo:",
+  "waiting_for_others_to_join": "Esperando a que otros se unan...",
+  "members_joined_label": "{count} miembros unidos",
+  "start_game_minimum_players": "Iniciar juego (se requieren al menos 2 jugadores)",
+  "unknown_user": "Desconocido",
+  "host_only_begin_mission": "Solo el anfitrión puede comenzar la misión.",
+  "inviting": "Invitando...",
+  "invite_members": "Invitar miembros",
+  "shareable_team_link_title": "Enlace de equipo para compartir",
+  "shareable_team_link_body": "Comparte este enlace con tu equipo para que se unan directamente a la app:",
+  "team_code_copied_clipboard": "¡Enlace para compartir copiado al portapapeles!",
+  "done": "Hecho",
+  "loading_team_details": "Cargando detalles del equipo...",
+  "lobby": "Lobby",
+
+  // Team Game Complete
+  "play_another_team_game": "Jugar otra partida en equipo",
+  "view_team_badges": "Ver insignias del equipo",
+  "share_team_score": "Compartir puntuación del equipo",
+  "view_team_journey": "Ver recorrido del equipo",
+
+  // Custom AI Analysis 2
+  "ai_insights_title": "Perspectivas de IA",
+  "ai_insights_description":
+      "Estas sugerencias basadas en IA están adaptadas a partir de tus datos estratégicos.\n\n"
+      "Proporcionan orientación para maximizar el rendimiento en los próximos desafíos.\n\n"
+      "Evalúalas y aplícalas según los objetivos de tu equipo.",
+
   // ONBOARDING
   "welcome_to_okr_navigator": "Bienvenido a OKR Navigator",
   "start_screen_description": "Asume el rol de líder estratégico. Ya sea solo, en equipo o en certificación, cada elección que hagas moldeará el camino hacia el éxito organizacional.",
@@ -766,6 +797,14 @@ final Map<String, String> es = {
   "feedback_will_appear_here": "Los comentarios aparecerán aquí",
   "ai_feedback_per_day": "1 retroalimentación IA por día",
   "ai_tips_debrief": "Consejos IA y revisión",
+  "time_limit": "Límite de tiempo",
+  "generating_key_results": "Generando resultados clave...",
+  "generating_key_results_hint": "Esto puede tomar unos momentos",
+  "no_key_results_available": "No hay resultados clave disponibles",
+  "please_try_again": "Por favor, inténtalo de nuevo",
+  "missing_strategy_objectives": "Faltan estrategia u objetivos. No se pueden obtener resultados clave.",
+  "no_key_results_generated": "No se generaron resultados clave. Usando lista por defecto.",
+  "failed_generate_key_results": "No se pudieron generar los resultados clave. Inténtalo de nuevo.",
   "AI has analyzed your initiatives and found them highly relevant! 🚀":
   "¡La IA ha analizado tus iniciativas y las ha encontrado muy relevantes! 🚀",
   'your': 'Tu',
@@ -799,6 +838,13 @@ final Map<String, String> es = {
   "exit": "Salir",
       "achievements": "Achievements",
   "achievements": "Logros",
+  'sign_up_navigator': 'Regístrate para asumir el rol de un Navegador estratégico',
+  'im_ranked_this_week': "Estoy en el puesto #@rank en @mode esta semana",
 
-
+  'level_points_earned':
+  'Nivel @level | @points puntos obtenidos',
+  'level_explorer': 'Explorador',
+  'level_newcomer': 'Principiante',
+  'level_elite': 'Élite',
+  'update_profile':'Actualizar Perfil'
 };

@@ -335,46 +335,70 @@ class AssignRolesScreen extends StatelessWidget {
  }) {
   return Column(
    children: [
-    Center(
-     child: Padding(
-       padding: const EdgeInsets.all(18.0),
-       child: CustomButton(
-        text: 'Begin Mission'.tr,
-        onPressed: () {
-         // 1. Get current user's assigned role
-         final currentUserMember = controller.members.firstWhereOrNull(
-              (member) => member.userId == currentUserId,
-         );
-         final String currentRole = currentUserMember?.role ?? 'HOST';
-         final Map<String, dynamic> roleArgument = {
-          'title': currentRole,
-          'titleKey': currentRole,
-         };
+    // Only show "Begin Mission" button for host
+    Obx(() {
+      final isHost = controller.isCurrentUserHost;
+      if (!isHost) {
+        return Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Text(
+            'Waiting for host to begin the mission...'.tr,
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 14.sp,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+      
+      return Center(
+       child: Padding(
+         padding: const EdgeInsets.all(18.0),
+         child: CustomButton(
+          text: 'Begin Mission'.tr,
+          onPressed: () {
+           // 1. Get current user's assigned role
+           final currentUserMember = controller.members.firstWhereOrNull(
+                (member) => member.userId == currentUserId,
+           );
+           final String currentRole = currentUserMember?.role ?? 'HOST';
+           final Map<String, dynamic> roleArgument = {
+            'title': currentRole,
+            'titleKey': currentRole,
+           };
 
-         // 2. Navigate to Team Strategy Selection with arguments
-         Get.toNamed(
-          AppRoutes.teamStrategySelection,
-          arguments: {
-           'selectedRole': roleArgument,
-           'selectedIndustry': selectedIndustry,
+           // 2. Navigate to Team Strategy Selection with arguments
+           Get.toNamed(
+            AppRoutes.teamStrategySelection,
+            arguments: {
+             'selectedRole': roleArgument,
+             'selectedIndustry': selectedIndustry,
+            },
+           );
           },
-         );
-        },
+         ),
        ),
-     ),
-    ),
+      );
+    }),
     SizedBox(height: 10 * 0.22),
 
-    Center(
-     child: Obx(() => CustomButton(
-      isLoading: controller.isAutoUpdatingRole.value,
-      text: 'Auto Assign Roles'.tr,
-      onPressed: () {
-       controller.setRoleForGame();
-      },
-      backgroundColor: AppColors.primaryBlue,
-     )),
-    ),
+    // Only show "Auto Assign Roles" button for host
+    Obx(() {
+      final isHost = controller.isCurrentUserHost;
+      if (!isHost) return SizedBox.shrink();
+      
+      return Center(
+       child: CustomButton(
+        isLoading: controller.isAutoUpdatingRole.value,
+        text: 'Auto Assign Roles'.tr,
+        onPressed: () {
+         controller.setRoleForGame();
+        },
+        backgroundColor: AppColors.primaryBlue,
+       ),
+      );
+    }),
    ],
   );
  }

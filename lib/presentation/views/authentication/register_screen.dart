@@ -235,7 +235,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         horizontal: isTablet ? screenWidth * 0.1 : screenWidth * 0.05,
       ),
       child: Text(
-        'Sign up to step into the role of a strategic Navigator.'.tr,
+        'sign_up_navigator'.tr,
+
         style: TextStyle(
           fontWeight: FontWeight.w400,
           fontFamily: "GothamMedium",
