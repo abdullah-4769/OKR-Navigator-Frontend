@@ -3119,5 +3119,136 @@ final Map<String, String> en = {
   'level_explorer': 'Explorer',
   'level_newcomer': 'Newcomer',
   'level_elite': 'Elite',
-  'update_profile':"Update Profile"
+  'update_profile':"Update Profile",
+  // ========== Bonus mode ===========
+  'continue': 'Continue',
+  'next': 'Next',
+  'back': 'Back',
+  'submit': 'Submit',
+  'days': 'Days',
+
+  // Daily Training Home
+  'daily_okr_training': 'Daily OKR Training',
+  'current_streak': 'Current Streak',
+  'todays_challenge': "Today's Challenge",
+  'apply_okr_principles': 'Apply OKR principles to a real business case',
+  'start_training': 'Start Training',
+
+  // Case Presentation
+  'todays_case': "Today's Case",
+  'industry': 'Industry',
+  'vision': 'Vision',
+  'strategy': 'Strategy',
+  'problems_faced': 'Problems Faced',
+  'define_objective': 'Define Objective',
+
+  'case_industry': 'E-commerce',
+  'case_vision': 'Become the most trusted online shopping destination in the region',
+  'case_strategy': 'Drive customer loyalty and repeat purchases',
+  'case_problem_1': 'Only 15% of customers make a second purchase',
+  'case_problem_2': 'High cart abandonment rate (68%)',
+  'case_problem_3': 'Low customer engagement with emails',
+
+  // Objective Input
+  'step_1_objective': 'Step 1: Objective',
+  'write_one_ambitious_objective': 'Write one ambitious objective',
+  'objective_hint': 'Think big! What inspiring goal would transform this business?',
+  'example_objective': 'e.g., Build an unbeatable customer experience that makes shopping delightful',
+  'next_key_results': 'Next: Key Results',
+
+  // Key Results Input
+  'step_2_key_results': 'Step 2: Key Results',
+  'define_two_measurable_krs': 'Define two measurable key results',
+  'kr_hint': 'Make them specific and quantifiable. How will you measure success?',
+  'key_result_1': 'Key Result 1',
+  'key_result_2': 'Key Result 2',
+  'example_kr_1': 'e.g., Increase repeat purchase rate from 15% to 40%',
+  'example_kr_2': 'e.g., Reduce cart abandonment from 68% to 35%',
+  'next_initiative': 'Next: Initiative',
+
+  // Initiative Input
+  'step_3_initiative': 'Step 3: Initiative',
+  'propose_one_actionable_initiative': 'Propose one actionable initiative',
+  'initiative_hint': 'What specific project or action will drive these results?',
+  'example_initiative': 'e.g., Launch a personalized loyalty program with gamification and exclusive perks',
+  'submit_for_ai_evaluation': 'Submit for AI Evaluation',
+
+  // Evaluation
+  'ai_evaluating_okr': 'AI is Evaluating Your OKR',
+  'checking_quality_alignment_relevance': 'Checking quality, alignment, and relevance...',
+
+  // Scoring
+  'evaluation_results': 'Evaluation Results',
+  'detailed_breakdown': 'Detailed Breakdown',
+  'objective_quality': 'Objective Quality',
+  'key_results_quality': 'Key Results Quality',
+  'initiative_impact': 'Initiative Impact',
+  'global_alignment': 'Global Alignment',
+  'contextual_relevance': 'Contextual Relevance',
+  'overall_score': 'Overall Score',
+  'excellent_performance': 'Excellent Performance!',
+  'see_feedback': 'See Detailed Feedback',
+
+  // Feedback
+  'ai_feedback': 'AI Feedback',
+  'feedback_summary': 'Your objective is ambitious and well-aligned with the vision. Key results are mostly measurable but could be more specific on timelines. The initiative is creative and has high potential impact.',
+  'strengths': 'Strengths',
+  'strength_1': 'Clear vision alignment',
+  'strength_2': 'Creative and innovative initiative',
+  'strength_3': 'Measurable outcomes',
+  'improvements': 'Areas for Improvement',
+  'improvement_1': 'Add specific timelines to key results',
+  'improvement_2': 'Include success metrics for the initiative',
+  'view_badge_reward': 'View Badge & Reward',
+
+  // Badge & Completion
+  'gold_badge_earned': 'Gold Badge Earned!',
+  'excellent_okr_formulation': 'Excellent OKR formulation! You demonstrated strong strategic thinking.',
+  'training_completed': 'Training Completed!',
+  'streak_updated': '6-Day Streak! 🔥',
+  'see_you_tomorrow': 'See you tomorrow for another challenge!',
+  'back_to_home': 'Back to Home',
+  'industry': 'Industry',
+  'vision': 'Vision / Description',
+  'strategy': 'Strategy',
+  'problems_faced': 'Problems Faced',
+  // Buttons
+  // Placeholder Texts (if needed)
+  'loading_scenario': 'Loading your challenge...',
+  "strategy_description": "Enhance digital services while maintaining strong traditional banking relationships.",
+  "vision_description": "Become the leading digital-first bank",
+  "digital_outages": "Digital platform outages affecting customer experience.",
+  "high_operational_costs": "High operational costs impacting profitability.",
+  "slow_staff_adoption": "Slow adoption of new digital tools by staff.",
+  "time_remaining": "Time remaining",
+  "good_performance": "Good performance",
+  "excellent_performance": "Excellent performance",
+  "error_title": "Error",
+  "error_generate_scenario": "Failed to generate scenario",
+  "error_network": "Network error",
+  "error_api_not_found": "API not found",
+  "error_server": "Server error",
+
+  "time_up_title": "Time Up!",
+  "time_up_message": "Your time has expired.",
+
+  "feedback_none": "No feedback available",
+  "feedback_neutral": "Neutral",
+  "feedback_keep_improving": "Keep improving",
+
+  "badge_none": "None",
+  "badge_bronze": "Bronze",
+  "badge_silver": "Silver",
+  "badge_gold": "Gold",
+  "badge_earned": "Badge earned",
+
+      'daily_bonus_complete': 'Daily Bonus Complete!',
+'already_played_today': 'You\'ve already played today!',
+'your_score_today': 'Your Score Today',
+'come_back_tomorrow': 'Come back tomorrow for a new challenge!',
+'ok': 'OK',
+'error_failed_start_bonus': 'Failed to start bonus mode: \$e',
+
+  'level': "Level",
+
 };

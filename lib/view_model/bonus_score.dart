@@ -42,7 +42,7 @@ class BonusScoreController extends GetxController {
       final userId = SharedPrefs.getUserId() ?? 'user123';
 
       final request = BonusScoreRequest(
-        id: 0, // Will be assigned by backend
+        id: 0,
         userId: userId,
         overallScore: overallScore,
         normalizedScore: normalizedScore,

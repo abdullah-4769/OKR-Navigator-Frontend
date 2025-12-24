@@ -67,9 +67,10 @@ class _CustomButtonState extends State<CustomBubbleButton>
             child: FittedBox(
               child: Text(
                 widget.text.tr,
+
                 style: const TextStyle(
                   color: Colors.blue,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w300,
                 ),
               ),
             ),

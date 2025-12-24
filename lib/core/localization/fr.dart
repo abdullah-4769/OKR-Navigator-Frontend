@@ -1520,7 +1520,138 @@ final Map<String, String> fr = {
   'level_explorer': 'Explorateur',
   'level_newcomer': 'Débutant',
   'level_elite': 'Élite',
-  'update_profile':'Mettre à jour le profil'
+  'update_profile':'Mettre à jour le profil',
+  // =========== Bonus Mode ==============
+  'continue': 'Continuer',
+  'next': 'Suivant',
+  'back': 'Retour',
+  'submit': 'Soumettre',
+  'days': 'Jours',
 
+  // Daily Training Home
+  'daily_okr_training': 'Formation OKR Quotidienne',
+  'current_streak': 'Série Actuelle',
+  'todays_challenge': "Défi d'Aujourd'hui",
+  'apply_okr_principles': 'Appliquer les principes OKR à un cas commercial réel',
+  'start_training': 'Commencer la Formation',
+
+  // Case Presentation
+  'todays_case': "Cas d'Aujourd'hui",
+  'industry': 'Industrie',
+  'vision': 'Vision',
+  'strategy': 'Stratégie',
+  'problems_faced': 'Problèmes Rencontrés',
+  'define_objective': 'Définir Objectif',
+
+  'case_industry': 'Commerce Électronique',
+  'case_vision': 'Devenir la destination de shopping en ligne la plus fiable de la région',
+  'case_strategy': 'Stimuler la fidélité des clients et les achats répétés',
+  'case_problem_1': 'Seulement 15% des clients effectuent un deuxième achat',
+  'case_problem_2': "Taux élevé d'abandon de panier (68%)",
+  'case_problem_3': 'Faible engagement des clients avec les e-mails',
+
+  // Objective Input
+  'step_1_objective': 'Étape 1: Objectif',
+  'write_one_ambitious_objective': 'Écrire un objectif ambitieux',
+  'objective_hint': 'Pensez grand! Quel objectif inspirant transformerait cette entreprise?',
+  'example_objective': 'ex., Construire une expérience client imbattable qui rend les achats agréables',
+  'next_key_results': 'Suivant: Résultats Clés',
+
+  // Key Results Input
+  'step_2_key_results': 'Étape 2: Résultats Clés',
+  'define_two_measurable_krs': 'Définir deux résultats clés mesurables',
+  'kr_hint': 'Rendez-les spécifiques et quantifiables. Comment mesurerez-vous le succès?',
+  'key_result_1': 'Résultat Clé 1',
+  'key_result_2': 'Résultat Clé 2',
+  'example_kr_1': "ex., Augmenter le taux d'achat répété de 15% à 40%",
+  'example_kr_2': "ex., Réduire l'abandon de panier de 68% à 35%",
+  'next_initiative': 'Suivant: Initiative',
+
+  // Initiative Input
+  'step_3_initiative': 'Étape 3: Initiative',
+  'propose_one_actionable_initiative': 'Proposer une initiative actionnable',
+  'initiative_hint': 'Quel projet ou action spécifique générera ces résultats?',
+  'example_initiative': 'ex., Lancer un programme de fidélité personnalisé avec gamification et avantages exclusifs',
+  'submit_for_ai_evaluation': "Soumettre pour Évaluation IA",
+
+  // Evaluation
+  'ai_evaluating_okr': "L'IA Évalue Votre OKR",
+  'checking_quality_alignment_relevance': 'Vérification de la qualité, alignement et pertinence...',
+
+  // Scoring
+  'evaluation_results': "Résultats d'Évaluation",
+  'detailed_breakdown': 'Répartition Détaillée',
+  'objective_quality': "Qualité de l'Objectif",
+  'key_results_quality': 'Qualité des Résultats Clés',
+  'initiative_impact': "Impact de l'Initiative",
+  'global_alignment': 'Alignement Global',
+  'contextual_relevance': 'Pertinence Contextuelle',
+  'overall_score': 'Score Global',
+  'excellent_performance': 'Excellente Performance!',
+  'see_feedback': 'Voir Commentaires Détaillés',
+
+  // Feedback
+  'ai_feedback': 'Commentaires IA',
+  'feedback_summary': "Votre objectif est ambitieux et bien aligné avec la vision. Les résultats clés sont principalement mesurables mais pourraient être plus précis sur les délais. L'initiative est créative et a un fort potentiel d'impact.",
+  'strengths': 'Points Forts',
+  'strength_1': 'Alignement clair avec la vision',
+  'strength_2': 'Initiative créative et innovante',
+  'strength_3': 'Résultats mesurables',
+  'improvements': 'Domaines à Améliorer',
+  'improvement_1': 'Ajouter des délais spécifiques aux résultats clés',
+  'improvement_2': "Inclure des métriques de succès pour l'initiative",
+  'view_badge_reward': 'Voir Badge et Récompense',
+
+  // Badge & Completion
+  'gold_badge_earned': 'Badge Or Gagné!',
+  'excellent_okr_formulation': 'Excellente formulation OKR! Vous avez démontré une forte pensée stratégique.',
+  'training_completed': 'Formation Terminée!',
+  'streak_updated': 'Série de 6 Jours! 🔥',
+  'see_you_tomorrow': 'À demain pour un autre défi!',
+  'back_to_home': "Retour à l'Accueil",
+  'industry': 'Industrie',
+  'vision': 'Vision / Description',
+  'strategy': 'Stratégie',
+  'problems_faced': 'Problèmes rencontrés',
+  'define_objective': 'Définir l\'objectif',
+  'loading_scenario': 'Chargement de votre défi...',
+  "strategy_description": "Améliorer les services numériques tout en maintenant de solides relations bancaires traditionnelles.",
+
+      "vision_description": "Devenir la banque numérique de référence",
+  "digital_outages": "Pannes des plateformes numériques affectant l’expérience client.",
+  "high_operational_costs": "Coûts opérationnels élevés impactant la rentabilité.",
+  "slow_staff_adoption": "Adoption lente des nouveaux outils numériques par le personnel.",
+  "time_remaining": "Temps restant",
+  "good_performance": "Bonne performance",
+  "excellent_performance": "Excellente performance",
+  "error_title": "Erreur",
+  "error_generate_scenario": "Échec de la génération du scénario",
+  "error_network": "Erreur réseau",
+  "error_api_not_found": "API introuvable",
+  "error_server": "Erreur du serveur",
+
+  "time_up_title": "Temps écoulé !",
+  "time_up_message": "Votre temps est écoulé.",
+
+  "feedback_none": "Aucun retour disponible",
+  "feedback_neutral": "Neutre",
+  "feedback_keep_improving": "Continuez à vous améliorer",
+
+  "badge_none": "Aucun",
+  "badge_bronze": "Bronze",
+  "badge_silver": "Argent",
+  "badge_gold": "Or",
+  "badge_earned": "Badge obtenu",
+  "bonus_mode": "Mode bonus",
+
+
+      'daily_bonus_complete': 'Bonus Quotidien Terminé !',
+'already_played_today': 'Vous avez déjà joué aujourd\'hui !',
+'your_score_today': 'Votre Score Aujourd\'hui',
+'come_back_tomorrow': 'Revenez demain pour un nouveau défi !',
+'ok': 'OK',
+'error_failed_start_bonus': 'Échec du lancement du mode bonus : \$e',
+
+  "level": "Niveau",
 
 };

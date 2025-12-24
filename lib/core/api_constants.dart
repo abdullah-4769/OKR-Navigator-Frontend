@@ -92,8 +92,22 @@ class ApiConstants {
 
   static const String AI_SCENARIO_STRATEGY_ENDPOINT =
       '$baseUrl/campaign/certification/ai-scenario-strategy/generate';
+// ============= Bonus Mode =============== //
+  static const String bonusScore = '$baseUrl/bonus-score'; // Post API
+  static  String checkToday(String userId){
+    return '$baseUrl/bonus-score/check-today/$userId';
+  } // Get API
+  static String bonusScoreLatest (String userId){
+    return '$baseUrl/bonus-score/latest/$userId';
+  } // Get APi
+  static const String generateScenario = '$baseUrl/bonus-score/generate-scenario'; //Post API
+  static const String evaluateResponse = '$baseUrl/bonus-score/evaluate-response'; // post API
+  static String streak (String userId){
+    return '$baseUrl/bonus-score/streak/$userId';
+  } // get APi
 }
  // --------- Update Profile -------------
  String updateProfile (String profileId){
   return "https://okr-navigator-backend.onrender.com/auth/update/$profileId";
+
 }

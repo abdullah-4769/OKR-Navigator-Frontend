@@ -236,13 +236,25 @@ class CustomTopPerformerWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4.h),
-              Text(
-                "Level $level",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.black54,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "level".tr,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 9.sp,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  Text(
+                    "$level",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 9.sp,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

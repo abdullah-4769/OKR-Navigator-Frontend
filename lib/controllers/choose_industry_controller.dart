@@ -9,7 +9,7 @@ class ChooseIndustryController extends GetxController {
 
   final List<Map<String, dynamic>> industries = [
     {'titleKey': 'technology', 'descriptionKey': 'technology_desc', 'icon': Icons.computer},
-    {'titleKey': 'finance_banking', 'descriptionKey': 'finance_banking_desc', 'icon': Icons.account_balance},
+    {'titleKey': 'Finance Banking', 'descriptionKey': 'finance_banking_desc', 'icon': Icons.account_balance},
     {'titleKey': 'healthcare', 'descriptionKey': 'healthcare_desc', 'icon': Icons.local_hospital},
     {'titleKey': 'Energy & Utilities', 'descriptionKey': 'energy_desc', 'icon': Icons.flash_on},
     {'titleKey': 'Logistics & Transports', 'descriptionKey': 'logistics_desc', 'icon': Icons.local_shipping},

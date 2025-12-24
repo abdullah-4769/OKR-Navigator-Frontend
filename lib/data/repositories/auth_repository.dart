@@ -41,6 +41,38 @@ class AuthRepository {
   }
 
   // ==================== GOOGLE LOGIN (FIXED) ====================
+  // Future<GoogleUser> loginWithGoogle(String idToken) async {
+  //   try {
+  //     log("Sending Google idToken to backend...");
+  //
+  //     final response = await http.post(
+  //       Uri.parse('https://okr-navigator-backend.onrender.com/auth/google/login'),
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode({'idToken': idToken}),
+  //     );
+  //
+  //     log("Google Login: ${response.statusCode} | ${response.body}");
+  //
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final Map<String, dynamic> json = jsonDecode(response.body);
+  //       final Map<String, dynamic> payload = json['data'] ?? json;
+  //
+  //       final user = SaveUser.fromJson(payload['user']);
+  //
+  //       // Now SaveUser IS A User → No casting needed!
+  //       // await Get.find<StorageRepository>().saveUser(user);
+  //
+  //       return user;
+  //     } else {
+  //       final error = jsonDecode(response.body);
+  //       throw Exception(error['message'] ?? 'Google login failed');
+  //     }
+  //   } catch (e, s) {
+  //     log("Google login error: $e", stackTrace: s);
+  //     rethrow;
+  //   }
+  // }
+// ==================== GOOGLE LOGIN (FIXED) ====================
   Future<GoogleUser> loginWithGoogle(String idToken) async {
     try {
       log("Sending Google idToken to backend...");
@@ -59,9 +91,15 @@ class AuthRepository {
 
         final user = SaveUser.fromJson(payload['user']);
 
-        // Now SaveUser IS A User → No casting needed!
-        // await Get.find<StorageRepository>().saveUser(user);
+        // ✅ CRITICAL FIX: Save the user to StorageRepository
+        await Get.find<StorageRepository>().saveGoogleUser(user);
 
+        // ✅ Also save access token if provided
+        if (payload['accessToken'] != null) {
+          await Get.find<StorageRepository>().saveAccessToken(payload['accessToken']);
+        }
+
+        log("✅ Google user saved: ${user.id}");
         return user;
       } else {
         final error = jsonDecode(response.body);
@@ -72,7 +110,6 @@ class AuthRepository {
       rethrow;
     }
   }
-
   // ==================== OTHER METHODS (unchanged) ====================
   Future<void> register({
     required String name,
