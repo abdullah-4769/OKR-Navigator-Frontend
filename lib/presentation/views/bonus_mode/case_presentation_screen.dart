@@ -89,19 +89,19 @@ class _CasePresentationScreenState extends State<CasePresentationScreen> {
                       _buildInfoCard(
                         'industry'.tr,
                         controller.scenarioTitle.value.isEmpty
-                            ? 'Banking'
+                            ? 'banking'.tr
                             : controller.scenarioTitle.value,
                         Icons.business,
                       ),
                       SizedBox(height: 16.h),
                       // Vision/Description
-                      _buildInfoCard(
+                      Obx(() => _buildInfoCard(
                         'vision'.tr,
                         controller.scenarioDescription.value.isEmpty
                             ? 'vision_description'.tr
                             : controller.scenarioDescription.value,
                         Icons.visibility,
-                      ),
+                      )),
                       SizedBox(height: 16.h),
                       // Strategy (static for now)
                       _buildInfoCard(
@@ -159,7 +159,7 @@ class _CasePresentationScreenState extends State<CasePresentationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  label,
+                  label.tr,
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: Colors.black54,
@@ -168,14 +168,14 @@ class _CasePresentationScreenState extends State<CasePresentationScreen> {
                 ),
                 SizedBox(height: 6.h),
                 Text(
-                  value,
+                  value.tr,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                  // maxLines: 3,
+                  // overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

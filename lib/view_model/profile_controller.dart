@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'dart:convert';
 import '../data/repositories/profile_repo.dart';
+import '../data/repositories/storage_repository.dart';
 import '../generated/models/user_model.dart';
 import '../services/shared_preference.dart';
-
 import '../../../core/app_constants.dart';
 
 class ProfileController extends GetxController {
   final ProfileRepository profileRepository;
+  final StorageRepository _storageRepo = Get.find<StorageRepository>();
 
   ProfileController({required this.profileRepository});
 
@@ -24,6 +27,7 @@ class ProfileController extends GetxController {
   RxBool isEditMode = false.obs;
   Rx<UserModel?> user = Rx<UserModel?>(null);
   RxString errorMessage = ''.obs;
+  RxString selectedProfileImage = ''.obs; // 🆕 Selected profile image
 
   // Getters
   String get userId => user.value?.id ?? '';
@@ -84,6 +88,12 @@ class ProfileController extends GetxController {
     print('✅ Controllers populated with user data');
   }
 
+  /// 🆕 Select profile image from gallery
+  void selectProfileImage(String imagePath) {
+    selectedProfileImage.value = imagePath;
+    print('📸 Selected profile image: $imagePath');
+  }
+
   /// Toggle edit mode
   void toggleEditMode() {
     isEditMode.value = !isEditMode.value;
@@ -91,6 +101,7 @@ class ProfileController extends GetxController {
       // Reset controllers if cancel edit
       if (user.value != null) {
         _populateControllers(user.value!);
+        selectedProfileImage.value = ''; // Clear selected image
         errorMessage.value = '';
       }
     }
@@ -111,7 +122,9 @@ class ProfileController extends GetxController {
           'name': nameController.text.trim(),
           'phone': phoneController.text.trim(),
           'language': user.value?.language ?? 'en',
-          'avatarPicId': user.value?.avatarPicId ?? '',
+          'avatarPicId': selectedProfileImage.value.isNotEmpty
+              ? selectedProfileImage.value
+              : (user.value?.avatarPicId ?? ''),
         };
 
         print('📤 Update data: $updateData');
@@ -125,6 +138,29 @@ class ProfileController extends GetxController {
         if (response != null) {
           user.value = response;
           isEditMode.value = false;
+
+          // Update GetStorage with new user data (convert to JSON string)
+          final storage = GetStorage();
+          final userJson = jsonEncode(response.toJson());
+          await storage.write('user-data', userJson);
+          print('💾 Updated GetStorage with new user data');
+
+          // Update StorageRepository avatar
+          if (selectedProfileImage.value.isNotEmpty) {
+            await _storageRepo.updateUserAvatar(selectedProfileImage.value);
+            print('💾 Updated StorageRepository avatar: ${selectedProfileImage.value}');
+          }
+
+          // Save selected image path to SharedPreferences before clearing
+          if (selectedProfileImage.value.isNotEmpty) {
+            await SharedPrefs.saveString(
+              'user_selected_profile_image',
+              selectedProfileImage.value,
+            );
+            print('💾 Saved profile image to SharedPreferences: ${selectedProfileImage.value}');
+          }
+
+          selectedProfileImage.value = ''; // Clear selected image after update
 
           print('✅ Profile updated successfully');
 

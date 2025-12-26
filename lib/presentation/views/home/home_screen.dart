@@ -32,10 +32,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final HomeController c = Get.put(HomeController(), permanent: true);
   final PageController _stackedCardController = PageController();
   final StorageRepository _storageRepo = Get.find<StorageRepository>();
-  // final NotificationsService _notificationsService = NotificationsService();
   final RxBool isBonusLoading = false.obs;
-  // User avatar URL
-  String? userAvatarUrl;
+
+  // User avatar URL - RxString for reactive updates
+  final RxString userAvatarUrl = ''.obs;
+
   Color _getBadgeColor(String badge) {
     switch (badge.toLowerCase()) {
       case 'gold':
@@ -76,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     super.initState();
     _clearGameData();
     _loadUserAvatar();
+    _startListeningToAvatarChanges(); // ✅ Listen for avatar changes
 
     // Initialize animation controllers
     _topBarController = AnimationController(
@@ -182,6 +184,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  /// ✅ Listen to GetStorage changes
+  void _startListeningToAvatarChanges() {
+    GetStorage().listenKey('user-data', (value) {
+      print('🎯 GetStorage user-data changed, reloading avatar...');
+      _loadUserAvatar();
+    });
+  }
+
   void _startAnimations() {
     // Stagger the animations
     _topBarController.forward();
@@ -209,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  /// ✅ Updated to use RxString for reactive updates
   void _loadUserAvatar() {
     try {
       // Get user data from storage (works for both email and Google login)
@@ -216,24 +227,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       final json = prefs.read('user-data');
 
       if (json != null) {
-        final userData = jsonDecode(json);
+        Map<String, dynamic> userData;
+
+        // Handle both Map and String formats
+        if (json is String) {
+          userData = jsonDecode(json);
+        } else if (json is Map) {
+          userData = Map<String, dynamic>.from(json);
+        } else {
+          print('⚠️ Unexpected data type: ${json.runtimeType}');
+          return;
+        }
+
         final avatarId = userData['avatarPicId']?.toString();
 
         if (avatarId != null && avatarId.isNotEmpty) {
-          setState(() {
-            // Check if it's already a full URL (Google) or just an ID (local)
-            if (avatarId.startsWith('http')) {
-              userAvatarUrl = avatarId; // Google avatar URL
-            } else {
-              userAvatarUrl =
-                  '${ApiConstants.baseUrl}/uploads/$avatarId'; // Local avatar
-            }
-          });
-          print('✅ Loaded avatar: $userAvatarUrl');
+          // Check if it's already a full URL (Google) or just an ID/asset (local)
+          if (avatarId.startsWith('http')) {
+            userAvatarUrl.value = avatarId; // Google avatar URL
+          } else if (avatarId.startsWith('assets/') || avatarId.startsWith('lib/')) {
+            // Local asset - store as is
+            userAvatarUrl.value = avatarId;
+            print('✅ Loaded local asset avatar: $avatarId');
+            return;
+          } else {
+            // Server upload - construct full URL
+            userAvatarUrl.value = '${ApiConstants.baseUrl}/uploads/$avatarId';
+          }
+          print('✅ Loaded avatar: ${userAvatarUrl.value}');
         }
       }
     } catch (e) {
       print('❌ Error loading avatar: $e');
+    }
+  }
+
+  /// ✅ Helper to get image provider
+  ImageProvider _getImageProvider(String imagePath) {
+    if (imagePath.startsWith('assets/') || imagePath.startsWith('lib/')) {
+      return AssetImage(imagePath);
+    } else if (imagePath.startsWith('http')) {
+      return NetworkImage(imagePath);
+    } else {
+      return NetworkImage('${ApiConstants.baseUrl}/uploads/$imagePath');
     }
   }
 
@@ -366,9 +402,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
 
-            SizedBox(width: 12.w), // Space between icons
+            SizedBox(width: 12.w),
 
-            // 2. NEW: Language button (between Notification and Profile)
+            // 2. Language button
             _circleIcon(
               child: InkWell(
                 onTap: () {
@@ -385,40 +421,42 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
 
-            SizedBox(width: 12.w), // Space between icons
+            SizedBox(width: 12.w),
 
-            // 3. Profile avatar
+            // 3. Profile avatar - ✅ REACTIVE
             InkWell(
               onTap: () {
                 Get.to(ProfileScreen());
               },
-              child: _circleIcon(
-                child: ClipOval(
-                  child: userAvatarUrl != null && userAvatarUrl!.isNotEmpty
-                      ? Image.network(
-                    userAvatarUrl!,
-                    fit: BoxFit.cover,
-                    width: 46.sp,
-                    height: 46.sp,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset("assets/images/solo_image.png");
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: AppColors.imageBackgroundColor,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.primaryRed,
+              child: Obx(
+                    () => _circleIcon(
+                  child: ClipOval(
+                    child: userAvatarUrl.value.isNotEmpty
+                        ? Image(
+                      image: _getImageProvider(userAvatarUrl.value),
+                      fit: BoxFit.cover,
+                      width: 46.sp,
+                      height: 46.sp,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset("assets/images/solo_image.png");
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: AppColors.imageBackgroundColor,
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.primaryRed,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  )
-                      : Image.asset("assets/images/solo_image.png"),
+                        );
+                      },
+                    )
+                        : Image.asset("assets/images/solo_image.png"),
+                  ),
                 ),
               ),
             ),
@@ -427,6 +465,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ],
     ),
   );
+
   Widget _circleIcon({required Widget child}) => Container(
     height: 46.sp,
     width: 46.sp,
@@ -439,8 +478,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   );
 
   Widget _mainCardsSectionContent() => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       // Robot arrow with bounce and blink animation
       Center(
@@ -551,7 +590,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           ),
                                           SizedBox(height: 8.h),
                                           Obx(
-                                            () => Text(
+                                                () => Text(
                                               '${controller.evaluationScore.value}',
                                               style: TextStyle(
                                                 fontSize: 48.sp,
@@ -562,7 +601,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           ),
                                           SizedBox(height: 8.h),
                                           Obx(
-                                            () => Container(
+                                                () => Container(
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 20.w,
                                                 vertical: 8.h,
@@ -572,7 +611,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                   controller.badgeName.value,
                                                 ),
                                                 borderRadius:
-                                                    BorderRadius.circular(30.r),
+                                                BorderRadius.circular(30.r),
                                               ),
                                               child: Text(
                                                 controller.badgeName.value
@@ -636,7 +675,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         }
                       },
                       child: Obx(
-                        () => Container(
+                            () => Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 12.w,
                             vertical: 6.h,
@@ -656,24 +695,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                           child: isBonusLoading.value
                               ? SizedBox(
-                                  width: 20.w,
-                                  height: 20.h,
-                                  child: const Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : Text(
-                                  "bonus_mode".tr,
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                            width: 20.w,
+                            height: 20.h,
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
                                 ),
+                              ),
+                            ),
+                          )
+                              : Text(
+                            "bonus_mode".tr,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -690,11 +729,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           final selectedIndex = c.selectedCardIndex.value;
           return StackedCardCarousel(
             initialOffset: 20,
-            spaceBetweenItems: 310,
+            spaceBetweenItems: 300,
             pageController: _stackedCardController,
             items: List.generate(
               c.cards.length,
-              (index) => _CardItem(
+                  (index) => _CardItem(
                 index: index,
                 cardData: c.cards[index],
                 isCenter: index == selectedIndex,
@@ -719,14 +758,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         }),
       ),
       Padding(
-        padding: EdgeInsets.only(right: 14.w),
+        padding: EdgeInsets.only(right: 4.w),
         child: _verticalDots(),
       ),
     ],
   );
 
   Widget _verticalDots() => Obx(
-    () => Column(
+        () => Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(c.cards.length, (index) {
         final active = c.selectedCardIndex.value == index;

@@ -3250,5 +3250,42 @@ final Map<String, String> en = {
 'error_failed_start_bonus': 'Failed to start bonus mode: \$e',
 
   'level': "Level",
+'none':'None',
+  "days": "Days",
+  "streak": "Streak",
+  "obtained_score": "Obtained Score",
+  "today_score": "Today's Score",
+  "select_profile_image": "Select Profile Image",
+  "low_score_streak_not_increment": "Score too low. Streak not increased.",
+  "great_job_streak_increment": "Great job! Your streak has increased.",
+  "technology": "Technology",
+  "technology_desc": "Software, IT services, and digital innovation",
+
+  "finance_banking": "Finance & Banking",
+  "finance_banking_desc": "Banking, investments, and financial services",
+
+  "healthcare": "Healthcare",
+  "healthcare_desc": "Medical services, hospitals, and health solutions",
+
+  "energy_utilities": "Energy & Utilities",
+  "energy_desc": "Power generation, utilities, and renewable energy",
+
+  "logistics_transport": "Logistics & Transport",
+  "logistics_desc": "Supply chain, shipping, and transportation services",
+
+  "public_sector_government": "Public Sector & Government",
+  "public_sector_desc": "Government services and public administration",
+
+  "retail_ecommerce": "Retail & E-commerce",
+  "retail_desc": "Retail stores and online commerce",
+
+  "telecommunication": "Telecommunication",
+  "telecom_desc": "Mobile networks and communication services",
+
+  "agriculture_food": "Agriculture & Food Industry",
+  "agriculture_desc": "Farming, food production, and agribusiness",
+
+
+
 
 };

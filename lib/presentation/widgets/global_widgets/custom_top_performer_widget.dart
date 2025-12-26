@@ -222,7 +222,7 @@ class CustomTopPerformerWidget extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
                 child: Text(
                   name,
                   textAlign: TextAlign.center,
@@ -237,12 +237,14 @@ class CustomTopPerformerWidget extends StatelessWidget {
               ),
               SizedBox(height: 4.h),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     "level".tr,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 9.sp,
+                      fontSize: 8.sp,
                       color: Colors.black54,
                     ),
                   ),
@@ -250,7 +252,7 @@ class CustomTopPerformerWidget extends StatelessWidget {
                     "$level",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 9.sp,
+                      fontSize: 8.sp,
                       color: Colors.black54,
                     ),
                   ),

@@ -59,6 +59,7 @@ flutter:
     - assets/carte defis/
     - assets/cartes objectifs/
     - assets/frencardsstrategy/
+    - assets/profile_images/
 
   fonts:
     - family: Gotham

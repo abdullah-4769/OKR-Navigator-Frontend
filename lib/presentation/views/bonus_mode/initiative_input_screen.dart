@@ -51,10 +51,13 @@ class _InitiativeInputScreenState extends State<InitiativeInputScreen> {
         body: CustomBackground(
           child: Column(
             children: [
-              CustomHeader(title: 'step_3_initiative'.tr, onBackTap: () {
-                controller.stopCountdownTimer();
-                Get.back();
-              }),
+              CustomHeader(
+                title: 'step_3_initiative'.tr,
+                onBackTap: () {
+                  controller.stopCountdownTimer();
+                  Get.back();
+                },
+              ),
               Expanded(
                 child: SafeArea(
                   top: false,
@@ -80,12 +83,14 @@ class _InitiativeInputScreenState extends State<InitiativeInputScreen> {
                             controller.setInitiative(initiativeCtrl.text);
                             controller.stopCountdownTimer();
 
-                            Get.to(() => EvaluationLoadingScreen(
-                              objective: widget.objective,
-                              kr1: widget.kr1,
-                              kr2: widget.kr2,
-                              initiative: initiativeCtrl.text,
-                            ));
+                            Get.to(
+                                  () => EvaluationLoadingScreen(
+                                objective: widget.objective,
+                                kr1: widget.kr1,
+                                kr2: widget.kr2,
+                                initiative: initiativeCtrl.text,
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -101,45 +106,54 @@ class _InitiativeInputScreenState extends State<InitiativeInputScreen> {
   }
 
   Widget _buildTimerCard() {
-    return Obx(() => Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.orange.withOpacity(0.2), Colors.red.withOpacity(0.1)],
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: controller.remainingSeconds.value < 60
-              ? Colors.red.withOpacity(0.5)
-              : Colors.orange.withOpacity(0.3),
-          width: 2,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.timer,
-            color: controller.remainingSeconds.value < 60 ? Colors.red : Colors.orange,
-            size: 24.sp,
+    return Obx(
+          () => Container(
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.orange.withOpacity(0.2),
+              Colors.red.withOpacity(0.1),
+            ],
           ),
-          SizedBox(width: 12.w),
-          Text(
-            controller.getFormattedTime(),
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
-              color: controller.remainingSeconds.value < 60 ? Colors.red : Colors.orange,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
+            color: controller.remainingSeconds.value < 60
+                ? Colors.red.withOpacity(0.5)
+                : Colors.orange.withOpacity(0.3),
+            width: 2,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.timer,
+              color: controller.remainingSeconds.value < 60
+                  ? Colors.red
+                  : Colors.orange,
+              size: 24.sp,
             ),
-          ),
-          SizedBox(width: 12.w),
-          Text(
-            'time_remaining'.tr,
-            style: TextStyle(fontSize: 14.sp, color: Colors.black54),
-          ),
-        ],
+            SizedBox(width: 12.w),
+            Text(
+              controller.getFormattedTime(),
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: controller.remainingSeconds.value < 60
+                    ? Colors.red
+                    : Colors.orange,
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              'time_remaining'.tr,
+              style: TextStyle(fontSize: 14.sp, color: Colors.black54),
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   Widget _buildInstructionCard() {
@@ -147,7 +161,10 @@ class _InitiativeInputScreenState extends State<InitiativeInputScreen> {
       padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.primaryRed.withOpacity(0.1), AppColors.primaryRed.withOpacity(0.05)],
+          colors: [
+            AppColors.primaryRed.withOpacity(0.1),
+            AppColors.primaryRed.withOpacity(0.05),
+          ],
         ),
         borderRadius: BorderRadius.circular(20.r),
       ),
@@ -157,11 +174,18 @@ class _InitiativeInputScreenState extends State<InitiativeInputScreen> {
           SizedBox(height: 16.h),
           Text(
             'propose_one_actionable_initiative'.tr,
-            style: TextStyle(fontSize: 20.sp, color: Colors.black87, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 20.sp,
+              color: Colors.black87,
+              fontWeight: FontWeight.w600,
+            ),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 8.h),
-          Text('initiative_hint'.tr, style: TextStyle(fontSize: 14.sp, color: Colors.black54)),
+          Text(
+            'initiative_hint'.tr,
+            style: TextStyle(fontSize: 14.sp, color: Colors.black54),
+          ),
         ],
       ),
     );
@@ -172,16 +196,29 @@ class _InitiativeInputScreenState extends State<InitiativeInputScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.r),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12, offset: Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: TextField(
         controller: ctrl,
         maxLines: 6,
-        style: TextStyle(color: Colors.black87, fontSize: 16.sp, height: 1.5),
+        style: TextStyle(
+          color: Colors.black87,
+          fontSize: 16.sp,
+          height: 1.5,
+        ),
         decoration: InputDecoration(
           hintText: 'example_initiative'.tr,
           hintStyle: TextStyle(color: Colors.black38, fontSize: 15.sp),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.r), borderSide: BorderSide.none),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.r),
+            borderSide: BorderSide.none,
+          ),
           contentPadding: EdgeInsets.all(20.w),
         ),
       ),

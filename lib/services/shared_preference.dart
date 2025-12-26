@@ -819,7 +819,25 @@ class SharedPrefs {
   static bool getBool(String key, [bool defaultValue = false]) {
     return _prefs?.getBool(key) ?? defaultValue;
   }
+  // ============= LANGUAGE PREFERENCE =============
+  static const String keyLanguagePreference = 'language_preference';
 
+  /// Save user's language preference
+  static Future<void> saveLanguagePreference(String languageCode) async {
+    await _prefs?.setString(keyLanguagePreference, languageCode);
+    print('💾 Saved language preference: $languageCode');
+  }
+
+  /// Get user's saved language preference
+  static String getLanguagePreference() {
+    return _prefs?.getString(keyLanguagePreference) ?? 'en';
+  }
+
+  /// Clear language preference
+  static Future<void> clearLanguagePreference() async {
+    await _prefs?.remove(keyLanguagePreference);
+    print('🧹 Cleared language preference');
+  }
   // ===========================================================================
   // 🔹 ICON CONVERSION HELPERS
   // ===========================================================================

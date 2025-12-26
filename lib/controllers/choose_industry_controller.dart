@@ -7,16 +7,27 @@ class ChooseIndustryController extends GetxController {
   final RxInt selectedIndex = (-1).obs;
   final RxList<Map<String, dynamic>> filteredIndustries = <Map<String, dynamic>>[].obs;
 
+  // final List<Map<String, dynamic>> industries = [
+  //   {'titleKey': 'technology', 'descriptionKey': 'technology_desc', 'icon': Icons.computer},
+  //   {'titleKey': 'finance_banking', 'descriptionKey': 'finance_banking_desc', 'icon': Icons.account_balance},
+  //   {'titleKey': 'healthcare', 'descriptionKey': 'healthcare_desc', 'icon': Icons.local_hospital},
+  //   {'titleKey': 'Energy & Utilities', 'descriptionKey': 'energy_desc', 'icon': Icons.flash_on},
+  //   {'titleKey': 'Logistics & Transports', 'descriptionKey': 'logistics_desc', 'icon': Icons.local_shipping},
+  //   {'titleKey': 'Public Sector & Government', 'descriptionKey': 'public_sector_desc', 'icon': Icons.account_balance_outlined},
+  //   {'titleKey': 'Retail & Ecommerce', 'descriptionKey': 'retail_desc', 'icon': Icons.storefront},
+  //   {'titleKey': 'Telecommunication', 'descriptionKey': 'telecom_desc', 'icon': Icons.phone_android},
+  //   {'titleKey': 'Agriculture & Food Industry', 'descriptionKey': 'agriculture_desc', 'icon': Icons.agriculture},
+  // ];
   final List<Map<String, dynamic>> industries = [
     {'titleKey': 'technology', 'descriptionKey': 'technology_desc', 'icon': Icons.computer},
-    {'titleKey': 'Finance Banking', 'descriptionKey': 'finance_banking_desc', 'icon': Icons.account_balance},
+    {'titleKey': 'finance_banking', 'descriptionKey': 'finance_banking_desc', 'icon': Icons.account_balance},
     {'titleKey': 'healthcare', 'descriptionKey': 'healthcare_desc', 'icon': Icons.local_hospital},
-    {'titleKey': 'Energy & Utilities', 'descriptionKey': 'energy_desc', 'icon': Icons.flash_on},
-    {'titleKey': 'Logistics & Transports', 'descriptionKey': 'logistics_desc', 'icon': Icons.local_shipping},
-    {'titleKey': 'Public Sector & Government', 'descriptionKey': 'public_sector_desc', 'icon': Icons.account_balance_outlined},
-    {'titleKey': 'Retail & Ecommerce', 'descriptionKey': 'retail_desc', 'icon': Icons.storefront},
-    {'titleKey': 'Telecommunication', 'descriptionKey': 'telecom_desc', 'icon': Icons.phone_android},
-    {'titleKey': 'Agriculture & Food Industry', 'descriptionKey': 'agriculture_desc', 'icon': Icons.agriculture},
+    {'titleKey': 'energy_utilities', 'descriptionKey': 'energy_desc', 'icon': Icons.flash_on},
+    {'titleKey': 'logistics_transport', 'descriptionKey': 'logistics_desc', 'icon': Icons.local_shipping},
+    {'titleKey': 'public_sector_government', 'descriptionKey': 'public_sector_desc', 'icon': Icons.account_balance_outlined},
+    {'titleKey': 'retail_ecommerce', 'descriptionKey': 'retail_desc', 'icon': Icons.storefront},
+    {'titleKey': 'telecommunication', 'descriptionKey': 'telecom_desc', 'icon': Icons.phone_android},
+    {'titleKey': 'agriculture_food', 'descriptionKey': 'agriculture_desc', 'icon': Icons.agriculture},
   ];
 
   @override

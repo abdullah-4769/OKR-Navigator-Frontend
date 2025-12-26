@@ -975,7 +975,46 @@ final Map<String, String> es = {
   'ok': 'OK',
   'error_failed_start_bonus': 'Error al iniciar el modo bonus: \$e',
 
-  "level": "Nivel"
+  "level": "Nivel",
+  'none':'Ninguno',
+  'today_score:':'Puntaje de hoy',
+  "days": "Días",
+  "streak": "Racha",
+  "obtained_score": "Puntuación obtenida",
+  "today_score": "Puntuación de hoy",
+  "select_profile_image": "Seleccionar imagen de perfil",
+  "great_job_streak_increment": "¡Buen trabajo! Tu racha ha aumentado.",
+  "low_score_streak_not_increment": "Puntuación demasiado baja. La racha no aumentó.",
+  "technology": "Tecnología",
+  "technology_desc": "Software, servicios de TI e innovación digital",
+
+  "finance_banking": "Finanzas y Banca",
+  "finance_banking_desc": "Banca, inversiones y servicios financieros",
+
+  "healthcare": "Salud",
+  "healthcare_desc": "Servicios médicos, hospitales y soluciones de salud",
+
+  "energy_utilities": "Energía y Servicios Públicos",
+  "energy_desc": "Generación de energía y servicios públicos",
+
+  "logistics_transport": "Logística y Transporte",
+  "logistics_desc": "Cadena de suministro y servicios de transporte",
+
+  "public_sector_government": "Sector Público y Gobierno",
+  "public_sector_desc": "Servicios gubernamentales y administración pública",
+
+  "retail_ecommerce": "Retail y Comercio Electrónico",
+  "retail_desc": "Tiendas minoristas y comercio en línea",
+
+  "telecommunication": "Telecomunicaciones",
+  "telecom_desc": "Redes móviles y servicios de comunicación",
+
+  "agriculture_food": "Agricultura e Industria Alimentaria",
+  "agriculture_desc": "Agricultura, producción de alimentos y agroindustria"
+
+
+
+
 
 
 };
