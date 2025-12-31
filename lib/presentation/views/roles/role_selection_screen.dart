@@ -411,8 +411,10 @@
 //
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:game_app/presentation/views/roles/tutorial_screen.dart';
 import 'package:game_app/presentation/widgets/screens_unique_parts/custom_background.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../controllers/role_selection_controller.dart';
 import '../../../core/app_colors.dart';
@@ -658,17 +660,20 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                                   Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 8.w),
                                     child: GestureDetector(
-                                      onTap: controller.openTutorial,
+                                      onTap: () {
+                                        Get.to(() => const TutorialVideoScreen());
+                                      },
                                       child: Text(
                                         trKey('watch_tutorial'),
                                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                           color: AppColors.primaryRed,
                                           fontWeight: FontWeight.bold,
                                           decoration: TextDecoration.underline,
-                                          fontSize: orientation == Orientation.portrait ? 12.sp : 11.sp,
                                         ),
                                       ),
                                     ),
+
+
                                   ),
                                 ],
                               ),
@@ -843,4 +848,20 @@ class _RoleListTile extends StatelessWidget {
       ),
     );
   });
+}
+Future<void> _openTutorialVideo() async {
+  final Uri youtubeUrl =
+  Uri.parse('https://www.youtube.com/watch?v=f4WnbX1okts');
+
+  if (!await launchUrl(
+    youtubeUrl,
+    mode: LaunchMode.externalApplication,
+  )) {
+    Get.snackbar(
+      'Error',
+      'Could not open YouTube video',
+      backgroundColor: AppColors.primaryRed,
+      colorText: Colors.white,
+    );
+  }
 }

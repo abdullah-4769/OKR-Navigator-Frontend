@@ -306,14 +306,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: _topBar(),
               ),
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 10.h),
             ScaleTransition(
               scale: _certificateScaleAnimation,
               child: FadeTransition(
                 opacity: _certificateFadeAnimation,
                 child: CustomBubbleButton(
                   text: 'certificate'.tr,
-                  width: 90,
+
+                  width: 110,
                   height: 30,
                   onTap: () => Get.toNamed(AppRoutes.certificationScreen),
                 ),

@@ -513,13 +513,13 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
                         ),
                         SizedBox(height: screenHeight * 0.001),
                         // SizedBox(height: screenHeight * 0.001),
-                        // SizedBox(height: screenHeight * 0.001),
-                        // CustomButton(
-                        //   text: "phase_retry_test".tr,
-                        //   onPressed: () {
-                        //     Get.toNamed(AppRoutes.contextualChallenge);
-                        //   },
-                        // ),
+                        SizedBox(height: screenHeight * 0.001),
+                        CustomButton(
+                          text: "phase_retry_test".tr,
+                          onPressed: () {
+                            Get.toNamed(AppRoutes.contextualChallenge);
+                          },
+                        ),
                         SizedBox(height: screenHeight * 0.001),
                       ],
                     );
@@ -856,3 +856,594 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
     );
   }
 }
+// import 'dart:convert';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:game_app/presentation/views/contextual_screen/contextual_c_adjsutment_screen.dart';
+// import 'package:get/get.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import '../../../core/app_dimensions.dart';
+// import '../../../core/app_colors.dart';
+// import '../../../data/network/network_api_services.dart';
+// import '../../../data/response/api_response.dart';
+// import '../../../generated/models/requests/adaptation_analysis_model.dart';
+// import '../../../generated/models/responses/evaluate_initiative/evaluate_initiative_model.dart';
+// import '../../../services/shared_preference.dart';
+// import '../../../utils/snackbar_helper.dart';
+// import '../../../view_model/challange_view_models/adaptation_ai_analysis-viewmodel.dart';
+// import '../../routes/app_routes.dart';
+// import '../../widgets/campaign_mode_widgets/campaign_progress_service.dart';
+// import '../../widgets/custom_button.dart';
+// import '../../widgets/custom_home_navbar.dart';
+// import '../../widgets/screens_unique_parts/custom_background.dart';
+// import '../../widgets/screens_unique_parts/custom_header.dart';
+//
+// class AIAnalysisShowScreen extends StatefulWidget {
+//   const AIAnalysisShowScreen({super.key});
+//
+//   @override
+//   State<AIAnalysisShowScreen> createState() => _AIAnalysisShowScreenState();
+// }
+//
+// class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
+//   late final AdaptationAIAnalysisViewModel _viewModel;
+//   final int _maxRetries = 3;
+//   int _currentRetry = 0;
+//   bool _isNavigating = false;
+//
+//   String _safeTranslate(String? key, {String fallback = ''}) {
+//     if (key == null) return fallback;
+//     try {
+//       return key.tr;
+//     } catch (e) {
+//       return fallback;
+//     }
+//   }
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _viewModel = Get.put(AdaptationAIAnalysisViewModel());
+//     _loadRetryCount();
+//     _handleAnalysisBasedOnSource();
+//   }
+//
+//   // ── Retry Count Management ────────────────────────────────────────────────
+//   Future<void> _loadRetryCount() async {
+//     try {
+//       final prefs = await SharedPreferences.getInstance();
+//       _currentRetry = prefs.getInt('analysis_retry_count') ?? 0;
+//       if (kDebugMode) {
+//         print('🔄 Current retry count: $_currentRetry/$_maxRetries');
+//       }
+//     } catch (e) {
+//       if (kDebugMode) print('❌ Error loading retry count: $e');
+//       _currentRetry = 0;
+//     }
+//   }
+//
+//   Future<void> _saveRetryCount() async {
+//     try {
+//       final prefs = await SharedPreferences.getInstance();
+//       await prefs.setInt('analysis_retry_count', _currentRetry);
+//       if (kDebugMode) print('💾 Saved retry count: $_currentRetry');
+//     } catch (e) {
+//       if (kDebugMode) print('❌ Error saving retry count: $e');
+//     }
+//   }
+//
+//   Future<void> _resetRetryCount() async {
+//     try {
+//       final prefs = await SharedPreferences.getInstance();
+//       await prefs.setInt('analysis_retry_count', 0);
+//       _currentRetry = 0;
+//       if (kDebugMode) print('🔄 Retry count reset to 0');
+//     } catch (e) {
+//       if (kDebugMode) print('❌ Error resetting retry count: $e');
+//     }
+//   }
+//
+//   // ── Source & Analysis Handling ─────────────────────────────────────────────
+//   void _handleAnalysisBasedOnSource() async {
+//     try {
+//       final dynamic arguments = Get.arguments;
+//       final source = arguments is Map<String, dynamic>
+//           ? arguments['source'] ?? ''
+//           : '';
+//       final adaptationRequest = arguments is Map<String, dynamic>
+//           ? arguments['adaptationRequest']
+//           : null;
+//
+//       if (kDebugMode) {
+//         print('📍 Analysis Source: $source');
+//         print('📦 Has Adaptation Request: ${adaptationRequest != null}');
+//       }
+//
+//       if (source == 'challenge_adjustment' && adaptationRequest != null) {
+//         if (kDebugMode) print('🔄 Running adaptation analysis...');
+//         await _runAdaptationAnalysis(adaptationRequest);
+//       }
+//     } catch (e) {
+//       if (kDebugMode) print('❌ Error in analysis handling: $e');
+//     }
+//   }
+//
+//   Future<void> _runAdaptationAnalysis(dynamic adaptationRequest) async {
+//     // For now we skip real API call since score is static
+//     // You can uncomment / restore real submission later
+//     if (kDebugMode) {
+//       print('⚠️ Using static 85% score - skipping real API call');
+//     }
+//   }
+//
+//   // ── Navigation Logic ───────────────────────────────────────────────────────
+//   void _navigateBasedOnDecisionAndMode({
+//     required String decision,
+//     required String source,
+//     required bool hasData,
+//   }) async {
+//     if (_isNavigating) return;
+//     _isNavigating = true;
+//
+//     try {
+//       final savedMode = await SharedPrefs.getGameMode() ?? 'solo';
+//       final isDecisionAccepted = _isDecisionAccepted(decision);
+//
+//       if (!isDecisionAccepted) {
+//         _currentRetry++;
+//         await _saveRetryCount();
+//
+//         if (_currentRetry >= _maxRetries) {
+//           await _showMaxRetriesDialog();
+//           await _resetRetryCount();
+//           _navigateToHomeScreen();
+//         } else {
+//           await _showRetryDialog();
+//         }
+//         return;
+//       }
+//
+//       // Accepted → reset retry & proceed
+//       await _resetRetryCount();
+//       await _proceedWithAcceptedDecision(savedMode, source);
+//     } finally {
+//       _isNavigating = false;
+//     }
+//   }
+//
+//   bool _isDecisionAccepted(String decision) {
+//     final lower = decision.toLowerCase();
+//     return lower.contains('accepted') ||
+//         lower.contains('approved') ||
+//         (lower.contains('review') && !lower.contains('rejected'));
+//   }
+//
+//   Future<void> _showRetryDialog() async {
+//     await Get.dialog(
+//       AlertDialog(
+//         title: Text('initiative_rejected'.tr),
+//         content: Text(
+//           '${'initiative_needs_improvement'.tr}\n\n'
+//               '${'retry_count'.tr}: $_currentRetry/$_maxRetries\n'
+//               '${'suggest_improve_initiatives'.tr}',
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               Get.back();
+//               _navigateToKeyObjectiveScreen();
+//             },
+//             child: Text('try_again'.tr),
+//           ),
+//         ],
+//       ),
+//       barrierDismissible: false,
+//     );
+//   }
+//
+//   Future<void> _showMaxRetriesDialog() async {
+//     await Get.dialog(
+//       AlertDialog(
+//         title: Text('max_retries_reached'.tr),
+//         content: Text(
+//           '${'max_retries_exceeded'.tr}\n\n'
+//               '${'returning_to_home_screen'.tr}',
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: Get.back,
+//             child: Text('understand'.tr),
+//           ),
+//         ],
+//       ),
+//       barrierDismissible: false,
+//     );
+//   }
+//
+//   void _navigateToKeyObjectiveScreen() {
+//     final currentArgs = Get.arguments;
+//     Get.offAllNamed(
+//       AppRoutes.keyObjectiveScreen,
+//       parameters: {'isRetry': 'true'},
+//       arguments: currentArgs,
+//     );
+//   }
+//
+//   void _navigateToHomeScreen() {
+//     Get.offAllNamed(AppRoutes.home);
+//     Future.delayed(const Duration(milliseconds: 600), () {
+//       SnackbarHelper.info(
+//         'You have completed all 3 attempts. Please try a new strategy!',
+//       );
+//     });
+//   }
+//
+//   Future<void> _proceedWithAcceptedDecision(String mode, String source) async {
+//     switch (mode) {
+//       case 'solo':
+//         Get.offAllNamed(AppRoutes.gameCompleteScreen);
+//         break;
+//       case 'challenge':
+//         await _navigateChallengeMode();
+//         break;
+//       case 'campaign':
+//         await _navigateCampaignMode(source);
+//         break;
+//       default:
+//         Get.offAllNamed(AppRoutes.gameCompleteScreen);
+//     }
+//   }
+//
+//   Future<void> _navigateChallengeMode() async {
+//     final challengeId = await SharedPrefs.getChallengeId();
+//     final userId = await SharedPrefs.getUserId();
+//
+//     if (challengeId == null || userId == null) {
+//       Get.snackbar('Error', 'Challenge data not found', backgroundColor: Colors.red);
+//       return;
+//     }
+//
+//     Get.offAllNamed(
+//       AppRoutes.gameResultScreen,
+//       arguments: {
+//         'challengeId': challengeId,
+//         'userId': userId,
+//         'source': 'challenge_mode',
+//       },
+//     );
+//   }
+//
+//   Future<void> _navigateCampaignMode(String source) async {
+//     if (source == 'contextual_challenge' || source == 'challenge_adjustment') {
+//       final currentLevel = await _getCurrentCampaignLevel();
+//       if (currentLevel > 0 && currentLevel <= 3) {
+//         await CampaignProgressService.completeLevel(currentLevel);
+//       }
+//     }
+//     Get.offAllNamed(AppRoutes.campaignModeScreen);
+//   }
+//
+//   Future<int> _getCurrentCampaignLevel() async {
+//     try {
+//       final levelStr = await SharedPrefs.getString('current_campaign_level');
+//       return int.tryParse(levelStr ?? '1') ?? 1;
+//     } catch (_) {
+//       return 1;
+//     }
+//   }
+//
+//   // ── UI Building ────────────────────────────────────────────────────────────
+//   @override
+//   Widget build(BuildContext context) {
+//     final screenHeight = MediaQuery.of(context).size.height;
+//     final screenWidth = MediaQuery.of(context).size.width;
+//
+//     const int percentage = 85;
+//     const String decision = 'Accepted';
+//     const String explanation =
+//         "The proposed adaptation demonstrates strong strategic alignment, "
+//         "clear relevance to the challenge, and high potential impact. "
+//         "Proceeding to next phase is recommended.";
+//
+//     const bool isAccepted = true;
+//
+//     return Scaffold(
+//       body: CustomBackground(
+//         child: SafeArea(
+//           child: Stack(
+//             children: [
+//               Positioned.fill(
+//                 child: SingleChildScrollView(
+//                   physics: const BouncingScrollPhysics(),
+//                   padding: EdgeInsets.only(bottom: AppDimensions.d18.h),
+//                   child: Obx(() {
+//                     final dynamic args = Get.arguments;
+//                     String source = 'initiative_analysis';
+//
+//                     if (args is Map<String, dynamic>) {
+//                       source = args['source'] ?? 'challenge_adjustment';
+//                     }
+//
+//                     return Column(
+//                       crossAxisAlignment: CrossAxisAlignment.center,
+//                       children: [
+//                         SizedBox(height: screenHeight * 0.03),
+//                         CustomHeader(
+//                           title: _getHeaderTitle(source),
+//                           highlightedText: _getHeaderHighlight(source),
+//                           subtitle: '',
+//                           onBackTap: () => Get.back(),
+//                         ),
+//                         SizedBox(height: screenHeight * 0.02),
+//
+//                         if (_viewModel.isSubmitting.value)
+//                           // _buildLoadingCard()
+//                         // else
+//                         //   _buildAnalysisContainer(
+//                         //     percentage: percentage,
+//                         //     decision: decision,
+//                         //     explanation: explanation,
+//                         //     isAccepted: isAccepted,
+//                         //     source: source,
+//                         //   ),
+//
+//                         SizedBox(height: screenHeight * 0.03),
+//                         Padding(
+//                           padding: EdgeInsets.symmetric(horizontal: 20.w),
+//                           child: _buildNavigationButton(
+//                             source: source,
+//                             decision: decision,
+//                             isAccepted: isAccepted,
+//                           ),
+//                         ),
+//                         SizedBox(height: 16.h),
+//                         // CustomButton(
+//                         //   text: "phase_retry_test".tr,
+//                         //   onPressed: () => Get.toNamed(AppRoutes.contextualChallenge),
+//                         // ),
+//                         SizedBox(height: screenHeight * 0.04),
+//                       ],
+//                     );
+//                   }),
+//                 ),
+//               ),
+//               Positioned(
+//                 right: screenWidth * -0.07,
+//                 top: screenHeight * 0.50,
+//                 child: const CustomHomeNavBar(),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildAnalysisContainer({
+//     required int percentage,
+//     required String decision,
+//     required String explanation,
+//     required bool isAccepted,
+//     required String source,
+//   }) {
+//     const colorSuccess = Color(0xff8DC046);
+//     const colorLight = Color(0xffC8CD37);
+//
+//     return Padding(
+//       padding: EdgeInsets.symmetric(horizontal: 16.w),
+//       child: Container(
+//         decoration: BoxDecoration(
+//           color: colorSuccess,
+//           borderRadius: BorderRadius.circular(24.r),
+//         ),
+//         child: Column(
+//           children: [
+//             // Header with robot
+//             Padding(
+//               padding: EdgeInsets.symmetric(vertical: 32.h),
+//               child: Column(
+//                 children: [
+//                   SvgPicture.asset(
+//                     "assets/images/robot.svg",
+//                     height: 100.h,
+//                     width: 100.w,
+//                   ),
+//                   SizedBox(height: 12.h),
+//                   Text(
+//                     _getAnalysisTitle(source),
+//                     style: TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 20.sp,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             // Score banner
+//             Container(
+//               width: double.infinity,
+//               padding: EdgeInsets.symmetric(vertical: 20.h),
+//               color: colorLight,
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Icon(Icons.sentiment_very_satisfied, color: Colors.black, size: 36.sp),
+//                   SizedBox(width: 16.w),
+//                   Text(
+//                     '$percentage%',
+//                     style: TextStyle(
+//                       color: Colors.black,
+//                       fontSize: 40.sp,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             // Threshold info
+//             Container(
+//               width: double.infinity,
+//               color: colorLight,
+//               padding: EdgeInsets.symmetric(vertical: 12.h),
+//               child: Text(
+//                 '${_safeTranslate('relevance_threshold')}: >80%',
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   color: Colors.black87,
+//                   fontSize: 14.sp,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ),
+//             // Explanation card
+//             Padding(
+//               padding: EdgeInsets.all(16.w),
+//               child: Container(
+//                 padding: EdgeInsets.all(20.w),
+//                 decoration: BoxDecoration(
+//                   color: Colors.white,
+//                   borderRadius: BorderRadius.circular(16.r),
+//                 ),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Row(
+//                       children: [
+//                         Container(
+//                           padding: EdgeInsets.all(10.w),
+//                           decoration: BoxDecoration(
+//                             color: colorSuccess.withOpacity(0.15),
+//                             shape: BoxShape.circle,
+//                           ),
+//                           child: Icon(
+//                             Icons.lightbulb,
+//                             color: colorSuccess,
+//                             size: 28.sp,
+//                           ),
+//                         ),
+//                         SizedBox(width: 16.w),
+//                         Expanded(
+//                           child: Text(
+//                             decision,
+//                             style: TextStyle(
+//                               fontSize: 22.sp,
+//                               fontWeight: FontWeight.bold,
+//                               color: Colors.black87,
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                     SizedBox(height: 20.h),
+//                     Text(
+//                       explanation,
+//                       style: TextStyle(
+//                         fontSize: 15.sp,
+//                         height: 1.5,
+//                         color: Colors.black54,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildNavigationButton({
+//     required String source,
+//     required String decision,
+//     required bool isAccepted,
+//   }) {
+//     // ── Loading / Analyzing state ────────────────────────────────────────────
+//     if (_viewModel.isSubmitting.value) {
+//       return CustomButton(
+//         text: 'analyzing'.tr,
+//         onPressed: () {}, // disabled button
+//       );
+//     }
+//
+//     // ── Rejected → Try Again ─────────────────────────────────────────────────
+//     if (!isAccepted) {
+//       return CustomButton(
+//         text: 'try_again'.tr,
+//         backgroundColor: AppColors.primaryRed,
+//         onPressed: () {
+//           _navigateBasedOnDecisionAndMode(
+//             decision: decision,
+//             source: source,
+//             hasData: true,
+//           );
+//         },
+//       );
+//     }
+//
+//     // ── Accepted cases ───────────────────────────────────────────────────────
+//     switch (source) {
+//       case 'challenge_adjustment':
+//         return CustomButton(
+//           text: 'proceed_to_results'.tr,
+//           onPressed: () {
+//             // Recommended: reuse the shared navigation handler
+//             // (it already knows how to handle source/mode/retry/etc.)
+//             _navigateBasedOnDecisionAndMode(
+//               decision: decision,
+//               source: source,
+//               hasData: true,
+//             );
+//
+//             // Alternative (only if you really need it):
+//             // - Navigate to adjustment screen first
+//             // - Then let that screen call the decision handler
+//             //
+//             // Get.toNamed(AppRoutes.contextualCAdjustment);
+//           },
+//         );
+//
+//       case 'initiative_analysis':
+//         return CustomButton(
+//           text: 'check_contextual_challenge'.tr,
+//           onPressed: () {
+//             Get.toNamed(
+//               AppRoutes.contextualChallenge,
+//               arguments: {
+//                 'analysisData': Get.arguments,
+//                 'source': 'initiative_analysis',
+//               },
+//             );
+//           },
+//         );
+//
+//       default:
+//       // Fallback for any other accepted source
+//         return CustomButton(
+//           text: 'continue'.tr,
+//           onPressed: () {
+//             _navigateBasedOnDecisionAndMode(
+//               decision: decision,
+//               source: source,
+//               hasData: true,
+//             );
+//           },
+//         );
+//     }
+//   }
+//
+// // ── Helper methods (unchanged) ──────────────────────────────────────────────
+//   String _getHeaderTitle(String source) =>
+//       source == 'challenge_adjustment' ? 'adaptation'.tr : 'suggestion'.tr;
+//
+//   String _getHeaderHighlight(String source) =>
+//       source == 'challenge_adjustment' ? 'analysis'.tr : 'of_initiatives'.tr;
+//
+//   String _getAnalysisTitle(String source) =>
+//       source == 'challenge_adjustment'
+//           ? 'Adaptation Analysis Results'
+//           : 'Initiative Analysis Results';
+// }

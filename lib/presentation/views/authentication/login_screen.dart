@@ -13,6 +13,7 @@ import '../../routes/app_routes.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_svg.dart';
 import '../../widgets/custom_textfield.dart';
+import 'forget_password.dart';
 
 class LoginScreen extends StatelessWidget {
   final controller = Get.find<LoginController>();
@@ -150,23 +151,28 @@ class LoginScreen extends StatelessWidget {
                                     color: AppColors.textSecondary,
                                   ),
                                 ),
-                              ],
+                                TextButton(
+                                  onPressed: () {
+                                    // Navigate to Forgot Password Screen
+                                    Get.to(
+                                          () => ForgotPasswordScreen(),
+                                      transition: Transition.rightToLeft,
+                                      duration: const Duration(milliseconds: 300),
+                                    );
+                                  },
+                                  child: Text(
+                                    'forget_password'.tr,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontSize: screenWidth * 0.035,
+                                      color: AppColors.primaryRed,
+                                      fontWeight: FontWeight.w600,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),                              ],
                             ),
                           ),
-                          TextButton(
-                            onPressed: () =>
-                                SnackbarHelper.info('password_reset_coming'.tr),
-                            child: Text(
-                              'forget_password'.tr,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontSize: screenWidth * 0.035,
-                                color: AppColors.primaryRed,
-                                fontWeight: FontWeight.w600,
-                                overflow: TextOverflow.ellipsis
 
-                              ),
-                            ),
-                          ),
                         ],
                       ),
 

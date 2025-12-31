@@ -443,7 +443,22 @@ class StorageRepository extends GetxService {
     log("💾 Saving GOOGLE user: $userMap");
     await _prefs.write(_userDataKey, jsonEncode(userMap));
   }
+  Map<String, dynamic>? getRawUserData() {
+    try {
+      final raw = _prefs.read(_userDataKey);
+      if (raw == null) return null;
 
+      if (raw is String) {
+        return jsonDecode(raw) as Map<String, dynamic>?;
+      } else if (raw is Map) {
+        return Map<String, dynamic>.from(raw);
+      }
+      return null;
+    } catch (e) {
+      print('Error reading raw user-data: $e');
+      return null;
+    }
+  }
   /// Update user avatar in storage
   Future<void> updateUserAvatar(String avatarPicId) async {
     try {

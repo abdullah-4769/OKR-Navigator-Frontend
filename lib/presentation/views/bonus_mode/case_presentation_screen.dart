@@ -61,8 +61,7 @@ class _CasePresentationScreenState extends State<CasePresentationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: CustomBackground(
         child: Column(
           children: [
@@ -95,13 +94,20 @@ class _CasePresentationScreenState extends State<CasePresentationScreen> {
                       ),
                       SizedBox(height: 16.h),
                       // Vision/Description
-                      Obx(() => _buildInfoCard(
+                      // _buildInfoCard(
+                      //   'vision'.tr,
+                      //   // 'description'.tr,
+                      //   'strategy_description'.tr,
+                      //   Icons.visibility,
+                      // ),
+                     _buildInfoCard(
                         'vision'.tr,
-                        controller.scenarioDescription.value.isEmpty
-                            ? 'vision_description'.tr
-                            : controller.scenarioDescription.value,
+                        'leading_digital_bank'.tr,
+                        // controller.scenarioDescription.value.isEmpty
+                        //     ? 'vision_description'.tr
+                        //     : controller.scenarioDescription.value,
                         Icons.visibility,
-                      )),
+                      ),
                       SizedBox(height: 16.h),
                       // Strategy (static for now)
                       _buildInfoCard(
@@ -127,7 +133,6 @@ class _CasePresentationScreenState extends State<CasePresentationScreen> {
         ),
       ),
     );
-  }
 
   Widget _buildInfoCard(String label, String value, IconData icon) {
     return Container(

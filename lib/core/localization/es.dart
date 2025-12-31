@@ -996,12 +996,14 @@ final Map<String, String> es = {
 
   "energy_utilities": "Energía y Servicios Públicos",
   "energy_desc": "Generación de energía y servicios públicos",
-
+  'vision': 'Vision',
+  'description': 'Description',
   "logistics_transport": "Logística y Transporte",
   "logistics_desc": "Cadena de suministro y servicios de transporte",
 
   "public_sector_government": "Sector Público y Gobierno",
   "public_sector_desc": "Servicios gubernamentales y administración pública",
+  'leading_digital_bank': 'Convertirse en el banco digital líder en el sector financiero',
 
   "retail_ecommerce": "Retail y Comercio Electrónico",
   "retail_desc": "Tiendas minoristas y comercio en línea",

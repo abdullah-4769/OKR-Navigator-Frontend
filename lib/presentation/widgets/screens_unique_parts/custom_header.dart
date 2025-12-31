@@ -126,15 +126,19 @@ class _CustomHeaderState extends State<CustomHeader> {
           children: [
             /// MAIN ROW
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+
               children: [
                 /// BACK BUTTON
-                CustomCurvedArrow(
-                  isLeft: true,
-                  onTap: widget.onBackTap,
-                  width: 55.w,
-                  height: 55.h,
+                Transform.translate(
+                  offset: const Offset(-14, 0), // ⬅️ left shift
+                  child: CustomCurvedArrow(
+                    isLeft: true,
+                    onTap: widget.onBackTap,
+                    width: 75.w,
+                    height: 75.h,
+                  ),
                 ),
+
 
                 if (widget.spacing != null && widget.spacing! > 0)
                   SizedBox(width: widget.spacing!.w),
@@ -143,7 +147,6 @@ class _CustomHeaderState extends State<CustomHeader> {
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
                         child: Text(

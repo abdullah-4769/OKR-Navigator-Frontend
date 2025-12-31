@@ -42,13 +42,16 @@ class _CustomAIStrategyContainerState extends State<CustomAIStrategyContainer> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             /// Robot Icon
-            Center(
-              child: SvgPicture.asset(
-                'assets/images/robort.png',
-                height: AppDimensions.d90.h,
-                width: AppDimensions.d80.w,
+            // Center(
+            //   child: SvgPicture.asset(
+            //     'assets/images/robot.svg',
+            //     height: AppDimensions.d90.h,
+            //     width: AppDimensions.d80.w,
+            //   ),
+            // ),
+            Center(child:
+              Image.asset("assets/images/robort.png",height: 100,width: 100,)
               ),
-            ),
 
             /// Header Row
             Center(

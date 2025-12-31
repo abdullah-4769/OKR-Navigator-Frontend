@@ -1680,10 +1680,12 @@ final Map<String, String> fr = {
 
   "public_sector_government": "Secteur Public et Gouvernement",
   "public_sector_desc": "Services gouvernementaux et administration publique",
+  'leading_digital_bank': 'Devenir la banque numérique leader dans le secteur financier',
 
   "retail_ecommerce": "Commerce et E-commerce",
   "retail_desc": "Magasins de détail et commerce en ligne",
-
+  'vision': 'Visión',
+  'description': 'Descripción',
   "telecommunication": "Télécommunications",
   "telecom_desc": "Réseaux mobiles et services de communication",
 

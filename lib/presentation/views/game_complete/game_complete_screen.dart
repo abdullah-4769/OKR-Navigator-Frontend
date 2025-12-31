@@ -457,11 +457,11 @@ class GameCompleteScreen extends StatelessWidget {
 
   void _shareScore(GameCompleteModel gameData) {
     final shareText = '''
-🎮 Game Complete! 
+🎮 Game Complete!
 Score: ${gameData.score}/100
 Badge: ${gameData.badge}
 Trophy: ${gameData.trophy?.isNotEmpty == true ? gameData.trophy : "No Trophy"}
-    
+
 ${gameData.scor ?? "Great performance!"}
     ''';
 
@@ -483,3 +483,207 @@ ${gameData.scor ?? "Great performance!"}
 
 
 
+// import 'package:flutter/material.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:get/get.dart';
+//
+// import '../../../core/app_colors.dart';
+// import '../../../core/app_dimensions.dart';
+// import '../../../presentation/routes/app_routes.dart';
+// import '../../../presentation/widgets/custom_journey_map.dart';
+// import '../../widgets/custom_button.dart';
+// import '../../widgets/custom_home_navbar.dart';
+// import '../../widgets/game_complete_widgets/achievement_summary.dart';
+// import '../../widgets/game_complete_widgets/custom_score_card.dart';
+// import '../../widgets/game_complete_widgets/performance_breakdown.dart';
+// import '../../widgets/game_complete_widgets/rewards_unlocked.dart';
+// import '../../widgets/screens_unique_parts/custom_background.dart';
+// import '../../widgets/screens_unique_parts/custom_header.dart';
+//
+// // If you don't have this class yet, add it (adjust fields as per your real model)
+// class BreakdownItem {
+//   final String title;
+//   final int score;
+//   final int maxScore;
+//
+//   BreakdownItem(this.title, this.score, this.maxScore);
+// }
+//
+// class GameCompleteScreen extends StatelessWidget {
+//   const GameCompleteScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final size = MediaQuery.of(context).size;
+//     final width = size.width;
+//     final height = size.height;
+//
+//     // ── Static / hardcoded values ───────────────────────────────────────────
+//     const int staticScore = 88;
+//     const String staticBadge = "Strategic Master";
+//     const String staticTrophy = "Environmental Champion";
+//     const String staticDescription = "Outstanding performance in sustainability strategy!";
+//     const String staticMode = "solo";
+//
+//     // Mock journey data
+//     const double mockProgress = 0.75;
+//     final List<String> mockSteps = [
+//       "Strategy",
+//       "Objective",
+//       "Key Results",
+//       "Initiatives",
+//       "Evaluation",
+//       "Complete",
+//     ];
+//     final List<bool> mockCompleted = [true, true, true, true, true, false];
+//
+//     // Mock breakdown items (type-safe)
+//     final List<BreakdownItem> mockBreakdownItems = [
+//       BreakdownItem("Strategy Alignment", 9, 10),
+//       BreakdownItem("Objective Clarity", 9, 10),
+//       BreakdownItem("Key Results Quality", 10, 10),
+//     ];
+//
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: CustomBackground(
+//         child: OrientationBuilder(
+//           builder: (context, orientation) => Stack(
+//             children: [
+//               Positioned.fill(
+//                 child: SingleChildScrollView(
+//                   physics: const BouncingScrollPhysics(),
+//                   padding: EdgeInsets.only(bottom: height * 0.015),
+//                   child: Column(
+//                     children: [
+//                       // Header
+//                       CustomHeader(
+//                         title: 'game'.tr,
+//                         highlightedText: 'complete'.tr,
+//                         subtitle: '',
+//                         onBackTap: () => Get.back(),
+//                       ),
+//
+//                       SizedBox(height: height * 0.025),
+//
+//                       CustomScoreCard(
+//                         score: staticScore,
+//                         title: "Excellent",
+//                         description: staticDescription,
+//                       ),
+//
+//                       SizedBox(height: height * 0.025),
+//
+//                       PerformanceBreakdown(
+//                         points: 28,
+//                         totalPoints: 30, items: [],
+//                         // items: mockBreakdownItems, // Now type-safe
+//                       ),
+//
+//                       SizedBox(height: height * 0.025),
+//
+//                       RewardsUnlocked(
+//                         badgeImage: "assets/images/badge.png",
+//                         badgeName: staticBadge,
+//                         titleImage: "assets/images/game.png",
+//                         titleName: "Sustainability Leader",
+//                         trophyImage: "assets/images/trophy.png",
+//                         trophyName: staticTrophy,
+//                       ),
+//
+//                       SizedBox(height: height * 0.025),
+//
+//                       // Static journey map (no RxBool)
+//                       CustomJourneyMap(
+//                         progress: mockProgress,
+//                         steps: mockSteps,
+//                         completedSteps: mockCompleted,
+//                         onToggle: () {}, // empty callback
+//                         showDetails: false, // plain bool, no .obs
+//                       ),
+//
+//                       SizedBox(height: height * 0.025),
+//
+//                       AchievementSummary(
+//                         achievements: [
+//                           "completed_strategic_cycle".tr,
+//                           "adapted_market_challenge".tr,
+//                           "demonstrated_thinking_excellence".tr,
+//                           "earned_strategic_architect".tr,
+//                         ],
+//                       ),
+//
+//                       SizedBox(height: height * 0.04),
+//
+//                       _buildActionButtons(staticMode),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//
+//               Positioned(
+//                 right: width * -0.07,
+//                 top: height * 0.5,
+//                 child: const CustomHomeNavBar(),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildActionButtons(String mode) {
+//     return Column(
+//       children: [
+//         if (mode == 'campaign') ...[
+//           CustomButton(
+//             text: "start_certificate_mode".tr,
+//             icon: Icons.verified_outlined,
+//             backgroundColor: AppColors.primaryGreen,
+//             onPressed: () => Get.offAllNamed(AppRoutes.campaignModeScreen),
+//           ),
+//           SizedBox(height: 12.h),
+//         ],
+//         CustomButton(
+//           text: "play_again".tr,
+//           icon: Icons.play_arrow,
+//           onPressed: () {
+//             if (mode == 'campaign') {
+//               Get.offAllNamed(AppRoutes.teamStrategySelection);
+//             } else {
+//               Get.offAllNamed(AppRoutes.roleSelection);
+//             }
+//           },
+//         ),
+//         SizedBox(height: 12.h),
+//         CustomButton(
+//           text: "view_badges".tr,
+//           icon: Icons.badge_outlined,
+//           onPressed: () => Get.offAllNamed(AppRoutes.personalAchievementScreen),
+//         ),
+//         SizedBox(height: 12.h),
+//         CustomButton(
+//           text: "share_score".tr,
+//           icon: Icons.share,
+//           onPressed: () {
+//             Get.snackbar(
+//               'Share',
+//               'Score: 88/100\nBadge: Strategic Master\nTrophy: Environmental Champion',
+//               snackPosition: SnackPosition.BOTTOM,
+//             );
+//           },
+//         ),
+//         SizedBox(height: 16.h),
+//         Text(
+//           "view_your_journey".tr,
+//           style: TextStyle(
+//             fontSize: AppDimensions.d14.sp,
+//             color: AppColors.primaryBlue,
+//             decoration: TextDecoration.underline,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }

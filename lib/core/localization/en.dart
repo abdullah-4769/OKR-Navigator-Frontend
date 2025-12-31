@@ -3266,7 +3266,8 @@ final Map<String, String> en = {
 
   "healthcare": "Healthcare",
   "healthcare_desc": "Medical services, hospitals, and health solutions",
-
+  'vision': 'Vision',
+  'description': 'Description',
   "energy_utilities": "Energy & Utilities",
   "energy_desc": "Power generation, utilities, and renewable energy",
 
@@ -3275,6 +3276,7 @@ final Map<String, String> en = {
 
   "public_sector_government": "Public Sector & Government",
   "public_sector_desc": "Government services and public administration",
+  'leading_digital_bank': 'Become the leading digital bank in the financial sector',
 
   "retail_ecommerce": "Retail & E-commerce",
   "retail_desc": "Retail stores and online commerce",
