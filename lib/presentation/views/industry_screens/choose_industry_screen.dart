@@ -209,6 +209,8 @@ import 'package:game_app/presentation/widgets/screens_unique_parts/custom_backgr
 import 'package:game_app/presentation/widgets/screens_unique_parts/custom_header.dart';
 
 import '../bonus_mode/case_presentation_screen.dart';
+import '../campaign_mode_views/campaign_role_selection_screen.dart';
+import '../roles/tutorial_screen.dart';
 
 class ChooseIndustryScreen extends StatefulWidget {
   final Map? selectedRole;
@@ -403,36 +405,27 @@ class _ChooseIndustryScreenState extends State<ChooseIndustryScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        'first_time_playing'.tr,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                          color: Colors.black,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
+                                    Text(
+                                      'first_time_playing'.tr,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                        color: Colors.black,
                                       ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsets.symmetric(horizontal: 2.w),
-                                      child: GestureDetector(
-                                        onTap: controller.openTutorial,
-                                        child: Text(
-                                          'watch_tutorial_video'.tr,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                            color: AppColors.primaryRed,
-                                            decoration:
-                                            TextDecoration.underline,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.to(() => const TutorialVideoScreen());
+                                      },
+                                      child: Text(
+                                        trKey('watch_tutorial'),
+                                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                          color: AppColors.primaryRed,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline,
                                         ),
                                       ),
                                     ),

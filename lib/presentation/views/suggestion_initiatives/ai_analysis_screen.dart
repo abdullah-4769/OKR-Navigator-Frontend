@@ -513,13 +513,13 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
                         ),
                         SizedBox(height: screenHeight * 0.001),
                         // SizedBox(height: screenHeight * 0.001),
-                        SizedBox(height: screenHeight * 0.001),
-                        CustomButton(
-                          text: "phase_retry_test".tr,
-                          onPressed: () {
-                            Get.toNamed(AppRoutes.contextualChallenge);
-                          },
-                        ),
+                        // SizedBox(height: screenHeight * 0.001),
+                        // CustomButton(
+                        //   text: "phase_retry_test".tr,
+                        //   onPressed: () {
+                        //     Get.toNamed(AppRoutes.contextualChallenge);
+                        //   },
+                        // ),
                         SizedBox(height: screenHeight * 0.001),
                       ],
                     );
@@ -672,11 +672,12 @@ class _AIAnalysisShowScreenState extends State<AIAnalysisShowScreen> {
               padding: EdgeInsets.symmetric(vertical: 32.h),
               child: Column(
                 children: [
-                  SvgPicture.asset(
-                    "assets/images/robot.svg",
-                    height: 100.h,
-                    width: 100.w,
-                  ),
+                  Image.asset("assets/images/robort.png",height: 100,width: 100,),
+                  // SvgPicture.asset(
+                  //   "assets/images/robot.svg",
+                  //   height: 100.h,
+                  //   width: 100.w,
+                  // ),
                   SizedBox(height: 8.h),
                   Text(
                     _getAnalysisTitle(source),

@@ -1000,7 +1000,7 @@ final Map<String, String> es = {
   'description': 'Description',
   "logistics_transport": "Logística y Transporte",
   "logistics_desc": "Cadena de suministro y servicios de transporte",
-
+"tutorial":"Tutorial",
   "public_sector_government": "Sector Público y Gobierno",
   "public_sector_desc": "Servicios gubernamentales y administración pública",
   'leading_digital_bank': 'Convertirse en el banco digital líder en el sector financiero',

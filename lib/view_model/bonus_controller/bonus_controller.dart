@@ -450,11 +450,13 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:game_app/core/api_constants.dart';
 import 'package:game_app/services/shared_preference.dart';
 import 'package:game_app/data/repositories/storage_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart'; // ✅ Add this import
 
 import '../../data/repositories/auth_repository.dart';
 
@@ -468,8 +470,9 @@ class BonusModeController extends GetxController {
 
   final RxInt streakDays = 0.obs;
 
-  late RxInt remainingSeconds = 300.obs; // 5 minutes
+  late RxInt remainingSeconds = 600.obs; // 10 minutes
   Timer? _countdownTimer;
+  final RxBool timeExpired = false.obs; // ✅ NEW: Track if time is expired
 
   // Language setting - Load from SharedPrefs
   late RxString currentLanguage;
@@ -975,22 +978,66 @@ Initiative: $initiative
     }
   }
 
-  // ============= TIMER =============
+  // ============= TIMER (UPDATED) =============
+  // ============= TIMER (UPDATED WITH FIXED VIBRATION) =============
   void startCountdownTimer() {
-    remainingSeconds.value = 300;
+    remainingSeconds.value = 600; // 10 minutes = 600 seconds
+    timeExpired.value = false; // ✅ Reset time expired flag
     _countdownTimer?.cancel();
+    print('⏱️ Timer started: 10 minutes');
+
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (remainingSeconds.value > 0) {
         remainingSeconds--;
-      } else {
-        stopCountdownTimer();
-        Get.snackbar('Time Up!', 'Your time has expired.');
+
+        // ✅ TRIGGER AT 10 SECONDS
+        if (remainingSeconds.value == 10) {
+          print('⏱️ WARNING: 10 seconds remaining!');
+          _triggerTimeWarningAlert();
+        }
+
+        // ✅ TRIGGER AT 0 SECONDS
+        if (remainingSeconds.value == 0) {
+          print('⏱️ TIME EXPIRED!');
+          timeExpired.value = true;
+          _triggerTimeExpiredAlert();
+        }
       }
     });
   }
 
+// ✅ TRIGGERED WHEN 10 SECONDS LEFT
+  void _triggerTimeWarningAlert() {
+    _simpleVibrate(duration: 100); // Light vibration
+    print('📳 Light vibration triggered at 10 seconds');
+  }
+
+// ✅ TRIGGERED WHEN TIME EXPIRES
+  void _triggerTimeExpiredAlert() {
+    _simpleVibrate(duration: 500); // Strong vibration
+    print('📳 Strong vibration triggered - TIME EXPIRED');
+  }
+
+// ✅ SIMPLE VIBRATION WITHOUT EXTERNAL DEPENDENCIES
+  void _simpleVibrate({required int duration}) {
+    try {
+      // Using HapticFeedback from Flutter (built-in, no dependency needed)
+
+      if (duration >= 200) {
+        HapticFeedback.heavyImpact(); // Strong vibration
+        print('✅ Heavy haptic feedback triggered');
+      } else {
+        HapticFeedback.lightImpact(); // Light vibration
+        print('✅ Light haptic feedback triggered');
+      }
+    } catch (e) {
+      print('⚠️ Haptic feedback error: $e (This is OK, feature may not be available)');
+    }
+  }
+
   void stopCountdownTimer() {
     _countdownTimer?.cancel();
+    print('⏱️ Timer stopped');
   }
 
   String getFormattedTime() {
@@ -998,6 +1045,41 @@ Initiative: $initiative
     final s = remainingSeconds.value % 60;
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
+
+  bool isTimeExpired_() => timeExpired.value; // ✅ Check if time expired
+  bool isTimeWarning() => remainingSeconds.value < 60; // Flash when < 1 minute
+  // ✅ VIBRATION HELPER
+  Future<void> _vibrateDevice({bool pattern = false}) async {
+    try {
+      if (await Vibration.hasVibrator() ?? false) {
+        if (pattern) {
+          // ✅ Strong vibration pattern when time expired
+          await Vibration.vibrate(duration: 500); // 500ms vibration
+          await Future.delayed(const Duration(milliseconds: 200));
+          await Vibration.vibrate(duration: 500); // Another 500ms
+        } else {
+          // ✅ Light vibration at 10 seconds
+          await Vibration.vibrate(duration: 100); // 100ms light vibration
+        }
+      }
+    } catch (e) {
+      print('❌ Vibration error: $e');
+    }
+  }
+
+  // void stopCountdownTimer() {
+  //   _countdownTimer?.cancel();
+  //   print('⏱️ Timer stopped');
+  // }
+  //
+  // String getFormattedTime() {
+  //   final m = remainingSeconds.value ~/ 60;
+  //   final s = remainingSeconds.value % 60;
+  //   return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  // }
+  //
+  // bool isTimeExpired_() => timeExpired.value; // ✅ Check if time expired
+  // bool isTimeWarning() => remainingSeconds.value < 60; // Flash when < 1 minute
 
   // ============= SETTERS =============
   void setObjective(String val) => objective.value = val;

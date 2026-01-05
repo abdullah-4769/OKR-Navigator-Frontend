@@ -90,20 +90,16 @@ class GameCompleteScreen extends StatelessWidget {
                           return _buildErrorCard(
                             viewModel.errorMessage.value,
                             viewModel.apiDebugInfo.value,
-                                () {
-                              viewModel.fetchLatestGameScore(userId);
-                            },
-                                () {
-                              viewModel.loadMockDataForTesting();
-                            },
+                                () => viewModel.fetchLatestGameScore(userId!),
+                                () => viewModel.loadMockDataForTesting(),
                           );
                         }
 
                         final gameData = viewModel.gameCompleteData.value;
                         if (gameData == null) {
-                          return _buildNoDataCard(() {
-                            viewModel.fetchLatestGameScore(userId);
-                          });
+                          return _buildNoDataCard(
+                                () => viewModel.fetchLatestGameScore(userId!),
+                          );
                         }
 
                         return _buildGameCompleteContent(
@@ -135,7 +131,10 @@ class GameCompleteScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 NO USER ID CARD
+  // ──────────────────────────────────────────────
+  // Helper Widgets
+  // ──────────────────────────────────────────────
+
   Widget _buildNoUserIdCard() {
     return Padding(
       padding: EdgeInsets.all(16.h),
@@ -169,21 +168,18 @@ class GameCompleteScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 LOADING CARD
   Widget _buildLoadingCard() {
     return Padding(
       padding: EdgeInsets.all(20.h),
       child: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             CircularProgressIndicator(color: AppColors.primaryRed),
             SizedBox(height: 16.h),
             Text(
               'Loading your game results...',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 16.sp, color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -191,7 +187,6 @@ class GameCompleteScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 ERROR CARD - Enhanced with debug info and mock data option
   Widget _buildErrorCard(
       String errorMessage,
       String debugInfo,
@@ -216,10 +211,7 @@ class GameCompleteScreen extends StatelessWidget {
           SizedBox(height: 8.h),
           Text(
             errorMessage,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 14.sp, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           if (debugInfo.isNotEmpty) ...[
@@ -242,19 +234,13 @@ class GameCompleteScreen extends StatelessWidget {
             ),
           ],
           SizedBox(height: 16.h),
-          CustomButton(
-            text: "retry".tr,
-            onPressed: onRetry,
-          ),
+          CustomButton(text: "retry".tr, onPressed: onRetry),
           SizedBox(height: 8.h),
           TextButton(
             onPressed: onLoadMockData,
             child: Text(
               'Load Test Data (For UI Testing)',
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: AppColors.primaryBlue,
-              ),
+              style: TextStyle(fontSize: 12.sp, color: AppColors.primaryBlue),
             ),
           ),
         ],
@@ -262,7 +248,6 @@ class GameCompleteScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 NO DATA CARD
   Widget _buildNoDataCard(VoidCallback onLoadData) {
     return Padding(
       padding: EdgeInsets.all(20.h),
@@ -272,23 +257,16 @@ class GameCompleteScreen extends StatelessWidget {
           SizedBox(height: 16.h),
           Text(
             'No game data available',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 14.sp, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 16.h),
-          CustomButton(
-            text: "load_game_data".tr,
-            onPressed: onLoadData,
-          ),
+          CustomButton(text: "load_game_data".tr, onPressed: onLoadData),
         ],
       ),
     );
   }
 
-  // 🔹 GAME COMPLETE CONTENT
   Widget _buildGameCompleteContent(
       GameCompleteModel gameData,
       GameCompleteViewModel viewModel,
@@ -299,7 +277,7 @@ class GameCompleteScreen extends StatelessWidget {
       ) {
     return Column(
       children: [
-        /// Score Card with actual data
+        /// Score Card
         CustomScoreCard(
           score: gameData.score ?? 0,
           title: viewModel.getScoreTitle(),
@@ -317,7 +295,7 @@ class GameCompleteScreen extends StatelessWidget {
 
         SizedBox(height: height * 0.025),
 
-        /// Rewards Unlocked with actual badges
+        /// Rewards Unlocked
         RewardsUnlocked(
           badgeImage: "assets/images/badge.png",
           badgeName: gameData.badge ?? "New Player",
@@ -329,11 +307,11 @@ class GameCompleteScreen extends StatelessWidget {
 
         SizedBox(height: height * 0.025),
 
-        /// Journey Map
+        /// Journey Map – FIXED Obx usage
         Obx(() => CustomJourneyMap(
           progress: journeyController.progress.value,
-          steps: journeyController.steps,
-          completedSteps: journeyController.completedSteps,
+          steps: journeyController.steps,              // ← .value added
+          completedSteps: journeyController.completedSteps.value, // ← .value added
           onToggle: journeyController.toggleJourneyDetails,
           showDetails: journeyController.showDetails.value,
         )),
@@ -353,24 +331,19 @@ class GameCompleteScreen extends StatelessWidget {
     );
   }
 
-  // 🔹 ACTION BUTTONS
   Widget _buildActionButtons(GameCompleteModel gameData, BuildContext context, String? savedMode) {
     return Column(
       children: [
-        // Show "Start Certificate Mode" button only if current mode is campaign
         if (savedMode == 'campaign') ...[
           CustomButton(
             text: "start_certificate_mode".tr,
             icon: Icons.verified_outlined,
             backgroundColor: AppColors.primaryGreen,
-            onPressed: () {
-              Get.offAllNamed(AppRoutes.campaignModeScreen);
-            },
+            onPressed: () => Get.offAllNamed(AppRoutes.campaignModeScreen),
           ),
           SizedBox(height: 12.h),
         ],
 
-        // Regular action buttons
         CustomButton(
           text: "play_again".tr,
           icon: Icons.play_arrow,
@@ -382,28 +355,27 @@ class GameCompleteScreen extends StatelessWidget {
             }
           },
         ),
+
         SizedBox(height: 12.h),
+
         CustomButton(
           text: "view_badges".tr,
           icon: Icons.badge_outlined,
-          onPressed: () {
-            Get.offAllNamed(AppRoutes.personalAchievementScreen);
-          },
+          onPressed: () => Get.offAllNamed(AppRoutes.personalAchievementScreen),
         ),
+
         SizedBox(height: 12.h),
+
         CustomButton(
           text: "share_score".tr,
           icon: Icons.score,
-          onPressed: () {
-            _shareScore(gameData);
-          },
+          onPressed: () => _shareScore(gameData),
         ),
 
         SizedBox(height: 16.h),
+
         GestureDetector(
-          onTap: () {
-            Get.toNamed(AppRoutes.strategyJourneyScreen);
-          },
+          onTap: () => Get.toNamed(AppRoutes.strategyJourneyScreen),
           child: Text(
             "view_your_journey".tr,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -417,15 +389,19 @@ class GameCompleteScreen extends StatelessWidget {
     );
   }
 
+  // ──────────────────────────────────────────────
+  // Helper Methods
+  // ──────────────────────────────────────────────
+
   int _calculatePoints(String? totalPoints) {
-    if (totalPoints == null) return 0;
+    if (totalPoints == null || totalPoints.isEmpty) return 0;
     try {
       final parts = totalPoints.split('/');
       if (parts.length == 2) {
-        return int.tryParse(parts[0]) ?? 0;
+        return int.tryParse(parts[0].trim()) ?? 0;
       }
       return 0;
-    } catch (e) {
+    } catch (_) {
       return 0;
     }
   }
@@ -439,11 +415,9 @@ class GameCompleteScreen extends StatelessWidget {
     if (score >= 70) {
       achievements.add("adapted_market_challenge".tr);
     }
-
     if (score >= 80) {
       achievements.add("demonstrated_thinking_excellence".tr);
     }
-
     if (score >= 90) {
       achievements.add("earned_strategic_master".tr);
     } else if (score >= 80) {
@@ -459,11 +433,11 @@ class GameCompleteScreen extends StatelessWidget {
     final shareText = '''
 🎮 Game Complete!
 Score: ${gameData.score}/100
-Badge: ${gameData.badge}
+Badge: ${gameData.badge ?? "None"}
 Trophy: ${gameData.trophy?.isNotEmpty == true ? gameData.trophy : "No Trophy"}
 
 ${gameData.scor ?? "Great performance!"}
-    ''';
+    '''.trim();
 
     Get.snackbar(
       'Share',
@@ -473,6 +447,7 @@ ${gameData.scor ?? "Great performance!"}
         shareText,
         style: const TextStyle(color: Colors.white),
       ),
+      duration: const Duration(seconds: 5),
     );
   }
 }

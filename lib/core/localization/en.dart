@@ -3270,7 +3270,7 @@ final Map<String, String> en = {
   'description': 'Description',
   "energy_utilities": "Energy & Utilities",
   "energy_desc": "Power generation, utilities, and renewable energy",
-
+"tutorial":"Tutorial",
   "logistics_transport": "Logistics & Transport",
   "logistics_desc": "Supply chain, shipping, and transportation services",
 
