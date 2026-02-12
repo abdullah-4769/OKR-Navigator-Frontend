@@ -1,4 +1,7 @@
 final Map<String, String> fr = {
+  "email_already_exists": "Cet email est déjà enregistré. Veuillez utiliser un autre email ou vous connecter.",
+  "registration_successful": "Inscription réussie ! Veuillez vous connecter.",
+  "registration_failed": "Échec de l'inscription. Veuillez réessayer.",
   'tap_to_reveal_strategy': 'Appuyez pour révéler la stratégie',
   'strategy_revealed': 'Stratégie Révélée',
   'lets_start_mission': 'Commençons la mission',

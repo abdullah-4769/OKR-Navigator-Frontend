@@ -23,6 +23,7 @@ import 'data/repositories/storage_repository.dart';
 import 'data/repositories/strategy_repository.dart';
 import 'data/repositories/team_repo.dart';
 
+import 'firebase_options.dart';
 import 'generated/network.dart';
 import 'presentation/routes/app_routes.dart';
 
@@ -48,7 +49,9 @@ Future<void> main() async {
   ]);
 
   // 🔥 Firebase Init
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // 💾 Local Storage
   await GetStorage.init();

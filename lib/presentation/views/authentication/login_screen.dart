@@ -264,11 +264,10 @@ class LoginScreen extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(width: screenWidth * 0.015),
+
                           TextButton(
                             onPressed: () {
-                              if (!Get.isRegistered<RegisterController>()) {
-                                Get.put(RegisterController());
-                              }
+                              // ✅ FIX: Don't create controller here - let RegisterScreen handle it
                               Get.toNamed(AppRoutes.register);
                             },
                             child: Text(
@@ -281,6 +280,23 @@ class LoginScreen extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                           ),
+                          // TextButton(
+                          //   onPressed: () {
+                          //     if (!Get.isRegistered<RegisterController>()) {
+                          //       Get.put(RegisterController());
+                          //     }
+                          //     Get.toNamed(AppRoutes.register);
+                          //   },
+                          //   child: Text(
+                          //     'sign_up'.tr,
+                          //     style: theme.textTheme.bodyMedium?.copyWith(
+                          //       fontSize: screenWidth * 0.035,
+                          //       color: AppColors.primaryRed,
+                          //       fontWeight: FontWeight.bold,
+                          //     ),
+                          //     textAlign: TextAlign.center,
+                          //   ),
+                          // ),
                         ],
                       ),
 

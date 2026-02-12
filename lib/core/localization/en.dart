@@ -1,6 +1,8 @@
 final Map<String, String> en = {
 //
-
+  "email_already_exists": "This email is already registered. Please use another email or login.",
+  "registration_successful": "Registration successful! Please login.",
+  "registration_failed": "Registration failed. Please try again.",
   "no_notifications_found": "No notifications found",
   'notification':'Notifications',
   'tap_to_reveal_strategy': 'Tap to Reveal Strategy',

@@ -1,4 +1,7 @@
 final Map<String, String> es = {
+  "email_already_exists": "Este correo electrónico ya está registrado. Por favor, use otro correo o inicie sesión.",
+  "registration_successful": "¡Registro exitoso! Por favor, inicie sesión.",
+  "registration_failed": "Error en el registro. Por favor, intente de nuevo.",
   // APP NAME & LOGOS
   "app_name": "OKR Navigator",
   "okr_nav": "OKR'Nav",

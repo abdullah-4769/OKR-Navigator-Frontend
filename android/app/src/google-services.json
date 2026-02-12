@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "747676438342",
+    "project_id": "okrnav",
+    "storage_bucket": "okrnav.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747676438342:android:00954af858377c96f29f47",
+        "android_client_info": {
+          "package_name": "com.focush.okrnav"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "747676438342-btvansk4rjh7jv4ge6bune561vmuse1k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.focush.okrnav",
+            "certificate_hash": "a5eb9641d55dd1b51d74ca07768192a892aa19a8"
+          }
+        },
+        {
+          "client_id": "747676438342-pdl3k7ps9400rplb4d3ud3pli6h17u22.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.focush.okrnav",
+            "certificate_hash": "2286c752d74e549e455dab5a75faefbc4854bc86"
+          }
+        },
+        {
+          "client_id": "747676438342-otlkkkofdvhem2obkpennds5r4mc3b5d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0L9jnyZYnN9fcIoeUVO-BuO4lTqPSLN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "747676438342-5125ca368u3f1m1vmvca04rcn6ol5hb9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "747676438342-31nek2tinci766kvfu3ndt1kodjv5laa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.focusrh.okrnavigator"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

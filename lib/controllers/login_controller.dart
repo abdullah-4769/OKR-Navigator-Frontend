@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' hide log;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../utils/snackbar_helper.dart';
 import '../services/google_auth_service.dart';
@@ -49,40 +52,100 @@ class LoginController extends GetxController {
       isLoading.value = false;
     }
   }
-
-  // GOOGLE LOGIN - Uses saveGoogleUser()
   Future<void> loginWithGoogle() async {
     if (isGoogleLoading.value) return;
     isGoogleLoading.value = true;
+
     try {
-      final idToken = await _googleAuthService.signInWithGoogle();
-      if (idToken == null) {
+      print("=== LOGIN WITH GOOGLE STARTED ===");
+
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        print("User cancelled");
         SnackbarHelper.error("Google Sign-In cancelled");
         return;
       }
 
-      // Backend se SaveUser milta hai
-      final saveUser = await authRepo.loginWithGoogle(idToken);
+      print("Got user: ${googleUser.email}");
+      final auth = await googleUser.authentication;
 
-      // SaveUser ko directly save karo using saveGoogleUser()
+      if (auth.idToken == null) {
+        print("No ID token");
+        SnackbarHelper.error("No ID token received");
+        return;
+      }
+
+      // 🎯 DECODE AND CHECK TOKEN
+      print("\n🔍 DECODING TOKEN:");
+      final parts = auth.idToken!.split('.');
+      if (parts.length == 3) {
+        String payload = parts[1];
+        // Add padding
+        while (payload.length % 4 != 0) {
+          payload += '=';
+        }
+        final decoded = utf8.decode(base64Url.decode(payload));
+        final json = jsonDecode(decoded);
+
+        print("aud (Audience): ${json['aud']}");
+        print("iss (Issuer): ${json['iss']}");
+        print("email: ${json['email']}");
+        print("exp (Expires): ${DateTime.fromMillisecondsSinceEpoch(json['exp'] * 1000)}");
+        print("iat (Issued At): ${DateTime.fromMillisecondsSinceEpoch(json['iat'] * 1000)}");
+
+        print("\n📋 BACKEND MUST VERIFY WITH THIS CLIENT ID: ${json['aud']}");
+      }
+
+      print("Sending token to backend...");
+      final saveUser = await authRepo.loginWithGoogle(auth.idToken!);
+
       await _storageRepo.saveGoogleUser(saveUser);
 
-      SnackbarHelper.success("Welcome ${saveUser.name.split(' ').first}!");
+      SnackbarHelper.success("Welcome!");
       Get.offAllNamed(AppRoutes.start);
+
     } catch (e) {
-      log("Google login error: $e");
-      SnackbarHelper.error("Google login failed");
+      print("Login with Google Error: $e");
+      SnackbarHelper.error("Backend can't verify token. Check backend Google Client ID.");
     } finally {
       isGoogleLoading.value = false;
     }
   }
+  // // GOOGLE LOGIN - Uses saveGoogleUser()
+  // Future<void> loginWithGoogle() async {
+  //   if (isGoogleLoading.value) return;
+  //   isGoogleLoading.value = true;
+  //   try {
+  //     final idToken = await _googleAuthService.signInWithGoogle();
+  //     if (idToken == null) {
+  //       SnackbarHelper.error("Google Sign-In cancelled");
+  //       return;
+  //     }
+  //
+  //     // Backend se SaveUser milta hai
+  //     final saveUser = await authRepo.loginWithGoogle(idToken);
+  //
+  //     // SaveUser ko directly save karo using saveGoogleUser()
+  //     await _storageRepo.saveGoogleUser(saveUser);
+  //
+  //     SnackbarHelper.success("Welcome ${saveUser.name.split(' ').first}!");
+  //     Get.offAllNamed(AppRoutes.start);
+  //   } catch (e) {
+  //     log("Google login error: $e");
+  //     SnackbarHelper.error("Google login failed");
+  //   } finally {
+  //     isGoogleLoading.value = false;
+  //   }
+  // }
 
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   emailController.dispose();
+  //   passwordController.dispose();
+  //   super.onClose();
+  // }
 }
 // // controllers/login_controller.dart
 // import 'dart:developer';

@@ -225,7 +225,6 @@ class AuthRepository {
     }
   }
 
-  // ==================== REGISTER ====================
   Future<void> register({
     required String name,
     required String phone,
@@ -235,20 +234,53 @@ class AuthRepository {
   }) async {
     if (_authApi == null) throw Exception("AuthApi not provided");
 
-    final response = await _authApi!.register(
-      RegisterRequest(
-        name: name,
-        email: email,
-        password: password,
-        phone: phone,
-        language: language,
-      ),
-    );
+    try {
+      final response = await _authApi!.register(
+        RegisterRequest(
+          name: name,
+          email: email,
+          password: password,
+          phone: phone,
+          language: language,
+        ),
+      );
 
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception(response.message ?? 'Registration failed');
+      // Success - HTTP 201
+      return;
+    } catch (e) {
+      // Check if it's a duplicate email error
+      if (e.toString().contains('500') ||
+          e.toString().contains('already exist') ||
+          e.toString().contains('duplicate')) {
+        throw Exception('email_already_exists'); // We'll translate this
+      }
+      rethrow;
     }
   }
+  // // ==================== REGISTER ====================
+  // Future<void> register({
+  //   required String name,
+  //   required String phone,
+  //   required String email,
+  //   required String password,
+  //   required String language,
+  // }) async {
+  //   if (_authApi == null) throw Exception("AuthApi not provided");
+  //
+  //   final response = await _authApi!.register(
+  //     RegisterRequest(
+  //       name: name,
+  //       email: email,
+  //       password: password,
+  //       phone: phone,
+  //       language: language,
+  //     ),
+  //   );
+  //
+  //   if (response.statusCode != 200 && response.statusCode != 201) {
+  //     throw Exception(response.message ?? 'Registration failed');
+  //   }
+  // }
 
   // ==================== FORGOT PASSWORD - SEND OTP ====================
   Future<SendOtpResponse> sendOtp(String email) async {

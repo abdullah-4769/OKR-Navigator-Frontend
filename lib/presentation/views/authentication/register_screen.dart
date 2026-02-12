@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../controllers/login_controller.dart';
 import '../../../controllers/register_controller.dart';
@@ -38,17 +39,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    controller = Get.put(RegisterController(), permanent: false);
-  }
-
-  @override
-  void dispose() {
-    // Safely dispose controller and its TextEditingControllers
-    if (Get.isRegistered<RegisterController>()) {
-      Get.delete<RegisterController>();
+    // Only put controller if it doesn't exist
+    if (!Get.isRegistered<RegisterController>()) {
+      controller = Get.put(RegisterController());
+    } else {
+      controller = Get.find<RegisterController>();
     }
-    super.dispose();
   }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   controller = Get.put(RegisterController(), permanent: false);
+  // }
+
+
+
+  // @override
+  // void dispose() {
+  //   // Safely dispose controller and its TextEditingControllers
+  //   if (Get.isRegistered<RegisterController>()) {
+  //     Get.delete<RegisterController>();
+  //   }
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) => OrientationBuilder(
@@ -168,6 +181,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       )),
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     print("=== GOOGLE SIGN-IN TEST ===");
+                      //
+                      //     try {
+                      //       // Test 1: Simple Google Sign-In
+                      //       final GoogleSignIn googleSignIn = GoogleSignIn();
+                      //       final account = await googleSignIn.signIn();
+                      //
+                      //       if (account == null) {
+                      //         print("User cancelled");
+                      //         return;
+                      //       }
+                      //
+                      //       print("Success! User: ${account.email}");
+                      //       print("Display Name: ${account.displayName}");
+                      //
+                      //       final auth = await account.authentication;
+                      //       print("ID Token length: ${auth.idToken?.length ?? 0}");
+                      //       print("Access Token: ${auth.accessToken != null}");
+                      //
+                      //     } catch (e, stackTrace) {
+                      //       print("ERROR: $e");
+                      //       print("Stack: $stackTrace");
+                      //     }
+                      //   },
+                      //   child: Text("Test Google Sign-In"),
+                      // ),
                       SizedBox(
                         height: _getResponsiveSpacing(screenHeight, 0.025),
                       ),
@@ -444,6 +485,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (isTablet) return 16.0;
     return isPortrait ? screenWidth * 0.035 : screenWidth * 0.03;
   }
+  // @override
+  // void dispose() {
+  //   // Only delete if this is the last instance
+  //   if (Get.isRegistered<RegisterController>() &&
+  //       Get.find<RegisterController>().nameController.text.isEmpty) {
+  //     Get.delete<RegisterController>();
+  //   }
+  //   super.dispose();
+  // }
 }
 // import '../../widgets/custom_textfield.dart';
 //

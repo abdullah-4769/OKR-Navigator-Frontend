@@ -56,15 +56,49 @@ class RegisterController extends GetxController {
         language: Get.find<LanguageController>().currentLanguage.code,
       );
       SnackbarHelper.success('registration_successful'.tr);
-
       await Get.offAllNamed('/login');
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
-      SnackbarHelper.error('registration_failed'.tr);
+
+      // Show specific error message
+      String errorMsg = 'registration_failed'.tr;
+      if (e.toString().contains('email_already_exists')) {
+        errorMsg = 'email_already_exists'.tr;
+      }
+
+      SnackbarHelper.error(errorMsg);
     } finally {
       isLoading.value = false;
     }
   }
+  // Future<void> register() async {
+  //   if (!validateRegisterForm()) return;
+  //
+  //   if (passwordController.text.trim() !=
+  //       confirmPasswordController.text.trim()) {
+  //     SnackbarHelper.error(AppStrings.passwordMismatch.tr);
+  //     return;
+  //   }
+  //
+  //   isLoading.value = true;
+  //   try {
+  //     await Get.find<AuthRepository>().register(
+  //       email: emailController.text.trim(),
+  //       name: nameController.text.trim(),
+  //       password: passwordController.text.trim(),
+  //       phone: phoneController.text.trim(),
+  //       language: Get.find<LanguageController>().currentLanguage.code,
+  //     );
+  //     SnackbarHelper.success('registration_successful'.tr);
+  //
+  //     await Get.offAllNamed('/login');
+  //   } catch (e, s) {
+  //     log(e.toString(), stackTrace: s);
+  //     SnackbarHelper.error('registration_failed'.tr);
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   @override
   void onClose() {

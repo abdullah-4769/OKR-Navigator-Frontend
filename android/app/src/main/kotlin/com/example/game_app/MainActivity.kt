@@ -1,4 +1,4 @@
-package com.focush.okrnavigator
+package com.focush.okrnav
 
 import io.flutter.embedding.android.FlutterActivity
 

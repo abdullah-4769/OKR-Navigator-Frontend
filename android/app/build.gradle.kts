@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.focush.okrnavigator"
+    namespace = "com.focush.okrnav"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.focush.okrnavigator"
+        applicationId = "com.focush.okrnav"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
         versionCode = flutter.versionCode
@@ -56,4 +56,6 @@ flutter {
 
 dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+  implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
+  implementation("com.google.firebase:firebase-analytics")
 }
