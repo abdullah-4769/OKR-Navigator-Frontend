@@ -245,15 +245,37 @@ class AuthRepository {
         ),
       );
 
-      // Success - HTTP 201
-      return;
-    } catch (e) {
-      // Check if it's a duplicate email error
-      if (e.toString().contains('500') ||
-          e.toString().contains('already exist') ||
-          e.toString().contains('duplicate')) {
-        throw Exception('email_already_exists'); // We'll translate this
+      // Check status code from response
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Success
+        log('✅ Registration successful');
+        return;
       }
+      else if (response.statusCode == 400) {
+        // Bad request - check message
+        if (response.message == 'email_already_exists') {
+          log('❌ Email already exists');
+          throw Exception('email_already_exists');
+        }
+        throw Exception(response.message ?? 'Registration failed');
+      }
+      else if (response.statusCode == 500) {
+        log('❌ Server error');
+        throw Exception('server_error');
+      }
+      else {
+        throw Exception(response.message ?? 'Registration failed');
+      }
+
+    } catch (e) {
+      log('Register error: $e');
+
+      // If it's already our custom exception, rethrow
+      if (e.toString().contains('email_already_exists')) {
+        rethrow;
+      }
+
+      // Handle other errors
       rethrow;
     }
   }
@@ -322,27 +344,29 @@ class AuthRepository {
     }
   }
 
-  // ==================== FORGOT PASSWORD - RESET PASSWORD ====================
+// ==================== FORGOT PASSWORD - RESET PASSWORD ====================
   Future<ResetPasswordResponse> resetPassword({
     required String email,
     required String otp,
     required String newPassword,
   }) async {
     try {
-      log('🔐 Resetting password for: $email');
+      log('🔐 Resetting password for: $email with OTP: $otp');
 
-      final request = ResetPasswordRequest(
-        email: email,
-        otp: otp,
-        newPassword: newPassword,
-      );
+      final Map<String, dynamic> requestBody = {
+        'email': email,
+        'newPassword': newPassword,
+      };
+
+      // Add otp only if your API requires it (from your example, it doesn't)
+      // Some APIs verify OTP separately, then only need email and newPassword for reset
+      // If your API needs OTP in reset, uncomment below:
+      // requestBody['otp'] = otp;
 
       final response = await http.post(
         Uri.parse('$baseUrl/auth/reset-password'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(request.toJson()),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
       ).timeout(
         const Duration(seconds: 30),
         onTimeout: () {
@@ -355,22 +379,11 @@ class AuthRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> json = jsonDecode(response.body);
         final resetResponse = ResetPasswordResponse.fromJson(json);
-
         log('✅ Password reset successfully: ${resetResponse.message}');
         return resetResponse;
       } else {
         final error = jsonDecode(response.body);
         final errorMsg = error['message'] ?? 'Failed to reset password';
-
-        // Handle specific error cases
-        if (response.statusCode == 400) {
-          log('❌ Invalid OTP or email');
-          throw Exception('Invalid OTP or email address');
-        } else if (response.statusCode == 404) {
-          log('❌ Email not found');
-          throw Exception('Email not registered');
-        }
-
         log('❌ Reset password failed: $errorMsg');
         throw Exception(errorMsg);
       }
@@ -380,6 +393,44 @@ class AuthRepository {
     }
   }
 
+  Future<bool> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      log('🔐 Verifying OTP for: $email (attempt for OTP: $otp)');
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/verify-otp'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'otp': otp,
+        }),
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception('Request timeout - unable to verify OTP');
+        },
+      );
+
+      log('📨 Verify OTP Response: ${response.statusCode} | ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log('✅ OTP verified successfully: ${json['message']}');
+        return true;
+      } else {
+        final error = jsonDecode(response.body);
+        final errorMsg = error['message'] ?? 'OTP verification failed';
+        log('❌ OTP verification failed: $errorMsg');
+        return false;  // Always return false for failures
+      }
+    } catch (e, s) {
+      log('❌ Verify OTP error: $e', stackTrace: s);
+      return false;
+    }
+  }
   // ==================== LOGOUT ====================
   Future<void> logout() async {
     await SharedPrefs.clearAll();

@@ -33,47 +33,67 @@ class SnackbarHelper {
       icon: Icon(icon, color: Colors.white, size: 24.sp),
       shouldIconPulse: true,
       forwardAnimationCurve: Curves.easeOutBack,
-      barBlur: 2, // Adds a subtle glassmorphism effect
+      barBlur: 2,
     );
   }
 
   /// Success Snackbar
-  static void success(String message, {String title = 'Success'}) {
+  static void success(
+      String message, {
+        String title = 'Success',
+        Duration? duration, // ✅ Add optional duration parameter
+      }) {
     _showSnackbar(
       title: title,
       message: message,
       backgroundColor: AppColors.sucessColor,
       icon: Icons.check_circle_rounded,
+      duration: duration ?? const Duration(seconds: 2), // ✅ Use provided duration or default
     );
   }
 
   /// Error Snackbar
-  static void error(String message, {String title = 'Error'}) {
+  static void error(
+      String message, {
+        String title = 'Error',
+        Duration? duration,
+      }) {
     _showSnackbar(
       title: title,
       message: message,
       backgroundColor: AppColors.primaryRed,
       icon: Icons.error_rounded,
+      duration: duration ?? const Duration(seconds: 2),
     );
   }
 
   /// Info Snackbar
-  static void info(String message, {String title = 'Info'}) {
+  static void info(
+      String message, {
+        String title = 'Info',
+        Duration? duration,
+      }) {
     _showSnackbar(
       title: title,
       message: message,
       backgroundColor: AppColors.primaryBlue,
       icon: Icons.info_outline_rounded,
+      duration: duration ?? const Duration(seconds: 2),
     );
   }
 
   /// Warning Snackbar
-  static void warning(String message, {String title = 'Warning'}) {
+  static void warning(
+      String message, {
+        String title = 'Warning',
+        Duration? duration, // ✅ Add optional duration parameter
+      }) {
     _showSnackbar(
       title: title,
       message: message,
       backgroundColor: Colors.orange.shade700,
       icon: Icons.warning_amber_rounded,
+      duration: duration ?? const Duration(seconds: 2), // ✅ Use provided duration or default
     );
   }
 }

@@ -163,7 +163,7 @@ class LoginScreen extends StatelessWidget {
                                   child: Text(
                                     'forget_password'.tr,
                                     style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontSize: screenWidth * 0.035,
+                                      fontSize: screenWidth * 0.025,
                                       color: AppColors.primaryRed,
                                       fontWeight: FontWeight.w600,
                                       overflow: TextOverflow.ellipsis,
